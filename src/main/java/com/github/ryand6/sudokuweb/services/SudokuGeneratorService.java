@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 public class SudokuGeneratorService {
 
     public static int[][] generatePuzzle(String difficulty) {
-        int[][] arr = new int[8][8];
-        return arr;
+        int[][] grid = new int[8][8];
+        return grid;
     }
 
 }
