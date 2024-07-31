@@ -1,5 +1,6 @@
-package com.github.ryand6.sudokuweb.services;
+package com.github.ryand6.sudokuweb.services.impl;
 
+import com.github.ryand6.sudokuweb.services.PuzzleGenerator;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,9 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class SudokuGeneratorService {
+public class PuzzleGeneratorFromFile implements PuzzleGenerator {
 
-    public static List<String> generatePuzzle(String difficulty) {
+    public List<String> generatePuzzle(String difficulty) {
         List<String> puzzleDetails = new ArrayList<>();
         List<String> lines = new ArrayList<>();
         String location = "data/problemsets/" + difficulty + "sudoku.tsv";
