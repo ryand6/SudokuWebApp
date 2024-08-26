@@ -18,8 +18,8 @@ public class User {
 
     private String username;
 
-    private String password_hash;
+    private String passwordHash;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
 }

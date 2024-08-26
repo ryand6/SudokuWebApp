@@ -15,14 +15,14 @@ public class Score {
 
     private Long id;
 
-    private Long user_id;
+    private Long userId;
 
-    private Integer total_score;
+    private Integer totalScore;
 
-    private Integer games_played;
+    private Integer gamesPlayed;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
 
 }

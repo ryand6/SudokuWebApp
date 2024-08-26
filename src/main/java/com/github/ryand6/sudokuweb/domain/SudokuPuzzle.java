@@ -13,7 +13,7 @@ public class SudokuPuzzle {
 
     private Long id;
 
-    private String initial_board_state;
+    private String initialBoardState;
 
     private String solution;
 

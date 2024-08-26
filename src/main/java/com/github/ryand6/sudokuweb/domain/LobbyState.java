@@ -15,16 +15,16 @@ public class LobbyState {
 
     private Long id;
 
-    private Long lobby_id;
+    private Long lobbyId;
 
-    private Long user_id;
+    private Long userId;
 
-    private Long puzzle_id;
+    private Long puzzleId;
 
-    private String current_board_state;
+    private String currentBoardState;
 
     private Integer score;
 
-    private LocalDateTime last_active;
+    private LocalDateTime lastActive;
 
 }

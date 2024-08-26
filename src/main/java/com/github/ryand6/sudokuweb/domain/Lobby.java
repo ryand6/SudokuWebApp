@@ -15,10 +15,10 @@ public class Lobby {
 
     private Long id;
 
-    private String lobby_name;
+    private String lobbyName;
 
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
-    private Boolean is_active;
+    private Boolean isActive;
 
 }
