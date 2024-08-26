@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dao;
+package com.github.ryand6.sudokuweb.dao.impl;
 
 import com.github.ryand6.sudokuweb.dao.impl.LobbyStateDaoImpl;
 import com.github.ryand6.sudokuweb.domain.LobbyState;

@@ -1,7 +1,6 @@
-package com.github.ryand6.sudokuweb.dao;
+package com.github.ryand6.sudokuweb.dao.impl;
 
-import com.github.ryand6.sudokuweb.dao.impl.UserDaoImpl;
-import com.github.ryand6.sudokuweb.domain.User;
+import com.github.ryand6.sudokuweb.domain.Lobby;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,27 +12,27 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class UserDaoImplTests {
+public class LobbyDaoImplTests {
 
     @Mock
     private JdbcTemplate jdbcTemplate;
 
     @InjectMocks
-    private UserDaoImpl underTest;
+    private LobbyDaoImpl underTest;
 
     @Test
-    public void testCreateUserSql() {
-        User user = User.builder().
+    public void testCreateLobbyStateSql() {
+        Lobby lobby = Lobby.builder().
                 id(1L).
-                username("Henry").
-                passwordHash("a4ceE42GHa").
+                lobbyName("Guru Lobby").
+                isActive(true).
                 build();
 
-        underTest.create(user);
+        underTest.create(lobby);
 
         verify(jdbcTemplate).update(
-                eq("INSERT INTO users (id, username, password_hash) VALUES (?, ?, ?)"),
-                eq(1L), eq("Henry"), eq("a4ceE42GHa")
+                eq("INSERT INTO lobbies (id, lobby_name, is_active) VALUES (?, ?, ?)"),
+                eq(1L), eq("Guru Lobby"), eq(true)
         );
     }
 
