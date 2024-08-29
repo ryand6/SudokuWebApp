@@ -1,9 +1,9 @@
 package com.github.ryand6.sudokuweb.dao.impl;
 
-import com.github.ryand6.sudokuweb.dao.impl.LobbyStateDaoImpl;
 import com.github.ryand6.sudokuweb.domain.LobbyState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,6 +39,17 @@ public class LobbyStateDaoImplTests {
                 eq(1L), eq(1L), eq(1L), eq(1L),
                 eq("092306001007008003043207080035680000080000020000035670070801950200500800500409130"),
                 eq(0)
+        );
+    }
+
+    @Test
+    public void testFindOneLobbyStateSql() {
+        underTest.findOne(1L);
+
+        verify(jdbcTemplate).query(
+                eq("SELECT id, lobby_id, user_id, puzzle_id, current_board_state, score, last_active FROM lobby_state WHERE id = ? LIMIT 1"),
+                ArgumentMatchers.<LobbyStateDaoImpl.LobbyStateRowMapper>any(),
+                eq(1L)
         );
     }
 

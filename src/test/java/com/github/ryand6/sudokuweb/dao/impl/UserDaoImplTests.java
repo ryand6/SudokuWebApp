@@ -1,9 +1,9 @@
 package com.github.ryand6.sudokuweb.dao.impl;
 
-import com.github.ryand6.sudokuweb.dao.impl.UserDaoImpl;
 import com.github.ryand6.sudokuweb.domain.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,6 +34,17 @@ public class UserDaoImplTests {
         verify(jdbcTemplate).update(
                 eq("INSERT INTO users (id, username, password_hash) VALUES (?, ?, ?)"),
                 eq(1L), eq("Henry"), eq("a4ceE42GHa")
+        );
+    }
+
+    @Test
+    public void testFindOneUserSql() {
+        underTest.findOne(1L);
+
+        verify(jdbcTemplate).query(
+                eq("SELECT id, username, password_hash, created_at FROM users WHERE id = ? LIMIT 1"),
+                ArgumentMatchers.<UserDaoImpl.UserRowMapper>any(),
+                eq(1L)
         );
     }
 
