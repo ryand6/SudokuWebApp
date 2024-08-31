@@ -4,6 +4,7 @@ import com.github.ryand6.sudokuweb.dao.UserDao;
 import com.github.ryand6.sudokuweb.domain.User;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class UserDaoImpl implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;

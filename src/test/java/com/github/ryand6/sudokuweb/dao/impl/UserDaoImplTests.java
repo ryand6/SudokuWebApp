@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dao.impl;
 
+import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +24,7 @@ public class UserDaoImplTests {
 
     @Test
     public void testCreateUserSql() {
-        User user = User.builder().
-                id(1L).
-                username("Henry").
-                passwordHash("a4ceE42GHa").
-                build();
+        User user = TestDataUtil.createTestUser();
 
         underTest.create(user);
 

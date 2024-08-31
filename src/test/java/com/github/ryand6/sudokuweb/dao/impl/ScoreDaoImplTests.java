@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dao.impl;
 
+import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Score;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +24,7 @@ public class ScoreDaoImplTests {
 
     @Test
     public void testCreateScoreSql() {
-        Score score = Score.builder().
-                id(1L).
-                userId(1L).
-                totalScore(150).
-                gamesPlayed(1).
-                build();
+        Score score = TestDataUtil.createTestScore();
 
         underTest.create(score);
 
