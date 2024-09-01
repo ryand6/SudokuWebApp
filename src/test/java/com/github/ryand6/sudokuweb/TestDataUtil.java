@@ -8,7 +8,7 @@ public final class TestDataUtil {
 
     }
 
-    public static User createTestUser() {
+    public static User createTestUserA() {
         return User.builder().
                 id(1L).
                 username("Henry").
@@ -16,12 +16,46 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static Score createTestScore() {
+    public static User createTestUserB() {
+        return User.builder().
+                id(2L).
+                username("dk0ng").
+                passwordHash("34hEA3cbe").
+                build();
+    }
+
+    public static User createTestUserC() {
+        return User.builder().
+                id(3L).
+                username("parf").
+                passwordHash("dA5cfB12c").
+                build();
+    }
+
+    public static Score createTestScoreA() {
         return Score.builder().
                 id(1L).
                 userId(1L).
                 totalScore(150).
                 gamesPlayed(1).
+                build();
+    }
+
+    public static Score createTestScoreB() {
+        return Score.builder().
+                id(2L).
+                userId(2L).
+                totalScore(450).
+                gamesPlayed(5).
+                build();
+    }
+
+    public static Score createTestScoreC() {
+        return Score.builder().
+                id(3L).
+                userId(3L).
+                totalScore(50).
+                gamesPlayed(2).
                 build();
     }
 

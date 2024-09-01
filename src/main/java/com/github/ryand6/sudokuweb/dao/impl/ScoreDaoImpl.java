@@ -43,6 +43,14 @@ public class ScoreDaoImpl implements ScoreDao {
         return results.stream().findFirst();
     }
 
+    @Override
+    public List<Score> find() {
+        return jdbcTemplate.query(
+                "SELECT id, user_id, total_score, games_played, created_at, updated_at FROM scores",
+                new ScoreRowMapper()
+        );
+    }
+
     public static class ScoreRowMapper implements RowMapper<Score> {
 
         public Score mapRow(ResultSet rs, int rowNum) throws SQLException {

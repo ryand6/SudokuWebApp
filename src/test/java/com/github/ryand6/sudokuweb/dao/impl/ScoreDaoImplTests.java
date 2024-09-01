@@ -24,7 +24,7 @@ public class ScoreDaoImplTests {
 
     @Test
     public void testCreateScoreSql() {
-        Score score = TestDataUtil.createTestScore();
+        Score score = TestDataUtil.createTestScoreA();
 
         underTest.create(score);
 
@@ -42,6 +42,15 @@ public class ScoreDaoImplTests {
                 eq("SELECT id, user_id, total_score, games_played, created_at, updated_at FROM scores WHERE id = ? LIMIT 1"),
                 ArgumentMatchers.<ScoreDaoImpl.ScoreRowMapper>any(),
                 eq(1L)
+        );
+    }
+
+    @Test
+    public void testFindManyScoresSql() {
+        underTest.find();
+        verify(jdbcTemplate).query(
+                eq("SELECT id, user_id, total_score, games_played, created_at, updated_at FROM scores"),
+                ArgumentMatchers.<ScoreDaoImpl.ScoreRowMapper>any()
         );
     }
 

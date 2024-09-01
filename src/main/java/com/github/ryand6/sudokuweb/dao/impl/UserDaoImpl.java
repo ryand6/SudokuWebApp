@@ -39,6 +39,14 @@ public class UserDaoImpl implements UserDao {
         return results.stream().findFirst();
     }
 
+    @Override
+    public List<User> find() {
+        return jdbcTemplate.query(
+                "SELECT id, username, password_hash, created_at FROM users",
+                new UserRowMapper()
+        );
+    }
+
     public static class UserRowMapper implements RowMapper<User> {
 
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {

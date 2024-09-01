@@ -24,7 +24,7 @@ public class UserDaoImplTests {
 
     @Test
     public void testCreateUserSql() {
-        User user = TestDataUtil.createTestUser();
+        User user = TestDataUtil.createTestUserA();
 
         underTest.create(user);
 
@@ -42,6 +42,15 @@ public class UserDaoImplTests {
                 eq("SELECT id, username, password_hash, created_at FROM users WHERE id = ? LIMIT 1"),
                 ArgumentMatchers.<UserDaoImpl.UserRowMapper>any(),
                 eq(1L)
+        );
+    }
+
+    @Test
+    public void testFindManyUsersSql() {
+        underTest.find();
+        verify(jdbcTemplate).query(
+                eq("SELECT id, username, password_hash, created_at FROM users"),
+                ArgumentMatchers.<UserDaoImpl.UserRowMapper>any()
         );
     }
 

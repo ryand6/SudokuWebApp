@@ -18,28 +18,28 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LobbyStateDaoImplIntegrationTests {
 
     private LobbyStateDaoImpl underTest;
-    private UserDaoImpl supportTestUser;
-    private LobbyDaoImpl supportTestLobby;
-    private SudokuPuzzleDao supportTestPuzzle;
+    private UserDaoImpl userDao;
+    private LobbyDaoImpl lobbyDao;
+    private SudokuPuzzleDao sudokuPuzzleDao;
 
     @Autowired
     public LobbyStateDaoImplIntegrationTests(LobbyStateDaoImpl underTest, UserDaoImpl supportTestUser, LobbyDaoImpl supportTestLobby, SudokuPuzzleDao supportTestPuzzle) {
         this.underTest = underTest;
-        this.supportTestUser = supportTestUser;
-        this.supportTestLobby = supportTestLobby;
-        this.supportTestPuzzle = supportTestPuzzle;
+        this.userDao = supportTestUser;
+        this.lobbyDao = supportTestLobby;
+        this.sudokuPuzzleDao = supportTestPuzzle;
     }
 
     @Test
     public void testScoreCreationAndRecall() {
         // Create support objects in the db because lobby state relies on user, lobby and puzzle foreign keys
         // DB updates aren't persistent so this is required
-        User user = TestDataUtil.createTestUser();
-        supportTestUser.create(user);
+        User user = TestDataUtil.createTestUserA();
+        userDao.create(user);
         Lobby lobby = TestDataUtil.createTestLobby();
-        supportTestLobby.create(lobby);
+        lobbyDao.create(lobby);
         SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzle();
-        supportTestPuzzle.create(sudokuPuzzle);
+        sudokuPuzzleDao.create(sudokuPuzzle);
         // Checks for score creation and retrieval
         LobbyState lobbyState = TestDataUtil.createTestLobbyState();
         underTest.create(lobbyState);
