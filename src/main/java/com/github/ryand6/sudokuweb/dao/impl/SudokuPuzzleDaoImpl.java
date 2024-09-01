@@ -4,12 +4,14 @@ import com.github.ryand6.sudokuweb.dao.SudokuPuzzleDao;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzle;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class SudokuPuzzleDaoImpl implements SudokuPuzzleDao {
 
     private JdbcTemplate jdbcTemplate;

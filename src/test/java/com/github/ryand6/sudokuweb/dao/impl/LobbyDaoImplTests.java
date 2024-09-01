@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dao.impl;
 
+import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Lobby;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +24,7 @@ public class LobbyDaoImplTests {
 
     @Test
     public void testCreateLobbyStateSql() {
-        Lobby lobby = Lobby.builder().
-                id(1L).
-                lobbyName("Guru Lobby").
-                isActive(true).
-                build();
+        Lobby lobby = TestDataUtil.createTestLobby();
 
         underTest.create(lobby);
 

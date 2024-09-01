@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dao.impl;
 
+import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.LobbyState;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,14 +24,7 @@ public class LobbyStateDaoImplTests {
 
     @Test
     public void testCreateLobbyStateSql() {
-        LobbyState lobbyState = LobbyState.builder().
-                id(1L).
-                lobbyId(1L).
-                userId(1L).
-                puzzleId(1L).
-                currentBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
-                score(0).
-                build();
+        LobbyState lobbyState = TestDataUtil.createTestLobbyState();
 
         underTest.create(lobbyState);
 

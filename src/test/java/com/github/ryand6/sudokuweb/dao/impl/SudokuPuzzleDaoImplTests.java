@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dao.impl;
 
+import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzle;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,12 +24,7 @@ public class SudokuPuzzleDaoImplTests {
 
     @Test
     public void testCreateSudokuPuzzleSql() {
-        SudokuPuzzle sudokuPuzzle = SudokuPuzzle.builder().
-                id(1L).
-                initialBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
-                solution("892356741657148293143297586735682419986714325421935678374861952219573864568429137").
-                difficulty("easy").
-                build();
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzle();
 
         underTest.create(sudokuPuzzle);
 
