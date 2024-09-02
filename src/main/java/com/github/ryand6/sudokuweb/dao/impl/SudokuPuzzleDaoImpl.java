@@ -40,6 +40,14 @@ public class SudokuPuzzleDaoImpl implements SudokuPuzzleDao {
         return results.stream().findFirst();
     }
 
+    @Override
+    public List<SudokuPuzzle> find() {
+        return jdbcTemplate.query(
+                "SELECT id, initial_board_state, solution, difficulty FROM sudoku_puzzles",
+                new SudokuPuzzleRowMapper()
+        );
+    }
+
     public static class SudokuPuzzleRowMapper implements RowMapper<SudokuPuzzle> {
 
         public SudokuPuzzle mapRow(ResultSet rs, int rowNum) throws SQLException {

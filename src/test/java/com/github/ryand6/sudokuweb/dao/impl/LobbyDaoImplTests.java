@@ -24,7 +24,7 @@ public class LobbyDaoImplTests {
 
     @Test
     public void testCreateLobbyStateSql() {
-        Lobby lobby = TestDataUtil.createTestLobby();
+        Lobby lobby = TestDataUtil.createTestLobbyA();
 
         underTest.create(lobby);
 
@@ -42,6 +42,15 @@ public class LobbyDaoImplTests {
                 eq("SELECT id, lobby_name, created_at, is_active FROM lobbies WHERE id = ? LIMIT 1"),
                 ArgumentMatchers.<LobbyDaoImpl.LobbyRowMapper>any(),
                 eq(1L)
+        );
+    }
+
+    @Test
+    public void testFindManyLobbiesSql() {
+        underTest.find();
+        verify(jdbcTemplate).query(
+                eq("SELECT id, lobby_name, created_at, is_active FROM lobbies"),
+                ArgumentMatchers.<LobbyDaoImpl.LobbyRowMapper>any()
         );
     }
 

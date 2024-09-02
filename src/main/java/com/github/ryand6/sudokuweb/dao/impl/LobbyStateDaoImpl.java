@@ -44,6 +44,14 @@ public class LobbyStateDaoImpl implements LobbyStateDao {
         return results.stream().findFirst();
     }
 
+    @Override
+    public List<LobbyState> find() {
+        return jdbcTemplate.query(
+                "SELECT id, lobby_id, user_id, puzzle_id, current_board_state, score, last_active FROM lobby_state",
+                new LobbyStateRowMapper()
+        );
+    }
+
     public static class LobbyStateRowMapper implements RowMapper<LobbyState> {
 
         public LobbyState mapRow(ResultSet rs, int rowNum) throws SQLException {

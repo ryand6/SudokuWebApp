@@ -41,6 +41,14 @@ public class LobbyDaoImpl implements LobbyDao {
         return results.stream().findFirst();
     }
 
+    @Override
+    public List<Lobby> find() {
+        return jdbcTemplate.query(
+                "SELECT id, lobby_name, created_at, is_active FROM lobbies",
+                new LobbyRowMapper()
+        );
+    }
+
     public static class LobbyRowMapper implements RowMapper<Lobby> {
 
         public Lobby mapRow(ResultSet rs, int rowNum) throws SQLException {

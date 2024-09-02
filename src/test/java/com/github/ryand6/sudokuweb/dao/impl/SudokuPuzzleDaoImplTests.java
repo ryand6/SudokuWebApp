@@ -24,7 +24,7 @@ public class SudokuPuzzleDaoImplTests {
 
     @Test
     public void testCreateSudokuPuzzleSql() {
-        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzle();
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
 
         underTest.create(sudokuPuzzle);
 
@@ -43,6 +43,15 @@ public class SudokuPuzzleDaoImplTests {
                 eq("SELECT id, initial_board_state, solution, difficulty FROM sudoku_puzzles WHERE id = ? LIMIT 1"),
                 ArgumentMatchers.<SudokuPuzzleDaoImpl.SudokuPuzzleRowMapper>any(),
                 eq(1L)
+        );
+    }
+
+    @Test
+    public void testFindManyUsersSql() {
+        underTest.find();
+        verify(jdbcTemplate).query(
+                eq("SELECT id, initial_board_state, solution, difficulty FROM sudoku_puzzles"),
+                ArgumentMatchers.<SudokuPuzzleDaoImpl.SudokuPuzzleRowMapper>any()
         );
     }
 

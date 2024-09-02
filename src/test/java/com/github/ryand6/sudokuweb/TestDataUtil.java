@@ -59,7 +59,7 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static SudokuPuzzle createTestSudokuPuzzle() {
+    public static SudokuPuzzle createTestSudokuPuzzleA() {
         return SudokuPuzzle.builder().
                 id(1L).
                 initialBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
@@ -68,7 +68,25 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static Lobby createTestLobby() {
+    public static SudokuPuzzle createTestSudokuPuzzleB() {
+        return SudokuPuzzle.builder().
+                id(2L).
+                initialBoardState("070004000000006900000329000007008010680932075090400600000295000002100000000800020").
+                solution("973584261428716953516329847247658319681932475395471682764295138832167594159843726").
+                difficulty("extreme").
+                build();
+    }
+
+    public static SudokuPuzzle createTestSudokuPuzzleC() {
+        return SudokuPuzzle.builder().
+                id(3L).
+                initialBoardState("050000021630020800020937005000095000902704603000260000200853040005040086840000030").
+                solution("759486321634521897128937465416395278982714653573268914267853149395142786841679532").
+                difficulty("medium").
+                build();
+    }
+
+    public static Lobby createTestLobbyA() {
         return Lobby.builder().
                 id(1L).
                 lobbyName("Guru Lobby").
@@ -76,7 +94,23 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static LobbyState createTestLobbyState() {
+    public static Lobby createTestLobbyB() {
+        return Lobby.builder().
+                id(2L).
+                lobbyName("SudokuSquad").
+                isActive(true).
+                build();
+    }
+
+    public static Lobby createTestLobbyC() {
+        return Lobby.builder().
+                id(3L).
+                lobbyName("Active").
+                isActive(false).
+                build();
+    }
+
+    public static LobbyState createTestLobbyStateA() {
         return LobbyState.builder().
                 id(1L).
                 lobbyId(1L).
@@ -84,6 +118,28 @@ public final class TestDataUtil {
                 puzzleId(1L).
                 currentBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
                 score(0).
+                build();
+    }
+
+    public static LobbyState createTestLobbyStateB() {
+        return LobbyState.builder().
+                id(2L).
+                lobbyId(2L).
+                userId(2L).
+                puzzleId(2L).
+                currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020").
+                score(10).
+                build();
+    }
+
+    public static LobbyState createTestLobbyStateC() {
+        return LobbyState.builder().
+                id(3L).
+                lobbyId(3L).
+                userId(3L).
+                puzzleId(3L).
+                currentBoardState("750000021630020800020937005000095000902704603000260000200853040005040086840000030").
+                score(5).
                 build();
     }
 
