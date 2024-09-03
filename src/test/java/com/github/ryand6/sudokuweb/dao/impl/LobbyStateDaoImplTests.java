@@ -56,4 +56,18 @@ public class LobbyStateDaoImplTests {
         );
     }
 
+    @Test
+    public void testFullUpdateLobbyStateSql() {
+        LobbyState lobbyState = TestDataUtil.createTestLobbyStateA();
+        underTest.update(3L, lobbyState);
+
+        verify(jdbcTemplate).update(
+                eq("UPDATE lobby_state SET id = ?, lobby_id = ?, user_id = ?, puzzle_id = ?, current_board_state = ?, score = ? WHERE id = ?"),
+                eq(1L), eq(1L), eq(1L), eq(1L),
+                eq("092306001007008003043207080035680000080000020000035670070801950200500800500409130"),
+                eq(0),
+                eq(3L)
+        );
+    }
+
 }

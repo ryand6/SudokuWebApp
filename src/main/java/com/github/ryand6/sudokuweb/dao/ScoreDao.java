@@ -13,4 +13,6 @@ public interface ScoreDao {
 
     List<Score> find();
 
+    void update(Long scoreId, Score score);
+
 }

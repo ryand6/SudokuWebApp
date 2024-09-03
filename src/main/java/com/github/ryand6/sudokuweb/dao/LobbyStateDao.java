@@ -13,4 +13,6 @@ public interface LobbyStateDao {
 
     List<LobbyState> find();
 
+    void update(Long stateId, LobbyState lobbyState);
+
 }

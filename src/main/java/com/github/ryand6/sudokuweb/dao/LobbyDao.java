@@ -13,4 +13,6 @@ public interface LobbyDao {
 
     List<Lobby> find();
 
+    void update(Long lobbyId, Lobby lobby);
+
 }

@@ -54,4 +54,15 @@ public class ScoreDaoImplTests {
         );
     }
 
+    @Test
+    public void testFullUpdateScoreSql() {
+        Score score = TestDataUtil.createTestScoreA();
+        underTest.update(3L, score);
+
+        verify(jdbcTemplate).update(
+                eq("UPDATE scores SET id = ?, user_id = ?, total_score = ?, games_played = ? WHERE id = ?"),
+                eq(1L), eq(1L), eq(150), eq(1), eq(3L)
+        );
+    }
+
 }

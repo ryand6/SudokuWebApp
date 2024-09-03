@@ -55,4 +55,16 @@ public class LobbyDaoImplIntegrationTests {
                 .containsExactly(lobbyA, lobbyB, lobbyC);
     }
 
+    @Test
+    public void testLobbyFullUpdate() {
+        Lobby lobbyA = TestDataUtil.createTestLobbyA();
+        underTest.create(lobbyA);
+        lobbyA.setLobbyName("UPDATED");
+        underTest.update(lobbyA.getId(), lobbyA);
+        Optional<Lobby> result = underTest.findOne(lobbyA.getId());
+        assertThat(result).isPresent();
+        lobbyA.setCreatedAt(result.get().getCreatedAt());
+        assertThat(result.get()).isEqualTo(lobbyA);
+    }
+
 }

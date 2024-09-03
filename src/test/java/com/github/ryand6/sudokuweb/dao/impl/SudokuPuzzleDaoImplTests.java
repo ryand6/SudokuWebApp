@@ -30,8 +30,10 @@ public class SudokuPuzzleDaoImplTests {
 
         verify(jdbcTemplate).update(
                 eq("INSERT INTO sudoku_puzzles (id, initial_board_state, solution, difficulty) VALUES (?, ?, ?, ?)"),
-                eq(1L), eq("092306001007008003043207080035680000080000020000035670070801950200500800500409130"),
-                eq("892356741657148293143297586735682419986714325421935678374861952219573864568429137"), eq("easy")
+                eq(1L),
+                eq("092306001007008003043207080035680000080000020000035670070801950200500800500409130"),
+                eq("892356741657148293143297586735682419986714325421935678374861952219573864568429137"),
+                eq("easy")
         );
     }
 
@@ -47,11 +49,26 @@ public class SudokuPuzzleDaoImplTests {
     }
 
     @Test
-    public void testFindManyUsersSql() {
+    public void testFindManySudokuPuzzlesSql() {
         underTest.find();
         verify(jdbcTemplate).query(
                 eq("SELECT id, initial_board_state, solution, difficulty FROM sudoku_puzzles"),
                 ArgumentMatchers.<SudokuPuzzleDaoImpl.SudokuPuzzleRowMapper>any()
+        );
+    }
+
+    @Test
+    public void testFullUpdateSudokuPuzzleSql() {
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        underTest.update(3L, sudokuPuzzle);
+
+        verify(jdbcTemplate).update(
+                eq("UPDATE sudoku_puzzles SET id = ?, initial_board_state = ?, solution = ?, difficulty = ? WHERE id = ?"),
+                eq(1L),
+                eq("092306001007008003043207080035680000080000020000035670070801950200500800500409130"),
+                eq("892356741657148293143297586735682419986714325421935678374861952219573864568429137"),
+                eq("easy"),
+                eq(3L)
         );
     }
 

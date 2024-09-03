@@ -51,6 +51,14 @@ public class ScoreDaoImpl implements ScoreDao {
         );
     }
 
+    @Override
+    public void update(Long scoreId, Score score) {
+        jdbcTemplate.update(
+                "UPDATE scores SET id = ?, user_id = ?, total_score = ?, games_played = ? WHERE id = ?",
+                score.getId(), score.getUserId(), score.getTotalScore(), score.getGamesPlayed(), scoreId
+        );
+    }
+
     public static class ScoreRowMapper implements RowMapper<Score> {
 
         public Score mapRow(ResultSet rs, int rowNum) throws SQLException {

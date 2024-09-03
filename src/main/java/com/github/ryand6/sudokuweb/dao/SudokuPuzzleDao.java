@@ -13,4 +13,6 @@ public interface SudokuPuzzleDao {
 
     List<SudokuPuzzle> find();
 
+    void update(Long puzzleId, SudokuPuzzle sudokuPuzzle);
+
 }

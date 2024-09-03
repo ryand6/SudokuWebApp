@@ -55,4 +55,16 @@ public class UserDaoImplIntegrationTests {
                 .containsExactly(userA, userB, userC);
     }
 
+    @Test
+    public void testUserFullUpdate() {
+        User userA = TestDataUtil.createTestUserA();
+        underTest.create(userA);
+        userA.setUsername("UPDATED");
+        underTest.update(userA.getId(), userA);
+        Optional<User> result = underTest.findOne(userA.getId());
+        assertThat(result).isPresent();
+        userA.setCreatedAt(result.get().getCreatedAt());
+        assertThat(result.get()).isEqualTo(userA);
+    }
+
 }

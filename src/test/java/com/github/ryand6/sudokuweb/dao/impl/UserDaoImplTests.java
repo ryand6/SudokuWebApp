@@ -54,4 +54,15 @@ public class UserDaoImplTests {
         );
     }
 
+    @Test
+    public void testFullUpdateUserSql() {
+        User user = TestDataUtil.createTestUserA();
+        underTest.update(3L, user);
+
+        verify(jdbcTemplate).update(
+                eq("UPDATE users SET id = ?, username = ?, password_hash WHERE id = ?"),
+                eq(1L), eq("Henry"), eq("a4ceE42GHa"), eq(3L)
+        );
+    }
+
 }

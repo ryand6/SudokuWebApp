@@ -47,6 +47,15 @@ public class UserDaoImpl implements UserDao {
         );
     }
 
+    @Override
+    public void update(Long userId, User user) {
+        jdbcTemplate.update(
+                "UPDATE users SET id = ?, username = ?, password_hash = ? WHERE id = ?",
+                user.getId(), user.getUsername(), user.getPasswordHash(), userId
+        );
+    }
+
+
     public static class UserRowMapper implements RowMapper<User> {
 
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {

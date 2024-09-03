@@ -48,6 +48,14 @@ public class SudokuPuzzleDaoImpl implements SudokuPuzzleDao {
         );
     }
 
+    @Override
+    public void update(Long puzzleId, SudokuPuzzle sudokuPuzzle) {
+        jdbcTemplate.update(
+                "UPDATE sudoku_puzzles SET id = ?, initial_board_state = ?, solution = ?, difficulty = ? WHERE id = ?",
+                sudokuPuzzle.getId(), sudokuPuzzle.getInitialBoardState(), sudokuPuzzle.getSolution(), sudokuPuzzle.getDifficulty(), puzzleId
+        );
+    }
+
     public static class SudokuPuzzleRowMapper implements RowMapper<SudokuPuzzle> {
 
         public SudokuPuzzle mapRow(ResultSet rs, int rowNum) throws SQLException {

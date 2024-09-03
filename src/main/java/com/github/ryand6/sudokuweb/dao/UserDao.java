@@ -13,4 +13,6 @@ public interface UserDao {
 
     List<User> find();
 
+    void update(Long userId, User user);
+
 }

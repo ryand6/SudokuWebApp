@@ -54,4 +54,16 @@ public class LobbyDaoImplTests {
         );
     }
 
+    @Test
+    public void testFullUpdateLobbySql() {
+        Lobby lobby = TestDataUtil.createTestLobbyA();
+        underTest.update(3L, lobby);
+
+        verify(jdbcTemplate).update(
+                eq("UPDATE lobbies SET id = ?, lobby_name = ?, is_active = ? WHERE id = ?"),
+                eq(1L), eq("Guru Lobby"), eq(true), eq(3L)
+        );
+    }
+
+
 }

@@ -49,6 +49,14 @@ public class LobbyDaoImpl implements LobbyDao {
         );
     }
 
+    @Override
+    public void update(Long lobbyId, Lobby lobby) {
+        jdbcTemplate.update(
+                "UPDATE lobbies SET id = ?, lobby_name = ?, is_active = ? WHERE id = ?",
+                lobby.getId(), lobby.getLobbyName(), lobby.getIsActive(), lobbyId
+        );
+    }
+
     public static class LobbyRowMapper implements RowMapper<Lobby> {
 
         public Lobby mapRow(ResultSet rs, int rowNum) throws SQLException {

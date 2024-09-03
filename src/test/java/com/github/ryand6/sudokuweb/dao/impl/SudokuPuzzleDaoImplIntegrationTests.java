@@ -50,4 +50,15 @@ public class SudokuPuzzleDaoImplIntegrationTests {
                 .containsExactly(puzzleA, puzzleB, puzzleC);
     }
 
+    @Test
+    public void testSudokuPuzzleFullUpdate() {
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        underTest.create(sudokuPuzzle);
+        sudokuPuzzle.setDifficulty("medium");
+        underTest.update(sudokuPuzzle.getId(), sudokuPuzzle);
+        Optional<SudokuPuzzle> result = underTest.findOne(sudokuPuzzle.getId());
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(sudokuPuzzle);
+    }
+
 }

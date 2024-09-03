@@ -73,4 +73,19 @@ public class ScoreDaoImplIntegrationTests {
                 .containsExactly(scoreA, scoreB, scoreC);
     }
 
+    @Test
+    public void testScoreFullUpdate() {
+        User user = TestDataUtil.createTestUserA();
+        userDao.create(user);
+        Score scoreA = TestDataUtil.createTestScoreA();
+        underTest.create(scoreA);
+        scoreA.setTotalScore(1000);
+        underTest.update(scoreA.getId(), scoreA);
+        Optional<Score> result = underTest.findOne(scoreA.getId());
+        assertThat(result).isPresent();
+        scoreA.setCreatedAt(result.get().getCreatedAt());
+        scoreA.setUpdatedAt(result.get().getUpdatedAt());
+        assertThat(result.get()).isEqualTo(scoreA);
+    }
+
 }

@@ -52,6 +52,14 @@ public class LobbyStateDaoImpl implements LobbyStateDao {
         );
     }
 
+    @Override
+    public void update(Long stateId, LobbyState lobbyState) {
+        jdbcTemplate.update(
+                "UPDATE lobby_state SET id = ?, lobby_id = ?, user_id = ?, puzzle_id = ?, current_board_state = ?, score = ? WHERE id = ?",
+                lobbyState.getId(), lobbyState.getLobbyId(), lobbyState.getUserId(), lobbyState.getPuzzleId(), lobbyState.getCurrentBoardState(), lobbyState.getScore(), stateId
+        );
+    }
+
     public static class LobbyStateRowMapper implements RowMapper<LobbyState> {
 
         public LobbyState mapRow(ResultSet rs, int rowNum) throws SQLException {

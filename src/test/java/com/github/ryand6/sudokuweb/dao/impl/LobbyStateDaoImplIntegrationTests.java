@@ -91,4 +91,23 @@ public class LobbyStateDaoImplIntegrationTests {
                 .containsExactly(lobbyStateA, lobbyStateB, lobbyStateC);
     }
 
+    @Test
+    public void testScoreFullUpdate() {
+        User user = TestDataUtil.createTestUserA();
+        userDao.create(user);
+        Lobby lobby = TestDataUtil.createTestLobbyA();
+        lobbyDao.create(lobby);
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        sudokuPuzzleDao.create(sudokuPuzzle);
+
+        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA();
+        underTest.create(lobbyStateA);
+        lobbyStateA.setScore(1000);
+        underTest.update(lobbyStateA.getId(), lobbyStateA);
+        Optional<LobbyState> result = underTest.findOne(lobbyStateA.getId());
+        assertThat(result).isPresent();
+        lobbyStateA.setLastActive(result.get().getLastActive());
+        assertThat(result.get()).isEqualTo(lobbyStateA);
+    }
+
 }
