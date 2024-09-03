@@ -15,4 +15,6 @@ public interface SudokuPuzzleDao {
 
     void update(Long puzzleId, SudokuPuzzle sudokuPuzzle);
 
+    void delete(Long puzzleId);
+
 }

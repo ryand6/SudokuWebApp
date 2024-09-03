@@ -67,4 +67,13 @@ public class LobbyDaoImplIntegrationTests {
         assertThat(result.get()).isEqualTo(lobbyA);
     }
 
+    @Test
+    public void testSudokuPuzzleDeletion() {
+        Lobby lobbyA = TestDataUtil.createTestLobbyA();
+        underTest.create(lobbyA);
+        underTest.delete(lobbyA.getId());
+        Optional<Lobby> result = underTest.findOne(lobbyA.getId());
+        assertThat(result).isEmpty();
+    }
+
 }

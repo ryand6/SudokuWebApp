@@ -65,4 +65,14 @@ public class ScoreDaoImplTests {
         );
     }
 
+    @Test
+    public void testDeleteScoreSql() {
+        underTest.delete(1L);
+
+        verify(jdbcTemplate).update(
+                eq("DELETE FROM scores WHERE id = ?"),
+                eq(1L)
+        );
+    }
+
 }

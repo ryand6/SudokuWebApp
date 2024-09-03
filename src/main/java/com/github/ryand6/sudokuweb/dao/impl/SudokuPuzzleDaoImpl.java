@@ -56,6 +56,14 @@ public class SudokuPuzzleDaoImpl implements SudokuPuzzleDao {
         );
     }
 
+    @Override
+    public void delete(Long puzzleId) {
+        jdbcTemplate.update(
+                "DELETE FROM sudoku_puzzles WHERE id = ?",
+                puzzleId
+        );
+    }
+
     public static class SudokuPuzzleRowMapper implements RowMapper<SudokuPuzzle> {
 
         public SudokuPuzzle mapRow(ResultSet rs, int rowNum) throws SQLException {

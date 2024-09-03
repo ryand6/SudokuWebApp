@@ -65,5 +65,14 @@ public class LobbyDaoImplTests {
         );
     }
 
+    @Test
+    public void testDeleteLobbySql() {
+        underTest.delete(1L);
+
+        verify(jdbcTemplate).update(
+                eq("DELETE FROM lobbies WHERE id = ?"),
+                eq(1L)
+        );
+    }
 
 }

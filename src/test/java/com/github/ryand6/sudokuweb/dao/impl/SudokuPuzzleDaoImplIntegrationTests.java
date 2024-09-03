@@ -52,13 +52,22 @@ public class SudokuPuzzleDaoImplIntegrationTests {
 
     @Test
     public void testSudokuPuzzleFullUpdate() {
-        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
-        underTest.create(sudokuPuzzle);
-        sudokuPuzzle.setDifficulty("medium");
-        underTest.update(sudokuPuzzle.getId(), sudokuPuzzle);
-        Optional<SudokuPuzzle> result = underTest.findOne(sudokuPuzzle.getId());
+        SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
+        underTest.create(sudokuPuzzleA);
+        sudokuPuzzleA.setDifficulty("medium");
+        underTest.update(sudokuPuzzleA.getId(), sudokuPuzzleA);
+        Optional<SudokuPuzzle> result = underTest.findOne(sudokuPuzzleA.getId());
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(sudokuPuzzle);
+        assertThat(result.get()).isEqualTo(sudokuPuzzleA);
+    }
+
+    @Test
+    public void testSudokuPuzzleDeletion() {
+        SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
+        underTest.create(sudokuPuzzleA);
+        underTest.delete(sudokuPuzzleA.getId());
+        Optional<SudokuPuzzle> result = underTest.findOne(sudokuPuzzleA.getId());
+        assertThat(result).isEmpty();
     }
 
 }

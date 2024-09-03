@@ -60,6 +60,14 @@ public class LobbyStateDaoImpl implements LobbyStateDao {
         );
     }
 
+    @Override
+    public void delete(Long stateId) {
+        jdbcTemplate.update(
+                "DELETE FROM lobby_state WHERE id = ?",
+                stateId
+        );
+    }
+
     public static class LobbyStateRowMapper implements RowMapper<LobbyState> {
 
         public LobbyState mapRow(ResultSet rs, int rowNum) throws SQLException {

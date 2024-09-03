@@ -67,4 +67,13 @@ public class UserDaoImplIntegrationTests {
         assertThat(result.get()).isEqualTo(userA);
     }
 
+    @Test
+    public void testUserDeletion() {
+        User userA = TestDataUtil.createTestUserA();
+        underTest.create(userA);
+        underTest.delete(userA.getId());
+        Optional<User> result = underTest.findOne(userA.getId());
+        assertThat(result).isEmpty();
+    }
+
 }

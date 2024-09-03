@@ -55,6 +55,13 @@ public class UserDaoImpl implements UserDao {
         );
     }
 
+    @Override
+    public void delete(Long userId) {
+        jdbcTemplate.update(
+                "DELETE FROM users WHERE id = ?",
+                userId
+        );
+    }
 
     public static class UserRowMapper implements RowMapper<User> {
 

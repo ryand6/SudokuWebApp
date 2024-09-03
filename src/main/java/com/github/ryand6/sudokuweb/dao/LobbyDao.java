@@ -15,4 +15,6 @@ public interface LobbyDao {
 
     void update(Long lobbyId, Lobby lobby);
 
+    void delete(Long lobbyId);
+
 }

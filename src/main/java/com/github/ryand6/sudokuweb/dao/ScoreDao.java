@@ -15,4 +15,6 @@ public interface ScoreDao {
 
     void update(Long scoreId, Score score);
 
+    void delete(Long scoreId);
+
 }

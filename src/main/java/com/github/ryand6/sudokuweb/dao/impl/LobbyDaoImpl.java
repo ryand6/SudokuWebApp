@@ -57,6 +57,14 @@ public class LobbyDaoImpl implements LobbyDao {
         );
     }
 
+    @Override
+    public void delete(Long lobbyId) {
+        jdbcTemplate.update(
+                "DELETE FROM lobbies WHERE id = ?",
+                lobbyId
+        );
+    }
+
     public static class LobbyRowMapper implements RowMapper<Lobby> {
 
         public Lobby mapRow(ResultSet rs, int rowNum) throws SQLException {

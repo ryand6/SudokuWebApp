@@ -110,4 +110,20 @@ public class LobbyStateDaoImplIntegrationTests {
         assertThat(result.get()).isEqualTo(lobbyStateA);
     }
 
+    @Test
+    public void testLobbyStateDeletion() {
+        User user = TestDataUtil.createTestUserA();
+        userDao.create(user);
+        Lobby lobby = TestDataUtil.createTestLobbyA();
+        lobbyDao.create(lobby);
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        sudokuPuzzleDao.create(sudokuPuzzle);
+
+        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA();
+        underTest.create(lobbyStateA);
+        underTest.delete(lobbyStateA.getId());
+        Optional<LobbyState> result = underTest.findOne(lobbyStateA.getId());
+        assertThat(result).isEmpty();
+    }
+
 }

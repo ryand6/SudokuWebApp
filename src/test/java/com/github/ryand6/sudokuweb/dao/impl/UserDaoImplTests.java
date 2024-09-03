@@ -60,8 +60,18 @@ public class UserDaoImplTests {
         underTest.update(3L, user);
 
         verify(jdbcTemplate).update(
-                eq("UPDATE users SET id = ?, username = ?, password_hash WHERE id = ?"),
+                eq("UPDATE users SET id = ?, username = ?, password_hash = ? WHERE id = ?"),
                 eq(1L), eq("Henry"), eq("a4ceE42GHa"), eq(3L)
+        );
+    }
+
+    @Test
+    public void testDeleteUserSql() {
+        underTest.delete(1L);
+
+        verify(jdbcTemplate).update(
+                eq("DELETE FROM users WHERE id = ?"),
+                eq(1L)
         );
     }
 

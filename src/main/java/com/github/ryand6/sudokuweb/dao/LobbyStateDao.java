@@ -15,4 +15,6 @@ public interface LobbyStateDao {
 
     void update(Long stateId, LobbyState lobbyState);
 
+    void delete(Long stateId);
+
 }

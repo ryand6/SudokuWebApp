@@ -88,4 +88,15 @@ public class ScoreDaoImplIntegrationTests {
         assertThat(result.get()).isEqualTo(scoreA);
     }
 
+    @Test
+    public void testScoreDeletion() {
+        User user = TestDataUtil.createTestUserA();
+        userDao.create(user);
+        Score scoreA = TestDataUtil.createTestScoreA();
+        underTest.create(scoreA);
+        underTest.delete(scoreA.getId());
+        Optional<Score> result = underTest.findOne(scoreA.getId());
+        assertThat(result).isEmpty();
+    }
+
 }

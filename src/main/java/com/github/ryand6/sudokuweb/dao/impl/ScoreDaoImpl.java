@@ -59,6 +59,14 @@ public class ScoreDaoImpl implements ScoreDao {
         );
     }
 
+    @Override
+    public void delete(Long scoreId) {
+        jdbcTemplate.update(
+                "DELETE FROM scores WHERE id = ?",
+                scoreId
+        );
+    }
+
     public static class ScoreRowMapper implements RowMapper<Score> {
 
         public Score mapRow(ResultSet rs, int rowNum) throws SQLException {

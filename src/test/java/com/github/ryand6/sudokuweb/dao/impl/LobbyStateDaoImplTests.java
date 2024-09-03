@@ -70,4 +70,14 @@ public class LobbyStateDaoImplTests {
         );
     }
 
+    @Test
+    public void testDeleteLobbyStateSql() {
+        underTest.delete(1L);
+
+        verify(jdbcTemplate).update(
+                eq("DELETE FROM lobby_state WHERE id = ?"),
+                eq(1L)
+        );
+    }
+
 }

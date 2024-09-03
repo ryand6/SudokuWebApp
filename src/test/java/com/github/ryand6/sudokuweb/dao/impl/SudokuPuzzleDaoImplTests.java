@@ -72,4 +72,14 @@ public class SudokuPuzzleDaoImplTests {
         );
     }
 
+    @Test
+    public void testDeleteSudokuPuzzleSql() {
+        underTest.delete(1L);
+
+        verify(jdbcTemplate).update(
+                eq("DELETE FROM sudoku_puzzles WHERE id = ?"),
+                eq(1L)
+        );
+    }
+
 }
