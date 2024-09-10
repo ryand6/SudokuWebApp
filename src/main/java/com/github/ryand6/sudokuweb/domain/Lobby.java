@@ -32,7 +32,7 @@ public class Lobby {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
     private Set<LobbyState> lobbyStates;
 
 }

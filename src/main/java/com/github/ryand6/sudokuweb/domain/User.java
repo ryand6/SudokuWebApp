@@ -21,6 +21,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_seq")
+    @SequenceGenerator(name = "user_id_seq", sequenceName = "user_id_seq", allocationSize = 1)
     private Long id;
 
     @Column(name = "username", nullable = false)
@@ -36,7 +37,7 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
     private Score score;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<LobbyState> lobbyStates;
 
 }

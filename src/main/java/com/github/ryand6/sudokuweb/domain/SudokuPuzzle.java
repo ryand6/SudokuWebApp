@@ -16,6 +16,10 @@ import java.util.Set;
 @Table(name = "sudoku_puzzles")
 public class SudokuPuzzle {
 
+    public enum Difficulty {
+        EASY, MEDIUM, HARD, EXTREME
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "puzzle_id_seq")
     private Long id;
@@ -26,10 +30,11 @@ public class SudokuPuzzle {
     @Column(name = "solution", nullable = false)
     private String solution;
 
-    @Column(name = "difficulty", nullable = false, columnDefinition = "VARCHAR(50) CHECK (difficulty IN ('easy', 'medium', 'hard', 'extreme'))")
-    private String difficulty;
+    @Column(name = "difficulty", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "puzzle", orphanRemoval = true)
+    @OneToMany(mappedBy = "puzzle")
     private Set<LobbyState> lobbyStates;
 
 }
