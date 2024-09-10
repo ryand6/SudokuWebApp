@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.domain.Score;
 import com.github.ryand6.sudokuweb.domain.User;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -18,18 +19,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class UserDaoImplIntegrationTests {
+public class UserRepositoryIntegrationTests {
 
     private UserRepository underTest;
 
     @Autowired
-    public UserDaoImplIntegrationTests(UserRepository underTest) {
+    public UserRepositoryIntegrationTests(UserRepository underTest) {
         this.underTest = underTest;
     }
 
     @Test
     public void testUserCreationAndRecall() {
-        User user = TestDataUtil.createTestUserA();
+        // Create score object in the db because user relies on a score foreign key
+        // DB updates aren't persistent so this is required
+        Score score = TestDataUtil.createTestScoreA();
+        User user = TestDataUtil.createTestUserA(score);
         underTest.save(user);
         Optional<User> result = underTest.findById(user.getId());
         assertThat(result).isPresent();

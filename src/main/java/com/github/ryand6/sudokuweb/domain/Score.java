@@ -22,10 +22,6 @@ public class Score {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "score_id_seq")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
-
     @Column(name = "total_score", columnDefinition = "INTEGER DEFAULT 0")
     private Integer totalScore;
 

@@ -34,7 +34,8 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "score_id", nullable = false, unique = true)
     private Score score;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

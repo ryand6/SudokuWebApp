@@ -1,40 +1,42 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.annotation.DirtiesContext;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
-//
-//@SpringBootTest
-//@ExtendWith(SpringExtension.class)
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//public class ScoreDaoImplIntegrationTests {
+import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.domain.Score;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-//    private ScoreDaoImpl underTest;
-//    private UserDaoImpl userDao;
-//
-//    @Autowired
-//    public ScoreDaoImplIntegrationTests(ScoreDaoImpl underTest, UserDaoImpl supportTest) {
-//        this.underTest = underTest;
-//        this.userDao = supportTest;
-//    }
-//
-//    @Test
-//    public void testScoreCreationAndRecall() {
-//        // Create user object in the db because score relies on a user foreign key
-//        // DB updates aren't persistent so this is required
-//        User user = TestDataUtil.createTestUserA();
-//        userDao.create(user);
-//        // Checks for score creation and retrieval
-//        Score score = TestDataUtil.createTestScoreA();
-//        underTest.create(score);
-//        Optional<Score> result = underTest.findOne(score.getId());
-//        assertThat(result).isPresent();
-//        score.setCreatedAt(result.get().getCreatedAt());
-//        score.setUpdatedAt(result.get().getUpdatedAt());
-//        assertThat(result.get()).isEqualTo(score);
-//    }
-//
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class ScoreRepositoryIntegrationTests {
+
+    private ScoreRepository underTest;
+
+    @Autowired
+    public ScoreRepositoryIntegrationTests(ScoreRepository underTest) {
+        this.underTest = underTest;
+    }
+
+    @Test
+    public void testScoreCreationAndRecall() {
+        // Checks for score creation and retrieval
+        Score score = TestDataUtil.createTestScoreA();
+        underTest.save(score);
+        Optional<Score> result = underTest.findById(score.getId());
+        assertThat(result).isPresent();
+        score.setCreatedAt(result.get().getCreatedAt());
+        score.setUpdatedAt(result.get().getUpdatedAt());
+        assertThat(result.get()).isEqualTo(score);
+    }
+
 //    @Test
 //    public void testMultipleScoresCreatedAndRecalled() {
 //        User userA = TestDataUtil.createTestUserA();
@@ -88,5 +90,5 @@ package com.github.ryand6.sudokuweb.repositories;
 //        Optional<Score> result = underTest.findOne(scoreA.getId());
 //        assertThat(result).isEmpty();
 //    }
-//
-//}
+
+}
