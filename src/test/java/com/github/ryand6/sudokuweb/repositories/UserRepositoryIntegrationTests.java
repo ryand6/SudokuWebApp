@@ -3,7 +3,6 @@ package com.github.ryand6.sudokuweb.repositories;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Score;
 import com.github.ryand6.sudokuweb.domain.User;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Transactional
 public class UserRepositoryIntegrationTests {
 
-    private UserRepository underTest;
+    private final UserRepository underTest;
 
     @Autowired
     public UserRepositoryIntegrationTests(UserRepository underTest) {

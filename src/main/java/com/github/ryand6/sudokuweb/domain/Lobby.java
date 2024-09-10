@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -32,7 +31,7 @@ public class Lobby {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
-    private Set<LobbyState> lobbyStates;
+//    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
+//    private Set<LobbyState> lobbyStates;
 
 }

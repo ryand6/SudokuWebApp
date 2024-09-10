@@ -1,4 +1,9 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-public interface LobbyRepository {
+import com.github.ryand6.sudokuweb.domain.Lobby;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface LobbyRepository extends CrudRepository<Lobby, Long> {
 }

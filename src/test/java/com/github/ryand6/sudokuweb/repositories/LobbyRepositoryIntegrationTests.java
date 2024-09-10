@@ -1,33 +1,41 @@
 package com.github.ryand6.sudokuweb.repositories;
-//
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.annotation.DirtiesContext;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
-//
-//@SpringBootTest
-//@ExtendWith(SpringExtension.class)
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//public class LobbyDaoImplIntegrationTests {
 
-//    private LobbyDaoImpl underTest;
-//
-//    @Autowired
-//    public LobbyDaoImplIntegrationTests(LobbyDaoImpl underTest) {
-//        this.underTest = underTest;
-//    }
-//
-//    @Test
-//    public void testLobbyCreationAndRecall() {
-//        Lobby lobby = TestDataUtil.createTestLobbyA();
-//        underTest.create(lobby);
-//        Optional<Lobby> result = underTest.findOne(lobby.getId());
-//        assertThat(result).isPresent();
-//        // Set the createdAt field using the retrieved lobby as this field is set on the lobbies creation in the db
-//        lobby.setCreatedAt(result.get().getCreatedAt());
-//        assertThat(result.get()).isEqualTo(lobby);
-//    }
-//
+import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.domain.Lobby;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class LobbyRepositoryIntegrationTests {
+
+    private final LobbyRepository underTest;
+
+    @Autowired
+    public LobbyRepositoryIntegrationTests(LobbyRepository underTest) {
+        this.underTest = underTest;
+    }
+
+    @Test
+    public void testLobbyCreationAndRecall() {
+        Lobby lobby = TestDataUtil.createTestLobbyA();
+        underTest.save(lobby);
+        Optional<Lobby> result = underTest.findById(lobby.getId());
+        assertThat(result).isPresent();
+        // Set the createdAt field using the retrieved lobby as this field is set on the lobbies creation in the db
+        lobby.setCreatedAt(result.get().getCreatedAt());
+        assertThat(result.get()).isEqualTo(lobby);
+    }
+
 //    @Test
 //    public void testMultipleLobbiesCreatedAndRecalled() {
 //        Lobby lobbyA = TestDataUtil.createTestLobbyA();
@@ -66,5 +74,5 @@ package com.github.ryand6.sudokuweb.repositories;
 //        Optional<Lobby> result = underTest.findOne(lobbyA.getId());
 //        assertThat(result).isEmpty();
 //    }
-//
-//}
+
+}

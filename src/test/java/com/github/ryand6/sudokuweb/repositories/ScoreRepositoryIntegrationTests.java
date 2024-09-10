@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class ScoreRepositoryIntegrationTests {
 
-    private ScoreRepository underTest;
+    private final ScoreRepository underTest;
 
     @Autowired
     public ScoreRepositoryIntegrationTests(ScoreRepository underTest) {

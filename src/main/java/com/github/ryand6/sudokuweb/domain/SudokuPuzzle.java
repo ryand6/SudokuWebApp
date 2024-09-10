@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -34,7 +32,7 @@ public class SudokuPuzzle {
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "puzzle")
-    private Set<LobbyState> lobbyStates;
+//    @OneToMany(mappedBy = "puzzle")
+//    private Set<LobbyState> lobbyStates;
 
 }

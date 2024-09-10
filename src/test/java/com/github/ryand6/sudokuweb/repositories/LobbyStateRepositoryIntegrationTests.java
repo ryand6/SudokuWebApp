@@ -1,51 +1,47 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-//import com.github.ryand6.sudokuweb.dao.SudokuPuzzleDao;
-//import com.github.ryand6.sudokuweb.dao.impl.LobbyDaoImpl;
-//import com.github.ryand6.sudokuweb.dao.impl.LobbyStateDaoImpl;
-//import com.github.ryand6.sudokuweb.dao.impl.UserDaoImpl;
-//import org.junit.jupiter.api.extension.ExtendWith;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.test.annotation.DirtiesContext;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
-//
-//@SpringBootTest
-//@ExtendWith(SpringExtension.class)
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-//public class LobbyStateDaoImplIntegrationTests {
-//
-//    private LobbyStateDaoImpl underTest;
-//    private UserDaoImpl userDao;
-//    private LobbyDaoImpl lobbyDao;
-//    private SudokuPuzzleDao sudokuPuzzleDao;
+import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.domain.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-//    @Autowired
-//    public LobbyStateDaoImplIntegrationTests(LobbyStateDaoImpl underTest, UserDaoImpl supportTestUser, LobbyDaoImpl supportTestLobby, SudokuPuzzleDao supportTestPuzzle) {
-//        this.underTest = underTest;
-//        this.userDao = supportTestUser;
-//        this.lobbyDao = supportTestLobby;
-//        this.sudokuPuzzleDao = supportTestPuzzle;
-//    }
-//
-//    @Test
-//    public void testLobbyStateCreationAndRecall() {
-//        // Create support objects in the db because lobby state relies on user, lobby and puzzle foreign keys
-//        // DB updates aren't persistent so this is required
-//        User user = TestDataUtil.createTestUserA();
-//        userDao.create(user);
-//        Lobby lobby = TestDataUtil.createTestLobbyA();
-//        lobbyDao.create(lobby);
-//        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
-//        sudokuPuzzleDao.create(sudokuPuzzle);
-//        // Checks for score creation and retrieval
-//        LobbyState lobbyState = TestDataUtil.createTestLobbyStateA();
-//        underTest.create(lobbyState);
-//        Optional<LobbyState> result = underTest.findOne(lobbyState.getId());
-//        assertThat(result).isPresent();
-//        lobbyState.setLastActive(result.get().getLastActive());
-//        assertThat(result.get()).isEqualTo(lobbyState);
-//    }
-//
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+public class LobbyStateRepositoryIntegrationTests {
+
+    private final LobbyStateRepository underTest;
+
+    @Autowired
+    public LobbyStateRepositoryIntegrationTests(LobbyStateRepository underTest) {
+        this.underTest = underTest;
+    }
+
+    @Test
+    public void testLobbyStateCreationAndRecall() {
+        // Create support objects in the db because lobby state relies on user, lobby and puzzle foreign keys
+        // DB updates aren't persistent so this is required
+        Score score = TestDataUtil.createTestScoreA();
+        User user = TestDataUtil.createTestUserA(score);
+        Lobby lobby = TestDataUtil.createTestLobbyA();
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        // Checks for score creation and retrieval
+        LobbyState lobbyState = TestDataUtil.createTestLobbyStateA(lobby, user, sudokuPuzzle);
+        underTest.save(lobbyState);
+        Optional<LobbyState> result = underTest.findById(lobbyState.getId());
+        assertThat(result).isPresent();
+        lobbyState.setLastActive(result.get().getLastActive());
+        assertThat(result.get()).isEqualTo(lobbyState);
+    }
+
 //    @Test
 //    public void testMultipleLobbyStatesCreatedAndRecalled() {
 //        User userA = TestDataUtil.createTestUserA();
@@ -119,5 +115,5 @@ package com.github.ryand6.sudokuweb.repositories;
 //        Optional<LobbyState> result = underTest.findOne(lobbyStateA.getId());
 //        assertThat(result).isEmpty();
 //    }
-//
-//}
+
+}

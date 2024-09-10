@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 // Entity that maps to users db table
 @Data
@@ -38,7 +37,7 @@ public class User {
     @JoinColumn(name = "score_id", nullable = false, unique = true)
     private Score score;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<LobbyState> lobbyStates;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    private Set<LobbyState> lobbyStates;
 
 }
