@@ -37,7 +37,4 @@ public class User {
     @JoinColumn(name = "score_id", nullable = false, unique = true)
     private Score score;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private Set<LobbyState> lobbyStates;
-
 }

@@ -2,10 +2,12 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Score;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,6 +27,19 @@ public class ScoreRepositoryIntegrationTests {
         this.underTest = underTest;
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    public void setUp() {
+        // Correct SQL syntax for deleting all rows from the tables
+        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM scores");
+        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
+        jdbcTemplate.execute("DELETE FROM lobbies");
+    }
+
     @Test
     public void testScoreCreationAndRecall() {
         // Checks for score creation and retrieval
@@ -37,58 +52,43 @@ public class ScoreRepositoryIntegrationTests {
         assertThat(result.get()).isEqualTo(score);
     }
 
-//    @Test
-//    public void testMultipleScoresCreatedAndRecalled() {
-//        User userA = TestDataUtil.createTestUserA();
-//        userDao.create(userA);
-//        User userB = TestDataUtil.createTestUserB();
-//        userDao.create(userB);
-//        User userC = TestDataUtil.createTestUserC();
-//        userDao.create(userC);
-//
-//        Score scoreA = TestDataUtil.createTestScoreA();
-//        underTest.create(scoreA);
-//        Score scoreB = TestDataUtil.createTestScoreB();
-//        underTest.create(scoreB);
-//        Score scoreC = TestDataUtil.createTestScoreC();
-//        underTest.create(scoreC);
-//
-//        List<Score> result = underTest.find();
-//        scoreA.setCreatedAt(result.get(0).getCreatedAt());
-//        scoreA.setUpdatedAt(result.get(0).getUpdatedAt());
-//        scoreB.setCreatedAt(result.get(1).getCreatedAt());
-//        scoreB.setUpdatedAt(result.get(1).getUpdatedAt());
-//        scoreC.setCreatedAt(result.get(2).getCreatedAt());
-//        scoreC.setUpdatedAt(result.get(2).getUpdatedAt());
-//        assertThat(result)
-//                .hasSize(3)
-//                .containsExactly(scoreA, scoreB, scoreC);
-//    }
-//
-//    @Test
-//    public void testScoreFullUpdate() {
-//        User user = TestDataUtil.createTestUserA();
-//        userDao.create(user);
-//        Score scoreA = TestDataUtil.createTestScoreA();
-//        underTest.create(scoreA);
-//        scoreA.setTotalScore(1000);
-//        underTest.update(scoreA.getId(), scoreA);
-//        Optional<Score> result = underTest.findOne(scoreA.getId());
-//        assertThat(result).isPresent();
-//        scoreA.setCreatedAt(result.get().getCreatedAt());
-//        scoreA.setUpdatedAt(result.get().getUpdatedAt());
-//        assertThat(result.get()).isEqualTo(scoreA);
-//    }
-//
-//    @Test
-//    public void testScoreDeletion() {
-//        User user = TestDataUtil.createTestUserA();
-//        userDao.create(user);
-//        Score scoreA = TestDataUtil.createTestScoreA();
-//        underTest.create(scoreA);
-//        underTest.delete(scoreA.getId());
-//        Optional<Score> result = underTest.findOne(scoreA.getId());
-//        assertThat(result).isEmpty();
-//    }
+    @Test
+    public void testMultipleScoresCreatedAndRecalled() {
+        Score scoreA = TestDataUtil.createTestScoreA();
+        underTest.save(scoreA);
+        Score scoreB = TestDataUtil.createTestScoreB();
+        underTest.save(scoreB);
+        Score scoreC = TestDataUtil.createTestScoreC();
+        underTest.save(scoreC);
+
+        Iterable<Score> result = underTest.findAll();
+        assertThat(result)
+                .hasSize(3)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("createdAt")
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("updatedAt")
+                .containsExactly(scoreA, scoreB, scoreC);
+    }
+
+    @Test
+    public void testScoreFullUpdate() {
+        Score scoreA = TestDataUtil.createTestScoreA();
+        underTest.save(scoreA);
+        scoreA.setTotalScore(1000);
+        underTest.save(scoreA);
+        Optional<Score> result = underTest.findById(scoreA.getId());
+        assertThat(result).isPresent();
+        scoreA.setCreatedAt(result.get().getCreatedAt());
+        scoreA.setUpdatedAt(result.get().getUpdatedAt());
+        assertThat(result.get()).isEqualTo(scoreA);
+    }
+
+    @Test
+    public void testScoreDeletion() {
+        Score scoreA = TestDataUtil.createTestScoreA();
+        underTest.save(scoreA);
+        underTest.deleteById(scoreA.getId());
+        Optional<Score> result = underTest.findById(scoreA.getId());
+        assertThat(result).isEmpty();
+    }
 
 }

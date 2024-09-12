@@ -2,10 +2,12 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,6 +27,19 @@ public class LobbyStateRepositoryIntegrationTests {
         this.underTest = underTest;
     }
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @BeforeEach
+    public void setUp() {
+        // Correct SQL syntax for deleting all rows from the tables
+        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM scores");
+        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
+        jdbcTemplate.execute("DELETE FROM lobbies");
+    }
+
     @Test
     public void testLobbyStateCreationAndRecall() {
         // Create support objects in the db because lobby state relies on user, lobby and puzzle foreign keys
@@ -42,78 +57,62 @@ public class LobbyStateRepositoryIntegrationTests {
         assertThat(result.get()).isEqualTo(lobbyState);
     }
 
-//    @Test
-//    public void testMultipleLobbyStatesCreatedAndRecalled() {
-//        User userA = TestDataUtil.createTestUserA();
-//        userDao.create(userA);
-//        User userB = TestDataUtil.createTestUserB();
-//        userDao.create(userB);
-//        User userC = TestDataUtil.createTestUserC();
-//        userDao.create(userC);
-//
-//        Lobby lobbyA = TestDataUtil.createTestLobbyA();
-//        lobbyDao.create(lobbyA);
-//        Lobby lobbyB = TestDataUtil.createTestLobbyB();
-//        lobbyDao.create(lobbyB);
-//        Lobby lobbyC = TestDataUtil.createTestLobbyC();
-//        lobbyDao.create(lobbyC);
-//
-//        SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
-//        sudokuPuzzleDao.create(sudokuPuzzleA);
-//        SudokuPuzzle sudokuPuzzleB = TestDataUtil.createTestSudokuPuzzleB();
-//        sudokuPuzzleDao.create(sudokuPuzzleB);
-//        SudokuPuzzle sudokuPuzzleC = TestDataUtil.createTestSudokuPuzzleC();
-//        sudokuPuzzleDao.create(sudokuPuzzleC);
-//
-//        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA();
-//        underTest.create(lobbyStateA);
-//        LobbyState lobbyStateB = TestDataUtil.createTestLobbyStateB();
-//        underTest.create(lobbyStateB);
-//        LobbyState lobbyStateC = TestDataUtil.createTestLobbyStateC();
-//        underTest.create(lobbyStateC);
-//
-//        List<LobbyState> result = underTest.find();
-//        lobbyStateA.setLastActive(result.get(0).getLastActive());
-//        lobbyStateB.setLastActive(result.get(1).getLastActive());
-//        lobbyStateC.setLastActive(result.get(2).getLastActive());
-//        assertThat(result)
-//                .hasSize(3)
-//                .containsExactly(lobbyStateA, lobbyStateB, lobbyStateC);
-//    }
-//
-//    @Test
-//    public void testScoreFullUpdate() {
-//        User user = TestDataUtil.createTestUserA();
-//        userDao.create(user);
-//        Lobby lobby = TestDataUtil.createTestLobbyA();
-//        lobbyDao.create(lobby);
-//        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
-//        sudokuPuzzleDao.create(sudokuPuzzle);
-//
-//        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA();
-//        underTest.create(lobbyStateA);
-//        lobbyStateA.setScore(1000);
-//        underTest.update(lobbyStateA.getId(), lobbyStateA);
-//        Optional<LobbyState> result = underTest.findOne(lobbyStateA.getId());
-//        assertThat(result).isPresent();
-//        lobbyStateA.setLastActive(result.get().getLastActive());
-//        assertThat(result.get()).isEqualTo(lobbyStateA);
-//    }
-//
-//    @Test
-//    public void testLobbyStateDeletion() {
-//        User user = TestDataUtil.createTestUserA();
-//        userDao.create(user);
-//        Lobby lobby = TestDataUtil.createTestLobbyA();
-//        lobbyDao.create(lobby);
-//        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
-//        sudokuPuzzleDao.create(sudokuPuzzle);
-//
-//        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA();
-//        underTest.create(lobbyStateA);
-//        underTest.delete(lobbyStateA.getId());
-//        Optional<LobbyState> result = underTest.findOne(lobbyStateA.getId());
-//        assertThat(result).isEmpty();
-//    }
+    @Test
+    public void testMultipleLobbyStatesCreatedAndRecalled() {
+        Score scoreA = TestDataUtil.createTestScoreA();
+        Score scoreB = TestDataUtil.createTestScoreB();
+        Score scoreC = TestDataUtil.createTestScoreC();
+        User userA = TestDataUtil.createTestUserA(scoreA);
+        User userB = TestDataUtil.createTestUserB(scoreB);
+        User userC = TestDataUtil.createTestUserC(scoreC);
+        Lobby lobbyA = TestDataUtil.createTestLobbyA();
+        Lobby lobbyB = TestDataUtil.createTestLobbyB();
+        Lobby lobbyC = TestDataUtil.createTestLobbyC();
+        SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
+        SudokuPuzzle sudokuPuzzleB = TestDataUtil.createTestSudokuPuzzleB();
+        SudokuPuzzle sudokuPuzzleC = TestDataUtil.createTestSudokuPuzzleC();
+
+        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA(lobbyA, userA, sudokuPuzzleA);
+        underTest.save(lobbyStateA);
+        LobbyState lobbyStateB = TestDataUtil.createTestLobbyStateB(lobbyB, userB, sudokuPuzzleB);
+        underTest.save(lobbyStateB);
+        LobbyState lobbyStateC = TestDataUtil.createTestLobbyStateC(lobbyC, userC, sudokuPuzzleC);
+        underTest.save(lobbyStateC);
+
+        Iterable<LobbyState> result = underTest.findAll();
+        assertThat(result)
+                .hasSize(3)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("lastActive")
+                .containsExactly(lobbyStateA, lobbyStateB, lobbyStateC);
+    }
+
+    @Test
+    public void testScoreFullUpdate() {
+        Score score = TestDataUtil.createTestScoreA();
+        User user = TestDataUtil.createTestUserA(score);
+        Lobby lobby = TestDataUtil.createTestLobbyA();
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA(lobby, user, sudokuPuzzle);
+        underTest.save(lobbyStateA);
+        lobbyStateA.setScore(1000);
+        underTest.save(lobbyStateA);
+        Optional<LobbyState> result = underTest.findById(lobbyStateA.getId());
+        assertThat(result).isPresent();
+        lobbyStateA.setLastActive(result.get().getLastActive());
+        assertThat(result.get()).isEqualTo(lobbyStateA);
+    }
+
+    @Test
+    public void testLobbyStateDeletion() {
+        Score score = TestDataUtil.createTestScoreA();
+        User user = TestDataUtil.createTestUserA(score);
+        Lobby lobby = TestDataUtil.createTestLobbyA();
+        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA(lobby, user, sudokuPuzzle);
+        underTest.save(lobbyStateA);
+        underTest.deleteById(lobbyStateA.getId());
+        Optional<LobbyState> result = underTest.findById(lobbyStateA.getId());
+        assertThat(result).isEmpty();
+    }
 
 }
