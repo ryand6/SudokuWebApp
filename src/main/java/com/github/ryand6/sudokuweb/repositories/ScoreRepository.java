@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScoreRepository extends CrudRepository<Score, Long> {
+
+    Iterable<Score> totalScoreLessThan(int totalScore);
+
 }

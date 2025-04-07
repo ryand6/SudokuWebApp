@@ -91,4 +91,17 @@ public class ScoreRepositoryIntegrationTests {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    public void testGetScoreWithTotalScoreLessThan(){
+        Score testScoreA = TestDataUtil.createTestScoreA();
+        underTest.save(testScoreA);
+        Score testScoreB = TestDataUtil.createTestScoreB();
+        underTest.save(testScoreB);
+        Score testScoreC = TestDataUtil.createTestScoreC();
+        underTest.save(testScoreC);
+
+        Iterable<Score> results = underTest.totalScoreLessThan(151);
+        assertThat(results).containsExactly(testScoreA, testScoreC);
+    }
+
 }
