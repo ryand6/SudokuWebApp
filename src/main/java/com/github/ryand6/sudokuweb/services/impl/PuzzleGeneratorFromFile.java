@@ -18,8 +18,10 @@ public class PuzzleGeneratorFromFile implements PuzzleGenerator {
     public List<String> generatePuzzle(String difficulty) {
         List<String> puzzleDetails = new ArrayList<>();
         List<String> lines = new ArrayList<>();
+        // Get list of problems with corresponding difficulty rating
         String location = "data/problemsets/" + difficulty + "sudoku.tsv";
         Resource resource = new ClassPathResource(location);
+        // Load problems within file into an array
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -32,10 +34,13 @@ public class PuzzleGeneratorFromFile implements PuzzleGenerator {
         if (lines.isEmpty()) {
             throw new IllegalStateException("No Sudoku problems loaded.");
         }
+        // Randomly select problem from array
         int index = new Random().nextInt(lines.size());
         String randomProblem = lines.get(index);
         String[] parts = randomProblem.split("\t");
+        // First part is puzzle
         puzzleDetails.add(parts[0]);
+        // Second part is solution
         puzzleDetails.add(parts[1]);
         return puzzleDetails;
     }
