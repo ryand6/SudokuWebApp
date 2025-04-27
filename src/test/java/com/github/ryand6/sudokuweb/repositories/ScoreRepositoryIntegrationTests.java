@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Score;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ public class ScoreRepositoryIntegrationTests {
     @BeforeEach
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
+        jdbcTemplate.execute("DELETE FROM lobby_users");
         jdbcTemplate.execute("DELETE FROM lobby_state");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
@@ -41,6 +43,7 @@ public class ScoreRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testScoreCreationAndRecall() {
         // Checks for score creation and retrieval
         Score score = TestDataUtil.createTestScoreA();
@@ -53,6 +56,7 @@ public class ScoreRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testMultipleScoresCreatedAndRecalled() {
         Score scoreA = TestDataUtil.createTestScoreA();
         underTest.save(scoreA);
@@ -70,6 +74,7 @@ public class ScoreRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testScoreFullUpdate() {
         Score scoreA = TestDataUtil.createTestScoreA();
         underTest.save(scoreA);
@@ -83,6 +88,7 @@ public class ScoreRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testScoreDeletion() {
         Score scoreA = TestDataUtil.createTestScoreA();
         underTest.save(scoreA);
@@ -92,6 +98,7 @@ public class ScoreRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testGetScoreWithTotalScoreLessThan(){
         Score testScoreA = TestDataUtil.createTestScoreA();
         underTest.save(testScoreA);

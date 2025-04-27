@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzle;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ public class SudokuPuzzleRepositoryIntegrationTests {
     @BeforeEach
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
+        jdbcTemplate.execute("DELETE FROM lobby_users");
         jdbcTemplate.execute("DELETE FROM lobby_state");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
@@ -41,6 +43,7 @@ public class SudokuPuzzleRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testSudokuPuzzleCreationAndRecall() {
         SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
         underTest.save(sudokuPuzzle);
@@ -50,6 +53,7 @@ public class SudokuPuzzleRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testMultipleSudokuPuzzlesCreatedAndRecalled() {
         SudokuPuzzle puzzleA = TestDataUtil.createTestSudokuPuzzleA();
         underTest.save(puzzleA);
@@ -65,6 +69,7 @@ public class SudokuPuzzleRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testSudokuPuzzleFullUpdate() {
         SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
         underTest.save(sudokuPuzzleA);
@@ -76,6 +81,7 @@ public class SudokuPuzzleRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testSudokuPuzzleDeletion() {
         SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
         underTest.save(sudokuPuzzleA);

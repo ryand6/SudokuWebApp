@@ -33,6 +33,9 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "is_online")
+    private Boolean isOnline;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "score_id", nullable = false, unique = true)
     private Score score;

@@ -2,6 +2,9 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Lobby;
+import com.github.ryand6.sudokuweb.domain.Score;
+import com.github.ryand6.sudokuweb.domain.User;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +36,7 @@ public class LobbyRepositoryIntegrationTests {
     @BeforeEach
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
+        jdbcTemplate.execute("DELETE FROM lobby_users");
         jdbcTemplate.execute("DELETE FROM lobby_state");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
@@ -41,23 +45,34 @@ public class LobbyRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testLobbyCreationAndRecall() {
-        Lobby lobby = TestDataUtil.createTestLobbyA();
+        Score scoreA = TestDataUtil.createTestScoreA();
+        User userA = TestDataUtil.createTestUserA(scoreA);
+        Lobby lobby = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobby);
         Optional<Lobby> result = underTest.findById(lobby.getId());
         assertThat(result).isPresent();
+
         // Set the createdAt field using the retrieved lobby as this field is set on the lobbies creation in the db
         lobby.setCreatedAt(result.get().getCreatedAt());
         assertThat(result.get()).isEqualTo(lobby);
     }
 
     @Test
+    @Transactional
     public void testMultipleLobbiesCreatedAndRecalled() {
-        Lobby lobbyA = TestDataUtil.createTestLobbyA();
+        Score scoreA = TestDataUtil.createTestScoreA();
+        Score scoreB = TestDataUtil.createTestScoreB();
+        Score scoreC = TestDataUtil.createTestScoreC();
+        User userA = TestDataUtil.createTestUserA(scoreA);
+        User userB = TestDataUtil.createTestUserB(scoreB);
+        User userC = TestDataUtil.createTestUserC(scoreC);
+        Lobby lobbyA = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobbyA);
-        Lobby lobbyB = TestDataUtil.createTestLobbyB();
+        Lobby lobbyB = TestDataUtil.createTestLobbyB(userA, userB);
         underTest.save(lobbyB);
-        Lobby lobbyC = TestDataUtil.createTestLobbyC();
+        Lobby lobbyC = TestDataUtil.createTestLobbyC(userA, userB, userC);
         underTest.save(lobbyC);
 
         Iterable<Lobby> result = underTest.findAll();
@@ -68,8 +83,11 @@ public class LobbyRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testLobbyFullUpdate() {
-        Lobby lobbyA = TestDataUtil.createTestLobbyA();
+        Score scoreA = TestDataUtil.createTestScoreA();
+        User userA = TestDataUtil.createTestUserA(scoreA);
+        Lobby lobbyA = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobbyA);
         lobbyA.setLobbyName("UPDATED");
         underTest.save(lobbyA);
@@ -80,8 +98,11 @@ public class LobbyRepositoryIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void testSudokuPuzzleDeletion() {
-        Lobby lobbyA = TestDataUtil.createTestLobbyA();
+        Score scoreA = TestDataUtil.createTestScoreA();
+        User userA = TestDataUtil.createTestUserA(scoreA);
+        Lobby lobbyA = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobbyA);
         underTest.deleteById(lobbyA.getId());
         Optional<Lobby> result = underTest.findById(lobbyA.getId());

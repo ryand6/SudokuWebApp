@@ -2,6 +2,8 @@ package com.github.ryand6.sudokuweb;
 
 import com.github.ryand6.sudokuweb.domain.*;
 
+import java.util.HashSet;
+
 public final class TestDataUtil {
 
     private TestDataUtil() {
@@ -77,24 +79,39 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static Lobby createTestLobbyA() {
+    public static Lobby createTestLobbyA(User user) {
+        HashSet<User> set = new HashSet<>();
+        set.add(user);
         return Lobby.builder().
                 lobbyName("Guru Lobby").
                 isActive(true).
+                isPublic(true).
+                users(set).
                 build();
     }
 
-    public static Lobby createTestLobbyB() {
+    public static Lobby createTestLobbyB(User userA, User userB) {
+        HashSet<User> set = new HashSet<>();
+        set.add(userA);
+        set.add(userB);
         return Lobby.builder().
                 lobbyName("SudokuSquad").
                 isActive(true).
+                isPublic(false).
+                users(set).
                 build();
     }
 
-    public static Lobby createTestLobbyC() {
+    public static Lobby createTestLobbyC(User userA, User userB, User userC) {
+        HashSet<User> set = new HashSet<>();
+        set.add(userA);
+        set.add(userB);
+        set.add(userC);
         return Lobby.builder().
                 lobbyName("Active").
                 isActive(false).
+                isPublic(false).
+                users(set).
                 build();
     }
 

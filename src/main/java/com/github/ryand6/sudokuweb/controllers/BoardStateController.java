@@ -21,7 +21,8 @@ public class BoardStateController {
     public List<String> generateSudoku(@RequestParam String difficulty) {
         // Call static method to generate puzzle as a nested int array based on the
         // user's difficulty setting
-        return puzzleGenerator.generatePuzzle(difficulty);
+        List<String> sudokuPuzzle = puzzleGenerator.generatePuzzle(difficulty);
+        return sudokuPuzzle;
     }
 
 }
