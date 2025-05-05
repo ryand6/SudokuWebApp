@@ -37,7 +37,7 @@ public class Lobby {
     @Column(name = "is_public")
     private Boolean isPublic;
 
-    // All active users in the lobby (max 4 players)
+    // All active users in the lobby (max 4 players) - updates when a user joins or leaves/disconnects from site
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "lobby_users", // Name of the join table
@@ -46,7 +46,7 @@ public class Lobby {
     )
     private Set<User> users;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LobbyState> lobbyStates;
 
 }

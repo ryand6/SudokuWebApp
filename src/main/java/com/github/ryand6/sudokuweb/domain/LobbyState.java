@@ -21,15 +21,15 @@ public class LobbyState {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_id_seq")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "lobby_id", nullable = false)
     private Lobby lobby;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "puzzle_id", nullable = false)
     private SudokuPuzzle puzzle;
 

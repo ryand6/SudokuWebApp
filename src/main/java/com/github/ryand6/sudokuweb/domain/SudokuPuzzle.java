@@ -34,7 +34,7 @@ public class SudokuPuzzle {
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "puzzle")
+    @OneToMany(mappedBy = "puzzle", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LobbyState> lobbyStates;
 
 }

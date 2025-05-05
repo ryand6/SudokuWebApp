@@ -15,6 +15,10 @@ import java.util.Random;
 @Service
 public class PuzzleGeneratorFromFile implements PuzzleGenerator {
 
+    /* Randomly select problem and its solution from a file with the corresponding
+    difficulty type. File name in format: <difficulty>sudoku.tsv, file in format:
+    col1 = string representation of the problem as a nested int array, col2 = string
+    representation of the solution to the problem as a nested int array */
     public List<String> generatePuzzle(String difficulty) {
         List<String> puzzleDetails = new ArrayList<>();
         List<String> lines = new ArrayList<>();
