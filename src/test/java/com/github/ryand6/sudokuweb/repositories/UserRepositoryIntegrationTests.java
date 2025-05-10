@@ -3,7 +3,6 @@ package com.github.ryand6.sudokuweb.repositories;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Score;
 import com.github.ryand6.sudokuweb.domain.User;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +43,6 @@ public class UserRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testUserCreationAndRecall() {
         // Create score object in the db because user relies on a score foreign key
         // DB updates aren't persistent so this is required
@@ -59,7 +57,6 @@ public class UserRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testMultipleUsersCreatedAndRecalled() {
         Score scoreA = TestDataUtil.createTestScoreA();
         Score scoreB = TestDataUtil.createTestScoreB();
@@ -79,7 +76,6 @@ public class UserRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testUserFullUpdate() {
         Score scoreA = TestDataUtil.createTestScoreA();
         User userA = TestDataUtil.createTestUserA(scoreA);
@@ -93,7 +89,6 @@ public class UserRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testUserDeletion() {
         Score scoreA = TestDataUtil.createTestScoreA();
         User userA = TestDataUtil.createTestUserA(scoreA);

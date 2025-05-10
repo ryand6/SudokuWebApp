@@ -1,15 +1,13 @@
 package com.github.ryand6.sudokuweb.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -42,5 +40,20 @@ public class LobbyState {
     @UpdateTimestamp
     @Column(name = "last_active")
     private LocalDateTime lastActive;
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LobbyState lobbyState = (LobbyState) o;
+        return id != null && id.equals(lobbyState.id);
+    }
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }

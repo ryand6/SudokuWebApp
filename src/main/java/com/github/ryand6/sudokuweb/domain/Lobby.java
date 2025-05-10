@@ -1,16 +1,14 @@
 package com.github.ryand6.sudokuweb.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -38,7 +36,8 @@ public class Lobby {
     private Boolean isPublic;
 
     // All active users in the lobby (max 4 players) - updates when a user joins or leaves/disconnects from site
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    // FetchType.EAGER as only up to 4x users are linked at any one time
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "lobby_users", // Name of the join table
             joinColumns = @JoinColumn(name = "lobby_id"), // Foreign key to the `lobby` entity
@@ -46,7 +45,22 @@ public class Lobby {
     )
     private Set<User> users;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
     private Set<LobbyState> lobbyStates;
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Lobby lobby = (Lobby) o;
+        return id != null && id.equals(lobby.id);
+    }
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }

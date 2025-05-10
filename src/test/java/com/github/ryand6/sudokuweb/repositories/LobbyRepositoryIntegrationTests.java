@@ -4,7 +4,6 @@ import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.Lobby;
 import com.github.ryand6.sudokuweb.domain.Score;
 import com.github.ryand6.sudokuweb.domain.User;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,14 +24,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LobbyRepositoryIntegrationTests {
 
     private final LobbyRepository underTest;
+    private final UserRepository userRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public LobbyRepositoryIntegrationTests(LobbyRepository underTest) {
+    public LobbyRepositoryIntegrationTests(
+            LobbyRepository underTest,
+            UserRepository userRepository,
+            JdbcTemplate jdbcTemplate
+        ) {
         this.underTest = underTest;
+        this.userRepository = userRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     public void setUp() {
@@ -45,10 +50,10 @@ public class LobbyRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testLobbyCreationAndRecall() {
         Score scoreA = TestDataUtil.createTestScoreA();
         User userA = TestDataUtil.createTestUserA(scoreA);
+        userRepository.save(userA);
         Lobby lobby = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobby);
         Optional<Lobby> result = underTest.findById(lobby.getId());
@@ -60,7 +65,6 @@ public class LobbyRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testMultipleLobbiesCreatedAndRecalled() {
         Score scoreA = TestDataUtil.createTestScoreA();
         Score scoreB = TestDataUtil.createTestScoreB();
@@ -68,6 +72,9 @@ public class LobbyRepositoryIntegrationTests {
         User userA = TestDataUtil.createTestUserA(scoreA);
         User userB = TestDataUtil.createTestUserB(scoreB);
         User userC = TestDataUtil.createTestUserC(scoreC);
+        userRepository.save(userA);
+        userRepository.save(userB);
+        userRepository.save(userC);
         Lobby lobbyA = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobbyA);
         Lobby lobbyB = TestDataUtil.createTestLobbyB(userA, userB);
@@ -78,15 +85,17 @@ public class LobbyRepositoryIntegrationTests {
         Iterable<Lobby> result = underTest.findAll();
         assertThat(result)
                 .hasSize(3)
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("createdAt")
-                .containsExactly(lobbyA, lobbyB, lobbyC);
+                .usingRecursiveComparison()
+                // Avoid lazy loaded fields when comparing
+                .ignoringFields("lobbyStates")
+                .isEqualTo(List.of(lobbyA, lobbyB, lobbyC));
     }
 
     @Test
-    @Transactional
     public void testLobbyFullUpdate() {
         Score scoreA = TestDataUtil.createTestScoreA();
         User userA = TestDataUtil.createTestUserA(scoreA);
+        userRepository.save(userA);
         Lobby lobbyA = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobbyA);
         lobbyA.setLobbyName("UPDATED");
@@ -98,10 +107,10 @@ public class LobbyRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
-    public void testSudokuPuzzleDeletion() {
+    public void testLobbyDeletion() {
         Score scoreA = TestDataUtil.createTestScoreA();
         User userA = TestDataUtil.createTestUserA(scoreA);
+        userRepository.save(userA);
         Lobby lobbyA = TestDataUtil.createTestLobbyA(userA);
         underTest.save(lobbyA);
         underTest.deleteById(lobbyA.getId());

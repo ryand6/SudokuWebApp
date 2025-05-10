@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -22,19 +23,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LobbyStateRepositoryIntegrationTests {
 
     private final LobbyStateRepository underTest;
+    private final UserRepository userRepository;
+    private final SudokuPuzzleRepository sudokuPuzzleRepository;
+    private final LobbyRepository lobbyRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public LobbyStateRepositoryIntegrationTests(LobbyStateRepository underTest) {
+    public LobbyStateRepositoryIntegrationTests(
+            LobbyStateRepository underTest,
+            UserRepository userRepository,
+            SudokuPuzzleRepository sudokuPuzzleRepository,
+            LobbyRepository lobbyRepository,
+            JdbcTemplate jdbcTemplate) {
         this.underTest = underTest;
+        this.userRepository = userRepository;
+        this.sudokuPuzzleRepository = sudokuPuzzleRepository;
+        this.lobbyRepository = lobbyRepository;
+        this.jdbcTemplate = jdbcTemplate;
     }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ScoreRepository scoreRepository;
 
     @BeforeEach
     public void setUp() {
@@ -48,14 +54,16 @@ public class LobbyStateRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testLobbyStateCreationAndRecall() {
         // Create support objects in the db because lobby state relies on user, lobby and puzzle foreign keys
-        // DB updates aren't persistent so this is required
         Score score = TestDataUtil.createTestScoreA();
         User user = TestDataUtil.createTestUserA(score);
+        // Persist transient instances - LobbyState does not persist other entities, it only references them
+        userRepository.save(user);
         Lobby lobby = TestDataUtil.createTestLobbyA(user);
+        lobbyRepository.save(lobby);
         SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        sudokuPuzzleRepository.save(sudokuPuzzle);
         // Checks for score creation and retrieval
         LobbyState lobbyState = TestDataUtil.createTestLobbyStateA(lobby, user, sudokuPuzzle);
         underTest.save(lobbyState);
@@ -66,7 +74,6 @@ public class LobbyStateRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testMultipleLobbyStatesCreatedAndRecalled() {
         Score scoreA = TestDataUtil.createTestScoreA();
         Score scoreB = TestDataUtil.createTestScoreB();
@@ -74,13 +81,21 @@ public class LobbyStateRepositoryIntegrationTests {
         User userA = TestDataUtil.createTestUserA(scoreA);
         User userB = TestDataUtil.createTestUserB(scoreB);
         User userC = TestDataUtil.createTestUserC(scoreC);
+        userRepository.save(userA);
+        userRepository.save(userB);
+        userRepository.save(userC);
         Lobby lobbyA = TestDataUtil.createTestLobbyA(userA);
         Lobby lobbyB = TestDataUtil.createTestLobbyB(userA, userB);
         Lobby lobbyC = TestDataUtil.createTestLobbyC(userA, userB, userC);
+        lobbyRepository.save(lobbyA);
+        lobbyRepository.save(lobbyB);
+        lobbyRepository.save(lobbyC);
         SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
         SudokuPuzzle sudokuPuzzleB = TestDataUtil.createTestSudokuPuzzleB();
         SudokuPuzzle sudokuPuzzleC = TestDataUtil.createTestSudokuPuzzleC();
-
+        sudokuPuzzleRepository.save(sudokuPuzzleA);
+        sudokuPuzzleRepository.save(sudokuPuzzleB);
+        sudokuPuzzleRepository.save(sudokuPuzzleC);
         LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA(lobbyA, userA, sudokuPuzzleA);
         underTest.save(lobbyStateA);
         LobbyState lobbyStateB = TestDataUtil.createTestLobbyStateB(lobbyB, userB, sudokuPuzzleB);
@@ -91,17 +106,24 @@ public class LobbyStateRepositoryIntegrationTests {
         Iterable<LobbyState> result = underTest.findAll();
         assertThat(result)
                 .hasSize(3)
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("lastActive")
-                .containsExactly(lobbyStateA, lobbyStateB, lobbyStateC);
+                .usingRecursiveComparison()
+                // Avoid lazy loaded fields when comparing
+                .ignoringFields(
+                        "lastActive",
+                        "puzzle.lobbyStates",
+                        "lobby.lobbyStates")
+                .isEqualTo(List.of(lobbyStateA, lobbyStateB, lobbyStateC));
     }
 
     @Test
-    @Transactional
     public void testScoreFullUpdate() {
         Score score = TestDataUtil.createTestScoreA();
         User user = TestDataUtil.createTestUserA(score);
+        userRepository.save(user);
         Lobby lobby = TestDataUtil.createTestLobbyA(user);
+        lobbyRepository.save(lobby);
         SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        sudokuPuzzleRepository.save(sudokuPuzzle);
         LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA(lobby, user, sudokuPuzzle);
         underTest.save(lobbyStateA);
         lobbyStateA.setScore(1000);
@@ -112,13 +134,17 @@ public class LobbyStateRepositoryIntegrationTests {
         assertThat(result.get()).isEqualTo(lobbyStateA);
     }
 
+    // Made transactional so that deletion will be flushed to DB within session
     @Test
     @Transactional
     public void testLobbyStateDeletion() {
         Score score = TestDataUtil.createTestScoreA();
         User user = TestDataUtil.createTestUserA(score);
+        userRepository.save(user);
         Lobby lobby = TestDataUtil.createTestLobbyA(user);
+        lobbyRepository.save(lobby);
         SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
+        sudokuPuzzleRepository.save(sudokuPuzzle);
         LobbyState lobbyStateA = TestDataUtil.createTestLobbyStateA(lobby, user, sudokuPuzzle);
         underTest.save(lobbyStateA);
         underTest.deleteById(lobbyStateA.getId());

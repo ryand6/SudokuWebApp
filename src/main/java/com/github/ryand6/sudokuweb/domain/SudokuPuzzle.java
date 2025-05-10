@@ -1,14 +1,12 @@
 package com.github.ryand6.sudokuweb.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -34,7 +32,22 @@ public class SudokuPuzzle {
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "puzzle", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "puzzle", cascade = CascadeType.ALL)
     private Set<LobbyState> lobbyStates;
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SudokuPuzzle sudokuPuzzle = (SudokuPuzzle) o;
+        return id != null && id.equals(sudokuPuzzle.id);
+    }
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }
