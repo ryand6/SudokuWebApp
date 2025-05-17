@@ -1,12 +1,12 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-import com.github.ryand6.sudokuweb.domain.Score;
+import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ScoreRepository extends JpaRepository<Score, Long> {
+public interface ScoreRepository extends JpaRepository<ScoreEntity, Long> {
 
-    Iterable<Score> totalScoreLessThan(int totalScore);
+    Iterable<ScoreEntity> totalScoreLessThan(int totalScore);
 
 }

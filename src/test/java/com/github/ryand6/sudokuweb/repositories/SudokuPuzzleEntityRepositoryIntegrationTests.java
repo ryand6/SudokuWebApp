@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
-import com.github.ryand6.sudokuweb.domain.SudokuPuzzle;
+import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,12 +18,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class SudokuPuzzleRepositoryIntegrationTests {
+public class SudokuPuzzleEntityRepositoryIntegrationTests {
 
     private final SudokuPuzzleRepository underTest;
 
     @Autowired
-    public SudokuPuzzleRepositoryIntegrationTests(SudokuPuzzleRepository underTest) {
+    public SudokuPuzzleEntityRepositoryIntegrationTests(SudokuPuzzleRepository underTest) {
         this.underTest = underTest;
     }
 
@@ -43,23 +43,23 @@ public class SudokuPuzzleRepositoryIntegrationTests {
 
     @Test
     public void testSudokuPuzzleCreationAndRecall() {
-        SudokuPuzzle sudokuPuzzle = TestDataUtil.createTestSudokuPuzzleA();
-        underTest.save(sudokuPuzzle);
-        Optional<SudokuPuzzle> result = underTest.findById(sudokuPuzzle.getId());
+        SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
+        underTest.save(sudokuPuzzleEntity);
+        Optional<SudokuPuzzleEntity> result = underTest.findById(sudokuPuzzleEntity.getId());
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(sudokuPuzzle);
+        assertThat(result.get()).isEqualTo(sudokuPuzzleEntity);
     }
 
     @Test
     public void testMultipleSudokuPuzzlesCreatedAndRecalled() {
-        SudokuPuzzle puzzleA = TestDataUtil.createTestSudokuPuzzleA();
+        SudokuPuzzleEntity puzzleA = TestDataUtil.createTestSudokuPuzzleA();
         underTest.save(puzzleA);
-        SudokuPuzzle puzzleB = TestDataUtil.createTestSudokuPuzzleB();
+        SudokuPuzzleEntity puzzleB = TestDataUtil.createTestSudokuPuzzleB();
         underTest.save(puzzleB);
-        SudokuPuzzle puzzleC = TestDataUtil.createTestSudokuPuzzleC();
+        SudokuPuzzleEntity puzzleC = TestDataUtil.createTestSudokuPuzzleC();
         underTest.save(puzzleC);
 
-        Iterable<SudokuPuzzle> result = underTest.findAll();
+        Iterable<SudokuPuzzleEntity> result = underTest.findAll();
         assertThat(result)
                 .hasSize(3)
                 .containsExactly(puzzleA, puzzleB, puzzleC);
@@ -67,21 +67,21 @@ public class SudokuPuzzleRepositoryIntegrationTests {
 
     @Test
     public void testSudokuPuzzleFullUpdate() {
-        SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
-        underTest.save(sudokuPuzzleA);
-        sudokuPuzzleA.setDifficulty(SudokuPuzzle.Difficulty.MEDIUM);
-        underTest.save(sudokuPuzzleA);
-        Optional<SudokuPuzzle> result = underTest.findById(sudokuPuzzleA.getId());
+        SudokuPuzzleEntity sudokuPuzzleEntityA = TestDataUtil.createTestSudokuPuzzleA();
+        underTest.save(sudokuPuzzleEntityA);
+        sudokuPuzzleEntityA.setDifficulty(SudokuPuzzleEntity.Difficulty.MEDIUM);
+        underTest.save(sudokuPuzzleEntityA);
+        Optional<SudokuPuzzleEntity> result = underTest.findById(sudokuPuzzleEntityA.getId());
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(sudokuPuzzleA);
+        assertThat(result.get()).isEqualTo(sudokuPuzzleEntityA);
     }
 
     @Test
     public void testSudokuPuzzleDeletion() {
-        SudokuPuzzle sudokuPuzzleA = TestDataUtil.createTestSudokuPuzzleA();
-        underTest.save(sudokuPuzzleA);
-        underTest.deleteById(sudokuPuzzleA.getId());
-        Optional<SudokuPuzzle> result = underTest.findById(sudokuPuzzleA.getId());
+        SudokuPuzzleEntity sudokuPuzzleEntityA = TestDataUtil.createTestSudokuPuzzleA();
+        underTest.save(sudokuPuzzleEntityA);
+        underTest.deleteById(sudokuPuzzleEntityA.getId());
+        Optional<SudokuPuzzleEntity> result = underTest.findById(sudokuPuzzleEntityA.getId());
         assertThat(result).isEmpty();
     }
 

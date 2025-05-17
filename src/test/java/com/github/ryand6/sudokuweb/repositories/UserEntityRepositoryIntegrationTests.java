@@ -1,8 +1,8 @@
 package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
-import com.github.ryand6.sudokuweb.domain.Score;
-import com.github.ryand6.sudokuweb.domain.User;
+import com.github.ryand6.sudokuweb.domain.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,12 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class UserRepositoryIntegrationTests {
+public class UserEntityRepositoryIntegrationTests {
 
     private final UserRepository underTest;
 
     @Autowired
-    public UserRepositoryIntegrationTests(UserRepository underTest) {
+    public UserEntityRepositoryIntegrationTests(UserRepository underTest) {
         this.underTest = underTest;
     }
 
@@ -46,55 +46,55 @@ public class UserRepositoryIntegrationTests {
     public void testUserCreationAndRecall() {
         // Create score object in the db because user relies on a score foreign key
         // DB updates aren't persistent so this is required
-        Score score = TestDataUtil.createTestScoreA();
-        User user = TestDataUtil.createTestUserA(score);
-        underTest.save(user);
-        Optional<User> result = underTest.findById(user.getId());
+        ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
+        UserEntity userEntity = TestDataUtil.createTestUserA(scoreEntity);
+        underTest.save(userEntity);
+        Optional<UserEntity> result = underTest.findById(userEntity.getId());
         assertThat(result).isPresent();
         // Set the createdAt field using the retrieved user as this field is set on creation in the db
-        user.setCreatedAt(result.get().getCreatedAt());
-        assertThat(result.get()).isEqualTo(user);
+        userEntity.setCreatedAt(result.get().getCreatedAt());
+        assertThat(result.get()).isEqualTo(userEntity);
     }
 
     @Test
     public void testMultipleUsersCreatedAndRecalled() {
-        Score scoreA = TestDataUtil.createTestScoreA();
-        Score scoreB = TestDataUtil.createTestScoreB();
-        Score scoreC = TestDataUtil.createTestScoreC();
-        User userA = TestDataUtil.createTestUserA(scoreA);
-        underTest.save(userA);
-        User userB = TestDataUtil.createTestUserB(scoreB);
-        underTest.save(userB);
-        User userC = TestDataUtil.createTestUserC(scoreC);
-        underTest.save(userC);
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        ScoreEntity scoreEntityB = TestDataUtil.createTestScoreB();
+        ScoreEntity scoreEntityC = TestDataUtil.createTestScoreC();
+        UserEntity userEntityA = TestDataUtil.createTestUserA(scoreEntityA);
+        underTest.save(userEntityA);
+        UserEntity userEntityB = TestDataUtil.createTestUserB(scoreEntityB);
+        underTest.save(userEntityB);
+        UserEntity userEntityC = TestDataUtil.createTestUserC(scoreEntityC);
+        underTest.save(userEntityC);
 
-        Iterable<User> result = underTest.findAll();
+        Iterable<UserEntity> result = underTest.findAll();
         assertThat(result)
                 .hasSize(3)
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("createdAt")
-                .containsExactly(userA, userB, userC);
+                .containsExactly(userEntityA, userEntityB, userEntityC);
     }
 
     @Test
     public void testUserFullUpdate() {
-        Score scoreA = TestDataUtil.createTestScoreA();
-        User userA = TestDataUtil.createTestUserA(scoreA);
-        underTest.save(userA);
-        userA.setUsername("UPDATED");
-        underTest.save(userA);
-        Optional<User> result = underTest.findById(userA.getId());
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity userEntityA = TestDataUtil.createTestUserA(scoreEntityA);
+        underTest.save(userEntityA);
+        userEntityA.setUsername("UPDATED");
+        underTest.save(userEntityA);
+        Optional<UserEntity> result = underTest.findById(userEntityA.getId());
         assertThat(result).isPresent();
-        userA.setCreatedAt(result.get().getCreatedAt());
-        assertThat(result.get()).isEqualTo(userA);
+        userEntityA.setCreatedAt(result.get().getCreatedAt());
+        assertThat(result.get()).isEqualTo(userEntityA);
     }
 
     @Test
     public void testUserDeletion() {
-        Score scoreA = TestDataUtil.createTestScoreA();
-        User userA = TestDataUtil.createTestUserA(scoreA);
-        underTest.save(userA);
-        underTest.deleteById(userA.getId());
-        Optional<User> result = underTest.findById(userA.getId());
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity userEntityA = TestDataUtil.createTestUserA(scoreEntityA);
+        underTest.save(userEntityA);
+        underTest.deleteById(userEntityA.getId());
+        Optional<UserEntity> result = underTest.findById(userEntityA.getId());
         assertThat(result).isEmpty();
     }
 

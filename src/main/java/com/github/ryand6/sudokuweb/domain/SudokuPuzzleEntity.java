@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "sudoku_puzzles")
-public class SudokuPuzzle {
+public class SudokuPuzzleEntity {
 
     public enum Difficulty {
         EASY, MEDIUM, HARD, EXTREME
@@ -33,15 +33,15 @@ public class SudokuPuzzle {
     private Difficulty difficulty;
 
     @OneToMany(mappedBy = "puzzle", cascade = CascadeType.ALL)
-    private Set<LobbyState> lobbyStates;
+    private Set<LobbyStateEntity> lobbyStateEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SudokuPuzzle sudokuPuzzle = (SudokuPuzzle) o;
-        return id != null && id.equals(sudokuPuzzle.id);
+        SudokuPuzzleEntity sudokuPuzzleEntity = (SudokuPuzzleEntity) o;
+        return id != null && id.equals(sudokuPuzzleEntity.id);
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState

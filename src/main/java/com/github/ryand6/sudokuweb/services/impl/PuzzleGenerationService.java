@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class PuzzleGeneratorFromFile implements PuzzleGenerator {
+public class PuzzleGenerationService implements PuzzleGenerator {
 
     /* Randomly select problem and its solution from a file with the corresponding
     difficulty type. File name in format: <difficulty>sudoku.tsv, file in format:

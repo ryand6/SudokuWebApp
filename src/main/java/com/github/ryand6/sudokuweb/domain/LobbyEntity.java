@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "lobbies")
-public class Lobby {
+public class LobbyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lobby_id_seq")
@@ -43,18 +43,18 @@ public class Lobby {
             joinColumns = @JoinColumn(name = "lobby_id"), // Foreign key to the `lobby` entity
             inverseJoinColumns = @JoinColumn(name = "user_id") // Foreign key to the `user` entity
     )
-    private Set<User> users;
+    private Set<UserEntity> userEntities;
 
     @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
-    private Set<LobbyState> lobbyStates;
+    private Set<LobbyStateEntity> lobbyStateEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Lobby lobby = (Lobby) o;
-        return id != null && id.equals(lobby.id);
+        LobbyEntity lobbyEntity = (LobbyEntity) o;
+        return id != null && id.equals(lobbyEntity.id);
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users

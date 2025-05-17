@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "lobby_state")
-public class LobbyState {
+public class LobbyStateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_id_seq")
@@ -21,15 +21,15 @@ public class LobbyState {
 
     @ManyToOne
     @JoinColumn(name = "lobby_id", nullable = false)
-    private Lobby lobby;
+    private LobbyEntity lobbyEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private UserEntity userEntity;
 
     @ManyToOne
     @JoinColumn(name = "puzzle_id", nullable = false)
-    private SudokuPuzzle puzzle;
+    private SudokuPuzzleEntity puzzle;
 
     @Column(name = "current_board_state", nullable = false)
     private String currentBoardState;
@@ -46,8 +46,8 @@ public class LobbyState {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LobbyState lobbyState = (LobbyState) o;
-        return id != null && id.equals(lobbyState.id);
+        LobbyStateEntity lobbyStateEntity = (LobbyStateEntity) o;
+        return id != null && id.equals(lobbyStateEntity.id);
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users

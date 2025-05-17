@@ -10,136 +10,136 @@ public final class TestDataUtil {
 
     }
 
-    public static User createTestUserA(final Score score) {
-        return User.builder().
-                score(score).
+    public static UserEntity createTestUserA(final ScoreEntity scoreEntity) {
+        return UserEntity.builder().
+                scoreEntity(scoreEntity).
                 username("Henry").
                 passwordHash("a4ceE42GHa").
                 build();
     }
 
-    public static User createTestUserB(final Score score) {
-        return User.builder().
-                score(score).
+    public static UserEntity createTestUserB(final ScoreEntity scoreEntity) {
+        return UserEntity.builder().
+                scoreEntity(scoreEntity).
                 username("dk0ng").
                 passwordHash("34hEA3cbe").
                 build();
     }
 
-    public static User createTestUserC(final Score score) {
-        return User.builder().
-                score(score).
+    public static UserEntity createTestUserC(final ScoreEntity scoreEntity) {
+        return UserEntity.builder().
+                scoreEntity(scoreEntity).
                 username("parf").
                 passwordHash("dA5cfB12c").
                 build();
     }
 
-    public static Score createTestScoreA() {
-        return Score.builder().
+    public static ScoreEntity createTestScoreA() {
+        return ScoreEntity.builder().
                 totalScore(150).
                 gamesPlayed(1).
                 build();
     }
 
-    public static Score createTestScoreB() {
-        return Score.builder().
+    public static ScoreEntity createTestScoreB() {
+        return ScoreEntity.builder().
                 totalScore(450).
                 gamesPlayed(5).
                 build();
     }
 
-    public static Score createTestScoreC() {
-        return Score.builder().
+    public static ScoreEntity createTestScoreC() {
+        return ScoreEntity.builder().
                 totalScore(50).
                 gamesPlayed(2).
                 build();
     }
 
-    public static SudokuPuzzle createTestSudokuPuzzleA() {
-        return SudokuPuzzle.builder().
+    public static SudokuPuzzleEntity createTestSudokuPuzzleA() {
+        return SudokuPuzzleEntity.builder().
                 initialBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
                 solution("892356741657148293143297586735682419986714325421935678374861952219573864568429137").
-                difficulty(SudokuPuzzle.Difficulty.EASY).
+                difficulty(SudokuPuzzleEntity.Difficulty.EASY).
                 build();
     }
 
-    public static SudokuPuzzle createTestSudokuPuzzleB() {
-        return SudokuPuzzle.builder().
+    public static SudokuPuzzleEntity createTestSudokuPuzzleB() {
+        return SudokuPuzzleEntity.builder().
                 initialBoardState("070004000000006900000329000007008010680932075090400600000295000002100000000800020").
                 solution("973584261428716953516329847247658319681932475395471682764295138832167594159843726").
-                difficulty(SudokuPuzzle.Difficulty.EXTREME).
+                difficulty(SudokuPuzzleEntity.Difficulty.EXTREME).
                 build();
     }
 
-    public static SudokuPuzzle createTestSudokuPuzzleC() {
-        return SudokuPuzzle.builder().
+    public static SudokuPuzzleEntity createTestSudokuPuzzleC() {
+        return SudokuPuzzleEntity.builder().
                 initialBoardState("050000021630020800020937005000095000902704603000260000200853040005040086840000030").
                 solution("759486321634521897128937465416395278982714653573268914267853149395142786841679532").
-                difficulty(SudokuPuzzle.Difficulty.MEDIUM).
+                difficulty(SudokuPuzzleEntity.Difficulty.MEDIUM).
                 build();
     }
 
-    public static Lobby createTestLobbyA(User user) {
-        HashSet<User> set = new HashSet<>();
-        set.add(user);
-        return Lobby.builder().
+    public static LobbyEntity createTestLobbyA(UserEntity userEntity) {
+        HashSet<UserEntity> set = new HashSet<>();
+        set.add(userEntity);
+        return LobbyEntity.builder().
                 lobbyName("Guru Lobby").
                 isActive(true).
                 isPublic(true).
-                users(set).
+                userEntities(set).
                 build();
     }
 
-    public static Lobby createTestLobbyB(User userA, User userB) {
-        HashSet<User> set = new HashSet<>();
-        set.add(userA);
-        set.add(userB);
-        return Lobby.builder().
+    public static LobbyEntity createTestLobbyB(UserEntity userEntityA, UserEntity userEntityB) {
+        HashSet<UserEntity> set = new HashSet<>();
+        set.add(userEntityA);
+        set.add(userEntityB);
+        return LobbyEntity.builder().
                 lobbyName("SudokuSquad").
                 isActive(true).
                 isPublic(false).
-                users(set).
+                userEntities(set).
                 build();
     }
 
-    public static Lobby createTestLobbyC(User userA, User userB, User userC) {
-        HashSet<User> set = new HashSet<>();
-        set.add(userA);
-        set.add(userB);
-        set.add(userC);
-        return Lobby.builder().
+    public static LobbyEntity createTestLobbyC(UserEntity userEntityA, UserEntity userEntityB, UserEntity userEntityC) {
+        HashSet<UserEntity> set = new HashSet<>();
+        set.add(userEntityA);
+        set.add(userEntityB);
+        set.add(userEntityC);
+        return LobbyEntity.builder().
                 lobbyName("Active").
                 isActive(false).
                 isPublic(false).
-                users(set).
+                userEntities(set).
                 build();
     }
 
-    public static LobbyState createTestLobbyStateA(final Lobby lobby, final User user, final SudokuPuzzle sudokuPuzzle) {
-        return LobbyState.builder().
-                lobby(lobby).
-                user(user).
-                puzzle(sudokuPuzzle).
+    public static LobbyStateEntity createTestLobbyStateA(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+        return LobbyStateEntity.builder().
+                lobbyEntity(lobbyEntity).
+                userEntity(userEntity).
+                puzzle(sudokuPuzzleEntity).
                 currentBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
                 score(0).
                 build();
     }
 
-    public static LobbyState createTestLobbyStateB(final Lobby lobby, final User user, final SudokuPuzzle sudokuPuzzle) {
-        return LobbyState.builder().
-                lobby(lobby).
-                user(user).
-                puzzle(sudokuPuzzle).
+    public static LobbyStateEntity createTestLobbyStateB(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+        return LobbyStateEntity.builder().
+                lobbyEntity(lobbyEntity).
+                userEntity(userEntity).
+                puzzle(sudokuPuzzleEntity).
                 currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020").
                 score(10).
                 build();
     }
 
-    public static LobbyState createTestLobbyStateC(final Lobby lobby, final User user, final SudokuPuzzle sudokuPuzzle) {
-        return LobbyState.builder().
-                lobby(lobby).
-                user(user).
-                puzzle(sudokuPuzzle).
+    public static LobbyStateEntity createTestLobbyStateC(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+        return LobbyStateEntity.builder().
+                lobbyEntity(lobbyEntity).
+                userEntity(userEntity).
+                puzzle(sudokuPuzzleEntity).
                 currentBoardState("750000021630020800020937005000095000902704603000260000200853040005040086840000030").
                 score(5).
                 build();
