@@ -1,6 +1,5 @@
 package com.github.ryand6.sudokuweb.dto;
 
-
 import lombok.*;
 
 @Getter
@@ -8,14 +7,12 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDto {
+public class ScoreDto {
 
     private Long id;
 
-    private String username;
-
-    private Boolean isOnline;
-
     private Integer totalScore;
+
+    private Integer gamesPlayed;
 
 }
