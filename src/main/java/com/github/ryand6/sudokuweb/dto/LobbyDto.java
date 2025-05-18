@@ -2,7 +2,6 @@ package com.github.ryand6.sudokuweb.dto;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -18,8 +17,6 @@ public class LobbyDto {
     private Long id;
 
     private String lobbyName;
-
-    private LocalDateTime createdAt;
 
     private Boolean isActive;
 

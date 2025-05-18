@@ -5,7 +5,6 @@ import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.dto.LobbyStateDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
-import com.github.ryand6.sudokuweb.repositories.ScoreRepository;
 import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,7 +31,6 @@ public class LobbyStateEntityDtoMapperIntegrationTests {
     private final LobbyRepository lobbyRepository;
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
-    private final ScoreRepository scoreRepository;
     private final LobbyStateEntityDtoMapper lobbyStateEntityDtoMapper;
     private final JdbcTemplate jdbcTemplate;
 
@@ -41,13 +39,11 @@ public class LobbyStateEntityDtoMapperIntegrationTests {
             LobbyRepository lobbyRepository,
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
-            ScoreRepository scoreRepository,
             LobbyStateEntityDtoMapper lobbyStateEntityDtoMapper,
             JdbcTemplate jdbcTemplate) {
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
-        this.scoreRepository = scoreRepository;
         this.lobbyStateEntityDtoMapper = lobbyStateEntityDtoMapper;
         this.jdbcTemplate = jdbcTemplate;
     }
