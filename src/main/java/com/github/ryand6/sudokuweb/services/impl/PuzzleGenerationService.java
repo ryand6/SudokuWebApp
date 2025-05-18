@@ -42,7 +42,7 @@ public class PuzzleGenerationService implements PuzzleGenerator {
         int index = new Random().nextInt(lines.size());
         String randomProblem = lines.get(index);
         String[] parts = randomProblem.split("\t");
-        // First part is puzzle
+        // First part is sudokuPuzzleEntity
         puzzleDetails.add(parts[0]);
         // Second part is solution
         puzzleDetails.add(parts[1]);

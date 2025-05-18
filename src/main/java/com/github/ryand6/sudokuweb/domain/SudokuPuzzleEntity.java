@@ -32,7 +32,7 @@ public class SudokuPuzzleEntity {
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
 
-    @OneToMany(mappedBy = "puzzle", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sudokuPuzzleEntity", cascade = CascadeType.ALL)
     private Set<LobbyStateEntity> lobbyStateEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState

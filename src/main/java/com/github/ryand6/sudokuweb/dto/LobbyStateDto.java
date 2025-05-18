@@ -13,6 +13,8 @@ public class LobbyStateDto {
 
     private Long id;
 
+    private Long lobbyId;
+
     private Long userId;
 
     private String username;

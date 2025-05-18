@@ -30,8 +30,8 @@ public class BoardStateService {
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
     }
 
-    /* Generate a new puzzle for the current lobby and creating lobbyState records for each
-    active user in the lobby for the new puzzle - Transactional applied as multiple entities are
+    /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
+    active user in the lobby for the new sudokuPuzzleEntity - Transactional applied as multiple entities are
     saved to DB */
     @Transactional
     public GenerateBoardResponseDto generateSudokuBoard(GenerateBoardRequestDto request) {
@@ -39,13 +39,13 @@ public class BoardStateService {
         String difficulty = request.getDifficulty();
         Long lobbyId = request.getLobbyId();
 
-        // Call static method to generate puzzle, retrieving both the puzzle and solution as a string
+        // Call static method to generate sudokuPuzzleEntity, retrieving both the sudokuPuzzleEntity and solution as a string
         // interpretation of a nested int array
         List<String> sudokuPuzzle = puzzleGenerator.generatePuzzle(difficulty);
         String puzzle = sudokuPuzzle.get(0);
         String solution = sudokuPuzzle.get(1);
 
-        // Fetch associated lobby the puzzle is generated for
+        // Fetch associated lobby the sudokuPuzzleEntity is generated for
         LobbyEntity lobbyEntity = lobbyRepository.findById(lobbyId).orElseThrow(() -> new EntityNotFoundException("Lobby not found"));
 
         // Retrieve all active users in the lobby
@@ -63,18 +63,18 @@ public class BoardStateService {
             LobbyStateEntity state = new LobbyStateEntity();
             state.setUserEntity(userEntity);
             state.setLobbyEntity(lobbyEntity);
-            state.setPuzzle(newPuzzle);
-            // Board state starts with the initial puzzle
+            state.setSudokuPuzzleEntity(newPuzzle);
+            // Board state starts with the initial sudokuPuzzleEntity
             state.setCurrentBoardState(puzzle);
             // Initial score for each user is 0
             state.setScore(0);
             lobbyStateEntities.add(state);
         }
 
-        // Add lobby states to puzzle object
+        // Add lobby states to sudokuPuzzleEntity object
         newPuzzle.setLobbyStateEntities(lobbyStateEntities);
 
-        // Save puzzle object to DB - will also save lobby states to DB due to cascade rules
+        // Save sudokuPuzzleEntity object to DB - will also save lobby states to DB due to cascade rules
         sudokuPuzzleRepository.save(newPuzzle);
 
         return new GenerateBoardResponseDto(puzzle, solution);

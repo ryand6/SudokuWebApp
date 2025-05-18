@@ -119,7 +119,7 @@ public final class TestDataUtil {
         return LobbyStateEntity.builder().
                 lobbyEntity(lobbyEntity).
                 userEntity(userEntity).
-                puzzle(sudokuPuzzleEntity).
+                sudokuPuzzleEntity(sudokuPuzzleEntity).
                 currentBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
                 score(0).
                 build();
@@ -129,7 +129,7 @@ public final class TestDataUtil {
         return LobbyStateEntity.builder().
                 lobbyEntity(lobbyEntity).
                 userEntity(userEntity).
-                puzzle(sudokuPuzzleEntity).
+                sudokuPuzzleEntity(sudokuPuzzleEntity).
                 currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020").
                 score(10).
                 build();
@@ -139,7 +139,7 @@ public final class TestDataUtil {
         return LobbyStateEntity.builder().
                 lobbyEntity(lobbyEntity).
                 userEntity(userEntity).
-                puzzle(sudokuPuzzleEntity).
+                sudokuPuzzleEntity(sudokuPuzzleEntity).
                 currentBoardState("750000021630020800020937005000095000902704603000260000200853040005040086840000030").
                 score(5).
                 build();

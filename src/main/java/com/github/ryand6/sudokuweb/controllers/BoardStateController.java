@@ -18,8 +18,8 @@ public class BoardStateController {
         this.boardStateService = boardStateService;
     }
 
-    /* Generate a new puzzle for the current lobby and creating lobbyState records for each
-    active user in the lobby for the new puzzle */
+    /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
+    active user in the lobby for the new sudokuPuzzleEntity */
     @PostMapping("/generate-board")
     public GenerateBoardResponseDto generateSudokuBoard(@Valid @RequestBody GenerateBoardRequestDto generateBoardRequestDto) {
         return boardStateService.generateSudokuBoard(generateBoardRequestDto);

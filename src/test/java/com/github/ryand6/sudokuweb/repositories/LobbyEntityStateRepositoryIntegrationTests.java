@@ -55,7 +55,7 @@ public class LobbyEntityStateRepositoryIntegrationTests {
 
     @Test
     public void testLobbyStateCreationAndRecall() {
-        // Create support objects in the db because lobby state relies on user, lobby and puzzle foreign keys
+        // Create support objects in the db because lobby state relies on user, lobby and sudokuPuzzleEntity foreign keys
         ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
         UserEntity userEntity = TestDataUtil.createTestUserA(scoreEntity);
         // Persist transient instances - LobbyState does not persist other entities, it only references them
@@ -110,7 +110,7 @@ public class LobbyEntityStateRepositoryIntegrationTests {
                 // Avoid lazy loaded fields when comparing
                 .ignoringFields(
                         "lastActive",
-                        "puzzle.lobbyStates",
+                        "sudokuPuzzleEntity.lobbyStates",
                         "lobby.lobbyStates")
                 .isEqualTo(List.of(lobbyStateEntityA, lobbyStateEntityB, lobbyStateEntityC));
     }

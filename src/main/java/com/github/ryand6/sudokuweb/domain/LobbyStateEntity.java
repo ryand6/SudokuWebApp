@@ -29,7 +29,7 @@ public class LobbyStateEntity {
 
     @ManyToOne
     @JoinColumn(name = "puzzle_id", nullable = false)
-    private SudokuPuzzleEntity puzzle;
+    private SudokuPuzzleEntity sudokuPuzzleEntity;
 
     @Column(name = "current_board_state", nullable = false)
     private String currentBoardState;
