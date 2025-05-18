@@ -21,6 +21,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+/*
+Integration tests for UserEntityDtoMapper
+*/
 public class UserEntityDtoMapperIntegrationTests {
 
     private final ScoreRepository scoreRepository;

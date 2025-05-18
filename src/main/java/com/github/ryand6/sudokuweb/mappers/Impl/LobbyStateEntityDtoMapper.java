@@ -13,13 +13,13 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LobbyStateDtoMapper implements EntityDtoMapper<LobbyStateEntity, LobbyStateDto> {
+public class LobbyStateEntityDtoMapper implements EntityDtoMapper<LobbyStateEntity, LobbyStateDto> {
 
     private final LobbyRepository lobbyRepository;
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
 
-    public LobbyStateDtoMapper(LobbyRepository lobbyRepository, UserRepository userRepository, SudokuPuzzleRepository sudokuPuzzleRepository) {
+    public LobbyStateEntityDtoMapper(LobbyRepository lobbyRepository, UserRepository userRepository, SudokuPuzzleRepository sudokuPuzzleRepository) {
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
