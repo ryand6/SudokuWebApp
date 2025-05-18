@@ -11,11 +11,13 @@ import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
 import com.github.ryand6.sudokuweb.services.PuzzleGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class BoardStateService {
 
     private final PuzzleGenerator puzzleGenerator;

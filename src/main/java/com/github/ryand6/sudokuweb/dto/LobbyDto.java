@@ -10,6 +10,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+/*
+LobbyDto used for transferring necessary Lobby entity fields to frontend
+*/
 public class LobbyDto {
 
     private Long id;

@@ -3,11 +3,13 @@ package com.github.ryand6.sudokuweb.mappers.Impl;
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.UserDto;
-import com.github.ryand6.sudokuweb.mappers.Mapper;
+import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-public class UserMapper implements Mapper<UserEntity, UserDto> {
+@Component
+public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto> {
 
     @Override
     public UserDto mapToDto(UserEntity userEntity) {
@@ -23,21 +25,26 @@ public class UserMapper implements Mapper<UserEntity, UserDto> {
     @Override
     public UserEntity mapFromDto(UserDto dto) {
         // Basic mapping without passwordHash, or throw UnsupportedOperationException
-        throw new UnsupportedOperationException("Password hash required, use mapFromDto with passwordHash");
+        throw new UnsupportedOperationException("Password hash required, provide passwordHash when calling mapFromDto on UserDto");
     }
 
     // Overloaded method to handle additional context in order to create UserEntity
     public UserEntity mapFromDto(UserDto userDto, String passwordHash) {
-        return UserEntity.builder()
-                .id(userDto.getId())
+        UserEntity.UserEntityBuilder userEntityBuilder = UserEntity.builder()
                 .username(userDto.getUsername())
                 .passwordHash(passwordHash)
                 .createdAt(LocalDateTime.now())
                 .isOnline(userDto.getIsOnline())
                 .scoreEntity(ScoreEntity.builder()
                         .totalScore(userDto.getTotalScore() != null ? userDto.getTotalScore() : 0)
-                        .gamesPlayed(0) // Safe default unless you want it dynamic
-                        .build())
-                .build();
+                        .gamesPlayed(0)
+                        .build());
+
+        // Don't assign id field if non-existent, DB will create
+        if (userDto.getId() != null) {
+            userEntityBuilder.id(userDto.getId());
+        }
+
+        return userEntityBuilder.build();
     }
 }
