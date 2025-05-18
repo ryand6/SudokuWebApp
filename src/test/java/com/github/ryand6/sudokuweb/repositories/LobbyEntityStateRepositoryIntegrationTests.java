@@ -110,8 +110,8 @@ public class LobbyEntityStateRepositoryIntegrationTests {
                 // Avoid lazy loaded fields when comparing
                 .ignoringFields(
                         "lastActive",
-                        "sudokuPuzzleEntity.lobbyStates",
-                        "lobby.lobbyStates")
+                        "sudokuPuzzleEntity.lobbyStateEntities",
+                        "lobbyEntity.lobbyStateEntities")
                 .isEqualTo(List.of(lobbyStateEntityA, lobbyStateEntityB, lobbyStateEntityC));
     }
 

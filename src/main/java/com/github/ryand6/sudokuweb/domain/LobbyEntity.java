@@ -45,7 +45,7 @@ public class LobbyEntity {
     )
     private Set<UserEntity> userEntities;
 
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "lobbyEntity", cascade = CascadeType.ALL)
     private Set<LobbyStateEntity> lobbyStateEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users

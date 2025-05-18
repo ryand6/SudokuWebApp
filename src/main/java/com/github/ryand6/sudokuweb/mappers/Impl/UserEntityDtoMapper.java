@@ -4,6 +4,8 @@ import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.ScoreRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -11,13 +13,20 @@ import java.time.LocalDateTime;
 @Component
 public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto> {
 
+    private final ScoreRepository scoreRepository;
+
+    public UserEntityDtoMapper(ScoreRepository scoreRepository) {
+        this.scoreRepository = scoreRepository;
+    }
+
+
     @Override
     public UserDto mapToDto(UserEntity userEntity) {
         return UserDto.builder()
                 .id(userEntity.getId())
                 .username(userEntity.getUsername())
                 .isOnline(userEntity.getIsOnline())
-                .totalScore(userEntity.getScoreEntity().getTotalScore())
+                .scoreId(userEntity.getScoreEntity().getId())
                 .build();
     }
 
@@ -30,15 +39,14 @@ public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto>
 
     // Overloaded method to handle additional context in order to create UserEntity
     public UserEntity mapFromDto(UserDto userDto, String passwordHash) {
+        ScoreEntity scoreEntity = resolveDtoScore(userDto.getScoreId());
+
         UserEntity.UserEntityBuilder userEntityBuilder = UserEntity.builder()
                 .username(userDto.getUsername())
                 .passwordHash(passwordHash)
                 .createdAt(LocalDateTime.now())
                 .isOnline(userDto.getIsOnline())
-                .scoreEntity(ScoreEntity.builder()
-                        .totalScore(userDto.getTotalScore() != null ? userDto.getTotalScore() : 0)
-                        .gamesPlayed(0)
-                        .build());
+                .scoreEntity(scoreEntity);
 
         // Don't assign id field if non-existent, DB will create
         if (userDto.getId() != null) {
@@ -47,4 +55,11 @@ public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto>
 
         return userEntityBuilder.build();
     }
+
+    // Get ScoreEntity through DTO ScoreId
+    private ScoreEntity resolveDtoScore(Long scoreId) {
+        return scoreRepository.findById(scoreId)
+                .orElseThrow(() -> new EntityNotFoundException("Score not found with id " + scoreId));
+    }
+
 }

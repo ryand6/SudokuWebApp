@@ -87,7 +87,7 @@ public class LobbyEntityRepositoryIntegrationTests {
                 .hasSize(3)
                 .usingRecursiveComparison()
                 // Avoid lazy loaded fields when comparing
-                .ignoringFields("lobbyStates")
+                .ignoringFields("lobbyStateEntities")
                 .isEqualTo(List.of(lobbyEntityA, lobbyEntityB, lobbyEntityC));
     }
 
