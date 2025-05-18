@@ -15,10 +15,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -98,7 +96,6 @@ public class UserEntityDtoMapperIntegrationTests {
         assertThat(entity.getPasswordHash()).isEqualTo(passwordHash);
         assertThat(entity.getIsOnline()).isTrue();
         assertThat(entity.getScoreEntity()).isEqualTo(savedScore);
-        assertThat(entity.getCreatedAt()).isCloseTo(LocalDateTime.now(), within(5, ChronoUnit.SECONDS));
     }
 
     @Test

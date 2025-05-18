@@ -8,8 +8,6 @@ import com.github.ryand6.sudokuweb.repositories.ScoreRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto> {
 
@@ -44,7 +42,6 @@ public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto>
         UserEntity.UserEntityBuilder userEntityBuilder = UserEntity.builder()
                 .username(userDto.getUsername())
                 .passwordHash(passwordHash)
-                .createdAt(LocalDateTime.now())
                 .isOnline(userDto.getIsOnline())
                 .scoreEntity(scoreEntity);
 
