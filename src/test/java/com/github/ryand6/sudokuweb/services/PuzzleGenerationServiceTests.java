@@ -1,6 +1,5 @@
-package com.github.ryand6.sudokuweb;
+package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.services.PuzzleGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,13 +9,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class SudokuGeneratorServiceUnitTests {
+public class PuzzleGenerationServiceTests {
 
     @Autowired
     private PuzzleGenerator puzzleGenerator;
 
     @Test
-    void testGeneratePuzzle() {
+    void generatePuzzle_returnsValidPuzzle() {
         // For testing, you might need to set up a mock resource or use a test-specific file
         // Simulate expected behavior or use a test file
         String difficulty = "easy";
