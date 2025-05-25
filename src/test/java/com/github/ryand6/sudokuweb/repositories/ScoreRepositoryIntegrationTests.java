@@ -18,12 +18,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class ScoreEntityRepositoryIntegrationTests {
+public class ScoreRepositoryIntegrationTests {
 
     private final ScoreRepository underTest;
 
     @Autowired
-    public ScoreEntityRepositoryIntegrationTests(ScoreRepository underTest) {
+    public ScoreRepositoryIntegrationTests(ScoreRepository underTest) {
         this.underTest = underTest;
     }
 
@@ -34,11 +34,12 @@ public class ScoreEntityRepositoryIntegrationTests {
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
     }
 
     @Test
@@ -48,7 +49,6 @@ public class ScoreEntityRepositoryIntegrationTests {
         underTest.save(scoreEntity);
         Optional<ScoreEntity> result = underTest.findById(scoreEntity.getId());
         assertThat(result).isPresent();
-        scoreEntity.setCreatedAt(result.get().getCreatedAt());
         scoreEntity.setUpdatedAt(result.get().getUpdatedAt());
         assertThat(result.get()).isEqualTo(scoreEntity);
     }
@@ -65,7 +65,6 @@ public class ScoreEntityRepositoryIntegrationTests {
         Iterable<ScoreEntity> result = underTest.findAll();
         assertThat(result)
                 .hasSize(3)
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("createdAt")
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("updatedAt")
                 .containsExactly(scoreEntityA, scoreEntityB, scoreEntityC);
     }
@@ -78,7 +77,6 @@ public class ScoreEntityRepositoryIntegrationTests {
         underTest.save(scoreEntityA);
         Optional<ScoreEntity> result = underTest.findById(scoreEntityA.getId());
         assertThat(result).isPresent();
-        scoreEntityA.setCreatedAt(result.get().getCreatedAt());
         scoreEntityA.setUpdatedAt(result.get().getUpdatedAt());
         assertThat(result.get()).isEqualTo(scoreEntityA);
     }

@@ -3,7 +3,10 @@ package com.github.ryand6.sudokuweb.mappers;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.dto.GameStateDto;
+import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.mappers.Impl.GameStateEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.GameRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
@@ -33,6 +36,8 @@ public class GameStateEntityDtoMapperIntegrationTests {
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final GameStateEntityDtoMapper gameStateEntityDtoMapper;
     private final JdbcTemplate jdbcTemplate;
+    private final UserEntityDtoMapper userEntityDtoMapper;
+    private final GameRepository gameRepository;
 
     @Autowired
     public GameStateEntityDtoMapperIntegrationTests(
@@ -40,28 +45,34 @@ public class GameStateEntityDtoMapperIntegrationTests {
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
             GameStateEntityDtoMapper gameStateEntityDtoMapper,
-            JdbcTemplate jdbcTemplate) {
+            JdbcTemplate jdbcTemplate,
+            UserEntityDtoMapper userEntityDtoMapper,
+            GameRepository gameRepository) {
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
         this.gameStateEntityDtoMapper = gameStateEntityDtoMapper;
         this.jdbcTemplate = jdbcTemplate;
+        this.userEntityDtoMapper = userEntityDtoMapper;
+        this.gameRepository = gameRepository;
     }
 
     private ScoreEntity savedScore;
     private UserEntity savedUser;
     private SudokuPuzzleEntity savedPuzzle;
     private LobbyEntity savedLobby;
+    private GameEntity gameEntity;
 
     @BeforeEach
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
         // Setup test score data - don't save as the User object will save it via cascade.ALL
         savedScore = TestDataUtil.createTestScoreA();
         // Setup test user data in the test DB
@@ -70,35 +81,36 @@ public class GameStateEntityDtoMapperIntegrationTests {
         savedPuzzle = sudokuPuzzleRepository.save(TestDataUtil.createTestSudokuPuzzleA());
         //Setup test lobby data in the test DB
         savedLobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(savedUser));
+        // Prepare a game entity so that it can be linked to the game state entities
+        gameEntity = TestDataUtil.createGameA(savedLobby, savedPuzzle);
     }
 
     @Test
     void mapToDto_shouldReturnValidLobbyStateDto() {
-        GameStateEntity gameStateEntity = TestDataUtil.createTestLobbyStateA(savedLobby, savedUser, savedPuzzle);
+        GameStateEntity gameStateEntity = TestDataUtil.createTestGameStateA(gameEntity, savedUser);
         gameStateEntity.setId(6L);
 
         GameStateDto gameStateDto = gameStateEntityDtoMapper.mapToDto(gameStateEntity);
 
         assertThat(gameStateDto).isNotNull();
         assertThat(gameStateDto.getId()).isEqualTo(6L);
-        assertThat(gameStateDto.getLobbyId()).isEqualTo(savedLobby.getId());
-        assertThat(gameStateDto.getUserId()).isEqualTo(savedUser.getId());
-        assertThat(gameStateDto.getPuzzleId()).isEqualTo(savedPuzzle.getId());
-        assertThat(gameStateDto.getUsername()).isEqualTo(savedUser.getUsername());
+        assertThat(gameStateDto.getGameId()).isEqualTo(gameEntity.getId());
+        assertThat(gameStateDto.getUser().getId()).isEqualTo(savedUser.getId());
         assertThat(gameStateDto.getScore()).isEqualTo(0);
+        assertThat(gameStateDto.getPlayerColour()).isEqualTo(PlayerColour.BLUE);
         assertThat(gameStateDto.getCurrentBoardState()).isEqualTo("092306001007008003043207080035680000080000020000035670070801950200500800500409130");
-        assertThat(gameStateDto.getLastActive()).isEqualTo(gameStateEntity.getLastActive());
     }
 
     @Test
     void mapFromDto_shouldReturnValidLobbyStateEntity() {
+        gameRepository.save(gameEntity);
+
         GameStateDto gameStateDto = GameStateDto.builder()
                 .id(2L)
-                .lobbyId(savedLobby.getId())
-                .userId(savedUser.getId())
-                .puzzleId(savedPuzzle.getId())
-                .username(savedUser.getUsername())
+                .gameId(gameEntity.getId())
+                .user(userEntityDtoMapper.mapToDto(savedUser))
                 .score(55)
+                .playerColour(PlayerColour.ORANGE)
                 .currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020")
                 .build();
 
@@ -106,24 +118,26 @@ public class GameStateEntityDtoMapperIntegrationTests {
 
         assertThat(gameStateEntity).isNotNull();
         assertThat(gameStateEntity.getId()).isEqualTo(2L);
-        assertThat(gameStateEntity.getLobbyEntity().getId()).isNotNull();
+        assertThat(gameStateEntity.getGameEntity().getId()).isNotNull();
         assertThat(gameStateEntity.getUserEntity().getId()).isNotNull();
-        assertThat(gameStateEntity.getSudokuPuzzleEntity().getId()).isNotNull();
         assertThat(gameStateEntity.getUserEntity().getUsername()).isEqualTo("Henry");
-        assertThat(gameStateEntity.getUserEntity().getPasswordHash()).isEqualTo("a4ceE42GHa");
         assertThat(gameStateEntity.getScore()).isEqualTo(55);
+        assertThat(gameStateEntity.getPlayerColour()).isEqualTo(PlayerColour.ORANGE);
         assertThat(gameStateEntity.getCurrentBoardState()).isEqualTo("973004000000006900000329000007008010680932075090400600000295000002100000000800020");
     }
 
     @Test
     void mapFromDto_shouldThrowException_whenUserNotFound() {
+        gameRepository.save(gameEntity);
+        UserEntity nonPersistedUser = TestDataUtil.createTestUserB(savedScore);
+        nonPersistedUser.setId(999999L);
+
         GameStateDto gameStateDto = GameStateDto.builder()
                 .id(2L)
-                .lobbyId(savedLobby.getId())
-                .userId(999999L)
-                .puzzleId(savedPuzzle.getId())
-                .username(savedUser.getUsername())
+                .gameId(gameEntity.getId())
+                .user(userEntityDtoMapper.mapToDto(nonPersistedUser))
                 .score(55)
+                .playerColour(PlayerColour.GREEN)
                 .currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020")
                 .build();
 
@@ -132,38 +146,21 @@ public class GameStateEntityDtoMapperIntegrationTests {
                 .hasMessageContaining("User not found");
     }
 
+    // Game not persisted
     @Test
-    void mapFromDto_shouldThrowException_whenLobbyNotFound() {
+    void mapFromDto_shouldThrowException_whenGameNotFound() {
         GameStateDto gameStateDto = GameStateDto.builder()
                 .id(2L)
-                .lobbyId(99999L)
-                .userId(savedUser.getId())
-                .puzzleId(savedPuzzle.getId())
-                .username(savedUser.getUsername())
+                .gameId(9999999L)
+                .user(userEntityDtoMapper.mapToDto(savedUser))
                 .score(55)
+                .playerColour(PlayerColour.PURPLE)
                 .currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020")
                 .build();
 
         assertThatThrownBy(() -> gameStateEntityDtoMapper.mapFromDto(gameStateDto))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("Lobby not found");
-    }
-
-    @Test
-    void mapFromDto_shouldThrowException_whenSudokuPuzzleNotFound() {
-        GameStateDto gameStateDto = GameStateDto.builder()
-                .id(2L)
-                .lobbyId(savedLobby.getId())
-                .userId(savedUser.getId())
-                .puzzleId(99999L)
-                .username(savedUser.getUsername())
-                .score(55)
-                .currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020")
-                .build();
-
-        assertThatThrownBy(() -> gameStateEntityDtoMapper.mapFromDto(gameStateDto))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("Puzzle not found");
+                .hasMessageContaining("Game not found");
     }
 
 }

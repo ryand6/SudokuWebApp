@@ -31,6 +31,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .difficulty(lobbyEntity.getDifficulty())
                 .isActive(lobbyEntity.getIsActive())
                 .isPublic(lobbyEntity.getIsPublic())
+                .inGame(lobbyEntity.getInGame())
                 // Convert lobby entities to dtos and add to set
                 .users(
                         lobbyEntity.getUserEntities().stream()
@@ -52,6 +53,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .difficulty(lobbyDto.getDifficulty())
                 .isActive(lobbyDto.getIsActive())
                 .isPublic(lobbyDto.getIsPublic())
+                .inGame(lobbyDto.getInGame())
                 .userEntities(userEntities)
                 .host(hostEntity);
 
@@ -73,6 +75,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .difficulty(lobbyDto.getDifficulty())
                 .isActive(lobbyDto.getIsActive())
                 .isPublic(lobbyDto.getIsPublic())
+                .inGame(lobbyDto.getInGame())
                 .joinCode(joinCode)
                 .userEntities(userEntities)
                 .host(hostEntity);
@@ -95,6 +98,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
         existingLobby.setDifficulty(lobbyDto.getDifficulty());
         existingLobby.setIsActive(lobbyDto.getIsActive());
         existingLobby.setIsPublic(lobbyDto.getIsPublic());
+        existingLobby.setInGame(lobbyDto.getInGame());
         existingLobby.setUserEntities(userEntities);
         existingLobby.setHost(hostEntity);
 

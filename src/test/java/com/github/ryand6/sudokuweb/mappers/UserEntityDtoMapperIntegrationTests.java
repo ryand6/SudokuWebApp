@@ -48,11 +48,12 @@ public class UserEntityDtoMapperIntegrationTests {
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
         // Setup test score data in the test DB
         savedScore = ScoreEntity.builder()
                 .totalScore(100)

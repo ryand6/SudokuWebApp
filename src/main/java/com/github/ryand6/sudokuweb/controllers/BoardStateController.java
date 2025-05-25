@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers;
 
+import com.github.ryand6.sudokuweb.dto.GameDto;
 import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
-import com.github.ryand6.sudokuweb.dto.GenerateBoardResponseDto;
 import com.github.ryand6.sudokuweb.services.impl.BoardStateService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,8 +21,8 @@ public class BoardStateController {
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
     active user in the lobby for the new sudokuPuzzleEntity */
     @PostMapping("/generate-board")
-    public GenerateBoardResponseDto generateSudokuBoard(@Valid @RequestBody GenerateBoardRequestDto generateBoardRequestDto) {
-        return boardStateService.generateSudokuBoard(generateBoardRequestDto);
+    public GameDto generateSudokuBoard(@Valid @RequestBody GenerateBoardRequestDto generateBoardRequestDto) {
+        return boardStateService.createGame(generateBoardRequestDto);
     }
 
 }

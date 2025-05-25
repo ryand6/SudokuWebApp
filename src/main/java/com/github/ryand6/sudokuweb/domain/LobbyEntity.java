@@ -40,6 +40,10 @@ public class LobbyEntity {
     @Column(name = "is_public")
     private Boolean isPublic;
 
+    // true if a game is currently active, meaning users can't join the lobby at this time
+    @Column(name = "in_game")
+    private Boolean inGame;
+
     // code for joining the code (if private)
     @Column(name = "join_code")
     private String joinCode;

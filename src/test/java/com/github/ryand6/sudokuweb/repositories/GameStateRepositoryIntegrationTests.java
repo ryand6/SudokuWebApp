@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class LobbyEntityStateRepositoryIntegrationTests {
+public class GameStateRepositoryIntegrationTests {
 
     private final GameStateRepository underTest;
     private final UserRepository userRepository;
@@ -29,7 +29,7 @@ public class LobbyEntityStateRepositoryIntegrationTests {
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public LobbyEntityStateRepositoryIntegrationTests(
+    public GameStateRepositoryIntegrationTests(
             GameStateRepository underTest,
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
@@ -46,15 +46,17 @@ public class LobbyEntityStateRepositoryIntegrationTests {
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
     }
 
     @Test
-    public void testLobbyStateCreationAndRecall() {
+    @Transactional
+    public void testGameStateCreationAndRecall() {
         // Create support objects in the db because lobby state relies on user, lobby and sudokuPuzzleEntity foreign keys
         ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
         UserEntity userEntity = TestDataUtil.createTestUserA(scoreEntity);
@@ -64,17 +66,18 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createGameA(lobbyEntity, sudokuPuzzleEntity);
         // Checks for score creation and retrieval
-        GameStateEntity gameStateEntity = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
+        GameStateEntity gameStateEntity = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntity);
         Optional<GameStateEntity> result = underTest.findById(gameStateEntity.getId());
         assertThat(result).isPresent();
-        gameStateEntity.setLastActive(result.get().getLastActive());
         assertThat(result.get()).isEqualTo(gameStateEntity);
     }
 
     @Test
-    public void testMultipleLobbyStatesCreatedAndRecalled() {
+    @Transactional
+    public void testMultipleGameStatesCreatedAndRecalled() {
         ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
         ScoreEntity scoreEntityB = TestDataUtil.createTestScoreB();
         ScoreEntity scoreEntityC = TestDataUtil.createTestScoreC();
@@ -96,11 +99,14 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         sudokuPuzzleRepository.save(sudokuPuzzleEntityA);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityB);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityC);
-        GameStateEntity gameStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntityA, userEntityA, sudokuPuzzleEntityA);
+        GameEntity gameEntityA = TestDataUtil.createGameA(lobbyEntityA, sudokuPuzzleEntityA);
+        GameEntity gameEntityB = TestDataUtil.createGameA(lobbyEntityB, sudokuPuzzleEntityB);
+        GameEntity gameEntityC = TestDataUtil.createGameA(lobbyEntityC, sudokuPuzzleEntityC);
+        GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntityA, userEntityA);
         underTest.save(gameStateEntityA);
-        GameStateEntity gameStateEntityB = TestDataUtil.createTestLobbyStateB(lobbyEntityB, userEntityB, sudokuPuzzleEntityB);
+        GameStateEntity gameStateEntityB = TestDataUtil.createTestGameStateB(gameEntityB, userEntityB);
         underTest.save(gameStateEntityB);
-        GameStateEntity gameStateEntityC = TestDataUtil.createTestLobbyStateC(lobbyEntityC, userEntityC, sudokuPuzzleEntityC);
+        GameStateEntity gameStateEntityC = TestDataUtil.createTestGameStateC(gameEntityC, userEntityC);
         underTest.save(gameStateEntityC);
 
         Iterable<GameStateEntity> result = underTest.findAll();
@@ -110,12 +116,13 @@ public class LobbyEntityStateRepositoryIntegrationTests {
                 // Avoid lazy loaded fields when comparing
                 .ignoringFields(
                         "lastActive",
-                        "sudokuPuzzleEntity.gameStateEntities",
-                        "lobbyEntity.gameStateEntities")
+                        "lobbyEntity.gameEntities",
+                        "gameEntity")
                 .isEqualTo(List.of(gameStateEntityA, gameStateEntityB, gameStateEntityC));
     }
 
     @Test
+    @Transactional
     public void testScoreFullUpdate() {
         ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
         UserEntity userEntity = TestDataUtil.createTestUserA(scoreEntity);
@@ -124,20 +131,20 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        GameStateEntity gameStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createGameA(lobbyEntity, sudokuPuzzleEntity);
+        GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntityA);
         gameStateEntityA.setScore(1000);
         underTest.save(gameStateEntityA);
         Optional<GameStateEntity> result = underTest.findById(gameStateEntityA.getId());
         assertThat(result).isPresent();
-        gameStateEntityA.setLastActive(result.get().getLastActive());
         assertThat(result.get()).isEqualTo(gameStateEntityA);
     }
 
     // Made transactional so that deletion will be flushed to DB within session
     @Test
     @Transactional
-    public void testLobbyStateDeletion() {
+    public void testGameStateDeletion() {
         ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
         UserEntity userEntity = TestDataUtil.createTestUserA(scoreEntity);
         userRepository.save(userEntity);
@@ -145,7 +152,8 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        GameStateEntity gameStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createGameA(lobbyEntity, sudokuPuzzleEntity);
+        GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntityA);
         underTest.deleteById(gameStateEntityA.getId());
         Optional<GameStateEntity> result = underTest.findById(gameStateEntityA.getId());

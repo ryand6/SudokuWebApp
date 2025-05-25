@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.mappers;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.dto.SudokuPuzzleDto;
+import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.mappers.Impl.SudokuPuzzleEntityDtoMapper;
 import org.junit.jupiter.api.Test;
 
@@ -25,7 +26,7 @@ public class SudokuPuzzleEntityDtoMapperTests {
         assertThat(sudokuPuzzleDto).isNotNull();
         assertThat(sudokuPuzzleDto.getId()).isEqualTo(5L);
         assertThat(sudokuPuzzleDto.getInitialBoardState()).isEqualTo("092306001007008003043207080035680000080000020000035670070801950200500800500409130");
-        assertThat(sudokuPuzzleDto.getDifficulty()).isEqualTo(SudokuPuzzleEntity.Difficulty.EASY);
+        assertThat(sudokuPuzzleDto.getDifficulty()).isEqualTo(Difficulty.EASY);
     }
 
 }

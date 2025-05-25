@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb;
 
 import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.PlayerColour;
 
 import java.util.HashSet;
 
@@ -59,7 +61,7 @@ public final class TestDataUtil {
         return SudokuPuzzleEntity.builder().
                 initialBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
                 solution("892356741657148293143297586735682419986714325421935678374861952219573864568429137").
-                difficulty(SudokuPuzzleEntity.Difficulty.EASY).
+                difficulty(Difficulty.EASY).
                 build();
     }
 
@@ -67,7 +69,7 @@ public final class TestDataUtil {
         return SudokuPuzzleEntity.builder().
                 initialBoardState("070004000000006900000329000007008010680932075090400600000295000002100000000800020").
                 solution("973584261428716953516329847247658319681932475395471682764295138832167594159843726").
-                difficulty(SudokuPuzzleEntity.Difficulty.EXTREME).
+                difficulty(Difficulty.EXTREME).
                 build();
     }
 
@@ -75,7 +77,7 @@ public final class TestDataUtil {
         return SudokuPuzzleEntity.builder().
                 initialBoardState("050000021630020800020937005000095000902704603000260000200853040005040086840000030").
                 solution("759486321634521897128937465416395278982714653573268914267853149395142786841679532").
-                difficulty(SudokuPuzzleEntity.Difficulty.MEDIUM).
+                difficulty(Difficulty.MEDIUM).
                 build();
     }
 
@@ -86,7 +88,9 @@ public final class TestDataUtil {
                 lobbyName("Guru Lobby").
                 isActive(true).
                 isPublic(true).
+                inGame(false).
                 userEntities(set).
+                host(userEntity).
                 build();
     }
 
@@ -98,8 +102,10 @@ public final class TestDataUtil {
                 lobbyName("SudokuSquad").
                 isActive(true).
                 isPublic(false).
+                inGame(false).
                 joinCode("aey3g-yagy3i3-u3ygu34").
                 userEntities(set).
+                host(userEntityA).
                 build();
     }
 
@@ -112,38 +118,48 @@ public final class TestDataUtil {
                 lobbyName("Active").
                 isActive(false).
                 isPublic(false).
+                inGame(true).
+                joinCode("eipioje-stretg4-2et44t").
                 userEntities(set).
+                host(userEntityA).
                 build();
     }
 
-    public static GameStateEntity createTestLobbyStateA(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+    public static GameStateEntity createTestGameStateA(final GameEntity gameEntity, final UserEntity userEntity) {
         return GameStateEntity.builder().
-                lobbyEntity(lobbyEntity).
+                gameEntity(gameEntity).
                 userEntity(userEntity).
-                sudokuPuzzleEntity(sudokuPuzzleEntity).
                 currentBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
                 score(0).
+                playerColour(PlayerColour.BLUE).
                 build();
     }
 
-    public static GameStateEntity createTestLobbyStateB(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+    public static GameStateEntity createTestGameStateB(final GameEntity gameEntity, final UserEntity userEntity) {
         return GameStateEntity.builder().
-                lobbyEntity(lobbyEntity).
+                gameEntity(gameEntity).
                 userEntity(userEntity).
-                sudokuPuzzleEntity(sudokuPuzzleEntity).
                 currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020").
                 score(10).
+                playerColour(PlayerColour.GREEN).
                 build();
     }
 
-    public static GameStateEntity createTestLobbyStateC(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+    public static GameStateEntity createTestGameStateC(final GameEntity gameEntity, final UserEntity userEntity) {
         return GameStateEntity.builder().
-                lobbyEntity(lobbyEntity).
+                gameEntity(gameEntity).
                 userEntity(userEntity).
-                sudokuPuzzleEntity(sudokuPuzzleEntity).
                 currentBoardState("750000021630020800020937005000095000902704603000260000200853040005040086840000030").
                 score(5).
+                playerColour(PlayerColour.PURPLE).
                 build();
+    }
+
+    public static GameEntity createGameA(final LobbyEntity lobbyEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+        return GameEntity.builder()
+                .lobbyEntity(lobbyEntity)
+                .sudokuPuzzleEntity(sudokuPuzzleEntity)
+                .build();
     }
 
 }

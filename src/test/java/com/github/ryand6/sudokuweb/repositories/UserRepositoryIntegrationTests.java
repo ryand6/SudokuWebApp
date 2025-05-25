@@ -19,12 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class UserEntityRepositoryIntegrationTests {
+public class UserRepositoryIntegrationTests {
 
     private final UserRepository underTest;
 
     @Autowired
-    public UserEntityRepositoryIntegrationTests(UserRepository underTest) {
+    public UserRepositoryIntegrationTests(UserRepository underTest) {
         this.underTest = underTest;
     }
 
@@ -35,11 +35,12 @@ public class UserEntityRepositoryIntegrationTests {
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
     }
 
     @Test

@@ -57,11 +57,12 @@ public class LobbyEntityDtoMapperIntegrationTests {
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
         // Setup test score data - don't save as the User object will save it via cascade.ALL
         savedScore = TestDataUtil.createTestScoreA();
         // Setup test user data in the test DB
@@ -79,6 +80,9 @@ public class LobbyEntityDtoMapperIntegrationTests {
         assertThat(dto.getLobbyName()).isEqualTo(savedLobby.getLobbyName());
         assertThat(dto.getIsActive()).isEqualTo(savedLobby.getIsActive());
         assertThat(dto.getIsPublic()).isEqualTo(savedLobby.getIsPublic());
+        assertThat(dto.getInGame()).isEqualTo(savedLobby.getInGame());
+        assertThat(dto.getDifficulty()).isEqualTo(savedLobby.getDifficulty());
+        assertThat(dto.getHostId()).isEqualTo(savedLobby.getHost().getId());
 
         assertThat(dto.getUsers()).hasSize(1);
         UserDto userDto = dto.getUsers().iterator().next();
@@ -92,8 +96,8 @@ public class LobbyEntityDtoMapperIntegrationTests {
         UserDto userDto = UserDto.builder()
                 .id(savedUser.getId())
                 .username(savedUser.getUsername())
-                .isOnline(true).
-                scoreId(savedScore.getId())
+                .isOnline(true)
+                .scoreId(savedScore.getId())
                 .build();
 
         LobbyDto dto = LobbyDto.builder()
@@ -101,7 +105,9 @@ public class LobbyEntityDtoMapperIntegrationTests {
                 .lobbyName("Test Lobby")
                 .isActive(true)
                 .isPublic(false)
+                .inGame(false)
                 .users(Set.of(userDto))
+                .hostId(userDto.getId())
                 .build();
 
         LobbyEntity entity = lobbyEntityDtoMapper.mapFromDto(dto);
@@ -111,7 +117,9 @@ public class LobbyEntityDtoMapperIntegrationTests {
         assertThat(entity.getLobbyName()).isEqualTo("Test Lobby");
         assertThat(entity.getIsActive()).isTrue();
         assertThat(entity.getIsPublic()).isFalse();
+        assertThat(entity.getInGame()).isFalse();
         assertThat(entity.getUserEntities()).hasSize(1);
+        assertThat(entity.getHost().getId()).isEqualTo(savedUser.getId());
 
         UserEntity userEntity = entity.getUserEntities().iterator().next();
         assertThat(userEntity.getId()).isEqualTo(savedUser.getId());
@@ -130,7 +138,9 @@ public class LobbyEntityDtoMapperIntegrationTests {
                 .lobbyName("Invalid Lobby")
                 .isActive(false)
                 .isPublic(true)
+                .inGame(false)
                 .users(Set.of(invalidUserDto))
+                .hostId(invalidUserDto.getId())
                 .build();
 
         assertThatThrownBy(() -> lobbyEntityDtoMapper.mapFromDto(dto))

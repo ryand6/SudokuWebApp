@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.enums.Difficulty;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,12 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class SudokuPuzzleEntityRepositoryIntegrationTests {
+public class SudokuPuzzleRepositoryIntegrationTests {
 
     private final SudokuPuzzleRepository underTest;
 
     @Autowired
-    public SudokuPuzzleEntityRepositoryIntegrationTests(SudokuPuzzleRepository underTest) {
+    public SudokuPuzzleRepositoryIntegrationTests(SudokuPuzzleRepository underTest) {
         this.underTest = underTest;
     }
 
@@ -34,11 +35,12 @@ public class SudokuPuzzleEntityRepositoryIntegrationTests {
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
     }
 
     @Test
@@ -69,7 +71,7 @@ public class SudokuPuzzleEntityRepositoryIntegrationTests {
     public void testSudokuPuzzleFullUpdate() {
         SudokuPuzzleEntity sudokuPuzzleEntityA = TestDataUtil.createTestSudokuPuzzleA();
         underTest.save(sudokuPuzzleEntityA);
-        sudokuPuzzleEntityA.setDifficulty(SudokuPuzzleEntity.Difficulty.MEDIUM);
+        sudokuPuzzleEntityA.setDifficulty(Difficulty.MEDIUM);
         underTest.save(sudokuPuzzleEntityA);
         Optional<SudokuPuzzleEntity> result = underTest.findById(sudokuPuzzleEntityA.getId());
         assertThat(result).isPresent();

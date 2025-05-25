@@ -1,40 +1,51 @@
 package com.github.ryand6.sudokuweb.services.impl;
 
-import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.domain.GameEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.domain.factory.GameFactory;
+import com.github.ryand6.sudokuweb.domain.factory.SudokuPuzzleFactory;
 import com.github.ryand6.sudokuweb.dto.GameDto;
 import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
-import com.github.ryand6.sudokuweb.dto.GenerateBoardResponseDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.exceptions.InvalidDifficultyException;
 import com.github.ryand6.sudokuweb.exceptions.TooManyActivePlayersException;
+import com.github.ryand6.sudokuweb.mappers.Impl.GameEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.GameRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
 import com.github.ryand6.sudokuweb.services.PuzzleGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class BoardStateService {
 
+    private static final Logger log = LoggerFactory.getLogger(BoardStateService.class);
+
     private final PuzzleGenerator puzzleGenerator;
     private final LobbyRepository lobbyRepository;
     private final GameRepository gameRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
+    private final GameEntityDtoMapper gameEntityDtoMapper;
 
     public BoardStateService(PuzzleGenerator puzzleGenerator,
                              LobbyRepository lobbyRepository,
                              GameRepository gameRepository,
-                             SudokuPuzzleRepository sudokuPuzzleRepository) {
+                             SudokuPuzzleRepository sudokuPuzzleRepository,
+                             GameEntityDtoMapper gameEntityDtoMapper) {
         this.puzzleGenerator = puzzleGenerator;
         this.lobbyRepository = lobbyRepository;
         this.gameRepository = gameRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
+        this.gameEntityDtoMapper = gameEntityDtoMapper;
     }
 
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
@@ -46,57 +57,38 @@ public class BoardStateService {
         String difficulty = request.getDifficulty();
         Long lobbyId = request.getLobbyId();
 
-        // Call static method to generate sudokuPuzzleEntity, retrieving both the sudokuPuzzleEntity and solution as a string
-        // interpretation of a nested int array
-        List<String> sudokuPuzzle = puzzleGenerator.generatePuzzle(difficulty);
-        String puzzle = sudokuPuzzle.get(0);
-        String solution = sudokuPuzzle.get(1);
-
-        // Fetch associated game the sudokuPuzzleEntity is generated for
-        LobbyEntity lobbyEntity = lobbyRepository.findById(lobbyId).orElseThrow(() -> new EntityNotFoundException("Game not found"));
+        // Fetch the lobby that is creating the game
+        LobbyEntity lobbyEntity = lobbyRepository.findById(lobbyId).orElseThrow(() -> new EntityNotFoundException("Lobby with ID " + lobbyId + " not found when creating game."));
 
         // Retrieve all active users in the game
         Set<UserEntity> activeUserEntities = lobbyEntity.getUserEntities();
 
         if (activeUserEntities.size() > 4) {
-            throw new TooManyActivePlayersException("Cannot create game: Lobby with id " + lobbyId + " has more than 4 active players.")
+            throw new TooManyActivePlayersException("Cannot create game: Lobby with id " + lobbyId + " has more than 4 active players.");
         }
+
+        Difficulty diffEnum;
+        try {
+            diffEnum = Difficulty.valueOf(difficulty.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new InvalidDifficultyException("Invalid difficulty value: " + difficulty);
+        }
+
+        log.info("Created new game for lobby ID {} with player count {} and difficulty {}", lobbyId, activeUserEntities.size(), difficulty);
+
+        // Call static method to generate sudokuPuzzleEntity, retrieving both the sudokuPuzzleEntity and solution as a string
+        // interpretation of a nested int array
+        List<String> sudokuPuzzle = puzzleGenerator.generatePuzzle(difficulty);
+        String puzzle = new String(sudokuPuzzle.get(0));
+        String solution = new String(sudokuPuzzle.get(1));
 
         // Create SudokuPuzzle object
-        SudokuPuzzleEntity newPuzzle = new SudokuPuzzleEntity();
-        newPuzzle.setDifficulty(Difficulty.valueOf(difficulty.toUpperCase()));
-        newPuzzle.setInitialBoardState(puzzle);
-        newPuzzle.setSolution(solution);
+        SudokuPuzzleEntity newPuzzle = SudokuPuzzleFactory.createSudokuPuzzle(puzzle, solution, diffEnum);
         sudokuPuzzleRepository.save(newPuzzle);
 
-        GameEntity newGame = new GameEntity();
-        newGame.setLobbyEntity(lobbyEntity);
-        newGame.setSudokuPuzzleEntity(newPuzzle);
-
-        // Get list of player colour enums
-        PlayerColour[] playerColours = PlayerColour.values();
-        int i = 0;
-
-        // Create GameState objects for each active user in the game
-        Set<GameStateEntity> gameStateEntities = new HashSet<>();
-        for (UserEntity userEntity : activeUserEntities) {
-            GameStateEntity state = new GameStateEntity();
-            state.setUserEntity(userEntity);
-            state.setGameEntity(newGame);
-            // Board state starts with the initial sudokuPuzzleEntity
-            state.setCurrentBoardState(puzzle);
-            // Initial score for each user is 0
-            state.setScore(0);
-            // Set the player colour and increment the counter so the next player colour is unique
-            state.setPlayerColour(playerColours[i]);
-            i++;
-            gameStateEntities.add(state);
-        }
-
-        // Will save gameState entities to DB also due to cascade rules
-        newGame.setGameStateEntities(gameStateEntities);
+        GameEntity newGame = GameFactory.createGame(lobbyEntity, newPuzzle);
         gameRepository.save(newGame);
 
-        return new GenerateBoardResponseDto(puzzle, solution);
+        return gameEntityDtoMapper.mapToDto(newGame);
     }
 }

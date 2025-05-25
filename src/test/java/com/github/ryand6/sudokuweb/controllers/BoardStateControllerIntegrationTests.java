@@ -5,10 +5,11 @@ import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.dto.GameDto;
 import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
-import com.github.ryand6.sudokuweb.dto.GenerateBoardResponseDto;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,11 +62,12 @@ public class BoardStateControllerIntegrationTests {
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
         // Lobby needs to exist for generateSudokuBoard() to work
         score = TestDataUtil.createTestScoreA();
         user = TestDataUtil.createTestUserA(score);
@@ -92,7 +94,7 @@ public class BoardStateControllerIntegrationTests {
     }
 
     @Test
-    public void generateSudokuBoard_returnsValidPuzzleAndSolution() throws Exception {
+    public void generateSudokuBoard_returnsValidPuzzle() throws Exception {
         GenerateBoardRequestDto requestDto = GenerateBoardRequestDto.builder()
                 .difficulty("easy")
                 .lobbyId(lobby.getId())
@@ -109,27 +111,46 @@ public class BoardStateControllerIntegrationTests {
         String response = result.getResponse().getContentAsString();
 
         // Parse the response to the DTO
-        GenerateBoardResponseDto responseDto = objectMapper.readValue(response, GenerateBoardResponseDto.class);
+        GameDto gameDto = objectMapper.readValue(response, GameDto.class);
 
         // Parse initialBoard and solution as 2D arrays
-        int[][] initialBoard = objectMapper.readValue(responseDto.getInitialBoard(), int[][].class);
-        int[][] solution = objectMapper.readValue(responseDto.getSolution(), int[][].class);
+        int[][] initialBoard = objectMapper.readValue(gameDto.getSudokuPuzzle().getInitialBoardState(), int[][].class);
 
         // Check dimensions
         assertEquals(9, initialBoard.length);
-        assertEquals(9, solution.length);
 
         // Check dimensions of each row and that all values are within correct range
         for (int i = 0; i < 9; i++) {
             assertEquals(9, initialBoard[i].length, "initialBoard row " + i + " length mismatch");
-            assertEquals(9, solution[i].length, "solution row " + i + " length mismatch");
 
             for (int j = 0; j < 9; j++) {
                 assertTrue(initialBoard[i][j] >= 0 && initialBoard[i][j] <= 9, "Invalid number in initialBoard");
-                assertTrue(solution[i][j] >= 1 && solution[i][j] <= 9, "Invalid number in solution");
             }
         }
 
+    }
+
+    @Test
+    public void generateSudokuBoard_invalidDifficulty() throws Exception {
+        GenerateBoardRequestDto requestDto = GenerateBoardRequestDto.builder()
+                .difficulty("XTREME")
+                .lobbyId(lobby.getId())
+                .build();
+
+        String requestDtoJson = objectMapper.writeValueAsString(requestDto);
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/generate-board")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(requestDtoJson)
+            ).andExpect(
+                    MockMvcResultMatchers.status().isBadRequest()
+            )
+            .andExpect(
+                    MockMvcResultMatchers.content().string(
+                            Matchers.containsString("Invalid difficulty value")
+                    )
+            );
     }
 
 }

@@ -2,11 +2,12 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.dto.GameDto;
+import com.github.ryand6.sudokuweb.dto.GameStateDto;
 import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
-import com.github.ryand6.sudokuweb.dto.GenerateBoardResponseDto;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
-import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
-import com.github.ryand6.sudokuweb.repositories.UserRepository;
+import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.*;
 import com.github.ryand6.sudokuweb.services.impl.BoardStateService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,6 +40,9 @@ public class BoardStateServiceIntegrationTests {
     private final UserRepository userRepository;
     private final JdbcTemplate jdbcTemplate;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
+    private final GameRepository gameRepository;
+    private final GameStateRepository gameStateRepository;
+    private final UserEntityDtoMapper userEntityDtoMapper;
 
     @Autowired
     public BoardStateServiceIntegrationTests(
@@ -46,13 +50,18 @@ public class BoardStateServiceIntegrationTests {
             LobbyRepository lobbyRepository,
             UserRepository userRepository,
             JdbcTemplate jdbcTemplate,
-            SudokuPuzzleRepository sudokuPuzzleRepository
-    ) {
+            SudokuPuzzleRepository sudokuPuzzleRepository,
+            GameRepository gameRepository,
+            GameStateRepository gameStateRepository,
+            UserEntityDtoMapper userEntityDtoMapper) {
         this.boardStateService = boardStateService;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.jdbcTemplate = jdbcTemplate;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
+        this.gameRepository = gameRepository;
+        this.gameStateRepository = gameStateRepository;
+        this.userEntityDtoMapper = userEntityDtoMapper;
     }
 
     @MockBean
@@ -63,15 +72,17 @@ public class BoardStateServiceIntegrationTests {
     private UserEntity user2;
     private ScoreEntity score1;
     private ScoreEntity score2;
+    private Set<UserEntity> users;
 
     @BeforeEach
     void setup() {
         jdbcTemplate.execute("DELETE FROM lobby_users");
-        jdbcTemplate.execute("DELETE FROM lobby_state");
+        jdbcTemplate.execute("DELETE FROM game_state");
+        jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        jdbcTemplate.execute("DELETE FROM lobbies");
         // Setup Score entities to insert into users
         score1 = TestDataUtil.createTestScoreA();
         score2 = TestDataUtil.createTestScoreB();
@@ -83,20 +94,21 @@ public class BoardStateServiceIntegrationTests {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        Set<UserEntity> users = new HashSet<>();
+        users = new HashSet<>();
         users.add(user1);
         users.add(user2);
 
         testLobby = new LobbyEntity();
         testLobby.setLobbyName("TestLobby");
         testLobby.setUserEntities(users);
+        testLobby.setHost(user1);
 
         lobbyRepository.save(testLobby);
     }
 
     @Test
     @Transactional
-    void testGenerateSudokuBoard() {
+    void createGame_createsEntitiesAsExpected() {
         // Used for mocking generatePuzzle
         String difficulty = "easy";
         String generatedPuzzle = "[[0,6,0,0,1,5,0,4,0],[0,5,4,0,9,0,6,0,0],[7,0,2,0,6,0,9,0,0],[0,0,5,0,0,7,0,0,1],[0,7,6,0,0,0,4,9,0],[4,0,0,9,0,0,3,0,0],[0,0,7,0,3,0,2,0,4],[0,0,9,0,7,0,5,3,0],[0,2,0,5,8,0,0,7,0]]";
@@ -110,27 +122,33 @@ public class BoardStateServiceIntegrationTests {
         requestDto.setDifficulty(difficulty);
         requestDto.setLobbyId(testLobby.getId());
 
-        GenerateBoardResponseDto response = boardStateService.generateSudokuBoard(requestDto);
+        GameDto response = boardStateService.createGame(requestDto);
 
         // Test output of generateSudokuBoard
         assertThat(response).isNotNull();
-        assertThat(response.getInitialBoard()).isEqualTo(generatedPuzzle);
-        assertThat(response.getSolution()).isEqualTo(solution);
+        assertThat(response.getSudokuPuzzle().getInitialBoardState()).isEqualTo(generatedPuzzle);
+
+        // Test that the game has been saved to the DB
+        List<GameEntity> gameEntities = gameRepository.findAll();
+        assertThat(gameEntities).hasSize(1);
 
         // Test that a puzzle has been saved to the DB
         List<SudokuPuzzleEntity> puzzles = sudokuPuzzleRepository.findAll();
         assertThat(puzzles).hasSize(1);
 
-        // Test that both lobby users have their own lobby state entities
-        SudokuPuzzleEntity savedPuzzle = puzzles.get(0);
-        assertThat(savedPuzzle.getGameStateEntities()).hasSize(2);
+        // Test that both game users have their own game state entities
+        assertThat(response.getGameStates()).hasSize(2);
 
-        // Test that the generated board has been assigned to each lobby user's state
-        // and their lobby state score starts at 0
+        // Test that the game states have been saved to the DB
+        List<GameStateEntity> gameStateEntities = gameStateRepository.findAll();
+        assertThat(gameStateEntities).hasSize(2);
+
+        // Test contents of each game state DTO
         for (
-                GameStateEntity state : savedPuzzle.getGameStateEntities()) {
+                GameStateDto state : response.getGameStates()) {
             assertThat(state.getCurrentBoardState()).isEqualTo(generatedPuzzle);
             assertThat(state.getScore()).isEqualTo(0);
+            assertThat(state.getPlayerColour()).isIn(PlayerColour.values());
         }
     }
 }
