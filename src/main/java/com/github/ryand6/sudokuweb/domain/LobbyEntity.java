@@ -60,7 +60,7 @@ public class LobbyEntity {
     @JoinColumn(name = "host_user_id", nullable = false)
     private UserEntity host;
 
-    @OneToMany(mappedBy = "lobbyEntity", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "lobbyEntity", cascade = CascadeType.REMOVE)
     private Set<GameEntity> gameEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users
