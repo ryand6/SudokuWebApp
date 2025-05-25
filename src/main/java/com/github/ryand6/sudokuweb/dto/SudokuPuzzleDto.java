@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.dto;
 
-import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.enums.Difficulty;
 import lombok.*;
 
 @Getter
@@ -14,6 +14,6 @@ public class SudokuPuzzleDto {
 
     private String initialBoardState;
 
-    private SudokuPuzzleEntity.Difficulty difficulty;
+    private Difficulty difficulty;
 
 }

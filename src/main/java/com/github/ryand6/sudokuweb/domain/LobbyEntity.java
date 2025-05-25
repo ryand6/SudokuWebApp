@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.domain;
 
+import com.github.ryand6.sudokuweb.enums.Difficulty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,6 +28,10 @@ public class LobbyEntity {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "difficulty")
+    @Enumerated(EnumType.STRING)
+    private Difficulty difficulty;
+
     // true if lobby open, false if no players active in the lobby anymore
     @Column(name = "is_active")
     private Boolean isActive;
@@ -34,6 +39,10 @@ public class LobbyEntity {
     // true for public lobby, false for private
     @Column(name = "is_public")
     private Boolean isPublic;
+
+    // code for joining the code (if private)
+    @Column(name = "join_code")
+    private String joinCode;
 
     // All active users in the lobby (max 4 players) - updates when a user joins or leaves/disconnects from site
     // FetchType.EAGER as only up to 4x users are linked at any one time
@@ -45,8 +54,14 @@ public class LobbyEntity {
     )
     private Set<UserEntity> userEntities;
 
+    // Reference user id of the host - user that set up the lobby, or the earliest person in
+    // the current set of active users that joined the lobby (if previous host left)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "host_user_id", nullable = false)
+    private UserEntity host;
+
     @OneToMany(mappedBy = "lobbyEntity", cascade = CascadeType.ALL)
-    private Set<LobbyStateEntity> lobbyStateEntities;
+    private Set<GameEntity> gameEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users
     @Override

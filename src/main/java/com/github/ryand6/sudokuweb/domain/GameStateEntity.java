@@ -1,10 +1,8 @@
 package com.github.ryand6.sudokuweb.domain;
 
+import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -12,24 +10,20 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "lobby_state")
-public class LobbyStateEntity {
+@Table(name = "game_state")
+public class GameStateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_id_seq")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "lobby_id", nullable = false)
-    private LobbyEntity lobbyEntity;
+    @JoinColumn(name = "game_id", nullable = false)
+    private GameEntity gameEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
-
-    @ManyToOne
-    @JoinColumn(name = "puzzle_id", nullable = false)
-    private SudokuPuzzleEntity sudokuPuzzleEntity;
 
     @Column(name = "current_board_state", nullable = false)
     private String currentBoardState;
@@ -37,17 +31,17 @@ public class LobbyStateEntity {
     @Column(name = "score", columnDefinition = "INTEGER DEFAULT 0")
     private Integer score;
 
-    @UpdateTimestamp
-    @Column(name = "last_active")
-    private LocalDateTime lastActive;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "player_colour", nullable = false)
+    private PlayerColour playerColour;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LobbyStateEntity lobbyStateEntity = (LobbyStateEntity) o;
-        return id != null && id.equals(lobbyStateEntity.id);
+        GameStateEntity gameStateEntity = (GameStateEntity) o;
+        return id != null && id.equals(gameStateEntity.id);
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users

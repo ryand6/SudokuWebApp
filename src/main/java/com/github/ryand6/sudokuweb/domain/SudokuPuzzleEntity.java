@@ -1,9 +1,8 @@
 package com.github.ryand6.sudokuweb.domain;
 
+import com.github.ryand6.sudokuweb.enums.Difficulty;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.Set;
 
 @Getter
 @Setter
@@ -13,10 +12,6 @@ import java.util.Set;
 @Entity
 @Table(name = "sudoku_puzzles")
 public class SudokuPuzzleEntity {
-
-    public enum Difficulty {
-        EASY, MEDIUM, HARD, EXTREME
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "puzzle_id_seq")
@@ -31,9 +26,6 @@ public class SudokuPuzzleEntity {
     @Column(name = "difficulty", nullable = false)
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
-
-    @OneToMany(mappedBy = "sudokuPuzzleEntity", cascade = CascadeType.ALL)
-    private Set<LobbyStateEntity> lobbyStateEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState
     @Override

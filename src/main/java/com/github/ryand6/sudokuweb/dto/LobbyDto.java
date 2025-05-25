@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dto;
 
+import com.github.ryand6.sudokuweb.enums.Difficulty;
 import lombok.*;
 
 import java.util.Set;
@@ -18,10 +19,14 @@ public class LobbyDto {
 
     private String lobbyName;
 
+    private Difficulty difficulty;
+
     private Boolean isActive;
 
     private Boolean isPublic;
 
     private Set<UserDto> users;
+
+    private Long hostId;
 
 }

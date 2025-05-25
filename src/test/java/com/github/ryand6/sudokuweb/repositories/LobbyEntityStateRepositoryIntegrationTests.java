@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class LobbyEntityStateRepositoryIntegrationTests {
 
-    private final LobbyStateRepository underTest;
+    private final GameStateRepository underTest;
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final LobbyRepository lobbyRepository;
@@ -30,7 +30,7 @@ public class LobbyEntityStateRepositoryIntegrationTests {
 
     @Autowired
     public LobbyEntityStateRepositoryIntegrationTests(
-            LobbyStateRepository underTest,
+            GameStateRepository underTest,
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
             LobbyRepository lobbyRepository,
@@ -65,12 +65,12 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
         // Checks for score creation and retrieval
-        LobbyStateEntity lobbyStateEntity = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
-        underTest.save(lobbyStateEntity);
-        Optional<LobbyStateEntity> result = underTest.findById(lobbyStateEntity.getId());
+        GameStateEntity gameStateEntity = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
+        underTest.save(gameStateEntity);
+        Optional<GameStateEntity> result = underTest.findById(gameStateEntity.getId());
         assertThat(result).isPresent();
-        lobbyStateEntity.setLastActive(result.get().getLastActive());
-        assertThat(result.get()).isEqualTo(lobbyStateEntity);
+        gameStateEntity.setLastActive(result.get().getLastActive());
+        assertThat(result.get()).isEqualTo(gameStateEntity);
     }
 
     @Test
@@ -96,23 +96,23 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         sudokuPuzzleRepository.save(sudokuPuzzleEntityA);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityB);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityC);
-        LobbyStateEntity lobbyStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntityA, userEntityA, sudokuPuzzleEntityA);
-        underTest.save(lobbyStateEntityA);
-        LobbyStateEntity lobbyStateEntityB = TestDataUtil.createTestLobbyStateB(lobbyEntityB, userEntityB, sudokuPuzzleEntityB);
-        underTest.save(lobbyStateEntityB);
-        LobbyStateEntity lobbyStateEntityC = TestDataUtil.createTestLobbyStateC(lobbyEntityC, userEntityC, sudokuPuzzleEntityC);
-        underTest.save(lobbyStateEntityC);
+        GameStateEntity gameStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntityA, userEntityA, sudokuPuzzleEntityA);
+        underTest.save(gameStateEntityA);
+        GameStateEntity gameStateEntityB = TestDataUtil.createTestLobbyStateB(lobbyEntityB, userEntityB, sudokuPuzzleEntityB);
+        underTest.save(gameStateEntityB);
+        GameStateEntity gameStateEntityC = TestDataUtil.createTestLobbyStateC(lobbyEntityC, userEntityC, sudokuPuzzleEntityC);
+        underTest.save(gameStateEntityC);
 
-        Iterable<LobbyStateEntity> result = underTest.findAll();
+        Iterable<GameStateEntity> result = underTest.findAll();
         assertThat(result)
                 .hasSize(3)
                 .usingRecursiveComparison()
                 // Avoid lazy loaded fields when comparing
                 .ignoringFields(
                         "lastActive",
-                        "sudokuPuzzleEntity.lobbyStateEntities",
-                        "lobbyEntity.lobbyStateEntities")
-                .isEqualTo(List.of(lobbyStateEntityA, lobbyStateEntityB, lobbyStateEntityC));
+                        "sudokuPuzzleEntity.gameStateEntities",
+                        "lobbyEntity.gameStateEntities")
+                .isEqualTo(List.of(gameStateEntityA, gameStateEntityB, gameStateEntityC));
     }
 
     @Test
@@ -124,14 +124,14 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        LobbyStateEntity lobbyStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
-        underTest.save(lobbyStateEntityA);
-        lobbyStateEntityA.setScore(1000);
-        underTest.save(lobbyStateEntityA);
-        Optional<LobbyStateEntity> result = underTest.findById(lobbyStateEntityA.getId());
+        GameStateEntity gameStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
+        underTest.save(gameStateEntityA);
+        gameStateEntityA.setScore(1000);
+        underTest.save(gameStateEntityA);
+        Optional<GameStateEntity> result = underTest.findById(gameStateEntityA.getId());
         assertThat(result).isPresent();
-        lobbyStateEntityA.setLastActive(result.get().getLastActive());
-        assertThat(result.get()).isEqualTo(lobbyStateEntityA);
+        gameStateEntityA.setLastActive(result.get().getLastActive());
+        assertThat(result.get()).isEqualTo(gameStateEntityA);
     }
 
     // Made transactional so that deletion will be flushed to DB within session
@@ -145,10 +145,10 @@ public class LobbyEntityStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        LobbyStateEntity lobbyStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
-        underTest.save(lobbyStateEntityA);
-        underTest.deleteById(lobbyStateEntityA.getId());
-        Optional<LobbyStateEntity> result = underTest.findById(lobbyStateEntityA.getId());
+        GameStateEntity gameStateEntityA = TestDataUtil.createTestLobbyStateA(lobbyEntity, userEntity, sudokuPuzzleEntity);
+        underTest.save(gameStateEntityA);
+        underTest.deleteById(gameStateEntityA.getId());
+        Optional<GameStateEntity> result = underTest.findById(gameStateEntityA.getId());
         assertThat(result).isEmpty();
     }
 

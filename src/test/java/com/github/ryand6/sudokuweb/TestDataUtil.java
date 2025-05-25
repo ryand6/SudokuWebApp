@@ -98,6 +98,7 @@ public final class TestDataUtil {
                 lobbyName("SudokuSquad").
                 isActive(true).
                 isPublic(false).
+                joinCode("aey3g-yagy3i3-u3ygu34").
                 userEntities(set).
                 build();
     }
@@ -115,8 +116,8 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static LobbyStateEntity createTestLobbyStateA(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
-        return LobbyStateEntity.builder().
+    public static GameStateEntity createTestLobbyStateA(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+        return GameStateEntity.builder().
                 lobbyEntity(lobbyEntity).
                 userEntity(userEntity).
                 sudokuPuzzleEntity(sudokuPuzzleEntity).
@@ -125,8 +126,8 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static LobbyStateEntity createTestLobbyStateB(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
-        return LobbyStateEntity.builder().
+    public static GameStateEntity createTestLobbyStateB(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+        return GameStateEntity.builder().
                 lobbyEntity(lobbyEntity).
                 userEntity(userEntity).
                 sudokuPuzzleEntity(sudokuPuzzleEntity).
@@ -135,8 +136,8 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static LobbyStateEntity createTestLobbyStateC(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
-        return LobbyStateEntity.builder().
+    public static GameStateEntity createTestLobbyStateC(final LobbyEntity lobbyEntity, final UserEntity userEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+        return GameStateEntity.builder().
                 lobbyEntity(lobbyEntity).
                 userEntity(userEntity).
                 sudokuPuzzleEntity(sudokuPuzzleEntity).

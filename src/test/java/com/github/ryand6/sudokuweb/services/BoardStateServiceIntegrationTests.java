@@ -123,12 +123,12 @@ public class BoardStateServiceIntegrationTests {
 
         // Test that both lobby users have their own lobby state entities
         SudokuPuzzleEntity savedPuzzle = puzzles.get(0);
-        assertThat(savedPuzzle.getLobbyStateEntities()).hasSize(2);
+        assertThat(savedPuzzle.getGameStateEntities()).hasSize(2);
 
         // Test that the generated board has been assigned to each lobby user's state
         // and their lobby state score starts at 0
         for (
-                LobbyStateEntity state : savedPuzzle.getLobbyStateEntities()) {
+                GameStateEntity state : savedPuzzle.getGameStateEntities()) {
             assertThat(state.getCurrentBoardState()).isEqualTo(generatedPuzzle);
             assertThat(state.getScore()).isEqualTo(0);
         }
