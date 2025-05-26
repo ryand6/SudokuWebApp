@@ -61,7 +61,7 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
                 .sudokuPuzzleEntity(sudokuPuzzleEntity)
                 .gameStateEntities(
                         gameDto.getGameStates().stream()
-                                .map(gameStateDto -> resultDtoGameState(gameStateDto.getId()))
+                                .map(gameStateDto -> resolveDtoGameState(gameStateDto.getId()))
                                 .collect(Collectors.toSet())
                 );
 
@@ -86,7 +86,7 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
                 .orElseThrow(() -> new EntityNotFoundException("Puzzle not found with id " + puzzleId));
     }
 
-    private GameStateEntity resultDtoGameState(Long gameStateId) {
+    private GameStateEntity resolveDtoGameState(Long gameStateId) {
         return gameStateRepository.findById(gameStateId)
                 .orElseThrow(() -> new EntityNotFoundException("Game state not found with id " + gameStateId));
     }

@@ -58,13 +58,13 @@ public class GameStateEntityDtoMapper implements EntityDtoMapper<GameStateEntity
         return gameStateEntityBuilder.build();
     }
 
-    // Get LobbyEntity through DTO LobbyId
+    // Get GameEntity through DTO gameId
     private GameEntity resolveDtoGame(Long gameId) {
         return gameRepository.findById(gameId)
                 .orElseThrow(() -> new EntityNotFoundException("Game not found with id " + gameId));
     }
 
-    // Get UserEntity through DTO UserId
+    // Get UserEntity through DTO userId
     private UserEntity resolveDtoUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found with id " + userId));

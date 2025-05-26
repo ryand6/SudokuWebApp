@@ -67,7 +67,7 @@ public class GameStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        GameEntity gameEntity = TestDataUtil.createGame(lobbyEntity, sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createTestGame(lobbyEntity, sudokuPuzzleEntity);
         gameRepository.save(gameEntity);
         // Checks for score creation and retrieval
         GameStateEntity gameStateEntity = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
@@ -100,9 +100,9 @@ public class GameStateRepositoryIntegrationTests {
         sudokuPuzzleRepository.save(sudokuPuzzleEntityA);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityB);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityC);
-        GameEntity gameEntityA = TestDataUtil.createGame(lobbyEntityA, sudokuPuzzleEntityA);
-        GameEntity gameEntityB = TestDataUtil.createGame(lobbyEntityB, sudokuPuzzleEntityB);
-        GameEntity gameEntityC = TestDataUtil.createGame(lobbyEntityC, sudokuPuzzleEntityC);
+        GameEntity gameEntityA = TestDataUtil.createTestGame(lobbyEntityA, sudokuPuzzleEntityA);
+        GameEntity gameEntityB = TestDataUtil.createTestGame(lobbyEntityB, sudokuPuzzleEntityB);
+        GameEntity gameEntityC = TestDataUtil.createTestGame(lobbyEntityC, sudokuPuzzleEntityC);
         gameRepository.save(gameEntityA);
         gameRepository.save(gameEntityB);
         gameRepository.save(gameEntityC);
@@ -134,7 +134,7 @@ public class GameStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        GameEntity gameEntity = TestDataUtil.createGame(lobbyEntity, sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createTestGame(lobbyEntity, sudokuPuzzleEntity);
         gameRepository.save(gameEntity);
         GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntityA);
@@ -154,7 +154,7 @@ public class GameStateRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        GameEntity gameEntity = TestDataUtil.createGame(lobbyEntity, sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createTestGame(lobbyEntity, sudokuPuzzleEntity);
         gameRepository.save(gameEntity);
         GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntityA);

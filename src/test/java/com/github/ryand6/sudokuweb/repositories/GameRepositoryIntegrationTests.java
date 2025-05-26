@@ -64,7 +64,7 @@ public class GameRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        GameEntity gameEntity = TestDataUtil.createGame(lobbyEntity, sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createTestGame(lobbyEntity, sudokuPuzzleEntity);
         underTest.save(gameEntity);
         Optional<GameEntity> result = underTest.findById(gameEntity.getId());
         assertThat(result).isPresent();
@@ -94,9 +94,9 @@ public class GameRepositoryIntegrationTests {
         sudokuPuzzleRepository.save(sudokuPuzzleEntityA);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityB);
         sudokuPuzzleRepository.save(sudokuPuzzleEntityC);
-        GameEntity gameEntityA = TestDataUtil.createGame(lobbyEntityA, sudokuPuzzleEntityA);
-        GameEntity gameEntityB = TestDataUtil.createGame(lobbyEntityB, sudokuPuzzleEntityB);
-        GameEntity gameEntityC = TestDataUtil.createGame(lobbyEntityC, sudokuPuzzleEntityC);
+        GameEntity gameEntityA = TestDataUtil.createTestGame(lobbyEntityA, sudokuPuzzleEntityA);
+        GameEntity gameEntityB = TestDataUtil.createTestGame(lobbyEntityB, sudokuPuzzleEntityB);
+        GameEntity gameEntityC = TestDataUtil.createTestGame(lobbyEntityC, sudokuPuzzleEntityC);
         underTest.save(gameEntityA);
         underTest.save(gameEntityB);
         underTest.save(gameEntityC);
@@ -122,14 +122,14 @@ public class GameRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntityA = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntityA);
-        GameEntity gameEntityA = TestDataUtil.createGame(lobbyEntity, sudokuPuzzleEntityA);
+        GameEntity gameEntityA = TestDataUtil.createTestGame(lobbyEntity, sudokuPuzzleEntityA);
         underTest.save(gameEntityA);
         // Create new puzzle to assign to game
         SudokuPuzzleEntity sudokuPuzzleEntityB = TestDataUtil.createTestSudokuPuzzleB();
         sudokuPuzzleRepository.save(sudokuPuzzleEntityB);
         gameEntityA.setSudokuPuzzleEntity(sudokuPuzzleEntityB);
         underTest.save(gameEntityA);
-        GameEntity gameEntityB = TestDataUtil.createGame(lobbyEntity, sudokuPuzzleEntityB);
+        GameEntity gameEntityB = TestDataUtil.createTestGame(lobbyEntity, sudokuPuzzleEntityB);
         Optional<GameEntity> result = underTest.findById(gameEntityA.getId());
         assertThat(result).isPresent();
         assertThat(result.get().getSudokuPuzzleEntity()).isEqualTo(sudokuPuzzleEntityB);
@@ -144,7 +144,7 @@ public class GameRepositoryIntegrationTests {
         lobbyRepository.save(lobbyEntity);
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
-        GameEntity gameEntity = TestDataUtil.createGame(lobbyEntity, sudokuPuzzleEntity);
+        GameEntity gameEntity = TestDataUtil.createTestGame(lobbyEntity, sudokuPuzzleEntity);
         underTest.save(gameEntity);
         underTest.deleteById(gameEntity.getId());
         Optional<GameEntity> result = underTest.findById(gameEntity.getId());

@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 /*
-Integration tests for LobbyStateEntityDtoMapper
+Integration tests for GameStateEntityDtoMapper
 */
 public class GameStateEntityDtoMapperIntegrationTests {
 
@@ -82,11 +82,11 @@ public class GameStateEntityDtoMapperIntegrationTests {
         //Setup test lobby data in the test DB
         savedLobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(savedUser));
         // Prepare a game entity so that it can be linked to the game state entities
-        gameEntity = TestDataUtil.createGame(savedLobby, savedPuzzle);
+        gameEntity = TestDataUtil.createTestGame(savedLobby, savedPuzzle);
     }
 
     @Test
-    void mapToDto_shouldReturnValidLobbyStateDto() {
+    void mapToDto_shouldReturnValidGameStateDto() {
         GameStateEntity gameStateEntity = TestDataUtil.createTestGameStateA(gameEntity, savedUser);
         gameStateEntity.setId(6L);
 
@@ -102,7 +102,7 @@ public class GameStateEntityDtoMapperIntegrationTests {
     }
 
     @Test
-    void mapFromDto_shouldReturnValidLobbyStateEntity() {
+    void mapFromDto_shouldReturnValidGameStateEntity() {
         gameRepository.save(gameEntity);
 
         GameStateDto gameStateDto = GameStateDto.builder()

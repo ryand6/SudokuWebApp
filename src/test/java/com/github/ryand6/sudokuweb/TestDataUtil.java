@@ -155,7 +155,7 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static GameEntity createGame(final LobbyEntity lobbyEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
+    public static GameEntity createTestGame(final LobbyEntity lobbyEntity, final SudokuPuzzleEntity sudokuPuzzleEntity) {
         return GameEntity.builder()
                 .lobbyEntity(lobbyEntity)
                 .sudokuPuzzleEntity(sudokuPuzzleEntity)
