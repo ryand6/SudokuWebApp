@@ -28,20 +28,20 @@ public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto>
                 .build();
     }
 
-    // Additional context required to create the UserEntity (passwordHash)
+    // Additional context required to create the UserEntity (providerId)
     @Override
     public UserEntity mapFromDto(UserDto dto) {
-        // Basic mapping without passwordHash, or throw UnsupportedOperationException
-        throw new UnsupportedOperationException("Password hash required, provide passwordHash when calling mapFromDto on UserDto");
+        // Basic mapping without providerId, or throw UnsupportedOperationException
+        throw new UnsupportedOperationException("Provider required, provide providerId when calling mapFromDto on UserDto");
     }
 
     // Overloaded method to handle additional context in order to create UserEntity
-    public UserEntity mapFromDto(UserDto userDto, String passwordHash) {
+    public UserEntity mapFromDto(UserDto userDto, String providerId) {
         ScoreEntity scoreEntity = resolveDtoScore(userDto.getScoreId());
 
         UserEntity.UserEntityBuilder userEntityBuilder = UserEntity.builder()
                 .username(userDto.getUsername())
-                .passwordHash(passwordHash)
+                .providerId(providerId)
                 .isOnline(userDto.getIsOnline())
                 .scoreEntity(scoreEntity);
 

@@ -32,7 +32,7 @@ public class SudokuWebApplication implements CommandLineRunner {
 	}
 
 	@GetMapping("/")
-	public String hello(@RequestParam(value = "name", defaultValue = "Sudoku Guru") String name) {
+	public String hello(@RequestParam(value = "name", defaultValue = "TodoSudoku") String name) {
 		return String.format("Hello %s!", name);
 	}
 }

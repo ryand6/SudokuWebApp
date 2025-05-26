@@ -69,7 +69,7 @@ public class UserEntityDtoMapperIntegrationTests {
                 .username("testuser")
                 .isOnline(true)
                 .scoreEntity(savedScore)
-                .passwordHash("iiugh3")
+                .providerId("iiugh3")
                 .build();
 
         UserDto dto = mapper.mapToDto(userEntity);
@@ -97,7 +97,7 @@ public class UserEntityDtoMapperIntegrationTests {
         assertThat(entity).isNotNull();
         assertThat(entity.getId()).isEqualTo(2L);
         assertThat(entity.getUsername()).isEqualTo("mapperuser");
-        assertThat(entity.getPasswordHash()).isEqualTo(passwordHash);
+        assertThat(entity.getProviderId()).isEqualTo(passwordHash);
         assertThat(entity.getIsOnline()).isTrue();
         assertThat(entity.getScoreEntity()).isEqualTo(savedScore);
     }

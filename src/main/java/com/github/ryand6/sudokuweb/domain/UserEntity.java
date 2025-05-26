@@ -26,8 +26,13 @@ public class UserEntity {
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+    // Name of OAuth2 provider User is registered using
+    @Column(name = "provider", nullable = false)
+    private String provider;
+
+    // Unique OAuth2 provider ID used to authenticate
+    @Column(name = "provider_id", nullable = false)
+    private String providerId;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

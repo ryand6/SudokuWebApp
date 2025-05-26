@@ -16,7 +16,7 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 scoreEntity(scoreEntity).
                 username("Henry").
-                passwordHash("a4ceE42GHa").
+                providerId("a4ceE42GHa").
                 build();
     }
 
@@ -24,7 +24,7 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 scoreEntity(scoreEntity).
                 username("dk0ng").
-                passwordHash("34hEA3cbe").
+                providerId("34hEA3cbe").
                 build();
     }
 
@@ -32,7 +32,7 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 scoreEntity(scoreEntity).
                 username("parf").
-                passwordHash("dA5cfB12c").
+                providerId("dA5cfB12c").
                 build();
     }
 

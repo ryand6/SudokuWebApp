@@ -20,7 +20,7 @@ public class BoardStateController {
 
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
     active user in the lobby for the new sudokuPuzzleEntity */
-    @PostMapping("/generate-board")
+    @PostMapping("/create-game")
     public GameDto generateSudokuBoard(@Valid @RequestBody GenerateBoardRequestDto generateBoardRequestDto) {
         return boardStateService.createGame(generateBoardRequestDto);
     }

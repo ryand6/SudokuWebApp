@@ -1,0 +1,44 @@
+package com.github.ryand6.sudokuweb.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                // Configure when authorization is required
+                .authorizeHttpRequests(auth -> auth
+                        // Require that any URL requires authentication except for homepage, css files, and user set-up
+                        .requestMatchers("/", "/setup-username", "/css/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                // Enable OAuth2 login
+                .oauth2Login(oauth -> oauth
+                        .defaultSuccessUrl("/login-success", true)
+                )
+
+                // Add logout config
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/") // Where to go after logout
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID") // Default name of cookie used by Java servlet containers (e.g. Tomcat, Jetty)
+                );
+
+                // Handle access errors gracefully
+                //.exceptionHandling(ex -> ex
+                //        .accessDeniedPage("/access-denied") // Custom Access Denied page
+                //);
+
+        return http.build();
+    }
+
+
+}
