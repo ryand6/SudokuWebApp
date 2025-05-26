@@ -2,7 +2,6 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +25,7 @@ public class GameStateRepositoryIntegrationTests {
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final LobbyRepository lobbyRepository;
+    private final GameRepository gameRepository;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -34,11 +34,13 @@ public class GameStateRepositoryIntegrationTests {
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
             LobbyRepository lobbyRepository,
+            GameRepository gameRepository,
             JdbcTemplate jdbcTemplate) {
         this.underTest = underTest;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
         this.lobbyRepository = lobbyRepository;
+        this.gameRepository = gameRepository;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -55,7 +57,6 @@ public class GameStateRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testGameStateCreationAndRecall() {
         // Create support objects in the db because lobby state relies on user, lobby and sudokuPuzzleEntity foreign keys
         ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
@@ -67,6 +68,7 @@ public class GameStateRepositoryIntegrationTests {
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
         GameEntity gameEntity = TestDataUtil.createGameA(lobbyEntity, sudokuPuzzleEntity);
+        gameRepository.save(gameEntity);
         // Checks for score creation and retrieval
         GameStateEntity gameStateEntity = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntity);
@@ -76,7 +78,6 @@ public class GameStateRepositoryIntegrationTests {
     }
 
     @Test
-    @Transactional
     public void testMultipleGameStatesCreatedAndRecalled() {
         ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
         ScoreEntity scoreEntityB = TestDataUtil.createTestScoreB();
@@ -102,6 +103,9 @@ public class GameStateRepositoryIntegrationTests {
         GameEntity gameEntityA = TestDataUtil.createGameA(lobbyEntityA, sudokuPuzzleEntityA);
         GameEntity gameEntityB = TestDataUtil.createGameA(lobbyEntityB, sudokuPuzzleEntityB);
         GameEntity gameEntityC = TestDataUtil.createGameA(lobbyEntityC, sudokuPuzzleEntityC);
+        gameRepository.save(gameEntityA);
+        gameRepository.save(gameEntityB);
+        gameRepository.save(gameEntityC);
         GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntityA, userEntityA);
         underTest.save(gameStateEntityA);
         GameStateEntity gameStateEntityB = TestDataUtil.createTestGameStateB(gameEntityB, userEntityB);
@@ -115,14 +119,13 @@ public class GameStateRepositoryIntegrationTests {
                 .usingRecursiveComparison()
                 // Avoid lazy loaded fields when comparing
                 .ignoringFields(
-                        "lastActive",
-                        "lobbyEntity.gameEntities",
-                        "gameEntity")
+                        "gameEntity.lobbyEntity.gameEntities",
+                        "gameEntity.gameStateEntities"
+                        )
                 .isEqualTo(List.of(gameStateEntityA, gameStateEntityB, gameStateEntityC));
     }
 
     @Test
-    @Transactional
     public void testScoreFullUpdate() {
         ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
         UserEntity userEntity = TestDataUtil.createTestUserA(scoreEntity);
@@ -132,6 +135,7 @@ public class GameStateRepositoryIntegrationTests {
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
         GameEntity gameEntity = TestDataUtil.createGameA(lobbyEntity, sudokuPuzzleEntity);
+        gameRepository.save(gameEntity);
         GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntityA);
         gameStateEntityA.setScore(1000);
@@ -143,7 +147,6 @@ public class GameStateRepositoryIntegrationTests {
 
     // Made transactional so that deletion will be flushed to DB within session
     @Test
-    @Transactional
     public void testGameStateDeletion() {
         ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
         UserEntity userEntity = TestDataUtil.createTestUserA(scoreEntity);
@@ -153,6 +156,7 @@ public class GameStateRepositoryIntegrationTests {
         SudokuPuzzleEntity sudokuPuzzleEntity = TestDataUtil.createTestSudokuPuzzleA();
         sudokuPuzzleRepository.save(sudokuPuzzleEntity);
         GameEntity gameEntity = TestDataUtil.createGameA(lobbyEntity, sudokuPuzzleEntity);
+        gameRepository.save(gameEntity);
         GameStateEntity gameStateEntityA = TestDataUtil.createTestGameStateA(gameEntity, userEntity);
         underTest.save(gameStateEntityA);
         underTest.deleteById(gameStateEntityA.getId());
