@@ -82,7 +82,7 @@ public class GameStateEntityDtoMapperIntegrationTests {
         //Setup test lobby data in the test DB
         savedLobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(savedUser));
         // Prepare a game entity so that it can be linked to the game state entities
-        gameEntity = TestDataUtil.createGameA(savedLobby, savedPuzzle);
+        gameEntity = TestDataUtil.createGame(savedLobby, savedPuzzle);
     }
 
     @Test
