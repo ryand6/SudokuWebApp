@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -13,10 +14,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(Customizer.withDefaults())
                 // Configure when authorization is required
                 .authorizeHttpRequests(auth -> auth
                         // Require that any URL requires authentication except for homepage, css files, and user set-up
-                        .requestMatchers("/", "/setup-username", "/css/**").permitAll()
+                        .requestMatchers("/", "/setup-username", "/error", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

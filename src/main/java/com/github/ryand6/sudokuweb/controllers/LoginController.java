@@ -16,6 +16,7 @@ public class LoginController {
         this.authenticateUserService = authenticateUserService;
     }
 
+    // Handle where to redirect if the OAuth2 login is successful
     @GetMapping("/login-success")
     public String loginSuccess(@AuthenticationPrincipal OAuth2User principal,
                                OAuth2AuthenticationToken authToken) {

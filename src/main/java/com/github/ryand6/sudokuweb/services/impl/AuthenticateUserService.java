@@ -24,7 +24,6 @@ public class AuthenticateUserService {
             case "github", "facebook" -> principal.getAttribute("id").toString();
             default -> throw new IllegalStateException("Unknown provider: " + provider);
         };
-
         return userRepository.findByProviderAndProviderId(provider, providerId);
     }
 
