@@ -41,7 +41,7 @@ public class UserEntity {
     @Column(name = "is_online")
     private Boolean isOnline;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "score_id", nullable = false, unique = true)
     private ScoreEntity scoreEntity;
 

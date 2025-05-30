@@ -16,6 +16,6 @@ public class UserDto {
 
     private Boolean isOnline;
 
-    private Long scoreId;
+    private ScoreDto score;
 
 }

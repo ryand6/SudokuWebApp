@@ -1,7 +1,9 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
+import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,9 +22,12 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final UserEntityDtoMapper userEntityDtoMapper;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          UserEntityDtoMapper userEntityDtoMapper) {
         this.userService = userService;
+        this.userEntityDtoMapper = userEntityDtoMapper;
     }
 
     // Render user-setup view - form for new visitor to create username, creating their User in the DB when submitted
@@ -61,7 +66,8 @@ public class UserController {
 
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            model.addAttribute("user", user); // Pass the user entity instance as context data
+            UserDto userDto = userEntityDtoMapper.mapToDto(user);
+            model.addAttribute("user", userDto); // Pass the user DTO as context data
             return "dashboard"; // Return dashboard.html
         } else {
             return "redirect:/user-not-found";
