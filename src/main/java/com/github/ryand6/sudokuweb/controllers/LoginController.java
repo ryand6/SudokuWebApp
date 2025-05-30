@@ -1,11 +1,14 @@
 package com.github.ryand6.sudokuweb.controllers;
 
+import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import java.util.Optional;
 
 @Controller
 public class LoginController {
@@ -20,9 +23,14 @@ public class LoginController {
     @GetMapping("/login-success")
     public String loginSuccess(@AuthenticationPrincipal OAuth2User principal,
                                OAuth2AuthenticationToken authToken) {
-        return userService.tryGetCurrentUser(principal, authToken)
-                .map(user -> "redirect:/dashboard") // Redirects to main dashboard if user found after login successful
-                .orElse("redirect:/setup-user");  // Redirects to user set-up page if login successful but user not created in DB yet
+
+        Optional<UserEntity> userOptional = userService.tryGetCurrentUser(principal, authToken);
+
+        if (userOptional.isPresent()) {
+            return "redirect:/dashboard"; // Redirects to main dashboard if user found after login successful
+        } else {
+            return "redirect:/setup-user"; // Redirects to user set-up page if login successful but user not created in DB yet
+        }
     }
 
 }

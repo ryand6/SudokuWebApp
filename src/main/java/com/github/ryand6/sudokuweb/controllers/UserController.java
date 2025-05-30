@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers;
 
+import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
@@ -7,10 +8,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -47,6 +51,21 @@ public class UserController {
 
         }
         return "redirect:/user-setup";
+    }
+
+    @GetMapping("/dashboard")
+    public String getUserDashboard(@AuthenticationPrincipal OAuth2User principal,
+                                   OAuth2AuthenticationToken authToken,
+                                   Model model) {
+        Optional<UserEntity> userOptional = userService.tryGetCurrentUser(principal, authToken);
+
+        if (userOptional.isPresent()) {
+            UserEntity user = userOptional.get();
+            model.addAttribute("user", user); // Pass the user entity instance as context data
+            return "dashboard"; // Return dashboard.html
+        } else {
+            return "redirect:/user-not-found";
+        }
     }
 
 }
