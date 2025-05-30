@@ -18,7 +18,7 @@ public class SecurityConfig {
                 // Configure when authorization is required
                 .authorizeHttpRequests(auth -> auth
                         // Require that any URL requires authentication except for homepage, css files, and user set-up
-                        .requestMatchers("/", "/setup-username", "/error", "/webjars/**").permitAll()
+                        .requestMatchers("/", "/error", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
