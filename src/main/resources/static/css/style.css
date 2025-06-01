@@ -1,0 +1,33 @@
+<style>
+        :root {
+            --bg-color: #f7f7f7;
+            --text-color: #000;
+            --card-bg: #fff;
+            --button-bg: #007bff;
+            --logout-bg: #dc3545;
+        }
+
+        body.dark {
+            --bg-color: #121212;
+            --text-color: #f1f1f1;
+            --card-bg: #1e1e1e;
+            --button-bg: #3399ff;
+            --logout-bg: #ff4d4d;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        header {
+            background: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+</style>
