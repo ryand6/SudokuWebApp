@@ -7,6 +7,7 @@ import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,6 +36,7 @@ public class LobbyEntityDtoMapperIntegrationTests {
     private final UserRepository userRepository;
     private final LobbyRepository lobbyRepository;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
+    private final ScoreEntityDtoMapper scoreEntityDtoMapper;
     private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -42,10 +44,12 @@ public class LobbyEntityDtoMapperIntegrationTests {
             UserRepository userRepository,
             LobbyRepository lobbyRepository,
             LobbyEntityDtoMapper lobbyEntityDtoMapper,
+            ScoreEntityDtoMapper scoreEntityDtoMapper,
             JdbcTemplate jdbcTemplate) {
         this.userRepository = userRepository;
         this.lobbyRepository = lobbyRepository;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
+        this.scoreEntityDtoMapper = scoreEntityDtoMapper;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -97,7 +101,7 @@ public class LobbyEntityDtoMapperIntegrationTests {
                 .id(savedUser.getId())
                 .username(savedUser.getUsername())
                 .isOnline(true)
-                .scoreId(savedScore.getId())
+                .score(scoreEntityDtoMapper.mapToDto(savedScore))
                 .build();
 
         LobbyDto dto = LobbyDto.builder()

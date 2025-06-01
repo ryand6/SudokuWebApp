@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Setup</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 2rem;
+        }
+        .error {
+            color: red;
+            margin-bottom: 1rem;
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+        }
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+        button {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<h1>User Setup</h1>
+
+<!-- Error message displayed when the username is taken or any other error occurs -->
+<div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
+
+<form th:action="@{/process-user-setup}" method="post">
+    <label for="username">Choose a Username:</label>
+    <input type="text" id="username" name="username" required maxlength="20" />
+
+    <button type="submit">Create Account</button>
+</form>
+
+</body>
+</html>

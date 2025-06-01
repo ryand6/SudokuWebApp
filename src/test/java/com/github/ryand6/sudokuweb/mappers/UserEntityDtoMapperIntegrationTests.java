@@ -2,7 +2,9 @@ package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.dto.ScoreDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.ScoreRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +29,7 @@ Integration tests for UserEntityDtoMapper
 public class UserEntityDtoMapperIntegrationTests {
 
     private final ScoreRepository scoreRepository;
+    private final ScoreEntityDtoMapper scoreEntityDtoMapper;
     private final UserEntityDtoMapper mapper;
     private final JdbcTemplate jdbcTemplate;
 
@@ -34,10 +37,12 @@ public class UserEntityDtoMapperIntegrationTests {
     @Autowired
     public UserEntityDtoMapperIntegrationTests(
             ScoreRepository scoreRepository,
+            ScoreEntityDtoMapper scoreEntityDtoMapper,
             UserEntityDtoMapper mapper,
             JdbcTemplate jdbcTemplate
     ) {
         this.scoreRepository = scoreRepository;
+        this.scoreEntityDtoMapper = scoreEntityDtoMapper;
         this.mapper = mapper;
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -78,7 +83,7 @@ public class UserEntityDtoMapperIntegrationTests {
         assertThat(dto.getId()).isEqualTo(123L);
         assertThat(dto.getUsername()).isEqualTo("testuser");
         assertThat(dto.getIsOnline()).isTrue();
-        assertThat(dto.getScoreId()).isEqualTo(savedScore.getId());
+        assertThat(dto.getScore()).isEqualTo(scoreEntityDtoMapper.mapToDto(savedScore));
     }
 
     @Test
@@ -87,7 +92,7 @@ public class UserEntityDtoMapperIntegrationTests {
                 .id(2L)
                 .username("mapperuser")
                 .isOnline(true)
-                .scoreId(savedScore.getId())
+                .score(scoreEntityDtoMapper.mapToDto(savedScore))
                 .build();
 
         String passwordHash = "password";
@@ -107,7 +112,7 @@ public class UserEntityDtoMapperIntegrationTests {
         UserDto dto = UserDto.builder()
                 .username("missingScoreUser")
                 .isOnline(true)
-                .scoreId(99999L) // ID that does not exist
+                .score(new ScoreDto()) // ID that does not exist
                 .build();
 
         assertThatThrownBy(() -> mapper.mapFromDto(dto, "dummyPass"))
@@ -116,12 +121,12 @@ public class UserEntityDtoMapperIntegrationTests {
     }
 
     @Test
-    void mapFromDto_withoutPasswordHash_shouldThrowUnsupportedOperationException() {
+    void mapFromDto_withoutProviderId_shouldThrowUnsupportedOperationException() {
         UserDto dto = UserDto.builder()
                 .id(3L)
                 .username("noPassUser")
                 .isOnline(true)
-                .scoreId(savedScore.getId())
+                .score(scoreEntityDtoMapper.mapToDto(savedScore))
                 .build();
 
         assertThatThrownBy(() -> mapper.mapFromDto(dto))

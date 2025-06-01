@@ -29,7 +29,7 @@ public class LoginController {
         if (userOptional.isPresent()) {
             return "redirect:/dashboard"; // Redirects to main dashboard if user found after login successful
         } else {
-            return "redirect:/setup-user"; // Redirects to user set-up page if login successful but user not created in DB yet
+            return "redirect:/user-setup"; // Redirects to user set-up page if login successful but user not created in DB yet
         }
     }
 
