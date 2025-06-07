@@ -3,6 +3,7 @@
 <head>
     <th:block th:insert="base :: sharedHead"></th:block>
     <style>
+
         .username-info {
             font-size: 1.2em;
         }
@@ -33,7 +34,7 @@
             margin: 10px 0;
             padding: 10px 15px;
             background: var(--button-bg);
-            color: white;
+            color: blue;
             border: none;
             border-radius: 5px;
             text-decoration: none;
@@ -106,14 +107,14 @@
 <script>
     // Dark mode toggle
     function toggleTheme() {
-        document.body.classList.toggle('dark');
-        localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     }
 
     // Load theme on page load
     (function () {
         if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark');
+            document.documentElement.classList.add('dark');
         }
     })();
 </script>
