@@ -8,10 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,6 +101,82 @@ public class UserRepositoryIntegrationTests {
         underTest.deleteById(userEntityA.getId());
         Optional<UserEntity> result = underTest.findById(userEntityA.getId());
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void testFindByProviderAndProviderId() {
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity user = TestDataUtil.createTestUserA(scoreEntityA);
+        underTest.save(user);
+
+        String provider = "google";
+        String providerId = "a4ceE42GHa";
+
+        Optional<UserEntity> found = underTest.findByProviderAndProviderId(provider, providerId);
+
+        assertThat(found).isPresent();
+        assertThat(found.get().getUsername()).isEqualTo("Henry");
+    }
+
+    @Test
+    public void testExistsByUsername() {
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity user = TestDataUtil.createTestUserA(scoreEntityA);
+        underTest.save(user);
+
+        boolean exists = underTest.existsByUsername("Henry");
+        boolean notExists = underTest.existsByUsername("nonexistentUser");
+
+        assertThat(exists).isTrue();
+        assertThat(notExists).isFalse();
+    }
+
+    @Test
+    public void test_findByOrderByScoreEntity_TotalScoreDesc() {
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity userA = TestDataUtil.createTestUserA(scoreEntityA);
+
+        ScoreEntity scoreEntityB = TestDataUtil.createTestScoreB();
+        UserEntity userB = TestDataUtil.createTestUserB(scoreEntityB);
+
+        ScoreEntity scoreEntityC = TestDataUtil.createTestScoreC();
+        UserEntity userC = TestDataUtil.createTestUserC(scoreEntityC);
+
+        underTest.save(userA);
+        underTest.save(userB);
+        underTest.save(userC);
+
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<UserEntity> top2Pages = underTest.findByOrderByScoreEntity_TotalScoreDesc(pageable);
+
+        List<UserEntity> top2PagesList = top2Pages.stream().toList();
+        assertThat(top2PagesList.get(0).getUsername()).isEqualTo("dk0ng");
+        assertThat(top2PagesList.get(1).getUsername()).isEqualTo("Henry");
+    }
+
+    @Test
+    public void testGetUserRankById() {
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity userA = TestDataUtil.createTestUserA(scoreEntityA);
+
+        ScoreEntity scoreEntityB = TestDataUtil.createTestScoreB();
+        UserEntity userB = TestDataUtil.createTestUserB(scoreEntityB);
+
+        ScoreEntity scoreEntityC = TestDataUtil.createTestScoreC();
+        UserEntity userC = TestDataUtil.createTestUserC(scoreEntityC);
+
+        underTest.save(userA);
+        underTest.save(userB);
+        underTest.save(userC);
+
+        Long rank = underTest.getUserRankById(userA.getId());
+        assertThat(rank).isEqualTo(2L);
+
+        rank = underTest.getUserRankById(userB.getId());
+        assertThat(rank).isEqualTo(1L);
+
+        rank = underTest.getUserRankById(userC.getId());
+        assertThat(rank).isEqualTo(3L);
     }
 
 }

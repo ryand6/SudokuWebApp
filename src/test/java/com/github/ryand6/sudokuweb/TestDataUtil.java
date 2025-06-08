@@ -16,7 +16,7 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 scoreEntity(scoreEntity).
                 username("Henry").
-                provider("Google").
+                provider("google").
                 providerId("a4ceE42GHa").
                 build();
     }
@@ -25,7 +25,7 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 scoreEntity(scoreEntity).
                 username("dk0ng").
-                provider("GitHub").
+                provider("github").
                 providerId("34hEA3cbe").
                 build();
     }
@@ -34,7 +34,7 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 scoreEntity(scoreEntity).
                 username("parf").
-                provider("Facebook").
+                provider("facebook").
                 providerId("dA5cfB12c").
                 build();
     }
