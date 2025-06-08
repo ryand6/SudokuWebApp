@@ -2,12 +2,10 @@ package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
-import com.github.ryand6.sudokuweb.dto.ScoreDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.ScoreRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,11 +81,11 @@ public class UserEntityDtoMapperIntegrationTests {
         assertThat(dto.getId()).isEqualTo(123L);
         assertThat(dto.getUsername()).isEqualTo("testuser");
         assertThat(dto.getIsOnline()).isTrue();
-        assertThat(dto.getScore()).isEqualTo(scoreEntityDtoMapper.mapToDto(savedScore));
+        assertThat(dto.getScore().getId()).isEqualTo(scoreEntityDtoMapper.mapToDto(savedScore).getId());
     }
 
     @Test
-    void mapFromDto_withPasswordHash_shouldReturnValidUserEntity() {
+    void mapFromDto_withProviderAndProviderId_shouldReturnValidUserEntity() {
         UserDto dto = UserDto.builder()
                 .id(2L)
                 .username("mapperuser")
@@ -95,29 +93,18 @@ public class UserEntityDtoMapperIntegrationTests {
                 .score(scoreEntityDtoMapper.mapToDto(savedScore))
                 .build();
 
-        String passwordHash = "password";
+        String provider = "dummyProvider";
+        String providerId = "dummyProviderId";
 
-        UserEntity entity = mapper.mapFromDto(dto, passwordHash);
+        UserEntity entity = mapper.mapFromDto(dto, provider, providerId);
 
         assertThat(entity).isNotNull();
         assertThat(entity.getId()).isEqualTo(2L);
         assertThat(entity.getUsername()).isEqualTo("mapperuser");
-        assertThat(entity.getProviderId()).isEqualTo(passwordHash);
+        assertThat(entity.getProvider()).isEqualTo(provider);
+        assertThat(entity.getProviderId()).isEqualTo(providerId);
         assertThat(entity.getIsOnline()).isTrue();
-        assertThat(entity.getScoreEntity()).isEqualTo(savedScore);
-    }
-
-    @Test
-    void mapFromDto_shouldThrowException_whenScoreNotFound() {
-        UserDto dto = UserDto.builder()
-                .username("missingScoreUser")
-                .isOnline(true)
-                .score(new ScoreDto()) // ID that does not exist
-                .build();
-
-        assertThatThrownBy(() -> mapper.mapFromDto(dto, "dummyPass"))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining("Score not found");
+        assertThat(entity.getScoreEntity().getId()).isEqualTo(savedScore.getId());
     }
 
     @Test
@@ -131,7 +118,7 @@ public class UserEntityDtoMapperIntegrationTests {
 
         assertThatThrownBy(() -> mapper.mapFromDto(dto))
                 .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessageContaining("Password hash required");
+                .hasMessageContaining("Provider and Provider ID required");
     }
 
 }

@@ -3,18 +3,14 @@ package com.github.ryand6.sudokuweb.mappers.Impl;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.ScoreRepository;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto> {
 
-    private final ScoreRepository scoreRepository;
     private final ScoreEntityDtoMapper scoreEntityDtoMapper;
 
-    public UserEntityDtoMapper(ScoreRepository scoreRepository,
-                               ScoreEntityDtoMapper scoreEntityDtoMapper) {
-        this.scoreRepository = scoreRepository;
+    public UserEntityDtoMapper(ScoreEntityDtoMapper scoreEntityDtoMapper) {
         this.scoreEntityDtoMapper = scoreEntityDtoMapper;
     }
 
@@ -29,17 +25,18 @@ public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto>
                 .build();
     }
 
-    // Additional context required to create the UserEntity (providerId)
+    // Additional context required to create the UserEntity (provider and providerId)
     @Override
     public UserEntity mapFromDto(UserDto dto) {
         // Basic mapping without providerId, or throw UnsupportedOperationException
-        throw new UnsupportedOperationException("Provider required, provide providerId when calling mapFromDto on UserDto");
+        throw new UnsupportedOperationException("Provider and Provider ID required, please provide these as parameters when calling mapFromDto on UserDto");
     }
 
     // Overloaded method to handle additional context in order to create UserEntity
-    public UserEntity mapFromDto(UserDto userDto, String providerId) {
+    public UserEntity mapFromDto(UserDto userDto, String provider, String providerId) {
         UserEntity.UserEntityBuilder userEntityBuilder = UserEntity.builder()
                 .username(userDto.getUsername())
+                .provider(provider)
                 .providerId(providerId)
                 .isOnline(userDto.getIsOnline())
                 .scoreEntity(scoreEntityDtoMapper.mapFromDto(userDto.getScore()));
@@ -51,11 +48,5 @@ public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto>
 
         return userEntityBuilder.build();
     }
-
-    // Get ScoreEntity through DTO ScoreId
-//    private ScoreEntity resolveDtoScore(Long scoreId) {
-//        return scoreRepository.findById(scoreId)
-//                .orElseThrow(() -> new EntityNotFoundException("Score not found with id " + scoreId));
-//    }
 
 }

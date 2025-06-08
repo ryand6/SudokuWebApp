@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -85,11 +86,32 @@ public class BoardStateControllerIntegrationTests {
         String requestDtoJson = objectMapper.writeValueAsString(requestDto);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/generate-board")
+                MockMvcRequestBuilders.post("/create-game")
+                        // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestDtoJson)
         ).andExpect(
                 MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void generateSudokuBoard_unauthenticatedUser_returnsHttp403Response() throws Exception {
+        GenerateBoardRequestDto requestDto = GenerateBoardRequestDto.builder()
+                .difficulty("easy")
+                .lobbyId(lobby.getId())
+                .build();
+
+        String requestDtoJson = objectMapper.writeValueAsString(requestDto);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/create-game")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestDtoJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isForbidden()
         );
     }
 
@@ -103,7 +125,9 @@ public class BoardStateControllerIntegrationTests {
         String requestDtoJson = objectMapper.writeValueAsString(requestDto);
 
         MvcResult result = mockMvc.perform(
-                MockMvcRequestBuilders.post("/generate-board")
+                MockMvcRequestBuilders.post("/create-game")
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestDtoJson)
         ).andReturn();
@@ -140,7 +164,9 @@ public class BoardStateControllerIntegrationTests {
         String requestDtoJson = objectMapper.writeValueAsString(requestDto);
 
         mockMvc.perform(
-            MockMvcRequestBuilders.post("/generate-board")
+            MockMvcRequestBuilders.post("/create-game")
+                    .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                    .with(SecurityMockMvcRequestPostProcessors.csrf())
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestDtoJson)
             ).andExpect(
