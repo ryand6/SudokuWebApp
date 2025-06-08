@@ -10,12 +10,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ErrorPageControllerTests {
+public class ErrorPageControllerIntegrationTests {
 
     private final MockMvc mockMvc;
 
     @Autowired
-    public ErrorPageControllerTests(MockMvc mockMvc) {
+    public ErrorPageControllerIntegrationTests(MockMvc mockMvc) {
         this.mockMvc = mockMvc;
     }
 
