@@ -144,8 +144,7 @@ public class BoardStateServiceIntegrationTests {
         assertThat(gameStateEntities).hasSize(2);
 
         // Test contents of each game state DTO
-        for (
-                GameStateDto state : response.getGameStates()) {
+        for (GameStateDto state : response.getGameStates()) {
             assertThat(state.getCurrentBoardState()).isEqualTo(generatedPuzzle);
             assertThat(state.getScore()).isEqualTo(0);
             assertThat(state.getPlayerColour()).isIn(PlayerColour.values());

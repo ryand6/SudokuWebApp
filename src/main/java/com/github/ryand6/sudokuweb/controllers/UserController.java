@@ -60,7 +60,7 @@ public class UserController {
         UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
 
         if (userDto == null) {
-            return "redirect:/user-not-found";
+            return "redirect:/error/user-not-found";
         } else {
             List<UserDto> topPlayers = userService.getTop5PlayersTotalScore();
             Long userRank = userService.getPlayerRank(userDto.getId());
