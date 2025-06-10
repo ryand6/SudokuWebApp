@@ -41,8 +41,6 @@ public class LoginControllerIntegrationTests {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/login-success")
-                        .requestAttr("org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken", mockAuthToken)
-                        .requestAttr("org.springframework.security.core.annotation.AuthenticationPrincipal", mockPrincipal)
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
@@ -68,8 +66,6 @@ public class LoginControllerIntegrationTests {
         Mockito.when(userService.getCurrentUserByOAuth(any(OAuth2User.class), any(OAuth2AuthenticationToken.class))).thenReturn(mockDto);
 
         mockMvc.perform(get("/login-success")
-                        .requestAttr("org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken", mockAuthToken)
-                        .requestAttr("org.springframework.security.core.annotation.AuthenticationPrincipal", mockPrincipal)
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
