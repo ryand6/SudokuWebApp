@@ -45,7 +45,7 @@ public class LobbyEntity {
     private Boolean inGame;
 
     // code for joining the code (if private)
-    @Column(name = "join_code")
+    @Column(name = "join_code", unique = true)
     private String joinCode;
 
     // All active users in the lobby (max 4 players) - updates when a user joins or leaves/disconnects from site

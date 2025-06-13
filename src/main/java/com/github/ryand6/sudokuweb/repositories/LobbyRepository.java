@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LobbyRepository extends JpaRepository<LobbyEntity, Long> {
 
+    // Checks if private lobby join code already exists elsewhere
+    boolean existsByJoinCode(String joinCode);
+
 }
