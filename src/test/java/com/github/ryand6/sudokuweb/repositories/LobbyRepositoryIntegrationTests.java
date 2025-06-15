@@ -119,4 +119,18 @@ public class LobbyRepositoryIntegrationTests {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    public void testExistsByJoinCode() {
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity userEntityA = TestDataUtil.createTestUserA(scoreEntityA);
+        userRepository.save(userEntityA);
+        ScoreEntity scoreEntityB = TestDataUtil.createTestScoreB();
+        UserEntity userEntityB = TestDataUtil.createTestUserB(scoreEntityB);
+        userRepository.save(userEntityB);
+        LobbyEntity lobbyEntity = TestDataUtil.createTestLobbyB(userEntityA, userEntityB);
+        underTest.save(lobbyEntity);
+        assertThat(underTest.existsByJoinCode("aey3g-yagy3i3-u3ygu34")).isTrue();
+        assertThat(underTest.existsByJoinCode("uhsfs-sffhfhe-4tgdgdg")).isFalse();
+    }
+
 }
