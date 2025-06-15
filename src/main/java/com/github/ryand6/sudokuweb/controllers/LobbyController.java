@@ -16,7 +16,7 @@ public class LobbyController {
         this.lobbyService = lobbyService;
     }
 
-    @GetMapping("/create")
+    @GetMapping("/create-lobby")
     public String createLobbyView() {
         return "lobby/create-lobby"; // Render view "templates/lobby/create-lobby.html"
     }
