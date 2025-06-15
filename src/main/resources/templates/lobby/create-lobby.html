@@ -29,25 +29,25 @@
 
 <h1>Lobby Creation</h1>
 
-<!-- Error message displayed when the username is taken or any other error occurs -->
+<!-- Error message displayed if issues occur trying to create lobby -->
 <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
 
 <form th:action="@{/lobby/process-lobby-creation}" method="post">
     <label for="lobby-name">Choose a lobby name:</label>
-    <input type="text" id="lobby-name" name="lobby-name" required maxlength="20" />
+    <input type="text" id="lobby-name" name="lobbyName" required maxlength="20" />
 
     <label>
-        <input type="checkbox" id="public-checkbox" checked>
+        <input type="checkbox" id="public-checkbox" name="isPublic" checked>
         Public Lobby
     </label>
     <label>
-        <input type="checkbox" id="private-checkbox">
+        <input type="checkbox" id="private-checkbox" name="isPrivate">
         Private Lobby
     </label>
 
     <div id="join-code-container" class="hidden">
         <label for="join-code">Join Code:</label>
-        <input type="text" id="join-code" name="join-code" readonly required>
+        <input type="text" id="join-code" name="joinCode" readonly required>
     </div>
 
     <button type="submit">Create Lobby</button>

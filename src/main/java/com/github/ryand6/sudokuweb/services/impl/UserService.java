@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.services.impl;
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
@@ -76,6 +77,12 @@ public class UserService {
     // Gets the players rank based on their total_score when compared to all other players
     public Long getPlayerRank(Long userId) {
         return userRepository.getUserRankById(userId);
+    }
+
+    // Get user entity from DB via their id
+    public UserEntity findUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
     }
 
 }

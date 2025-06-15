@@ -35,7 +35,7 @@ public class UserController {
     @PostMapping("/process-user-setup")
     public String processUserSetupRequest(@AuthenticationPrincipal OAuth2User principal,
                                           OAuth2AuthenticationToken authToken,
-                                          @RequestParam String username,
+                                          @RequestParam(name = "username") String username,
                                           RedirectAttributes redirectAttributes) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
@@ -53,6 +53,7 @@ public class UserController {
         return "redirect:/user-setup";
     }
 
+    // Render dashboard view
     @GetMapping("/dashboard")
     public String getUserDashboard(@AuthenticationPrincipal OAuth2User principal,
                                    OAuth2AuthenticationToken authToken,
