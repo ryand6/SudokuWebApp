@@ -6,9 +6,13 @@ import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,7 +46,7 @@ public class LobbyService {
         return code;
     }
 
-    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Boolean isPrivate, String joinCode, Long requestorId) {
+    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Boolean isPrivate, String joinCode, Long requesterId) {
         LobbyEntity newLobby = new LobbyEntity();
         // One of these must be true or there is an error with the parameters
         if (isPublic) {
@@ -52,13 +56,13 @@ public class LobbyService {
         } else {
             throw new InvalidLobbyPublicStatusParametersException("Values of isPublic and isPrivate parameters invalid");
         }
-        UserEntity requestor = userService.findUserById(requestorId);
+        UserEntity requester = userService.findUserById(requesterId);
         newLobby.setLobbyName(lobbyName);
-        // Requestor of lobby creation becomes the host
-        newLobby.setHost(requestor);
-        // Create a set of users only containing the requestor for now, until other users join the lobby
+        // requester of lobby creation becomes the host
+        newLobby.setHost(requester);
+        // Create a set of users only containing the requester for now, until other users join the lobby
         Set<UserEntity> lobbyUsers = new HashSet<>();
-        lobbyUsers.add(requestor);
+        lobbyUsers.add(requester);
         newLobby.setUserEntities(lobbyUsers);
         newLobby.setInGame(false);
         newLobby.setIsActive(true);
@@ -66,6 +70,15 @@ public class LobbyService {
             newLobby.setJoinCode(joinCode);
         }
         return lobbyEntityDtoMapper.mapToDto(lobbyRepository.save(newLobby));
+    }
+
+    // Retrieves a page of lobbies based on the specified page number and size. Page results are ordered by createdAt (newest first)
+    public List<LobbyDto> getPublicLobbies(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return lobbyRepository.findByIsPublicTrueAndIsActiveTrue(pageable)
+                .stream()
+                .map(lobbyEntityDtoMapper::mapToDto)
+                .collect(Collectors.toList());
     }
 
 }

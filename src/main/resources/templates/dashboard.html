@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:insert="base :: sharedHead"></th:block>
+    <link rel="stylesheet" th:href="@{/css/lobby-modal-style.css}">
     <style>
 
         .username-info {
@@ -89,35 +90,39 @@
             <button type="submit">Create New Lobby</button>
         </form>
 
-        <form th:action="@{/lobby/join/public}" method="post">
-            <button type="submit">Join Public Lobby</button>
-        </form>
+<!--        <form th:action="@{/lobby/join/public}" method="post">-->
+<!--            <button type="submit">Join Public Lobby</button>-->
+<!--        </form>-->
 
-        <form th:action="@{/lobby/join/private}" method="post">
-            <input type="text" name="joinCode" placeholder="Enter Join Code" required>
-            <button type="submit">Join Private Lobby</button>
-        </form>
+<!--        <form th:action="@{/lobby/join/private}" method="post">-->
+<!--            <input type="text" name="joinCode" placeholder="Enter Join Code" required>-->
+<!--            <button type="submit">Join Private Lobby</button>-->
+<!--        </form>-->
 
         <form th:action="@{/user/change-username}" method="get">
             <button type="submit">Change Username</button>
         </form>
+
+        <!-- Button to open lobby modal -->
+        <button id="openLobbyModalBtn">Join Lobby</button>
+
+        <!-- Lobby Modal Overlay -->
+        <div id="lobbyModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="left-pane">
+                    <button id="publicTab" class="tab selected">Public</button>
+                    <button id="privateTab" class="tab">Private</button>
+                </div>
+                <div class="right-pane" id="modalRightPane">
+                    <!-- Content here dynamically rendered -->
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
-<script>
-    // Dark mode toggle
-    function toggleTheme() {
-        document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    }
-
-    // Load theme on page load
-    (function () {
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark');
-        }
-    })();
-</script>
+<script src="/js/dashboard.js"></script>
 
 </body>
 </html>

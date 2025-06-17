@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.List;
+
 @Controller
 public class LobbyController {
 
@@ -63,6 +65,13 @@ public class LobbyController {
             redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to create Lobby");
         }
         return "redirect:/lobby/create-lobby";
+    }
+
+
+    // Return list of up to 10x lobbies
+    @GetMapping("/lobby/public/get-active-lobbies")
+    public List<LobbyDto> getPublicLobbies(@RequestParam int page) {
+        return lobbyService.getPublicLobbies(page, 10);
     }
 
 }
