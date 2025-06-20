@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -71,6 +72,7 @@ public class LobbyController {
 
     // Return list of up to 10x lobbies
     @GetMapping("/lobby/public/get-active-lobbies")
+    @ResponseBody
     public List<LobbyDto> getPublicLobbies(@RequestParam int page) {
         return lobbyService.getPublicLobbies(page, 10);
     }

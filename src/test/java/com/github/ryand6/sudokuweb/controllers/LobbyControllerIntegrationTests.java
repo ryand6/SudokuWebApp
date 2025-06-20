@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
@@ -15,7 +16,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -31,6 +35,9 @@ public class LobbyControllerIntegrationTests {
     @MockBean
     private UserService userService;
 
+    @Autowired
+    private ObjectMapper objectMapper; // Used to convert objects to JSON
+
     @Test
     public void createLobbyView_returnsCorrectView() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/lobby/create-lobby")
@@ -44,7 +51,7 @@ public class LobbyControllerIntegrationTests {
     @Test
     public void generateJoinCode_returnsJoinCodeString_returnsHTTP200() throws Exception {
         String mockCode  = "ABCDEF123456";
-        when(lobbyService.generateUniqueCode()).thenReturn(mockCode );
+        when(lobbyService.generateUniqueCode()).thenReturn(mockCode);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/lobby/generate-join-code")
                 .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
@@ -117,6 +124,25 @@ public class LobbyControllerIntegrationTests {
                 .andExpect(MockMvcResultMatchers.flash().attributeExists("errorMessage"))
                 .andExpect(MockMvcResultMatchers.flash().attribute("errorMessage", "Unexpected error occurred when trying to create Lobby"))
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/lobby/create-lobby"));
+    }
+
+    @Test
+    public void getPublicLobbies_returnsHTTP200() throws Exception {
+        List<LobbyDto> lobbyDtoList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            LobbyDto lobbyDto = new LobbyDto();
+            lobbyDto.setId(Long.valueOf(i));
+            lobbyDtoList.add(lobbyDto);
+        }
+        when(lobbyService.getPublicLobbies(anyInt(), eq(10))).thenReturn(lobbyDtoList);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/get-active-lobbies")
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .param("page", "0"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                // Serialises LobbyDtoList to JSON string and compares with Controller ouput
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(lobbyDtoList)));
     }
 
 }
