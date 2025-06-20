@@ -14,8 +14,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -99,5 +105,33 @@ public class LobbyServiceTests {
         assertThat(lobbyDtoTest.getIsPublic()).isEqualTo(true);
     }
 
+    @Test
+    public void getPublicLobbies_testExpectedReturnList() {
+        int page = 0;
+        int size = 2;
+
+        LobbyEntity lobby1 = new LobbyEntity();
+        lobby1.setId(1L);
+        LobbyEntity lobby2 = new LobbyEntity();
+        lobby2.setId(2L);
+
+        Page<LobbyEntity> lobbyPage = new PageImpl<>(List.of(lobby1, lobby2));
+
+        when(lobbyRepository.findByIsPublicTrueAndIsActiveTrue(PageRequest.of(page, size, Sort.by("createdAt").descending())))
+                .thenReturn(lobbyPage);
+
+        LobbyDto dto1 = new LobbyDto();
+        dto1.setId(1L);
+        LobbyDto dto2 = new LobbyDto();
+        dto2.setId(2L);
+
+        when(lobbyEntityDtoMapper.mapToDto(lobby1)).thenReturn(dto1);
+        when(lobbyEntityDtoMapper.mapToDto(lobby2)).thenReturn(dto2);
+
+        List<LobbyDto> result = lobbyService.getPublicLobbies(page, size);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactly(dto1, dto2);
+    }
 
 }
