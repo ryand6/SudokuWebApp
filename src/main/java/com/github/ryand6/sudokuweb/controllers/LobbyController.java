@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.controllers;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
+import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import org.springframework.http.ResponseEntity;
@@ -53,7 +54,7 @@ public class LobbyController {
                                            RedirectAttributes redirectAttributes) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         if (currentUser == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Current requesting user does not exist, set up required");
+            throw new UserNotFoundException("User not found via OAuth token");
         }
         try {
             // Create lobby in DB then go to that corresponding lobby's view

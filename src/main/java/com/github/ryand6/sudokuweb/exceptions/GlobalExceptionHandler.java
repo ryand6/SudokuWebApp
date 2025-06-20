@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 /*
-Handles exceptions and through HTTP Status and Messaging
+Handles exceptions and through HTTP Status and Messaging - handles exceptions that propagate to Controller
  */
 public class GlobalExceptionHandler {
 

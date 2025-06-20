@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
@@ -61,7 +62,7 @@ public class UserController {
         UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
 
         if (userDto == null) {
-            return "redirect:/error/user-not-found";
+            throw new UserNotFoundException("User not found via OAuth token");
         } else {
             List<UserDto> topPlayers = userService.getTop5PlayersTotalScore();
             Long userRank = userService.getPlayerRank(userDto.getId());

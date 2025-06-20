@@ -132,7 +132,7 @@ public class UserControllerIntegrationTests {
     }
 
     @Test
-    public void getUserDashboard_ModelAttributesExist() throws Exception {
+    public void getUserDashboard_userNotFound() throws Exception {
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
         when(userService.getTop5PlayersTotalScore()).thenReturn(List.of());
         when(userService.getPlayerRank(1L)).thenReturn(1L);
@@ -141,8 +141,10 @@ public class UserControllerIntegrationTests {
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-                .andExpect(MockMvcResultMatchers.redirectedUrl("/error/user-not-found"));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("error/user-not-found"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
+                .andExpect(MockMvcResultMatchers.model().attribute("errorMessage", "User not found via OAuth token"));
     }
 
 }
