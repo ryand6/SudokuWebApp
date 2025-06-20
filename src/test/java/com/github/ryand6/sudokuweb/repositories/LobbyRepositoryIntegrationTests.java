@@ -9,10 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
@@ -131,6 +134,30 @@ public class LobbyRepositoryIntegrationTests {
         underTest.save(lobbyEntity);
         assertThat(underTest.existsByJoinCode("aey3g-yagy3i3-u3ygu34")).isTrue();
         assertThat(underTest.existsByJoinCode("uhsfs-sffhfhe-4tgdgdg")).isFalse();
+    }
+
+    @Test
+    public void testFindByIsPublicTrueAndIsActiveTrue() {
+        ScoreEntity scoreEntityA = TestDataUtil.createTestScoreA();
+        UserEntity userEntityA = TestDataUtil.createTestUserA(scoreEntityA);
+        userRepository.save(userEntityA);
+        LobbyEntity lobbyEntityA = TestDataUtil.createTestLobbyA(userEntityA);
+        underTest.save(lobbyEntityA);
+        ScoreEntity scoreEntityB = TestDataUtil.createTestScoreB();
+        UserEntity userEntityB = TestDataUtil.createTestUserB(scoreEntityB);
+        userRepository.save(userEntityB);
+        LobbyEntity lobbyEntityB = TestDataUtil.createTestLobbyA(userEntityB);
+        lobbyEntityB.setLobbyName("Test Lobby 2");
+        underTest.save(lobbyEntityB);
+        ScoreEntity scoreEntityC = TestDataUtil.createTestScoreC();
+        UserEntity userEntityC = TestDataUtil.createTestUserC(scoreEntityC);
+        userRepository.save(userEntityC);
+        LobbyEntity lobbyEntityC = TestDataUtil.createTestLobbyA(userEntityC);
+        lobbyEntityC.setLobbyName("Test Lobby 3");
+        underTest.save(lobbyEntityC);
+        // Want to return the last two created Lobbies
+        Pageable pageable = PageRequest.of(0, 2, Sort.by("createdAt").descending());
+        assertThat(underTest.findByIsPublicTrueAndIsActiveTrue(pageable)).containsExactly(lobbyEntityC, lobbyEntityB);
     }
 
 }
