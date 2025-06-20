@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LobbyServiceTests {
@@ -38,6 +40,20 @@ public class LobbyServiceTests {
         assertNotNull(code);
         assertInstanceOf(String.class, code);
         assertEquals(25, code.length());
+    }
+
+    @Test
+    public void createNewLobby_invalidIsPublicAndIsPrivateParameters() {
+        String lobbyName = "Test Lobby";
+        boolean isPublic = false;
+        boolean isPrivate = false;
+        String joinCode = null;
+        Long requesterId = 1L;
+        InvalidLobbyPublicStatusParametersException ex = assertThrows(
+                InvalidLobbyPublicStatusParametersException.class,
+                () -> lobbyService.createNewLobby(lobbyName, isPublic, isPrivate, joinCode, requesterId)
+        );
+        assertThat(ex.getMessage()).isEqualTo("Values of isPublic and isPrivate parameters invalid");
     }
 
 
