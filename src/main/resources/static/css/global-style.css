@@ -30,3 +30,33 @@ header {
     justify-content: space-between;
     align-items: center;
 }
+
+button, a.button-link {
+    margin: 10px 0;
+    padding: 10px 15px;
+    background: var(--button-bg);
+    color: blue;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.button-link:hover {
+    background-color: #45a049;
+}
+
+.logout {
+    background: var(--logout-bg);
+}
+
+.theme-toggle {
+    margin-left: 20px;
+    background: #666;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+}

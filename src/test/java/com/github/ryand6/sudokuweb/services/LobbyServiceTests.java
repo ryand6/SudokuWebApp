@@ -73,7 +73,7 @@ public class LobbyServiceTests {
                 InvalidLobbyPublicStatusParametersException.class,
                 () -> lobbyService.createNewLobby(lobbyName, isPublic, isPrivate, joinCode, requesterId)
         );
-        assertThat(ex.getMessage()).isEqualTo("Values of isPublic and isPrivate parameters invalid");
+        assertThat(ex.getMessage()).isEqualTo("Either Public or Private lobby must be checked");
     }
 
     @Test

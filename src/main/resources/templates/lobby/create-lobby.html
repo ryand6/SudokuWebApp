@@ -32,7 +32,7 @@
 <!-- Error message displayed if issues occur trying to create lobby -->
 <div th:if="${errorMessage}" class="error" th:text="${errorMessage}"></div>
 
-<form th:action="@{/lobby/process-lobby-creation}" method="post">
+<form th:action="@{/lobby/process-lobby-setup}" method="post">
     <label for="lobby-name">Choose a lobby name:</label>
     <input type="text" id="lobby-name" name="lobbyName" required maxlength="20" />
 

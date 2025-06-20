@@ -1,7 +1,7 @@
 // get first checkbox element
-const publicCheckbox = document.getElementByID( "public-checkbox");
+const publicCheckbox = document.getElementById("public-checkbox");
 // get second checkbox element
-const privateCheckbox = document.getElementByID( "private-checkbox" );
+const privateCheckbox = document.getElementById("private-checkbox");
 const joinCodeContainer = document.getElementById('join-code-container');
 const joinCodeInput = document.getElementById('join-code');
 

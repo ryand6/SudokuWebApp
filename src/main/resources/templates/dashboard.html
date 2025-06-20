@@ -2,61 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:insert="base :: sharedHead"></th:block>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
     <link rel="stylesheet" th:href="@{/css/lobby-modal-style.css}">
-    <style>
-
-        .username-info {
-            font-size: 1.2em;
-        }
-
-        .main-content {
-            display: flex;
-            padding: 20px;
-            gap: 20px;
-        }
-
-        .leaderboard {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 8px;
-            width: 250px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .actions {
-            flex-grow: 1;
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        button, a.button-link {
-            margin: 10px 0;
-            padding: 10px 15px;
-            background: var(--button-bg);
-            color: blue;
-            border: none;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            cursor: pointer;
-        }
-
-        .logout {
-            background: var(--logout-bg);
-        }
-
-        .theme-toggle {
-            margin-left: 20px;
-            background: #666;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            color: white;
-        }
-    </style>
 </head>
 <body>
 <header>
@@ -71,54 +18,45 @@
     </div>
 </header>
 
-<div class="main-content">
-    <!-- Leaderboard Pane -->
-    <div class="leaderboard">
-        <h3>Top 5 Players</h3>
-        <ol>
-            <li th:each="player : ${topPlayers}">
-                <span th:text="${player.username}">Name</span>: <span th:text="${player.score.totalScore}">0</span>
-            </li>
-        </ol>
-        <a th:href="@{/leaderboard}" class="button-link">View Full Leaderboard</a>
-    </div>
-
-    <!-- Actions Pane -->
-    <div class="actions">
-        <h2>Lobby Actions</h2>
-        <form th:action="@{/lobby/create-lobby}" method="post">
-            <button type="submit">Create New Lobby</button>
-        </form>
-
-<!--        <form th:action="@{/lobby/join/public}" method="post">-->
-<!--            <button type="submit">Join Public Lobby</button>-->
-<!--        </form>-->
-
-<!--        <form th:action="@{/lobby/join/private}" method="post">-->
-<!--            <input type="text" name="joinCode" placeholder="Enter Join Code" required>-->
-<!--            <button type="submit">Join Private Lobby</button>-->
-<!--        </form>-->
-
-        <form th:action="@{/user/change-username}" method="get">
-            <button type="submit">Change Username</button>
-        </form>
-
-        <!-- Button to open lobby modal -->
-        <button id="openLobbyModalBtn">Join Lobby</button>
-
-        <!-- Lobby Modal Overlay -->
-        <div id="lobbyModal" class="modal hidden">
-            <div class="modal-content">
-                <div class="left-pane">
-                    <button id="publicTab" class="tab selected">Public</button>
-                    <button id="privateTab" class="tab">Private</button>
-                </div>
-                <div class="right-pane" id="modalRightPane">
-                    <!-- Content here dynamically rendered -->
-                </div>
-            </div>
+<div id="mainContentWrapper">
+    <div class="main-content">
+        <!-- Leaderboard Pane -->
+        <div class="leaderboard">
+            <h3>Top 5 Players</h3>
+            <ol>
+                <li th:each="player : ${topPlayers}">
+                    <span th:text="${player.username}">Name</span>: <span th:text="${player.score.totalScore}">0</span>
+                </li>
+            </ol>
+            <a th:href="@{/leaderboard}" class="button-link">View Full Leaderboard</a>
         </div>
 
+        <!-- Actions Pane -->
+        <div class="actions">
+            <h2>Lobby Actions</h2>
+            <a th:href="@{/lobby/create-lobby}" class="button-link">Create New Lobby</a>
+
+            <a th:href="@{/user/change-username}" class="button-link">Change Username</a>
+
+            <!-- Button to open lobby modal -->
+            <button id="openLobbyModalBtn">Join Lobby</button>
+
+        </div>
+    </div>
+</div>
+
+<!-- Lobby Modal Overlay -->
+<div id="lobbyModal" class="modal hidden">
+    <div class="modal-content">
+        <button class="modal-close" id="modalCloseBtn" aria-label="Close modal">&times;</button>
+
+        <div class="left-pane">
+            <button id="publicTab" class="tab selected">Public</button>
+            <button id="privateTab" class="tab">Private</button>
+        </div>
+        <div class="right-pane" id="modalRightPane">
+            <!-- Content here dynamically rendered -->
+        </div>
     </div>
 </div>
 

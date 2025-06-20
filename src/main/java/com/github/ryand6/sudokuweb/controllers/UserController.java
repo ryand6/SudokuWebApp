@@ -28,7 +28,14 @@ public class UserController {
 
     // Render user-setup view - form for new visitor to create username, creating their User in the DB when submitted
     @GetMapping("/user-setup")
-    public String userSetupForm() {
+    public String userSetupForm(@AuthenticationPrincipal OAuth2User principal,
+                                OAuth2AuthenticationToken authToken) {
+
+        UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
+        if (userDto != null) {
+            // user is already authenticated/created
+            return "redirect:/dashboard";
+        }
         return "user-setup";
     }
 
@@ -38,6 +45,11 @@ public class UserController {
                                           OAuth2AuthenticationToken authToken,
                                           @RequestParam(name = "username") String username,
                                           RedirectAttributes redirectAttributes) {
+        UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
+        if (userDto != null) {
+            // user is already authenticated/created
+            return "redirect:/dashboard";
+        }
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         try {
