@@ -2,8 +2,7 @@ package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
-import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
-import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -75,6 +71,28 @@ public class LobbyController {
     @ResponseBody
     public List<LobbyDto> getPublicLobbies(@RequestParam int page) {
         return lobbyService.getPublicLobbies(page, 10);
+    }
+
+    // Attempt to join a public lobby, failures could result in lobby now being full or being inactive (closed)
+    @GetMapping("/lobby/public/join/{lobbyId}")
+    public String attemptJoinPublicLobby(@PathVariable Long lobbyId,
+                                         @AuthenticationPrincipal OAuth2User principal,
+                                         OAuth2AuthenticationToken authToken,
+                                         RedirectAttributes redirectAttributes) {
+        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+        if (currentUser == null) {
+            throw new UserNotFoundException("User not found via OAuth token");
+        }
+        try {
+            LobbyDto lobbyDto = lobbyService.joinPublicLobby(lobbyId, currentUser.getId());
+            return "redirect:/lobby/" + lobbyDto.getId();
+        // Catch and handle any Lobby state related exceptions
+        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException lobbyStateException) {
+            redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");
+        }
+        return "redirect:/dashboard";
     }
 
 }

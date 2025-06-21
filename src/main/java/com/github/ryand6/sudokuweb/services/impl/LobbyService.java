@@ -4,17 +4,18 @@ import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
+import com.github.ryand6.sudokuweb.exceptions.LobbyFullException;
+import com.github.ryand6.sudokuweb.exceptions.LobbyInactiveException;
+import com.github.ryand6.sudokuweb.exceptions.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -79,6 +80,30 @@ public class LobbyService {
                 .stream()
                 .map(lobbyEntityDtoMapper::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    // Attempts to add user to a lobby, checking first to see if the lobby is both active and whether it's currently full (4 players)
+    @Transactional
+    public LobbyDto joinPublicLobby(Long lobbyId, Long userId) {
+        // Try retrieve lobby and lock for editing, preventing race conditions
+        Optional<LobbyEntity> lobbyOptional = lobbyRepository.findByIdForUpdate(lobbyId);
+        if (lobbyOptional.isEmpty()) {
+            throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
+        }
+        LobbyEntity lobby = lobbyOptional.get();
+        // Check to see if lobby is active, if not throw an exception
+        if (!lobby.getIsActive()) {
+            throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active, please try joining a different lobby or creating your own");
+        }
+        Set<UserEntity> activePlayers = lobby.getUserEntities();
+        // Check to ensure max player count (4) has not been reached already
+        if (activePlayers.size() >= 4) {
+            throw new LobbyFullException("Lobby with ID " + lobbyId + " is currently full, please try joining a different lobby or create your own");
+        }
+        UserEntity requester = userService.findUserById(userId);
+        activePlayers.add(requester);
+        lobby.setUserEntities(activePlayers);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
 }
