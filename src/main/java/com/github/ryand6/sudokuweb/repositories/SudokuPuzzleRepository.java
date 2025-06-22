@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SudokuPuzzleRepository extends JpaRepository<SudokuPuzzleEntity, Long> {
+
 }

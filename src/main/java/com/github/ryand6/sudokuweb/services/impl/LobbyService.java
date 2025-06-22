@@ -79,7 +79,7 @@ public class LobbyService {
         Set<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
         // Create LobbyPlayerEntity for requester
         LobbyPlayerEntity lobbyPlayerRequester = LobbyPlayerFactory.createLobbyPlayer(newLobby, requester);
-        // No need to save entity due to LobbyEntity cascade rules
+        lobbyPlayerRepository.save(lobbyPlayerRequester);
         lobbyPlayers.add(lobbyPlayerRequester);
         newLobby.setLobbyPlayers(lobbyPlayers);
         return lobbyEntityDtoMapper.mapToDto(newLobby);

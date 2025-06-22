@@ -6,9 +6,9 @@ import com.github.ryand6.sudokuweb.dto.GameDto;
 import com.github.ryand6.sudokuweb.dto.GameStateDto;
 import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
-import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.*;
 import com.github.ryand6.sudokuweb.services.impl.BoardStateService;
+import com.github.ryand6.sudokuweb.services.impl.PuzzleGenerationService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -42,7 +41,6 @@ public class BoardStateServiceIntegrationTests {
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final GameRepository gameRepository;
     private final GameStateRepository gameStateRepository;
-    private final UserEntityDtoMapper userEntityDtoMapper;
 
     @Autowired
     public BoardStateServiceIntegrationTests(
@@ -52,8 +50,7 @@ public class BoardStateServiceIntegrationTests {
             JdbcTemplate jdbcTemplate,
             SudokuPuzzleRepository sudokuPuzzleRepository,
             GameRepository gameRepository,
-            GameStateRepository gameStateRepository,
-            UserEntityDtoMapper userEntityDtoMapper) {
+            GameStateRepository gameStateRepository) {
         this.boardStateService = boardStateService;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
@@ -61,11 +58,10 @@ public class BoardStateServiceIntegrationTests {
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
         this.gameRepository = gameRepository;
         this.gameStateRepository = gameStateRepository;
-        this.userEntityDtoMapper = userEntityDtoMapper;
     }
 
     @MockBean
-    private PuzzleGenerator puzzleGenerator;
+    private PuzzleGenerationService puzzleGenerationService;
 
     private LobbyEntity testLobby;
     private UserEntity user1;
@@ -76,9 +72,9 @@ public class BoardStateServiceIntegrationTests {
 
     @BeforeEach
     void setup() {
-        jdbcTemplate.execute("DELETE FROM lobby_users");
         jdbcTemplate.execute("DELETE FROM game_state");
         jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobby_players");
         jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
@@ -94,16 +90,15 @@ public class BoardStateServiceIntegrationTests {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        users = new HashSet<>();
-        users.add(user1);
-        users.add(user2);
-
         testLobby = new LobbyEntity();
         testLobby.setLobbyName("TestLobby");
-        testLobby.setUserEntities(users);
         testLobby.setHost(user1);
 
         lobbyRepository.save(testLobby);
+
+        LobbyPlayerEntity lobbyPlayerA = TestDataUtil.createTestLobbyPlayer(testLobby, user1);
+        LobbyPlayerEntity lobbyPlayerB = TestDataUtil.createTestLobbyPlayer(testLobby, user2);
+        testLobby.setLobbyPlayers(Set.of(lobbyPlayerA, lobbyPlayerB));
     }
 
     @Test
@@ -115,7 +110,7 @@ public class BoardStateServiceIntegrationTests {
         String solution = "[[9,6,8,2,1,5,7,4,3],[1,5,4,7,9,3,6,2,8],[7,3,2,4,6,8,9,1,5],[2,9,5,3,4,7,8,6,1],[3,7,6,8,5,1,4,9,2],[4,8,1,9,2,6,3,5,7],[5,1,7,6,3,9,2,8,4],[8,4,9,1,7,2,5,3,6],[6,2,3,5,8,4,1,7,9]]";
 
         // Mock the output of the generatePuzzle mocked bean
-        when(puzzleGenerator.generatePuzzle(difficulty))
+        when(puzzleGenerationService.generatePuzzle(difficulty))
                 .thenReturn(List.of(generatedPuzzle, solution));
 
         GenerateBoardRequestDto requestDto = new GenerateBoardRequestDto();

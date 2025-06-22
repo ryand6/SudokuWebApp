@@ -77,9 +77,9 @@ public class GameEntityDtoMapperIntegrationTests {
     @BeforeEach
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
-        jdbcTemplate.execute("DELETE FROM lobby_users");
         jdbcTemplate.execute("DELETE FROM game_state");
         jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobby_players");
         jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
@@ -92,6 +92,8 @@ public class GameEntityDtoMapperIntegrationTests {
         savedPuzzle = sudokuPuzzleRepository.save(TestDataUtil.createTestSudokuPuzzleA());
         //Setup test lobby data in the test DB
         savedLobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(savedUser));
+        LobbyPlayerEntity lobbyPlayerEntity = TestDataUtil.createTestLobbyPlayer(savedLobby, savedUser);
+        savedLobby.setLobbyPlayers(Set.of(lobbyPlayerEntity));
     }
 
     @Test
@@ -103,13 +105,13 @@ public class GameEntityDtoMapperIntegrationTests {
         PlayerColour[] playerColours = PlayerColour.values();
         int i = 0;
 
-        Set<UserEntity> activeUserEntities = savedLobby.getUserEntities();
+        Set<LobbyPlayerEntity> activeLobbyPlayers = savedLobby.getLobbyPlayers();
 
         // Create GameState objects for each active user in the game
         Set<GameStateEntity> gameStateEntities = new HashSet<>();
-        for (UserEntity userEntity : activeUserEntities) {
+        for (LobbyPlayerEntity lobbyPlayerEntity : activeLobbyPlayers) {
             GameStateEntity state = new GameStateEntity();
-            state.setUserEntity(userEntity);
+            state.setUserEntity(lobbyPlayerEntity.getUser());
             state.setGameEntity(gameEntity);
             // Board state starts with the initial sudokuPuzzleEntity
             state.setCurrentBoardState(savedPuzzle.getInitialBoardState());
@@ -146,13 +148,13 @@ public class GameEntityDtoMapperIntegrationTests {
         PlayerColour[] playerColours = PlayerColour.values();
         int i = 0;
 
-        Set<UserEntity> activeUserEntities = savedLobby.getUserEntities();
+        Set<LobbyPlayerEntity> activeLobbyPlayers = savedLobby.getLobbyPlayers();
 
         // Create GameState objects for each active user in the game
         Set<GameStateEntity> gameStateEntities = new HashSet<>();
-        for (UserEntity userEntity : activeUserEntities) {
+        for (LobbyPlayerEntity lobbyPlayerEntity : activeLobbyPlayers) {
             GameStateEntity state = new GameStateEntity();
-            state.setUserEntity(userEntity);
+            state.setUserEntity(lobbyPlayerEntity.getUser());
             state.setGameEntity(gameEntity);
             // Board state starts with the initial sudokuPuzzleEntity
             state.setCurrentBoardState(savedPuzzle.getInitialBoardState());
@@ -220,13 +222,13 @@ public class GameEntityDtoMapperIntegrationTests {
         PlayerColour[] playerColours = PlayerColour.values();
         int i = 0;
 
-        Set<UserEntity> activeUserEntities = savedLobby.getUserEntities();
+        Set<LobbyPlayerEntity> activeLobbyPlayers = savedLobby.getLobbyPlayers();
 
         // Create GameState objects for each active user in the game
         Set<GameStateEntity> gameStateEntities = new HashSet<>();
-        for (UserEntity userEntity : activeUserEntities) {
+        for (LobbyPlayerEntity lobbyPlayerEntity : activeLobbyPlayers) {
             GameStateEntity state = new GameStateEntity();
-            state.setUserEntity(userEntity);
+            state.setUserEntity(lobbyPlayerEntity.getUser());
             state.setGameEntity(gameEntity);
             // Board state starts with the initial sudokuPuzzleEntity
             state.setCurrentBoardState(savedPuzzle.getInitialBoardState());

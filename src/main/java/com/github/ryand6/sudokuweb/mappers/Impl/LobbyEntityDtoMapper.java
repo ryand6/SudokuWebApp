@@ -11,6 +11,7 @@ import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,13 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
 
     @Override
     public LobbyDto mapToDto(LobbyEntity lobbyEntity) {
+        Set<LobbyPlayerDto> lobbyPlayerDtos = new HashSet<>();
+        if (lobbyEntity.getLobbyPlayers() != null) {
+            lobbyPlayerDtos = lobbyEntity.getLobbyPlayers().stream()
+                    .map(lobbyPlayerEntityDtoMapper::mapToDto)
+                    .collect(Collectors.toSet());
+        }
+
         return LobbyDto.builder()
                 .id(lobbyEntity.getId())
                 .lobbyName(lobbyEntity.getLobbyName())
@@ -39,11 +47,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isPublic(lobbyEntity.getIsPublic())
                 .inGame(lobbyEntity.getInGame())
                 // Convert lobby entities to dtos and add to set
-                .lobbyPlayers(
-                        lobbyEntity.getLobbyPlayers().stream()
-                                .map(lobbyPlayerEntityDtoMapper::mapToDto)
-                                .collect(Collectors.toSet())
-                )
+                .lobbyPlayers(lobbyPlayerDtos)
                 .hostId(lobbyEntity.getHost().getId())
                 .build();
     }
@@ -118,7 +122,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
     private Set<LobbyPlayerEntity> resolveDtoLobbyPlayers(Set<LobbyPlayerDto> lobbyPlayerDtos) {
         return lobbyPlayerDtos.stream()
                 .map(dto -> lobbyPlayerRepository.findById(dto.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("Lobby Player id not found: " + dto.getId())))
+                        .orElseThrow(() -> new EntityNotFoundException("Lobby Player id not found: " + dto.getId().toString())))
                 .collect(Collectors.toSet());
     }
 

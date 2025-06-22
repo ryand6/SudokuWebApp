@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -49,8 +50,10 @@ public class LobbyEntity {
     private String joinCode;
 
     // FetchType.EAGER as only up to 4x LobbyPlayers are linked at any one time
-    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<LobbyPlayerEntity> lobbyPlayers;
+    // Initialise HashSet to prevent null errors as the field will not be initialised until after the LobbyEntity is created
+    // This is because LobbyPlayerEntity can only be created once LobbyEntity is persisted
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
 
     // Reference user id of the host - user that set up the lobby, or the earliest person in
     // the current set of active users that joined the lobby (if previous host left)

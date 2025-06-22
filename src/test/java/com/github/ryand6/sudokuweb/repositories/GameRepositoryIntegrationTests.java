@@ -44,9 +44,9 @@ public class GameRepositoryIntegrationTests {
     @BeforeEach
     public void setUp() {
         // Correct SQL syntax for deleting all rows from the tables
-        jdbcTemplate.execute("DELETE FROM lobby_users");
         jdbcTemplate.execute("DELETE FROM game_state");
         jdbcTemplate.execute("DELETE FROM games");
+        jdbcTemplate.execute("DELETE FROM lobby_players");
         jdbcTemplate.execute("DELETE FROM lobbies");
         jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
@@ -83,8 +83,8 @@ public class GameRepositoryIntegrationTests {
         userRepository.save(userEntityB);
         userRepository.save(userEntityC);
         LobbyEntity lobbyEntityA = TestDataUtil.createTestLobbyA(userEntityA);
-        LobbyEntity lobbyEntityB = TestDataUtil.createTestLobbyB(userEntityA, userEntityB);
-        LobbyEntity lobbyEntityC = TestDataUtil.createTestLobbyC(userEntityA, userEntityB, userEntityC);
+        LobbyEntity lobbyEntityB = TestDataUtil.createTestLobbyB(userEntityB);
+        LobbyEntity lobbyEntityC = TestDataUtil.createTestLobbyC(userEntityC);
         lobbyRepository.save(lobbyEntityA);
         lobbyRepository.save(lobbyEntityB);
         lobbyRepository.save(lobbyEntityC);
@@ -108,6 +108,7 @@ public class GameRepositoryIntegrationTests {
                 // Avoid lazy loaded fields when comparing
                 .ignoringFields(
                         "lobbyEntity.gameEntities",
+                        "lobbyEntity.lobbyPlayers",
                         "gameStateEntities"
                 )
                 .isEqualTo(List.of(gameEntityA, gameEntityB, gameEntityC));

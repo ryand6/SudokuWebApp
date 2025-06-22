@@ -23,7 +23,7 @@ public interface LobbyRepository extends JpaRepository<LobbyEntity, Long> {
 
     // Lock the lobby record to prevent race conditions, so that the lobby can be updated if required, e.g. adding a new player
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT l FROM lobbies l WHERE l.id = :id")
+    @Query(value = "SELECT * FROM lobbies WHERE id = :id", nativeQuery = true)
     Optional<LobbyEntity> findByIdForUpdate(@Param("id") Long id);
 
 }

@@ -4,8 +4,6 @@ import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 
-import java.util.HashSet;
-
 public final class TestDataUtil {
 
     private TestDataUtil() {
@@ -85,46 +83,34 @@ public final class TestDataUtil {
     }
 
     public static LobbyEntity createTestLobbyA(UserEntity userEntity) {
-        HashSet<UserEntity> set = new HashSet<>();
-        set.add(userEntity);
         return LobbyEntity.builder().
                 lobbyName("Guru Lobby").
                 isActive(true).
                 isPublic(true).
                 inGame(false).
-                userEntities(set).
                 host(userEntity).
                 build();
     }
 
-    public static LobbyEntity createTestLobbyB(UserEntity userEntityA, UserEntity userEntityB) {
-        HashSet<UserEntity> set = new HashSet<>();
-        set.add(userEntityA);
-        set.add(userEntityB);
+    public static LobbyEntity createTestLobbyB(UserEntity userEntity) {
         return LobbyEntity.builder().
                 lobbyName("SudokuSquad").
                 isActive(true).
                 isPublic(false).
                 inGame(false).
                 joinCode("aey3g-yagy3i3-u3ygu34").
-                userEntities(set).
-                host(userEntityA).
+                host(userEntity).
                 build();
     }
 
-    public static LobbyEntity createTestLobbyC(UserEntity userEntityA, UserEntity userEntityB, UserEntity userEntityC) {
-        HashSet<UserEntity> set = new HashSet<>();
-        set.add(userEntityA);
-        set.add(userEntityB);
-        set.add(userEntityC);
+    public static LobbyEntity createTestLobbyC(UserEntity userEntity) {
         return LobbyEntity.builder().
                 lobbyName("Active").
                 isActive(false).
                 isPublic(false).
                 inGame(true).
                 joinCode("eipioje-stretg4-2et44t").
-                userEntities(set).
-                host(userEntityA).
+                host(userEntity).
                 build();
     }
 
@@ -162,6 +148,14 @@ public final class TestDataUtil {
         return GameEntity.builder()
                 .lobbyEntity(lobbyEntity)
                 .sudokuPuzzleEntity(sudokuPuzzleEntity)
+                .build();
+    }
+
+    public static LobbyPlayerEntity createTestLobbyPlayer(final LobbyEntity lobbyEntity, final UserEntity userEntity) {
+        return LobbyPlayerEntity.builder()
+                .id(new LobbyPlayerId(lobbyEntity.getId(), userEntity.getId()))
+                .lobby(lobbyEntity)
+                .user(userEntity)
                 .build();
     }
 

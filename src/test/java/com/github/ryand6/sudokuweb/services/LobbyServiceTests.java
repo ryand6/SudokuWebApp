@@ -1,10 +1,14 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
@@ -20,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +42,9 @@ public class LobbyServiceTests {
 
     @Mock
     private LobbyEntityDtoMapper lobbyEntityDtoMapper;
+
+    @Mock
+    private LobbyPlayerRepository lobbyPlayerRepository;
 
     @InjectMocks
     private LobbyService lobbyService;
@@ -88,10 +96,19 @@ public class LobbyServiceTests {
         lobby.setLobbyName("Test Lobby");
         when(lobbyRepository.save(any(LobbyEntity.class))).thenReturn(lobby);
 
+        LobbyPlayerEntity lobbyPlayerEntity = new LobbyPlayerEntity();
+        lobbyPlayerEntity.setLobby(lobby);
+        lobbyPlayerEntity.setUser(user);
+        when(lobbyPlayerRepository.save(any(LobbyPlayerEntity.class))).thenReturn(lobbyPlayerEntity);
+
+        LobbyPlayerDto lobbyPlayerDto = new LobbyPlayerDto();
+        lobbyPlayerDto.setId(new LobbyPlayerId(lobby.getId(), user.getId()));
+
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
         lobbyDto.setLobbyName("Test Lobby");
         lobbyDto.setIsPublic(true);
+        lobbyDto.setLobbyPlayers(Set.of(lobbyPlayerDto));
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(lobbyDto);
 
         String lobbyName = "Test Lobby";
@@ -103,6 +120,7 @@ public class LobbyServiceTests {
         assertThat(lobbyDtoTest.getId()).isEqualTo(1L);
         assertThat(lobbyDtoTest.getLobbyName()).isEqualTo("Test Lobby");
         assertThat(lobbyDtoTest.getIsPublic()).isEqualTo(true);
+        assertThat(lobbyDtoTest.getLobbyPlayers()).hasSize(1);
     }
 
     @Test
