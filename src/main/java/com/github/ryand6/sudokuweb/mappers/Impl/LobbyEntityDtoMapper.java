@@ -1,10 +1,12 @@
 package com.github.ryand6.sudokuweb.mappers.Impl;
 
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
-import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
@@ -16,11 +18,15 @@ import java.util.stream.Collectors;
 public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyDto> {
 
     private final UserRepository userRepository;
-    private final UserEntityDtoMapper userEntityDtoMapper;
+    private final LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
+    private final LobbyPlayerRepository lobbyPlayerRepository;
 
-    public LobbyEntityDtoMapper(UserRepository userRepository, UserEntityDtoMapper userEntityDtoMapper) {
+    public LobbyEntityDtoMapper(UserRepository userRepository,
+                                LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper,
+                                LobbyPlayerRepository lobbyPlayerRepository) {
         this.userRepository = userRepository;
-        this.userEntityDtoMapper = userEntityDtoMapper;
+        this.lobbyPlayerEntityDtoMapper = lobbyPlayerEntityDtoMapper;
+        this.lobbyPlayerRepository = lobbyPlayerRepository;
     }
 
     @Override
@@ -34,8 +40,8 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .inGame(lobbyEntity.getInGame())
                 // Convert lobby entities to dtos and add to set
                 .lobbyPlayers(
-                        lobbyEntity.getUserEntities().stream()
-                                .map(userEntityDtoMapper::mapToDto)
+                        lobbyEntity.getLobbyPlayers().stream()
+                                .map(lobbyPlayerEntityDtoMapper::mapToDto)
                                 .collect(Collectors.toSet())
                 )
                 .hostId(lobbyEntity.getHost().getId())
@@ -44,8 +50,8 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
 
     @Override
     public LobbyEntity mapFromDto(LobbyDto lobbyDto) {
-        // Get set of userEntities from dtos
-        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getLobbyPlayers());
+        // Get set of lobbyPlayerEntities from dtos
+        Set<LobbyPlayerEntity> lobbyPlayerEntities = resolveDtoLobbyPlayers(lobbyDto.getLobbyPlayers());
         UserEntity hostEntity = resolveHostById(lobbyDto.getHostId());
 
         LobbyEntity.LobbyEntityBuilder lobbyEntityBuilder = LobbyEntity.builder()
@@ -54,7 +60,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isActive(lobbyDto.getIsActive())
                 .isPublic(lobbyDto.getIsPublic())
                 .inGame(lobbyDto.getInGame())
-                .userEntities(userEntities)
+                .lobbyPlayers(lobbyPlayerEntities)
                 .host(hostEntity);
 
         // Don't assign id field if non-existent, DB will create
@@ -66,8 +72,8 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
     }
 
     public LobbyEntity mapFromDto(LobbyDto lobbyDto, String joinCode) {
-        // Get set of userEntities from dtos
-        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getLobbyPlayers());
+        // Get set of lobbyPlayerEntities from dtos
+        Set<LobbyPlayerEntity> lobbyPlayerEntities = resolveDtoLobbyPlayers(lobbyDto.getLobbyPlayers());
         UserEntity hostEntity = resolveHostById(lobbyDto.getHostId());
 
         LobbyEntity.LobbyEntityBuilder lobbyEntityBuilder = LobbyEntity.builder()
@@ -77,7 +83,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isPublic(lobbyDto.getIsPublic())
                 .inGame(lobbyDto.getInGame())
                 .joinCode(joinCode)
-                .userEntities(userEntities)
+                .lobbyPlayers(lobbyPlayerEntities)
                 .host(hostEntity);
 
         // Don't assign id field if non-existent, DB will create
@@ -90,7 +96,8 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
 
     // Updates the LobbyEntity using the info provided by the DTO
     public LobbyEntity mapFromDto(LobbyDto lobbyDto, LobbyEntity existingLobby) {
-        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getLobbyPlayers());
+        // Get set of lobbyPlayerEntities from dtos
+        Set<LobbyPlayerEntity> lobbyPlayerEntities = resolveDtoLobbyPlayers(lobbyDto.getLobbyPlayers());
         UserEntity hostEntity = resolveHostById(lobbyDto.getHostId());
 
         // Update mutable fields
@@ -99,7 +106,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
         existingLobby.setIsActive(lobbyDto.getIsActive());
         existingLobby.setIsPublic(lobbyDto.getIsPublic());
         existingLobby.setInGame(lobbyDto.getInGame());
-        existingLobby.setUserEntities(userEntities);
+        existingLobby.setLobbyPlayers(lobbyPlayerEntities);
         existingLobby.setHost(hostEntity);
 
         // DON'T touch gameEntities, since they already exist and are managed elsewhere
@@ -107,11 +114,11 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
         return existingLobby;
     }
 
-    // Get set of UserEntities associated with a set of UserDtos
-    private Set<UserEntity> resolveDtoUsers(Set<UserDto> userDtos) {
-        return userDtos.stream()
-                .map(dto -> userRepository.findById(dto.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("User id not found: " + dto.getId())))
+    // Get set of LobbyPlayerEntities associated with a set of LobbyPlayerDtos
+    private Set<LobbyPlayerEntity> resolveDtoLobbyPlayers(Set<LobbyPlayerDto> lobbyPlayerDtos) {
+        return lobbyPlayerDtos.stream()
+                .map(dto -> lobbyPlayerRepository.findById(dto.getId())
+                        .orElseThrow(() -> new EntityNotFoundException("Lobby Player id not found: " + dto.getId())))
                 .collect(Collectors.toSet());
     }
 
