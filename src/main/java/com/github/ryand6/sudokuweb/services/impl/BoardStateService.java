@@ -1,6 +1,9 @@
 package com.github.ryand6.sudokuweb.services.impl;
 
-import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.domain.GameEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.factory.GameFactory;
 import com.github.ryand6.sudokuweb.domain.factory.SudokuPuzzleFactory;
 import com.github.ryand6.sudokuweb.dto.GameDto;
@@ -12,7 +15,6 @@ import com.github.ryand6.sudokuweb.mappers.Impl.GameEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.GameRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
-import com.github.ryand6.sudokuweb.services.PuzzleGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
@@ -27,18 +29,18 @@ public class BoardStateService {
 
     private static final Logger log = LoggerFactory.getLogger(BoardStateService.class);
 
-    private final PuzzleGenerator puzzleGenerator;
+    private final PuzzleGenerationService puzzleGenerationService;
     private final LobbyRepository lobbyRepository;
     private final GameRepository gameRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final GameEntityDtoMapper gameEntityDtoMapper;
 
-    public BoardStateService(PuzzleGenerator puzzleGenerator,
+    public BoardStateService(PuzzleGenerationService puzzleGenerationService,
                              LobbyRepository lobbyRepository,
                              GameRepository gameRepository,
                              SudokuPuzzleRepository sudokuPuzzleRepository,
                              GameEntityDtoMapper gameEntityDtoMapper) {
-        this.puzzleGenerator = puzzleGenerator;
+        this.puzzleGenerationService = puzzleGenerationService;
         this.lobbyRepository = lobbyRepository;
         this.gameRepository = gameRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
@@ -75,7 +77,7 @@ public class BoardStateService {
 
         // Call static method to generate sudokuPuzzleEntity, retrieving both the sudokuPuzzleEntity and solution as a string
         // interpretation of a nested int array
-        List<String> sudokuPuzzle = puzzleGenerator.generatePuzzle(difficulty);
+        List<String> sudokuPuzzle = puzzleGenerationService.generatePuzzle(difficulty);
         String puzzle = new String(sudokuPuzzle.get(0));
         String solution = new String(sudokuPuzzle.get(1));
 

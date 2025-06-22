@@ -1,13 +1,16 @@
 package com.github.ryand6.sudokuweb.services.impl;
 
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
 import com.github.ryand6.sudokuweb.exceptions.LobbyFullException;
 import com.github.ryand6.sudokuweb.exceptions.LobbyInactiveException;
 import com.github.ryand6.sudokuweb.exceptions.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
@@ -24,16 +27,19 @@ public class LobbyService {
     private final LobbyRepository lobbyRepository;
     private final UserService userService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
+    private final LobbyPlayerRepository lobbyPlayerRepository;
 
     private static final String CODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static final int CODE_LENGTH = 25;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
-                        LobbyEntityDtoMapper lobbyEntityDtoMapper) {
+                        LobbyEntityDtoMapper lobbyEntityDtoMapper,
+                        LobbyPlayerRepository lobbyPlayerRepository) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
+        this.lobbyPlayerRepository = lobbyPlayerRepository;
     }
 
     // Returns a unique join code not used in other private lobbies
@@ -47,6 +53,7 @@ public class LobbyService {
         return code;
     }
 
+    @Transactional
     public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Boolean isPrivate, String joinCode, Long requesterId) {
         LobbyEntity newLobby = new LobbyEntity();
         // One of these must be true or there is an error with the parameters
@@ -61,16 +68,21 @@ public class LobbyService {
         newLobby.setLobbyName(lobbyName);
         // requester of lobby creation becomes the host
         newLobby.setHost(requester);
-        // Create a set of lobbyPlayers only containing the requester for now, until other lobbyPlayers join the lobby
-        Set<UserEntity> lobbyUsers = new HashSet<>();
-        lobbyUsers.add(requester);
-        newLobby.setUserEntities(lobbyUsers);
         newLobby.setInGame(false);
         newLobby.setIsActive(true);
         if (joinCode != null && !joinCode.isEmpty()) {
             newLobby.setJoinCode(joinCode);
         }
-        return lobbyEntityDtoMapper.mapToDto(lobbyRepository.save(newLobby));
+        // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
+        lobbyRepository.saveAndFlush(newLobby);
+        // Create a set of lobbyPlayers only containing the requester for now, until other lobbyPlayers join the lobby
+        Set<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
+        // Create LobbyPlayerEntity for requester
+        LobbyPlayerEntity lobbyPlayerRequester = LobbyPlayerFactory.createLobbyPlayer(newLobby, requester);
+        // No need to save entity due to LobbyEntity cascade rules
+        lobbyPlayers.add(lobbyPlayerRequester);
+        newLobby.setLobbyPlayers(lobbyPlayers);
+        return lobbyEntityDtoMapper.mapToDto(newLobby);
     }
 
     // Retrieves a page of lobbies based on the specified page number and size. Page results are ordered by createdAt (newest first)
@@ -95,14 +107,15 @@ public class LobbyService {
         if (!lobby.getIsActive()) {
             throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active, please try joining a different lobby or creating your own");
         }
-        Set<UserEntity> activePlayers = lobby.getUserEntities();
+        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
         // Check to ensure max player count (4) has not been reached already
         if (activePlayers.size() >= 4) {
             throw new LobbyFullException("Lobby with ID " + lobbyId + " is currently full, please try joining a different lobby or create your own");
         }
         UserEntity requester = userService.findUserById(userId);
-        activePlayers.add(requester);
-        lobby.setUserEntities(activePlayers);
+        LobbyPlayerEntity lobbyPlayer = LobbyPlayerFactory.createLobbyPlayer(lobby, requester);
+        activePlayers.add(lobbyPlayer);
+        lobby.setLobbyPlayers(activePlayers);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
