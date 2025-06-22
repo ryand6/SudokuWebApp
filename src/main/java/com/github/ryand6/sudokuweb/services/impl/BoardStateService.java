@@ -59,7 +59,7 @@ public class BoardStateService {
         // Fetch the lobby that is creating the game
         LobbyEntity lobbyEntity = lobbyRepository.findById(lobbyId).orElseThrow(() -> new EntityNotFoundException("Lobby with ID " + lobbyId + " not found when creating game."));
 
-        // Retrieve all active lobbyPlayers in the game
+        // Retrieve all active users in the game
         Set<LobbyPlayerEntity> activeLobbyPlayers = lobbyEntity.getLobbyPlayers();
 
         if (activeLobbyPlayers.size() > 4) {

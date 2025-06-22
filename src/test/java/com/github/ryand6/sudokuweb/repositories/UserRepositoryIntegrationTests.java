@@ -42,7 +42,7 @@ public class UserRepositoryIntegrationTests {
         jdbcTemplate.execute("DELETE FROM game_state");
         jdbcTemplate.execute("DELETE FROM games");
         jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM lobbyPlayers");
+        jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
     }

@@ -40,7 +40,7 @@ public class LobbyEntity {
     @Column(name = "is_public")
     private Boolean isPublic;
 
-    // true if a game is currently active, meaning lobbyPlayers can't join the lobby at this time
+    // true if a game is currently active, meaning users can't join the lobby at this time
     @Column(name = "in_game")
     private Boolean inGame;
 
@@ -53,7 +53,7 @@ public class LobbyEntity {
     private Set<LobbyPlayerEntity> lobbyPlayers;
 
     // Reference user id of the host - user that set up the lobby, or the earliest person in
-    // the current set of active lobbyPlayers that joined the lobby (if previous host left)
+    // the current set of active users that joined the lobby (if previous host left)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "host_user_id", nullable = false)
     private UserEntity host;

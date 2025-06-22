@@ -80,10 +80,10 @@ public class BoardStateServiceIntegrationTests {
         jdbcTemplate.execute("DELETE FROM game_state");
         jdbcTemplate.execute("DELETE FROM games");
         jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM lobbyPlayers");
+        jdbcTemplate.execute("DELETE FROM users");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
-        // Setup Score entities to insert into lobbyPlayers
+        // Setup Score entities to insert into users
         score1 = TestDataUtil.createTestScoreA();
         score2 = TestDataUtil.createTestScoreB();
 
@@ -136,7 +136,7 @@ public class BoardStateServiceIntegrationTests {
         List<SudokuPuzzleEntity> puzzles = sudokuPuzzleRepository.findAll();
         assertThat(puzzles).hasSize(1);
 
-        // Test that both game lobbyPlayers have their own game state entities
+        // Test that both game users have their own game state entities
         assertThat(response.getGameStates()).hasSize(2);
 
         // Test that the game states have been saved to the DB

@@ -75,7 +75,7 @@ public class LobbyService {
         }
         // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
         lobbyRepository.saveAndFlush(newLobby);
-        // Create a set of lobbyPlayers only containing the requester for now, until other lobbyPlayers join the lobby
+        // Create a set of users only containing the requester for now, until other users join the lobby
         Set<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
         // Create LobbyPlayerEntity for requester
         LobbyPlayerEntity lobbyPlayerRequester = LobbyPlayerFactory.createLobbyPlayer(newLobby, requester);
