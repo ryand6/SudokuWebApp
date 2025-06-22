@@ -85,6 +85,9 @@ public class LobbyController {
         }
         try {
             LobbyDto lobbyDto = lobbyService.joinPublicLobby(lobbyId, currentUser.getId());
+
+            /* Need to add WebSocket messaging to update lobby view in real time */
+
             return "redirect:/lobby/" + lobbyDto.getId();
         // Catch and handle any Lobby state related exceptions
         } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException lobbyStateException) {
@@ -93,6 +96,25 @@ public class LobbyController {
             redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");
         }
         return "redirect:/dashboard";
+    }
+
+    // Make a POST request to alter Lobby and LobbyPlayer DB tables when a user leaves the lobby, either through disconnecting or manually leaving
+    @PostMapping("/lobby/public/leave")
+    @ResponseBody
+    public LobbyDto leavePublicLobby(@AuthenticationPrincipal OAuth2User principal,
+                                     OAuth2AuthenticationToken authToken,
+                                     @RequestParam Long lobbyId) {
+        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+
+        try {
+            LobbyDto lobbyDto = lobbyService.removePlayerFromLobby(currentUser.getId(), lobbyId);
+
+            /* Need to add WebSocket messaging to update lobby / game view in real time */
+
+            return lobbyDto;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

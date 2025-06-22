@@ -119,4 +119,61 @@ public class LobbyService {
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
+    @Transactional
+    // Removes a player from the lobby either due to disconnecting or manual leave, re-orders host if the host left
+    public LobbyDto removePlayerFromLobby(Long userId, Long lobbyId) {
+        // Try retrieve lobby and lock for editing, preventing race conditions
+        Optional<LobbyEntity> lobbyOptional = lobbyRepository.findByIdForUpdate(lobbyId);
+        if (lobbyOptional.isEmpty()) {
+            throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
+        }
+        LobbyEntity lobby = lobbyOptional.get();
+        // Try retrieve the LobbyPlayer associated with the user leaving
+        Optional<LobbyPlayerEntity> lobbyPlayerRequesterOptional = lobbyPlayerRepository.findByCompositeId(lobbyId, userId);
+        if (lobbyPlayerRequesterOptional.isEmpty()) {
+            throw new LobbyNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist");
+        }
+        UserEntity requesterEntity = userService.findUserById(userId);
+        // If host has left, update the host to the player that joined first after the host
+        if (requesterEntity.equals(lobby.getHost())) {
+            Optional<UserEntity> newHostOptional = getNewHost(lobby);
+            // Current host was the only active player in lobby - close down lobby
+            if (newHostOptional.isEmpty()) {
+                lobby = closeLobby(lobby);
+            } else {
+                UserEntity newHost = newHostOptional.get();
+                // Update the lobby host
+                lobby.setHost(newHost);
+            }
+        }
+        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
+        LobbyPlayerEntity lobbyPlayerRequester = lobbyPlayerRequesterOptional.get();
+        activePlayers.remove(lobbyPlayerRequester);
+        // Delete the LobbyPlayer from the DB
+        lobbyPlayerRepository.deleteByCompositeId(lobbyId, userId);
+        lobby.setLobbyPlayers(activePlayers);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    // Return the entity record of the new host based on the order in which players joined
+    public Optional<UserEntity> getNewHost(LobbyEntity lobby) {
+        UserEntity currentHost = lobby.getHost();
+        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
+        return activePlayers.stream()
+                // Remove current host from the stream
+                .filter(lp -> !lp.getUser().equals(currentHost))
+                // Order by join date/time from first to last
+                .sorted(Comparator.comparing(LobbyPlayerEntity::getJoinedAt))
+                // Transform to list of User entities
+                .map(LobbyPlayerEntity::getUser)
+                // Return the player who joined first to be the new host
+                .findFirst();
+    }
+
+    // Register the Lobby inactive
+    public LobbyEntity closeLobby(LobbyEntity lobby) {
+        lobby.setIsActive(false);
+        return lobby;
+    }
+
 }
