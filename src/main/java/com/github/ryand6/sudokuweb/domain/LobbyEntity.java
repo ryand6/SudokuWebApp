@@ -40,7 +40,7 @@ public class LobbyEntity {
     @Column(name = "is_public")
     private Boolean isPublic;
 
-    // true if a game is currently active, meaning users can't join the lobby at this time
+    // true if a game is currently active, meaning lobbyPlayers can't join the lobby at this time
     @Column(name = "in_game")
     private Boolean inGame;
 
@@ -48,18 +48,12 @@ public class LobbyEntity {
     @Column(name = "join_code", unique = true)
     private String joinCode;
 
-    // All active users in the lobby (max 4 players) - updates when a user joins or leaves/disconnects from site
-    // FetchType.EAGER as only up to 4x users are linked at any one time
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "lobby_users", // Name of the join table
-            joinColumns = @JoinColumn(name = "lobby_id"), // Foreign key to the `lobby` entity
-            inverseJoinColumns = @JoinColumn(name = "user_id") // Foreign key to the `user` entity
-    )
-    private Set<UserEntity> userEntities;
+    // FetchType.EAGER as only up to 4x LobbyPlayers are linked at any one time
+    @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<LobbyPlayerEntity> lobbyPlayers;
 
     // Reference user id of the host - user that set up the lobby, or the earliest person in
-    // the current set of active users that joined the lobby (if previous host left)
+    // the current set of active lobbyPlayers that joined the lobby (if previous host left)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "host_user_id", nullable = false)
     private UserEntity host;

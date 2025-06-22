@@ -61,7 +61,7 @@ public class LobbyService {
         newLobby.setLobbyName(lobbyName);
         // requester of lobby creation becomes the host
         newLobby.setHost(requester);
-        // Create a set of users only containing the requester for now, until other users join the lobby
+        // Create a set of lobbyPlayers only containing the requester for now, until other lobbyPlayers join the lobby
         Set<UserEntity> lobbyUsers = new HashSet<>();
         lobbyUsers.add(requester);
         newLobby.setUserEntities(lobbyUsers);

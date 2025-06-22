@@ -33,7 +33,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isPublic(lobbyEntity.getIsPublic())
                 .inGame(lobbyEntity.getInGame())
                 // Convert lobby entities to dtos and add to set
-                .users(
+                .lobbyPlayers(
                         lobbyEntity.getUserEntities().stream()
                                 .map(userEntityDtoMapper::mapToDto)
                                 .collect(Collectors.toSet())
@@ -45,7 +45,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
     @Override
     public LobbyEntity mapFromDto(LobbyDto lobbyDto) {
         // Get set of userEntities from dtos
-        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getUsers());
+        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getLobbyPlayers());
         UserEntity hostEntity = resolveHostById(lobbyDto.getHostId());
 
         LobbyEntity.LobbyEntityBuilder lobbyEntityBuilder = LobbyEntity.builder()
@@ -67,7 +67,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
 
     public LobbyEntity mapFromDto(LobbyDto lobbyDto, String joinCode) {
         // Get set of userEntities from dtos
-        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getUsers());
+        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getLobbyPlayers());
         UserEntity hostEntity = resolveHostById(lobbyDto.getHostId());
 
         LobbyEntity.LobbyEntityBuilder lobbyEntityBuilder = LobbyEntity.builder()
@@ -90,7 +90,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
 
     // Updates the LobbyEntity using the info provided by the DTO
     public LobbyEntity mapFromDto(LobbyDto lobbyDto, LobbyEntity existingLobby) {
-        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getUsers());
+        Set<UserEntity> userEntities = resolveDtoUsers(lobbyDto.getLobbyPlayers());
         UserEntity hostEntity = resolveHostById(lobbyDto.getHostId());
 
         // Update mutable fields

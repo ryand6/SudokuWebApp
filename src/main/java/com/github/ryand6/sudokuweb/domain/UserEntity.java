@@ -9,13 +9,13 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-// Entity that maps to users db table
+// Entity that maps to lobbyPlayers db table
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "users")
+@Table(name = "lobbyPlayers")
 public class UserEntity {
 
     @Id

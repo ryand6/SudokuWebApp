@@ -27,7 +27,7 @@ public class LobbyDto {
 
     private Boolean inGame;
 
-    private Set<UserDto> users;
+    private Set<LobbyPlayerDto> lobbyPlayers;
 
     private Long hostId;
 

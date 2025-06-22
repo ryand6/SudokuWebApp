@@ -1,9 +1,6 @@
 package com.github.ryand6.sudokuweb.services.impl;
 
-import com.github.ryand6.sudokuweb.domain.GameEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.domain.factory.GameFactory;
 import com.github.ryand6.sudokuweb.domain.factory.SudokuPuzzleFactory;
 import com.github.ryand6.sudokuweb.dto.GameDto;
@@ -60,10 +57,10 @@ public class BoardStateService {
         // Fetch the lobby that is creating the game
         LobbyEntity lobbyEntity = lobbyRepository.findById(lobbyId).orElseThrow(() -> new EntityNotFoundException("Lobby with ID " + lobbyId + " not found when creating game."));
 
-        // Retrieve all active users in the game
-        Set<UserEntity> activeUserEntities = lobbyEntity.getUserEntities();
+        // Retrieve all active lobbyPlayers in the game
+        Set<LobbyPlayerEntity> activeLobbyPlayers = lobbyEntity.getLobbyPlayers();
 
-        if (activeUserEntities.size() > 4) {
+        if (activeLobbyPlayers.size() > 4) {
             throw new TooManyActivePlayersException("Cannot create game: Lobby with id " + lobbyId + " has more than 4 active players.");
         }
 
@@ -74,7 +71,7 @@ public class BoardStateService {
             throw new InvalidDifficultyException("Invalid difficulty value: " + difficulty);
         }
 
-        log.info("Created new game for lobby ID {} with player count {} and difficulty {}", lobbyId, activeUserEntities.size(), difficulty);
+        log.info("Created new game for lobby ID {} with player count {} and difficulty {}", lobbyId, activeLobbyPlayers.size(), difficulty);
 
         // Call static method to generate sudokuPuzzleEntity, retrieving both the sudokuPuzzleEntity and solution as a string
         // interpretation of a nested int array

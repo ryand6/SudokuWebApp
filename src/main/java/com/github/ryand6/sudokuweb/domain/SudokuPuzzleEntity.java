@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
+@EqualsAndHashCode
 @Table(name = "sudoku_puzzles")
 public class SudokuPuzzleEntity {
 
@@ -26,20 +27,5 @@ public class SudokuPuzzleEntity {
     @Column(name = "difficulty", nullable = false)
     @Enumerated(EnumType.STRING)
     private Difficulty difficulty;
-
-    // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        SudokuPuzzleEntity sudokuPuzzleEntity = (SudokuPuzzleEntity) o;
-        return id != null && id.equals(sudokuPuzzleEntity.id);
-    }
-
-    // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. LobbyState
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 
 }

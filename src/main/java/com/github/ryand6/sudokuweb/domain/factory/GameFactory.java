@@ -18,13 +18,13 @@ public class GameFactory {
         PlayerColour[] playerColours = PlayerColour.values();
         int i = 0;
 
-        Set<UserEntity> activeUserEntities = lobbyEntity.getUserEntities();
+        Set<LobbyPlayerEntity> activeLobbyPlayers = lobbyEntity.getLobbyPlayers();
 
         // Create GameState objects for each active user in the game
         Set<GameStateEntity> gameStateEntities = new HashSet<>();
-        for (UserEntity userEntity : activeUserEntities) {
+        for (LobbyPlayerEntity lobbyPlayerEntity : activeLobbyPlayers) {
             GameStateEntity state = new GameStateEntity();
-            state.setUserEntity(userEntity);
+            state.setUserEntity(lobbyPlayerEntity.getUser());
             state.setGameEntity(newGame);
             // Board state starts with the initial sudokuPuzzleEntity
             state.setCurrentBoardState(sudokuPuzzleEntity.getInitialBoardState());

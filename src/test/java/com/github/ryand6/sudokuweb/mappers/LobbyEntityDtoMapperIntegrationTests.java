@@ -64,7 +64,7 @@ public class LobbyEntityDtoMapperIntegrationTests {
         jdbcTemplate.execute("DELETE FROM game_state");
         jdbcTemplate.execute("DELETE FROM games");
         jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM lobbyPlayers");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
         // Setup test score data - don't save as the User object will save it via cascade.ALL
@@ -88,8 +88,8 @@ public class LobbyEntityDtoMapperIntegrationTests {
         assertThat(dto.getDifficulty()).isEqualTo(savedLobby.getDifficulty());
         assertThat(dto.getHostId()).isEqualTo(savedLobby.getHost().getId());
 
-        assertThat(dto.getUsers()).hasSize(1);
-        UserDto userDto = dto.getUsers().iterator().next();
+        assertThat(dto.getLobbyPlayers()).hasSize(1);
+        UserDto userDto = dto.getLobbyPlayers().iterator().next();
         assertThat(userDto.getId()).isEqualTo(savedUser.getId());
         assertThat(userDto.getUsername()).isEqualTo(savedUser.getUsername());
     }
@@ -110,7 +110,7 @@ public class LobbyEntityDtoMapperIntegrationTests {
                 .isActive(true)
                 .isPublic(false)
                 .inGame(false)
-                .users(Set.of(userDto))
+                .lobbyPlayers(Set.of(userDto))
                 .hostId(userDto.getId())
                 .build();
 
@@ -143,7 +143,7 @@ public class LobbyEntityDtoMapperIntegrationTests {
                 .isActive(false)
                 .isPublic(true)
                 .inGame(false)
-                .users(Set.of(invalidUserDto))
+                .lobbyPlayers(Set.of(invalidUserDto))
                 .hostId(invalidUserDto.getId())
                 .build();
 

@@ -70,7 +70,7 @@ public class GameStateEntityDtoMapperIntegrationTests {
         jdbcTemplate.execute("DELETE FROM game_state");
         jdbcTemplate.execute("DELETE FROM games");
         jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM users");
+        jdbcTemplate.execute("DELETE FROM lobbyPlayers");
         jdbcTemplate.execute("DELETE FROM scores");
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
         // Setup test score data - don't save as the User object will save it via cascade.ALL

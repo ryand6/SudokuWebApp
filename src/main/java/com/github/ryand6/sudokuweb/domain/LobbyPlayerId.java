@@ -9,9 +9,9 @@ import java.io.Serializable;
 @Embeddable
 @Getter
 @Setter
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class LobbyPlayerId implements Serializable {
 
     private Long lobbyId;
