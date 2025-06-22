@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,10 +17,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,16 +38,18 @@ public class LobbyRepositoryIntegrationTests {
     private final LobbyRepository underTest;
     private final UserRepository userRepository;
     private final JdbcTemplate jdbcTemplate;
+    private final PlatformTransactionManager platformTransactionManager;
 
     @Autowired
     public LobbyRepositoryIntegrationTests(
             LobbyRepository underTest,
             UserRepository userRepository,
-            JdbcTemplate jdbcTemplate
-        ) {
+            JdbcTemplate jdbcTemplate,
+            PlatformTransactionManager platformTransactionManager) {
         this.underTest = underTest;
         this.userRepository = userRepository;
         this.jdbcTemplate = jdbcTemplate;
+        this.platformTransactionManager = platformTransactionManager;
     }
 
     @BeforeEach
@@ -162,6 +171,70 @@ public class LobbyRepositoryIntegrationTests {
         // Want to return the last two created Lobbies
         Pageable pageable = PageRequest.of(0, 2, Sort.by("createdAt").descending());
         assertThat(underTest.findByIsPublicTrueAndIsActiveTrue(pageable)).containsExactly(lobbyEntityC, lobbyEntityB);
+    }
+
+    @Test
+    @Transactional
+    public void testFindByIdForUpdate() {
+        UserEntity host = userRepository.save(TestDataUtil.createTestUserA(TestDataUtil.createTestScoreA()));
+        LobbyEntity lobby = underTest.save(TestDataUtil.createTestLobbyA(host));
+
+        Optional<LobbyEntity> lockedLobbyOpt = underTest.findByIdForUpdate(lobby.getId());
+
+        assertThat(lockedLobbyOpt).isPresent();
+        assertThat(lockedLobbyOpt.get().getId()).isEqualTo(lobby.getId());
+    }
+
+    @Test
+    public void findByIdForUpdate_testPessimisticWriteLockBlocksOtherThread() throws Exception {
+        UserEntity host = userRepository.save(TestDataUtil.createTestUserA(TestDataUtil.createTestScoreA()));
+        LobbyEntity lobby = underTest.save(TestDataUtil.createTestLobbyA(host));
+
+        // Simulate two users by creating 2x threads
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+
+        // Used to synchronize threads
+        // Ensures thread 2 doesn't start until thread 1 has acquired lock
+        CountDownLatch lockAcquired = new CountDownLatch(1);
+        // Waits until both threads are done before main test thread continues
+        CountDownLatch testFinished = new CountDownLatch(1);
+
+        // Using Spring transaction managers for JPA so that lock life cycle is appropriately attached to EntityManager (JPA)
+        TransactionTemplate tx1 = new TransactionTemplate(platformTransactionManager);
+        TransactionTemplate tx2 = new TransactionTemplate(platformTransactionManager);
+
+        // First thread: acquires the lock and holds it
+        executor.submit(() -> {
+            tx1.executeWithoutResult(status -> {
+                underTest.findByIdForUpdate(lobby.getId()); // lock row
+                lockAcquired.countDown(); // signal to thread 2 that lock is held
+                try {
+                    Thread.sleep(3000); // hold the lock for 3 seconds
+                } catch (InterruptedException ignored) {
+                    Thread.currentThread().interrupt();
+                }
+            });
+        });
+
+        // Second thread: tries to acquire the lock and times how long it takes
+        Future<Long> waitTimeFuture = executor.submit(() -> {
+            lockAcquired.await(); // wait until lock is acquired by first thread
+            long start = System.currentTimeMillis();
+            tx2.executeWithoutResult(status -> {
+                underTest.findByIdForUpdate(lobby.getId()); // should block until lock is released
+            });
+            long end = System.currentTimeMillis();
+            testFinished.countDown();
+            return end - start;
+        });
+
+        // Wait for second thread to finish and get duration
+        testFinished.await();
+        long waitTime = waitTimeFuture.get();
+        executor.shutdown();
+
+        // Expect at least 2.5 seconds delay, confirming it waited on the lock
+        assertThat(waitTime).isGreaterThanOrEqualTo(2500L);
     }
 
 }
