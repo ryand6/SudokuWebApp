@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -374,6 +376,84 @@ public class LobbyServiceTests {
         verify(spyService).closeLobby(lobbyBeforeClosing);
         verify(lobbyPlayerRepository).deleteByCompositeId(lobbyId, userId);
         verify(lobbyEntityDtoMapper).mapToDto(closedLobby);
+    }
+
+    @Test
+    void getNewHost_returnsEmpty_whenOnlyHostPresent() {
+        LobbyEntity lobby = mock(LobbyEntity.class);
+        UserEntity host = mock(UserEntity.class);
+        LobbyPlayerEntity hostPlayer = mock(LobbyPlayerEntity.class);
+
+        when(lobby.getHost()).thenReturn(host);
+        when(lobby.getLobbyPlayers()).thenReturn(Set.of(hostPlayer));
+        when(hostPlayer.getUser()).thenReturn(host);
+
+        Optional<UserEntity> result = lobbyService.getNewHost(lobby);
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void getNewHost_returnsOtherPlayer_whenHostAndOneOtherPlayerPresent() {
+        LobbyEntity lobby = mock(LobbyEntity.class);
+        UserEntity host = mock(UserEntity.class);
+        UserEntity newHost = mock(UserEntity.class);
+
+        LobbyPlayerEntity hostPlayer = mock(LobbyPlayerEntity.class);
+        LobbyPlayerEntity otherPlayer = mock(LobbyPlayerEntity.class);
+
+        when(lobby.getHost()).thenReturn(host);
+        when(lobby.getLobbyPlayers()).thenReturn(Set.of(hostPlayer, otherPlayer));
+        when(hostPlayer.getUser()).thenReturn(host);
+        when(otherPlayer.getUser()).thenReturn(newHost);
+        when(otherPlayer.getJoinedAt()).thenReturn(Instant.now());
+
+        Optional<UserEntity> result = lobbyService.getNewHost(lobby);
+
+        assertThat(result).contains(newHost);
+    }
+
+    @Test
+    void getNewHost_returnsEarliestJoinedPlayer_whenMultiplePlayersPresent() {
+        LobbyEntity lobby = mock(LobbyEntity.class);
+        UserEntity host = mock(UserEntity.class);
+        UserEntity p1 = mock(UserEntity.class);
+        UserEntity p2 = mock(UserEntity.class);
+        UserEntity p3 = mock(UserEntity.class);
+
+        Instant t1 = Instant.parse("2024-01-01T10:00:00Z");
+        Instant t2 = Instant.parse("2024-01-01T10:01:00Z");
+        Instant t3 = Instant.parse("2024-01-01T10:02:00Z");
+
+        LobbyPlayerEntity hostPlayer = mock(LobbyPlayerEntity.class);
+        LobbyPlayerEntity lp1 = mock(LobbyPlayerEntity.class);
+        LobbyPlayerEntity lp2 = mock(LobbyPlayerEntity.class);
+        LobbyPlayerEntity lp3 = mock(LobbyPlayerEntity.class);
+
+        when(lobby.getHost()).thenReturn(host);
+        when(lobby.getLobbyPlayers()).thenReturn(Set.of(hostPlayer, lp1, lp2, lp3));
+
+        when(hostPlayer.getUser()).thenReturn(host);
+        when(lp1.getUser()).thenReturn(p1);
+        when(lp1.getJoinedAt()).thenReturn(t2);
+
+        when(lp2.getUser()).thenReturn(p2);
+        when(lp2.getJoinedAt()).thenReturn(t1); // earliest
+
+        when(lp3.getUser()).thenReturn(p3);
+        when(lp3.getJoinedAt()).thenReturn(t3);
+
+        Optional<UserEntity> result = lobbyService.getNewHost(lobby);
+
+        assertThat(result).contains(p2);
+    }
+
+    @Test
+    void closeLobby_returnsClosedLobby() {
+        UserEntity userEntity = TestDataUtil.createTestUserA(TestDataUtil.createTestScoreA());
+        LobbyEntity lobbyEntity = TestDataUtil.createTestLobbyA(userEntity);
+        lobbyEntity = lobbyService.closeLobby(lobbyEntity);
+        assertThat(lobbyEntity.getIsActive()).isEqualTo(false);
     }
 
 }
