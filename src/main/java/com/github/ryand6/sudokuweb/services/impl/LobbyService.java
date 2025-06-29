@@ -5,10 +5,7 @@ import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
-import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
-import com.github.ryand6.sudokuweb.exceptions.LobbyFullException;
-import com.github.ryand6.sudokuweb.exceptions.LobbyInactiveException;
-import com.github.ryand6.sudokuweb.exceptions.LobbyNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
@@ -131,7 +128,7 @@ public class LobbyService {
         // Try retrieve the LobbyPlayer associated with the user leaving
         Optional<LobbyPlayerEntity> lobbyPlayerRequesterOptional = lobbyPlayerRepository.findByCompositeId(lobbyId, userId);
         if (lobbyPlayerRequesterOptional.isEmpty()) {
-            throw new LobbyNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist");
+            throw new LobbyPlayerNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist");
         }
         UserEntity requesterEntity = userService.findUserById(userId);
         // If host has left, update the host to the player that joined first after the host
