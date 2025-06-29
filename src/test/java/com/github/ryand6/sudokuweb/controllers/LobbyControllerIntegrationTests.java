@@ -164,10 +164,10 @@ public class LobbyControllerIntegrationTests {
     }
 
     @Test
-    public void attemptJoinPublicLobby_userNotFound() throws Exception {
+    public void attemptJoinLobby_userNotFound() throws Exception {
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/join/1")
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/join/1")
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -180,13 +180,13 @@ public class LobbyControllerIntegrationTests {
     // Make use of exceptionProvider stream to test multiple arguments
     @ParameterizedTest
     @MethodSource("exceptionProvider")
-    void attemptJoinPublicLobby_handlesExceptions(Exception exception, String expectedMessage) throws Exception {
+    void attemptJoinLobby_handlesExceptions(Exception exception, String expectedMessage) throws Exception {
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
-        when(lobbyService.joinPublicLobby(eq(1L), eq(userDto.getId()))).thenThrow(exception);
+        when(lobbyService.joinLobby(eq(1L), eq(userDto.getId()))).thenThrow(exception);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/join/1")
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/join/1")
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
@@ -195,14 +195,14 @@ public class LobbyControllerIntegrationTests {
     }
 
     @Test
-    public void attemptJoinPublicLobby_returnsCorrectView() throws Exception {
+    public void attemptJoinLobby_returnsCorrectView() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
-        when(lobbyService.joinPublicLobby(eq(lobbyDto.getId()), eq(userDto.getId()))).thenReturn(lobbyDto);
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/join/1")
+        when(lobbyService.joinLobby(eq(lobbyDto.getId()), eq(userDto.getId()))).thenReturn(lobbyDto);
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/join/1")
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -211,12 +211,12 @@ public class LobbyControllerIntegrationTests {
     }
 
     @Test
-    public void leavePublicLobby_handlesException() throws Exception {
+    public void leaveLobby_handlesException() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
-        when(lobbyService.removePlayerFromLobby(eq(userDto.getId()), eq(1L))).thenThrow(new RuntimeException());
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/leave")
+        when(lobbyService.removeFromLobby(eq(userDto.getId()), eq(1L))).thenThrow(new RuntimeException());
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/leave")
                         .param("lobbyId", String.valueOf(1L))
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -225,7 +225,7 @@ public class LobbyControllerIntegrationTests {
     }
 
     @Test
-    void leavePublicLobby_returnsLobbyDtoWhenSuccessful() throws Exception {
+    void leaveLobby_returnsLobbyDtoWhenSuccessful() throws Exception {
         // Arrange
         UserDto user = new UserDto();
         user.setId(1L);
@@ -235,9 +235,9 @@ public class LobbyControllerIntegrationTests {
         expectedLobby.setLobbyName("Test Lobby");
 
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(user);
-        when(lobbyService.removePlayerFromLobby(1L, 42L)).thenReturn(expectedLobby);
+        when(lobbyService.removeFromLobby(1L, 42L)).thenReturn(expectedLobby);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/leave")
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/leave")
                         .param("lobbyId", "42")
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))

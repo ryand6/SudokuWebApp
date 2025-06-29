@@ -9,6 +9,7 @@ import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -93,7 +94,7 @@ public class LobbyService {
 
     // Attempts to add user to a lobby, checking first to see if the lobby is both active and whether it's currently full (4 players)
     @Transactional
-    public LobbyDto joinPublicLobby(Long lobbyId, Long userId) {
+    public LobbyDto joinLobby(Long lobbyId, Long userId, @Nullable String joinCode) {
         // Try retrieve lobby and lock for editing, preventing race conditions
         Optional<LobbyEntity> lobbyOptional = lobbyRepository.findByIdForUpdate(lobbyId);
         if (lobbyOptional.isEmpty()) {
@@ -104,6 +105,14 @@ public class LobbyService {
         if (!lobby.getIsActive()) {
             throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active, please try joining a different lobby or creating your own");
         }
+
+        // If lobby is private, ensure that the requester has a matching joinCode
+        if (!lobby.getIsPublic()) {
+            if (joinCode == null || !lobby.getJoinCode().equals(joinCode)) {
+                throw new InvalidJoinCodeException("Invalid or missing join code for private lobby");
+            }
+        }
+
         Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
         // Check to ensure max player count (4) has not been reached already
         if (activePlayers.size() >= 4) {
@@ -118,7 +127,7 @@ public class LobbyService {
 
     @Transactional
     // Removes a player from the lobby either due to disconnecting or manual leave, re-orders host if the host left
-    public LobbyDto removePlayerFromLobby(Long userId, Long lobbyId) {
+    public LobbyDto removeFromLobby(Long userId, Long lobbyId) {
         // Try retrieve lobby and lock for editing, preventing race conditions
         Optional<LobbyEntity> lobbyOptional = lobbyRepository.findByIdForUpdate(lobbyId);
         if (lobbyOptional.isEmpty()) {

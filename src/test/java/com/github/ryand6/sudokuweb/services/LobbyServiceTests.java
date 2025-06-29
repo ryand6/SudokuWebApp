@@ -162,7 +162,7 @@ public class LobbyServiceTests {
         when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.empty());
 
         LobbyNotFoundException ex = assertThrows(LobbyNotFoundException.class, () -> {
-            lobbyService.joinPublicLobby(lobbyId, userId);
+            lobbyService.joinLobby(lobbyId, userId);
         });
         assertEquals("Lobby with ID 1 does not exist", ex.getMessage());
     }
@@ -177,7 +177,7 @@ public class LobbyServiceTests {
         when(lobby.getIsActive()).thenReturn(false);
 
         LobbyInactiveException ex = assertThrows(LobbyInactiveException.class, () -> {
-            lobbyService.joinPublicLobby(lobbyId, userId);
+            lobbyService.joinLobby(lobbyId, userId);
         });
         assertEquals("Lobby with ID 1 is no longer active, please try joining a different lobby or creating your own", ex.getMessage());
     }
@@ -198,7 +198,7 @@ public class LobbyServiceTests {
         when(lobby.getLobbyPlayers()).thenReturn(players);
 
         LobbyFullException ex = assertThrows(LobbyFullException.class, () -> {
-            lobbyService.joinPublicLobby(lobbyId, userId);
+            lobbyService.joinLobby(lobbyId, userId);
         });
         assertEquals("Lobby with ID 1 is currently full, please try joining a different lobby or create your own", ex.getMessage());
     }
@@ -232,7 +232,7 @@ public class LobbyServiceTests {
             factoryMock.when(() -> LobbyPlayerFactory.createLobbyPlayer(any(), any()))
                     .thenReturn(lobbyPlayer);
 
-            LobbyDto returnVal = lobbyService.joinPublicLobby(lobbyId, userId);
+            LobbyDto returnVal = lobbyService.joinLobby(lobbyId, userId);
             assertThat(returnVal).isEqualTo(lobbyDto);
         }
     }
@@ -245,7 +245,7 @@ public class LobbyServiceTests {
         when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.empty());
 
         LobbyNotFoundException ex = assertThrows(LobbyNotFoundException.class, () -> {
-            lobbyService.removePlayerFromLobby(lobbyId, userId);
+            lobbyService.removeFromLobby(lobbyId, userId);
         });
         assertEquals("Lobby with ID 1 does not exist", ex.getMessage());
     }
@@ -261,7 +261,7 @@ public class LobbyServiceTests {
         when(lobbyPlayerRepository.findByCompositeId(anyLong(), anyLong())).thenReturn(Optional.empty());
 
         LobbyPlayerNotFoundException ex = assertThrows(LobbyPlayerNotFoundException.class, () -> {
-            lobbyService.removePlayerFromLobby(lobbyId, userId);
+            lobbyService.removeFromLobby(lobbyId, userId);
         });
         assertEquals("Lobby Player with Lobby ID 1 and User ID 1 does not exist", ex.getMessage());
     }
@@ -291,7 +291,7 @@ public class LobbyServiceTests {
         when(userService.findUserById(userId)).thenReturn(playerLeaving);
         when(lobbyEntityDtoMapper.mapToDto(lobby)).thenReturn(expectedLobbyDto);
 
-        LobbyDto result = lobbyService.removePlayerFromLobby(userId, lobbyId);
+        LobbyDto result = lobbyService.removeFromLobby(userId, lobbyId);
 
         assertThat(result).isEqualTo(expectedLobbyDto);
         verify(lobbyPlayerRepository).deleteByCompositeId(lobbyId, userId);
@@ -330,7 +330,7 @@ public class LobbyServiceTests {
 
         when(lobbyEntityDtoMapper.mapToDto(lobby)).thenReturn(expectedDto);
 
-        LobbyDto result = spyService.removePlayerFromLobby(userId, lobbyId);
+        LobbyDto result = spyService.removeFromLobby(userId, lobbyId);
 
         assertThat(result).isEqualTo(expectedDto);
 
@@ -370,7 +370,7 @@ public class LobbyServiceTests {
 
         when(lobbyEntityDtoMapper.mapToDto(closedLobby)).thenReturn(expectedDto);
 
-        LobbyDto result = spyService.removePlayerFromLobby(userId, lobbyId);
+        LobbyDto result = spyService.removeFromLobby(userId, lobbyId);
 
         assertThat(result).isEqualTo(expectedDto);
         verify(spyService).closeLobby(lobbyBeforeClosing);

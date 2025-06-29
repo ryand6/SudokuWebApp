@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.PrivateLobbyJoinRequestDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
@@ -74,17 +75,19 @@ public class LobbyController {
     }
 
     // Attempt to join a public lobby, failures could result in lobby now being full or being inactive (closed)
-    @PostMapping("/lobby/public/join/{lobbyId}")
-    public String attemptJoinPublicLobby(@PathVariable Long lobbyId,
-                                         @AuthenticationPrincipal OAuth2User principal,
-                                         OAuth2AuthenticationToken authToken,
-                                         RedirectAttributes redirectAttributes) {
+    @PostMapping("/lobby/join/{lobbyId}")
+    public String attemptJoinLobby(@PathVariable Long lobbyId,
+                                   @AuthenticationPrincipal OAuth2User principal,
+                                   OAuth2AuthenticationToken authToken,
+                                   @RequestBody(required = false) PrivateLobbyJoinRequestDto joinRequest,
+                                   RedirectAttributes redirectAttributes) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         if (currentUser == null) {
             throw new UserNotFoundException("User not found via OAuth token");
         }
         try {
-            LobbyDto lobbyDto = lobbyService.joinPublicLobby(lobbyId, currentUser.getId());
+            String joinCode = joinRequest != null ? joinRequest.getJoinCode() : null;
+            LobbyDto lobbyDto = lobbyService.joinLobby(lobbyId, currentUser.getId(), joinCode);
 
             /* Need to add WebSocket messaging to update lobby view in real time */
 
@@ -99,15 +102,15 @@ public class LobbyController {
     }
 
     // Make a POST request to alter Lobby and LobbyPlayer DB tables when a user leaves the lobby, either through disconnecting or manually leaving
-    @PostMapping("/lobby/public/leave")
+    @PostMapping("/lobby/leave")
     @ResponseBody
-    public LobbyDto leavePublicLobby(@AuthenticationPrincipal OAuth2User principal,
-                                     OAuth2AuthenticationToken authToken,
-                                     @RequestParam Long lobbyId) {
+    public LobbyDto leaveLobby(@AuthenticationPrincipal OAuth2User principal,
+                               OAuth2AuthenticationToken authToken,
+                               @RequestParam Long lobbyId) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
 
         try {
-            LobbyDto lobbyDto = lobbyService.removePlayerFromLobby(currentUser.getId(), lobbyId);
+            LobbyDto lobbyDto = lobbyService.removeFromLobby(currentUser.getId(), lobbyId);
 
             /* Need to add WebSocket messaging to update lobby / game view in real time */
 
