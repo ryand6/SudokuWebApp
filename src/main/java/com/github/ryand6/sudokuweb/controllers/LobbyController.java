@@ -93,7 +93,7 @@ public class LobbyController {
 
             return "redirect:/lobby/" + lobbyDto.getId();
         // Catch and handle any Lobby state related exceptions
-        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException lobbyStateException) {
+        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException | InvalidJoinCodeException lobbyStateException) {
             redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");

@@ -3,10 +3,7 @@ package com.github.ryand6.sudokuweb.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
-import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
-import com.github.ryand6.sudokuweb.exceptions.LobbyFullException;
-import com.github.ryand6.sudokuweb.exceptions.LobbyInactiveException;
-import com.github.ryand6.sudokuweb.exceptions.LobbyNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import org.junit.jupiter.api.Test;
@@ -52,6 +49,7 @@ public class LobbyControllerIntegrationTests {
                 Arguments.of(new LobbyFullException("Lobby is full"), "Lobby is full"),
                 Arguments.of(new LobbyInactiveException("Lobby is inactive"), "Lobby is inactive"),
                 Arguments.of(new LobbyNotFoundException("Lobby not found"), "Lobby not found"),
+                Arguments.of(new InvalidJoinCodeException("Invalid join code provided"), "Invalid join code provided"),
                 Arguments.of(new RuntimeException("Unexpected error occurred when trying to join Lobby"), "Unexpected error occurred when trying to join Lobby")
         );
     }
@@ -184,9 +182,12 @@ public class LobbyControllerIntegrationTests {
         UserDto userDto = new UserDto();
         userDto.setId(1L);
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
-        when(lobbyService.joinLobby(eq(1L), eq(userDto.getId()))).thenThrow(exception);
+        // Include null or some test value for joinCode
+        when(lobbyService.joinLobby(eq(1L), eq(userDto.getId()), isNull())).thenThrow(exception);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/lobby/join/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"joinCode\": null}") // Send request body with null joinCode
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
@@ -201,8 +202,10 @@ public class LobbyControllerIntegrationTests {
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
-        when(lobbyService.joinLobby(eq(lobbyDto.getId()), eq(userDto.getId()))).thenReturn(lobbyDto);
+        when(lobbyService.joinLobby(eq(lobbyDto.getId()), eq(userDto.getId()), any())).thenReturn(lobbyDto);
         mockMvc.perform(MockMvcRequestBuilders.post("/lobby/join/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"joinCode\": \"agiw2-hebndw-2uhiej\"}")
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))

@@ -155,20 +155,20 @@ public class LobbyServiceTests {
     }
 
     @Test
-    public void joinPublicLobby_throwsLobbyNotFoundException() {
+    public void joinLobby_throwsLobbyNotFoundException() {
         Long lobbyId = 1L;
         Long userId = 1L;
 
         when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.empty());
 
         LobbyNotFoundException ex = assertThrows(LobbyNotFoundException.class, () -> {
-            lobbyService.joinLobby(lobbyId, userId);
+            lobbyService.joinLobby(lobbyId, userId, null);
         });
         assertEquals("Lobby with ID 1 does not exist", ex.getMessage());
     }
 
     @Test
-    void joinPublicLobby_throwsLobbyInactiveException_whenLobbyInactive() {
+    void joinLobby_throwsLobbyInactiveException_whenLobbyInactive() {
         Long lobbyId = 1L;
         Long userId = 1L;
 
@@ -177,16 +177,17 @@ public class LobbyServiceTests {
         when(lobby.getIsActive()).thenReturn(false);
 
         LobbyInactiveException ex = assertThrows(LobbyInactiveException.class, () -> {
-            lobbyService.joinLobby(lobbyId, userId);
+            lobbyService.joinLobby(lobbyId, userId, null);
         });
         assertEquals("Lobby with ID 1 is no longer active, please try joining a different lobby or creating your own", ex.getMessage());
     }
 
     @Test
-    void joinPublicLobby_throwsLobbyFullException_whenLobbyFull() {
+    void joinLobby_throwsLobbyFullException_whenLobbyFull() {
         Long lobbyId = 1L;
         Long userId = 1L;
         LobbyEntity lobby = mock(LobbyEntity.class);
+        when(lobby.getIsPublic()).thenReturn(true);
         Set<LobbyPlayerEntity> players = new HashSet<>();
         // Mock lobby to have 4 players already
         for (int i = 0; i < 4; i++) {
@@ -198,17 +199,54 @@ public class LobbyServiceTests {
         when(lobby.getLobbyPlayers()).thenReturn(players);
 
         LobbyFullException ex = assertThrows(LobbyFullException.class, () -> {
-            lobbyService.joinLobby(lobbyId, userId);
+            lobbyService.joinLobby(lobbyId, userId, null);
         });
         assertEquals("Lobby with ID 1 is currently full, please try joining a different lobby or create your own", ex.getMessage());
     }
 
     @Test
-    void joinPublicLobby_returnsLobbyDto() {
+    void joinLobby_throwsInvalidJoinCodeException_whenJoinCodeMissing() {
         Long lobbyId = 1L;
         Long userId = 1L;
 
         LobbyEntity lobby = mock(LobbyEntity.class);
+        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobby.getIsActive()).thenReturn(true);
+        when(lobby.getIsPublic()).thenReturn(false);
+        when(lobby.getJoinCode()).thenReturn("abc123");
+
+        InvalidJoinCodeException ex = assertThrows(InvalidJoinCodeException.class, () -> {
+            lobbyService.joinLobby(lobbyId, userId, null);
+        });
+
+        assertEquals("Invalid or missing join code for private lobby", ex.getMessage());
+    }
+
+    @Test
+    void joinPrivateLobby_throwsInvalidJoinCodeException_whenJoinCodeWrong() {
+        Long lobbyId = 1L;
+        Long userId = 1L;
+
+        LobbyEntity lobby = mock(LobbyEntity.class);
+        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobby.getIsActive()).thenReturn(true);
+        when(lobby.getIsPublic()).thenReturn(false);
+        when(lobby.getJoinCode()).thenReturn("abc123");
+
+        InvalidJoinCodeException ex = assertThrows(InvalidJoinCodeException.class, () -> {
+            lobbyService.joinLobby(lobbyId, userId, "wrong-code");
+        });
+
+        assertEquals("Invalid or missing join code for private lobby", ex.getMessage());
+    }
+
+    @Test
+    void joinLobby_publicLobby_returnsLobbyDto() {
+        Long lobbyId = 1L;
+        Long userId = 1L;
+
+        LobbyEntity lobby = mock(LobbyEntity.class);
+        when(lobby.getIsPublic()).thenReturn(true);
         when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
         when(lobby.getIsActive()).thenReturn(true);
 
@@ -232,8 +270,41 @@ public class LobbyServiceTests {
             factoryMock.when(() -> LobbyPlayerFactory.createLobbyPlayer(any(), any()))
                     .thenReturn(lobbyPlayer);
 
-            LobbyDto returnVal = lobbyService.joinLobby(lobbyId, userId);
+            LobbyDto returnVal = lobbyService.joinLobby(lobbyId, userId, null);
             assertThat(returnVal).isEqualTo(lobbyDto);
+        }
+    }
+
+    @Test
+    void joinLobby_privateLobby_returnsLobbyDto_whenCorrectJoinCode() {
+        Long lobbyId = 1L;
+        Long userId = 1L;
+        String joinCode = "abc123";
+
+        LobbyEntity lobby = mock(LobbyEntity.class);
+        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobby.getIsActive()).thenReturn(true);
+        when(lobby.getIsPublic()).thenReturn(false);
+        when(lobby.getJoinCode()).thenReturn(joinCode);
+
+        Set<LobbyPlayerEntity> players = new HashSet<>();
+        for (int i = 0; i < 2; i++) players.add(mock(LobbyPlayerEntity.class));
+        when(lobby.getLobbyPlayers()).thenReturn(players);
+
+        UserEntity requester = mock(UserEntity.class);
+        when(userService.findUserById(userId)).thenReturn(requester);
+
+        LobbyPlayerEntity lobbyPlayer = mock(LobbyPlayerEntity.class);
+        LobbyDto lobbyDto = new LobbyDto();
+        lobbyDto.setId(lobbyId);
+        when(lobbyEntityDtoMapper.mapToDto(any())).thenReturn(lobbyDto);
+
+        try (MockedStatic<LobbyPlayerFactory> factoryMock = Mockito.mockStatic(LobbyPlayerFactory.class)) {
+            factoryMock.when(() -> LobbyPlayerFactory.createLobbyPlayer(any(), any()))
+                    .thenReturn(lobbyPlayer);
+
+            LobbyDto result = lobbyService.joinLobby(lobbyId, userId, joinCode);
+            assertThat(result).isEqualTo(lobbyDto);
         }
     }
 
