@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -117,6 +118,26 @@ public class LobbyController {
             return lobbyDto;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    // Render lobby view
+    @GetMapping("/lobby/{lobbyId}")
+    public String getLobby(@PathVariable Long lobbyId,
+                           @AuthenticationPrincipal OAuth2User principal,
+                           OAuth2AuthenticationToken authToken,
+                           Model model) {
+        UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
+
+        if (userDto == null) {
+            throw new UserNotFoundException("User not found via OAuth token");
+        } else {
+            LobbyDto lobby = lobbyService.getLobbyById(lobbyId);
+            if (lobby == null) {
+                throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " not found");
+            }
+            model.addAttribute("lobby", lobby); // Pass the lobby DTO as context data
+            return "lobby"; // Return lobby.html
         }
     }
 

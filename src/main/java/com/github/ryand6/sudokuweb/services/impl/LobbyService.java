@@ -182,4 +182,10 @@ public class LobbyService {
         return lobby;
     }
 
+    // Return the requested lobby
+    public LobbyDto getLobbyById(Long lobbyId) {
+        Optional<LobbyEntity> lobby = lobbyRepository.findById(lobbyId);
+        return lobby.map(lobbyEntityDtoMapper::mapToDto).orElse(null);
+    }
+
 }
