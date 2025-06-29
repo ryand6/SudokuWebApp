@@ -4,9 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ryand6.sudokuweb.dto.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidLobbyPublicStatusParametersException;
+import com.github.ryand6.sudokuweb.exceptions.LobbyFullException;
+import com.github.ryand6.sudokuweb.exceptions.LobbyInactiveException;
+import com.github.ryand6.sudokuweb.exceptions.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +24,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -37,6 +44,16 @@ public class LobbyControllerIntegrationTests {
 
     @Autowired
     private ObjectMapper objectMapper; // Used to convert objects to JSON
+
+    // Used for testing multiple exception types for one test case
+    static Stream<Arguments> exceptionProvider() {
+        return Stream.of(
+                Arguments.of(new LobbyFullException("Lobby is full"), "Lobby is full"),
+                Arguments.of(new LobbyInactiveException("Lobby is inactive"), "Lobby is inactive"),
+                Arguments.of(new LobbyNotFoundException("Lobby not found"), "Lobby not found"),
+                Arguments.of(new RuntimeException("Unexpected error occurred when trying to join Lobby"), "Unexpected error occurred when trying to join Lobby")
+        );
+    }
 
     @Test
     public void createLobbyView_returnsCorrectView() throws Exception {
@@ -143,6 +160,53 @@ public class LobbyControllerIntegrationTests {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 // Serialises LobbyDtoList to JSON string and compares with Controller ouput
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(lobbyDtoList)));
+    }
+
+    @Test
+    public void attemptJoinPublicLobby_userNotFound() throws Exception {
+        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/join/1")
+                        // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("error/user-not-found"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
+                .andExpect(MockMvcResultMatchers.model().attribute("errorMessage", "User not found via OAuth token"));
+    }
+
+    // Make use of exceptionProvider stream to test multiple arguments
+    @ParameterizedTest
+    @MethodSource("exceptionProvider")
+    void attemptJoinPublicLobby_handlesExceptions(Exception exception, String expectedMessage) throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
+        when(lobbyService.joinPublicLobby(eq(1L), eq(userDto.getId()))).thenThrow(exception);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/join/1")
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/dashboard"))
+                .andExpect(MockMvcResultMatchers.flash().attribute("errorMessage", expectedMessage));
+    }
+
+    @Test
+    public void attemptJoinPublicLobby_returnsCorrectView() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
+        LobbyDto lobbyDto = new LobbyDto();
+        lobbyDto.setId(1L);
+        when(lobbyService.joinPublicLobby(eq(lobbyDto.getId()), eq(userDto.getId()))).thenReturn(lobbyDto);
+        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/join/1")
+                        // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/lobby/1"));
     }
 
 }
