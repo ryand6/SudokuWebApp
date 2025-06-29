@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -166,7 +167,7 @@ public class LobbyControllerIntegrationTests {
     public void attemptJoinPublicLobby_userNotFound() throws Exception {
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/join/1")
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/join/1")
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
@@ -185,7 +186,7 @@ public class LobbyControllerIntegrationTests {
         when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
         when(lobbyService.joinPublicLobby(eq(1L), eq(userDto.getId()))).thenThrow(exception);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/join/1")
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/join/1")
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
@@ -201,12 +202,49 @@ public class LobbyControllerIntegrationTests {
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
         when(lobbyService.joinPublicLobby(eq(lobbyDto.getId()), eq(userDto.getId()))).thenReturn(lobbyDto);
-        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/join/1")
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/join/1")
                         // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
                         .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/lobby/1"));
+    }
+
+    @Test
+    public void leavePublicLobby_handlesException() throws Exception {
+        UserDto userDto = new UserDto();
+        userDto.setId(1L);
+        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
+        when(lobbyService.removePlayerFromLobby(eq(userDto.getId()), eq(1L))).thenThrow(new RuntimeException());
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/leave")
+                        .param("lobbyId", String.valueOf(1L))
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("")); // empty body indicates null return
+    }
+
+    @Test
+    void leavePublicLobby_returnsLobbyDtoWhenSuccessful() throws Exception {
+        // Arrange
+        UserDto user = new UserDto();
+        user.setId(1L);
+
+        LobbyDto expectedLobby = new LobbyDto();
+        expectedLobby.setId(42L);
+        expectedLobby.setLobbyName("Test Lobby");
+
+        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(user);
+        when(lobbyService.removePlayerFromLobby(1L, 42L)).thenReturn(expectedLobby);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/public/leave")
+                        .param("lobbyId", "42")
+                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(42))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lobbyName").value("Test Lobby"));
     }
 
 }

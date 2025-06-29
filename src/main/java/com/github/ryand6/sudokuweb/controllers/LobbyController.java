@@ -74,7 +74,7 @@ public class LobbyController {
     }
 
     // Attempt to join a public lobby, failures could result in lobby now being full or being inactive (closed)
-    @GetMapping("/lobby/public/join/{lobbyId}")
+    @PostMapping("/lobby/public/join/{lobbyId}")
     public String attemptJoinPublicLobby(@PathVariable Long lobbyId,
                                          @AuthenticationPrincipal OAuth2User principal,
                                          OAuth2AuthenticationToken authToken,
