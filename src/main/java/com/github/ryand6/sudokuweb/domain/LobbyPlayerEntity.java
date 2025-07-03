@@ -30,6 +30,14 @@ public class LobbyPlayerEntity {
     @Column(name = "joined_at", nullable = false, updatable = false)
     private Instant joinedAt;
 
+    // Determine whether player in lobby is ready to start the game
+    @Column(name = "is_ready")
+    private Boolean isReady = false;
+
+    // Time of when player became ready to start game
+    @Column(name = "ready_at")
+    private Instant readyAt;
+
     // set the join time before persisting the entity to the DB for the first time - no manual setting required
     @PrePersist
     public void prePersist() {
@@ -51,6 +59,12 @@ public class LobbyPlayerEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    // Sets the player's ready status and either sets the ready time or removes it depending on status
+    public void setReady(boolean ready) {
+        this.isReady = ready;
+        this.readyAt = ready ? Instant.now() : null;
     }
 
 }

@@ -1,10 +1,12 @@
 package com.github.ryand6.sudokuweb.domain;
 
 import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -29,9 +31,14 @@ public class LobbyEntity {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    // Default difficulty = medium
     @Column(name = "difficulty")
     @Enumerated(EnumType.STRING)
-    private Difficulty difficulty;
+    private Difficulty difficulty = Difficulty.MEDIUM;
+
+    // Length a game can last before it ends - default = 30 mins
+    @Column(name = "time_limit")
+    private TimeLimitPreset timeLimit = TimeLimitPreset.STANDARD;
 
     // true if lobby open, false if no players active in the lobby anymore
     @Column(name = "is_active")
@@ -48,6 +55,22 @@ public class LobbyEntity {
     // code for joining the code (if private)
     @Column(name = "join_code", unique = true)
     private String joinCode;
+
+    // Countdown system for starting games
+    @Column(name = "countdown_active")
+    private Boolean countdownActive = false;
+
+    // Used to determine the time the game will start, unless the host cancels the countdown
+    @Column(name = "countdownEndsAt")
+    private Instant countdownEndsAt;
+
+    // User ID who started the countdown - host can stop countdown if they triggered it, but if triggered by users readying up, can't be stopped
+    @Column(name = "countdown_initiated_by")
+    private Long countdownInitiatedBy;
+
+    // Settings lock (prevents changes during countdown)
+    @Column(name = "settings_locked")
+    private Boolean settingsLocked = false;
 
     // FetchType.EAGER as only up to 4x LobbyPlayers are linked at any one time
     // Initialise HashSet to prevent null errors as the field will not be initialised until after the LobbyEntity is created
@@ -77,6 +100,24 @@ public class LobbyEntity {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public boolean isCountdownActive() {
+        return countdownActive != null && countdownActive && countdownEndsAt != null && countdownEndsAt.isAfter(Instant.now());
+    }
+
+    // There must be at least 3x players to initiate a countdown due to 2/3 minimum threshold
+    // Countdown must not already be active
+    public boolean canPlayersInitiateCountdown() {
+        return !isCountdownActive() && lobbyPlayers.size() > 2;
+    }
+
+    // Used for various scenarios e.g. countdown has ended due to host cancelling or game starting
+    public void resetCountdownData() {
+        countdownActive = false;
+        countdownEndsAt = null;
+        countdownInitiatedBy = null;
+        settingsLocked = false;
     }
 
 }
