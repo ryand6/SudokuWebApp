@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum TimeLimitPreset {
 
     // Game duration settings
@@ -10,7 +11,6 @@ public enum TimeLimitPreset {
     STANDARD("Standard", 1800),
     MARATHON("Marathon", 3600);
 
-    @Getter
     private final String displayName;
     private final Integer seconds;
 
