@@ -3,10 +3,8 @@ package com.github.ryand6.sudokuweb.domain;
 import com.github.ryand6.sudokuweb.enums.PreferenceDirection;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -46,14 +44,18 @@ public class LobbyPlayerEntity {
     @Column(name = "difficulty_preference")
     private PreferenceDirection difficultyPreference = null;
 
+    // Stored the UTC timestamp of the last submitted vote by the player for the difficulty setting
+    @Column(name = "difficulty_vote_timestamp")
+    private Instant difficultyVoteTimestamp = null;
+
     // Player preference for game duration, used in Lobby polling window - null until preference vote cast
     @Enumerated(EnumType.STRING)
     @Column(name = "duration_preference")
     private PreferenceDirection durationPreference = null;
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    // Stored the UTC timestamp of the last submitted vote by the player for the duration setting
+    @Column(name = "duration_vote_timestamp")
+    private Instant durationVoteTimestamp = null;
 
     // set the join time before persisting the entity to the DB for the first time - no manual setting required
     @PrePersist

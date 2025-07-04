@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.dto;
 
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.enums.PreferenceDirection;
 import lombok.*;
 
 import java.time.Instant;
@@ -18,5 +19,17 @@ public class LobbyPlayerDto {
     private LobbyPlayerId id;
 
     private Instant joinedAt;
+
+    private Boolean isReady;
+
+    private Instant readyAt;
+
+    private PreferenceDirection difficultyPreference;
+
+    private Instant difficultyVoteTimestamp;
+
+    private PreferenceDirection durationPreference;
+
+    private Instant durationVoteTimestamp;
 
 }

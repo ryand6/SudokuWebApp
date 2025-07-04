@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.dto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.Set;
 
 @Getter
@@ -26,6 +27,14 @@ public class LobbyDto {
     private Boolean isPublic;
 
     private Boolean inGame;
+
+    private Boolean countdownActive;
+
+    private Instant countdownEndsAt;
+
+    private Long countdownInitiatedBy;
+
+    private Boolean settingsLocked;
 
     private Set<LobbyPlayerDto> lobbyPlayers;
 

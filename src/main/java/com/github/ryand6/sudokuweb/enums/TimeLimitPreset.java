@@ -32,4 +32,4 @@ public enum TimeLimitPreset {
         return String.format("%d minutes", seconds / 60);
     }
 
-    }
+}
