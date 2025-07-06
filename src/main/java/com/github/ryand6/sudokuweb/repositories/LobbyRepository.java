@@ -15,9 +15,6 @@ import java.util.Optional;
 @Repository
 public interface LobbyRepository extends JpaRepository<LobbyEntity, Long> {
 
-    // Checks if private lobby join code already exists elsewhere
-    boolean existsByJoinCode(String joinCode);
-
     // Returns page containing list of active public lobbies within the pageable size range
     Page<LobbyEntity> findByIsPublicTrueAndIsActiveTrue(Pageable pageable);
 

@@ -6,7 +6,6 @@ import com.github.ryand6.sudokuweb.dto.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.services.impl.LobbyService;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -35,13 +34,6 @@ public class LobbyController {
         return "lobby/create-lobby"; // Render view "templates/lobby/create-lobby.html"
     }
 
-    // Retrieve unique join code from backend
-    @GetMapping("/lobby/generate-join-code")
-    public ResponseEntity<String> generateJoinCode() {
-        String code = lobbyService.generateUniqueCode();
-        return ResponseEntity.ok(code);
-    }
-
     // Post form details to create Lobby in DB
     @PostMapping("/lobby/process-lobby-setup")
     public String processLobbySetupRequest(@AuthenticationPrincipal OAuth2User principal,
@@ -49,7 +41,6 @@ public class LobbyController {
                                            @RequestParam(name = "lobbyName") String lobbyName,
                                            @RequestParam(name = "isPublic", required = false) Boolean isPublic,
                                            @RequestParam(name = "isPrivate", required = false) Boolean isPrivate,
-                                           @RequestParam(name = "joinCode", required = false) String joinCode,
                                            RedirectAttributes redirectAttributes) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         if (currentUser == null) {
@@ -57,7 +48,7 @@ public class LobbyController {
         }
         try {
             // Create lobby in DB then go to that corresponding lobby's view
-            LobbyDto lobbyDto = lobbyService.createNewLobby(lobbyName, isPublic, isPrivate, joinCode, currentUser.getId());
+            LobbyDto lobbyDto = lobbyService.createNewLobby(lobbyName, isPublic, isPrivate, currentUser.getId());
             return "redirect:/lobby/" + lobbyDto.getId();
         } catch (InvalidLobbyPublicStatusParametersException invalidLobbyPublicStatusParametersException) {
             redirectAttributes.addFlashAttribute("errorMessage", invalidLobbyPublicStatusParametersException.getMessage());
@@ -76,10 +67,11 @@ public class LobbyController {
     }
 
     // Attempt to join a public lobby, failures could result in lobby now being full or being inactive (closed)
-    @PostMapping("/lobby/join/{lobbyId}")
-    public String attemptJoinLobby(@PathVariable Long lobbyId,
+    @PostMapping("/lobby/join/")
+    public String attemptJoinLobby(
                                    @AuthenticationPrincipal OAuth2User principal,
                                    OAuth2AuthenticationToken authToken,
+                                   @RequestBody(required = false) Long publicLobbyId,
                                    @RequestBody(required = false) PrivateLobbyJoinRequestDto joinRequest,
                                    RedirectAttributes redirectAttributes) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
@@ -88,7 +80,7 @@ public class LobbyController {
         }
         try {
             String token = joinRequest != null ? joinRequest.getToken() : null;
-            LobbyDto lobbyDto = lobbyService.joinLobby(lobbyId, currentUser.getId(), token);
+            LobbyDto lobbyDto = lobbyService.joinLobby(publicLobbyId, currentUser.getId(), token);
 
             /* Need to add WebSocket messaging to update lobby view in real time */
 

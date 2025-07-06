@@ -106,7 +106,7 @@ document.addEventListener('click', (e) => {
   if (e.target && e.target.id === 'joinPrivateBtn') {
     const joinCode = document.getElementById('joinCodeInput').value;
     // Send data via request body
-    fetch(`/lobby/private/join`, {
+    fetch(`/lobby/join`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ joinCode })

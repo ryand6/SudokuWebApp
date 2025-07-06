@@ -41,19 +41,8 @@ public class LobbyService {
         this.lobbyPlayerRepository = lobbyPlayerRepository;
     }
 
-    // Returns a unique join code not used in other private lobbies
-    public String generateUniqueCode() {
-        String code;
-        do {
-            code = new Random().ints(CODE_LENGTH, 0, CODE_CHARS.length())
-                    .mapToObj(i -> String.valueOf(CODE_CHARS.charAt(i)))
-                    .collect(Collectors.joining());
-        } while (lobbyRepository.existsByJoinCode(code));
-        return code;
-    }
-
     @Transactional
-    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Boolean isPrivate, String joinCode, Long requesterId) {
+    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Boolean isPrivate, Long requesterId) {
         LobbyEntity newLobby = new LobbyEntity();
         // One of these must be true or there is an error with the parameters
         if (Boolean.TRUE.equals(isPublic)) {
@@ -68,9 +57,6 @@ public class LobbyService {
         // requester of lobby creation becomes the host
         newLobby.setHost(requester);
         newLobby.setIsActive(true);
-        if (joinCode != null && !joinCode.isEmpty()) {
-            newLobby.setJoinCode(joinCode);
-        }
         // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
         lobbyRepository.saveAndFlush(newLobby);
         // Create a set of users only containing the requester for now, until other users join the lobby
@@ -94,35 +80,57 @@ public class LobbyService {
 
     // Attempts to add user to a lobby, checking first to see if the lobby is both active and whether it's currently full (4 players)
     @Transactional
-    public LobbyDto joinLobby(Long lobbyId, Long userId, @Nullable String token) {
-        // Try retrieve lobby and lock for editing, preventing race conditions
-        Optional<LobbyEntity> lobbyOptional = lobbyRepository.findByIdForUpdate(lobbyId);
-        if (lobbyOptional.isEmpty()) {
-            throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
+    public LobbyDto joinLobby(@Nullable Long publicLobbyId, Long userId, @Nullable String token) {
+        // Validate input parameters
+        if (publicLobbyId == null && token == null) {
+            throw new IllegalArgumentException("Either publicLobbyId or token must be provided");
         }
-        LobbyEntity lobby = lobbyOptional.get();
-        // Check to see if lobby is active, if not throw an exception
-        if (!lobby.getIsActive()) {
-            throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active, please try joining a different lobby or creating your own");
+        if (publicLobbyId != null && token != null) {
+            throw new IllegalArgumentException("Cannot provide both publicLobbyId and token");
         }
 
-        // If lobby is private, ensure that the requester has a matching joinCode
-        if (!lobby.getIsPublic()) {
-            if (token == null || (SecureInvitationsUtil.validateInvitationToken(token) == null)) {
-                throw new InvalidTokenException("Invalid or missing token");
-            }
-        }
+        // Determine lobby ID and retrieve lobby
+        Long lobbyId = resolveLobbyId(publicLobbyId, token);
+        LobbyEntity lobby = findAndLockLobby(lobbyId);
 
-        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
-        // Check to ensure max player count (4) has not been reached already
-        if (activePlayers.size() >= 4) {
-            throw new LobbyFullException("Lobby with ID " + lobbyId + " is currently full, please try joining a different lobby or create your own");
-        }
-        UserEntity requester = userService.findUserById(userId);
-        LobbyPlayerEntity lobbyPlayer = LobbyPlayerFactory.createLobbyPlayer(lobby, requester);
-        activePlayers.add(lobbyPlayer);
-        lobby.setLobbyPlayers(activePlayers);
+        // Validate lobby state
+        validateLobbyForJoining(lobby, lobbyId);
+
+        // Add user to lobby
+        UserEntity user = userService.findUserById(userId);
+        addPlayerToLobby(lobby, user);
+
         return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    private Long resolveLobbyId(@Nullable Long publicLobbyId, @Nullable String token) {
+        if (publicLobbyId != null) {
+            return publicLobbyId;
+        }
+        Long privateLobbyId = SecureInvitationsUtil.validateInvitationToken(token);
+        if (privateLobbyId == null) {
+            throw new InvalidTokenException("Invalid or expired invitation token");
+        }
+        return privateLobbyId;
+    }
+
+    private LobbyEntity findAndLockLobby(Long lobbyId) {
+        return lobbyRepository.findByIdForUpdate(lobbyId)
+                .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist"));
+    }
+
+    private void validateLobbyForJoining(LobbyEntity lobby, Long lobbyId) {
+        if (!lobby.getIsActive()) {
+            throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active");
+        }
+        if (lobby.getLobbyPlayers().size() >= 4) {
+            throw new LobbyFullException("Lobby with ID " + lobbyId + " is currently full");
+        }
+    }
+
+    private void addPlayerToLobby(LobbyEntity lobby, UserEntity user) {
+        LobbyPlayerEntity lobbyPlayer = LobbyPlayerFactory.createLobbyPlayer(lobby, user);
+        lobby.getLobbyPlayers().add(lobbyPlayer);
     }
 
     @Transactional
