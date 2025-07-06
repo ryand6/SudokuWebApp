@@ -215,7 +215,7 @@ public class LobbyServiceTests {
         when(lobby.getIsPublic()).thenReturn(false);
         when(lobby.getJoinCode()).thenReturn("abc123");
 
-        InvalidJoinCodeException ex = assertThrows(InvalidJoinCodeException.class, () -> {
+        InvalidTokenException ex = assertThrows(InvalidTokenException.class, () -> {
             lobbyService.joinLobby(lobbyId, userId, null);
         });
 
@@ -233,7 +233,7 @@ public class LobbyServiceTests {
         when(lobby.getIsPublic()).thenReturn(false);
         when(lobby.getJoinCode()).thenReturn("abc123");
 
-        InvalidJoinCodeException ex = assertThrows(InvalidJoinCodeException.class, () -> {
+        InvalidTokenException ex = assertThrows(InvalidTokenException.class, () -> {
             lobbyService.joinLobby(lobbyId, userId, "wrong-code");
         });
 

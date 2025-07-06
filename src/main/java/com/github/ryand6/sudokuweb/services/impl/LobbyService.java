@@ -9,6 +9,7 @@ import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import com.github.ryand6.sudokuweb.util.SecureInvitationsUtil;
 import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
@@ -93,7 +94,7 @@ public class LobbyService {
 
     // Attempts to add user to a lobby, checking first to see if the lobby is both active and whether it's currently full (4 players)
     @Transactional
-    public LobbyDto joinLobby(Long lobbyId, Long userId, @Nullable String joinCode) {
+    public LobbyDto joinLobby(Long lobbyId, Long userId, @Nullable String token) {
         // Try retrieve lobby and lock for editing, preventing race conditions
         Optional<LobbyEntity> lobbyOptional = lobbyRepository.findByIdForUpdate(lobbyId);
         if (lobbyOptional.isEmpty()) {
@@ -107,8 +108,8 @@ public class LobbyService {
 
         // If lobby is private, ensure that the requester has a matching joinCode
         if (!lobby.getIsPublic()) {
-            if (joinCode == null || !lobby.getJoinCode().equals(joinCode)) {
-                throw new InvalidJoinCodeException("Invalid or missing join code for private lobby");
+            if (token == null || (SecureInvitationsUtil.validateInvitationToken(token) == null)) {
+                throw new InvalidTokenException("Invalid or missing token");
             }
         }
 

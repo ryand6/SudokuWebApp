@@ -47,10 +47,6 @@ public class LobbyEntity {
     @Column(name = "is_public")
     private Boolean isPublic;
 
-    // code for joining the code (if private)
-    @Column(name = "join_code", unique = true)
-    private String joinCode;
-
     // Countdown system for starting games
     @Column(name = "countdown_active")
     private Boolean countdownActive = false;

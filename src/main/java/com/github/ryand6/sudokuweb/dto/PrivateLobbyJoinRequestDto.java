@@ -9,6 +9,6 @@ import lombok.*;
 @Builder
 public class PrivateLobbyJoinRequestDto {
 
-    private String joinCode;
+    private String token;
 
 }

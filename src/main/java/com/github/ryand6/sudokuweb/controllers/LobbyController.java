@@ -87,14 +87,15 @@ public class LobbyController {
             throw new UserNotFoundException("User not found via OAuth token");
         }
         try {
-            String joinCode = joinRequest != null ? joinRequest.getJoinCode() : null;
-            LobbyDto lobbyDto = lobbyService.joinLobby(lobbyId, currentUser.getId(), joinCode);
+            String token = joinRequest != null ? joinRequest.getToken() : null;
+            LobbyDto lobbyDto = lobbyService.joinLobby(lobbyId, currentUser.getId(), token);
 
             /* Need to add WebSocket messaging to update lobby view in real time */
 
             return "redirect:/lobby/" + lobbyDto.getId();
         // Catch and handle any Lobby state related exceptions
-        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException | InvalidJoinCodeException lobbyStateException) {
+        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException |
+                 InvalidTokenException lobbyStateException) {
             redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");

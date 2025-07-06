@@ -49,7 +49,7 @@ public class LobbyControllerIntegrationTests {
                 Arguments.of(new LobbyFullException("Lobby is full"), "Lobby is full"),
                 Arguments.of(new LobbyInactiveException("Lobby is inactive"), "Lobby is inactive"),
                 Arguments.of(new LobbyNotFoundException("Lobby not found"), "Lobby not found"),
-                Arguments.of(new InvalidJoinCodeException("Invalid join code provided"), "Invalid join code provided"),
+                Arguments.of(new InvalidTokenException("Invalid join code provided"), "Invalid join code provided"),
                 Arguments.of(new RuntimeException("Unexpected error occurred when trying to join Lobby"), "Unexpected error occurred when trying to join Lobby")
         );
     }
