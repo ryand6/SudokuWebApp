@@ -32,6 +32,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
 
     @Override
     public LobbyDto mapToDto(LobbyEntity lobbyEntity) {
+        // Convert lobby entities to dtos and add to set
         Set<LobbyPlayerDto> lobbyPlayerDtos = new HashSet<>();
         if (lobbyEntity.getLobbyPlayers() != null) {
             lobbyPlayerDtos = lobbyEntity.getLobbyPlayers().stream()
@@ -46,7 +47,10 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isActive(lobbyEntity.getIsActive())
                 .isPublic(lobbyEntity.getIsPublic())
                 .inGame(lobbyEntity.getInGame())
-                // Convert lobby entities to dtos and add to set
+                .countdownActive(lobbyEntity.getCountdownActive())
+                .countdownEndsAt(lobbyEntity.getCountdownEndsAt())
+                .countdownInitiatedBy(lobbyEntity.getCountdownInitiatedBy())
+                .settingsLocked(lobbyEntity.getSettingsLocked())
                 .lobbyPlayers(lobbyPlayerDtos)
                 .hostId(lobbyEntity.getHost().getId())
                 .build();
@@ -64,6 +68,10 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isActive(lobbyDto.getIsActive())
                 .isPublic(lobbyDto.getIsPublic())
                 .inGame(lobbyDto.getInGame())
+                .countdownActive(lobbyDto.getCountdownActive())
+                .countdownEndsAt(lobbyDto.getCountdownEndsAt())
+                .countdownInitiatedBy(lobbyDto.getCountdownInitiatedBy())
+                .settingsLocked(lobbyDto.getSettingsLocked())
                 .lobbyPlayers(lobbyPlayerEntities)
                 .host(hostEntity);
 
@@ -86,6 +94,10 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isActive(lobbyDto.getIsActive())
                 .isPublic(lobbyDto.getIsPublic())
                 .inGame(lobbyDto.getInGame())
+                .countdownActive(lobbyDto.getCountdownActive())
+                .countdownEndsAt(lobbyDto.getCountdownEndsAt())
+                .countdownInitiatedBy(lobbyDto.getCountdownInitiatedBy())
+                .settingsLocked(lobbyDto.getSettingsLocked())
                 .joinCode(joinCode)
                 .lobbyPlayers(lobbyPlayerEntities)
                 .host(hostEntity);
@@ -110,6 +122,10 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
         existingLobby.setIsActive(lobbyDto.getIsActive());
         existingLobby.setIsPublic(lobbyDto.getIsPublic());
         existingLobby.setInGame(lobbyDto.getInGame());
+        existingLobby.setCountdownActive(lobbyDto.getCountdownActive());
+        existingLobby.setCountdownEndsAt(lobbyDto.getCountdownEndsAt());
+        existingLobby.setCountdownInitiatedBy(lobbyDto.getCountdownInitiatedBy());
+        existingLobby.setSettingsLocked(lobbyDto.getSettingsLocked());
         existingLobby.setLobbyPlayers(lobbyPlayerEntities);
         existingLobby.setHost(hostEntity);
 

@@ -27,6 +27,12 @@ public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEn
         return LobbyPlayerDto.builder()
                 .id(lobbyPlayerEntity.getId())
                 .joinedAt(lobbyPlayerEntity.getJoinedAt())
+                .isReady(lobbyPlayerEntity.getIsReady())
+                .readyAt(lobbyPlayerEntity.getReadyAt())
+                .difficultyPreference(lobbyPlayerEntity.getDifficultyPreference())
+                .difficultyVoteTimestamp(lobbyPlayerEntity.getDifficultyVoteTimestamp())
+                .durationPreference(lobbyPlayerEntity.getDurationPreference())
+                .durationVoteTimestamp(lobbyPlayerEntity.getDurationVoteTimestamp())
                 .build();
     }
 
@@ -40,6 +46,12 @@ public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEn
                 .lobby(lobbyEntity)
                 .user(userEntity)
                 .joinedAt(lobbyPlayerDto.getJoinedAt())
+                .isReady(lobbyPlayerDto.getIsReady())
+                .readyAt(lobbyPlayerDto.getReadyAt())
+                .difficultyPreference(lobbyPlayerDto.getDifficultyPreference())
+                .difficultyVoteTimestamp(lobbyPlayerDto.getDifficultyVoteTimestamp())
+                .durationPreference(lobbyPlayerDto.getDurationPreference())
+                .durationVoteTimestamp(lobbyPlayerDto.getDurationVoteTimestamp())
                 .build();
     }
 
