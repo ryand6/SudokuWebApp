@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <th:block th:insert="base :: sharedHead"></th:block>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h1 class="lobby-name" th:text="${lobbyName}">Sudoku Masters Lobby</h1>
+        <div class="lobby-code">Lobby Code: <span th:text="${lobbyCode}">ABC123</span></div>
+    </div>
+
+    <!-- Desktop Layout -->
+    <div class="desktop-layout">
+        <!-- Players Panel -->
+        <div class="panel players-panel">
+            <h2 class="panel-title">Players (4/4)</h2>
+            <div th:each="player : ${lobbyPlayer}" class="player-item" th:classappend="${player.id == hostId} ? 'host' : ''">
+                <span th:if="${player.id == hostId}" class="host-star">★</span>
+                <span class="player-name" th:text="${player.name}">Player Name</span>
+                <span class="player-status"
+                      th:classappend="${player.status == 'ready'} ? 'status-ready' : (${player.status == 'in-game'} ? 'status-in-game' : 'status-waiting')"
+                      th:text="${player.isReady == true} ? 'Ready' : (${inGame == true} ? 'In Game' : 'Waiting')">
+                        Ready
+                    </span>
+            </div>
+        </div>
+
+        <!-- Settings Panel -->
+        <div class="panel settings-panel">
+            <h2 class="panel-title">Game Settings</h2>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    🎯 Difficulty
+                    <span class="setting-value" id="difficultyValue" th:text="${settings.difficulty}">Medium</span>
+                </div>
+                <div class="slider-container">
+                    <input type="range"
+                           class="slider"
+                           id="difficultySlider"
+                           min="1"
+                           max="5"
+                           th:value="${settings.difficultyValue}"
+                           th:disabled="${!isHost}"
+                           onchange="updateDifficulty(this.value)">
+                    <div class="slider-labels">
+                        <span>Easy</span>
+                        <span>Medium</span>
+                        <span>Hard</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    ⏱️ Game Duration
+                    <span class="setting-value" id="durationValue" th:text="${settings.duration}">15 min</span>
+                </div>
+                <div class="slider-container">
+                    <input type="range"
+                           class="slider"
+                           id="durationSlider"
+                           min="5"
+                           max="60"
+                           step="5"
+                           th:value="${settings.durationValue}"
+                           th:disabled="${!isHost}"
+                           onchange="updateDuration(this.value)">
+                    <div class="slider-labels">
+                        <span>5 min</span>
+                        <span>30 min</span>
+                        <span>60 min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Polling Panel -->
+        <div class="panel polling-panel">
+            <h2 class="panel-title">Lobby Activity</h2>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="message system">🎮 Lobby created successfully!</div>
+                <div class="message user">💬 Alice joined the lobby</div>
+                <div class="message host">⚙️ Host changed difficulty to Hard</div>
+                <div class="message user">💬 Bob joined the lobby</div>
+                <div class="message user">🗳️ Alice voted to decrease game duration</div>
+                <div class="message system">✅ All players ready - starting game in 3 seconds!</div>
+            </div>
+
+            <div class="voting-section">
+                <h3 class="voting-title">Vote on Settings</h3>
+
+                <div class="vote-group">
+                    <div class="vote-label">Difficulty</div>
+                    <div class="vote-buttons">
+                        <button class="vote-btn decrease" onclick="vote('difficulty', 'decrease')">Lower</button>
+                        <button class="vote-btn" onclick="vote('difficulty', 'keep')">Keep</button>
+                        <button class="vote-btn increase" onclick="vote('difficulty', 'increase')">Higher</button>
+                    </div>
+                </div>
+
+                <div class="vote-group">
+                    <div class="vote-label">Game Duration</div>
+                    <div class="vote-buttons">
+                        <button class="vote-btn decrease" onclick="vote('duration', 'decrease')">Shorter</button>
+                        <button class="vote-btn" onclick="vote('duration', 'keep')">Keep</button>
+                        <button class="vote-btn increase" onclick="vote('duration', 'increase')">Longer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="mobile-layout">
+        <!-- Mobile Tabs -->
+        <div class="mobile-tabs">
+            <button class="tab-btn active" onclick="showTab('players')">Players</button>
+            <button class="tab-btn" onclick="showTab('settings')">Settings</button>
+            <button class="tab-btn" onclick="showTab('activity')">Activity</button>
+        </div>
+
+        <!-- Mobile Players Tab -->
+        <div id="playersTab" class="tab-content active">
+            <div class="panel players-panel">
+                <h2 class="panel-title">Players (4/4)</h2>
+                <div th:each="player : ${players}" class="player-item" th:classappend="${player.isHost} ? 'host' : ''">
+                    <span th:if="${player.isHost}" class="host-star">★</span>
+                    <span class="player-name" th:text="${player.name}">Player Name</span>
+                    <span class="player-status"
+                          th:classappend="${player.status == 'ready'} ? 'status-ready' : (${player.status == 'in-game'} ? 'status-in-game' : 'status-waiting')"
+                          th:text="${player.status == 'ready'} ? 'Ready' : (${player.status == 'in-game'} ? 'In Game' : 'Waiting')">
+                            Ready
+                        </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Settings Tab -->
+        <div id="settingsTab" class="tab-content">
+            <div class="panel settings-panel">
+                <h2 class="panel-title">Game Settings</h2>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        🎯 Difficulty
+                        <span class="setting-value" id="mobileDifficultyValue" th:text="${settings.difficulty}">Medium</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range"
+                               class="slider"
+                               id="mobileDifficultySlider"
+                               min="1"
+                               max="5"
+                               th:value="${settings.difficultyValue}"
+                               th:disabled="${!isHost}"
+                               onchange="updateDifficulty(this.value)">
+                        <div class="slider-labels">
+                            <span>Easy</span>
+                            <span>Hard</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-label">
+                        ⏱️ Game Duration
+                        <span class="setting-value" id="mobileDurationValue" th:text="${settings.duration}">15 min</span>
+                    </div>
+                    <div class="slider-container">
+                        <input type="range"
+                               class="slider"
+                               id="mobileDurationSlider"
+                               min="5"
+                               max="60"
+                               step="5"
+                               th:value="${settings.durationValue}"
+                               th:disabled="${!isHost}"
+                               onchange="updateDuration(this.value)">
+                        <div class="slider-labels">
+                            <span>5 min</span>
+                            <span>60 min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Activity Tab -->
+        <div id="activityTab" class="tab-content">
+            <div class="panel polling-panel">
+                <h2 class="panel-title">Lobby Activity</h2>
+
+                <div class="messages-container" id="mobileMessagesContainer">
+                    <div class="message system">🎮 Lobby created successfully!</div>
+                    <div class="message user">💬 Alice joined the lobby</div>
+                    <div class="message host">⚙️ Host changed difficulty to Hard</div>
+                    <div class="message user">💬 Bob joined the lobby</div>
+                    <div class="message user">🗳️ Alice voted to decrease game duration</div>
+                    <div class="message system">✅ All players ready - starting game in 3 seconds!</div>
+                </div>
+
+                <div class="voting-section">
+                    <h3 class="voting-title">Vote on Settings</h3>
+
+                    <div class="vote-group">
+                        <div class="vote-label">Difficulty</div>
+                        <div class="vote-buttons">
+                            <button class="vote-btn decrease" onclick="vote('difficulty', 'decrease')">Lower</button>
+                            <button class="vote-btn" onclick="vote('difficulty', 'keep')">Keep</button>
+                            <button class="vote-btn increase" onclick="vote('difficulty', 'increase')">Higher</button>
+                        </div>
+                    </div>
+
+                    <div class="vote-group">
+                        <div class="vote-label">Game Duration</div>
+                        <div class="vote-buttons">
+                            <button class="vote-btn decrease" onclick="vote('duration', 'decrease')">Shorter</button>
+                            <button class="vote-btn" onclick="vote('duration', 'keep')">Keep</button>
+                            <button class="vote-btn increase" onclick="vote('duration', 'increase')">Longer</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mock data for demonstration
+    const difficultyLabels = ['', 'Easy', 'Medium', 'Hard', 'Expert', 'Master'];
+
+    function updateDifficulty(value) {
+        const label = difficultyLabels[value];
+        document.getElementById('difficultyValue').textContent = label;
+        if (document.getElementById('mobileDifficultyValue')) {
+            document.getElementById('mobileDifficultyValue').textContent = label;
+        }
+
+        // Send to server
+        // fetch('/api/lobby/settings', { method: 'POST', body: JSON.stringify({difficulty: value}) });
+    }
+
+    function updateDuration(value) {
+        const label = value + ' min';
+        document.getElementById('durationValue').textContent = label;
+        if (document.getElementById('mobileDurationValue')) {
+            document.getElementById('mobileDurationValue').textContent = label;
+        }
+
+        // Send to server
+        // fetch('/api/lobby/settings', { method: 'POST', body: JSON.stringify({duration: value}) });
+    }
+
+    function vote(setting, action) {
+        // Remove previous selection
+        document.querySelectorAll('.vote-btn').forEach(btn => btn.classList.remove('selected'));
+
+        // Add selection to clicked button
+        event.target.classList.add('selected');
+
+        // Add message to chat
+        const message = document.createElement('div');
+        message.className = 'message user';
+        message.textContent = `🗳️ You voted to ${action} ${setting}`;
+
+        const containers = document.querySelectorAll('.messages-container');
+        containers.forEach(container => {
+            container.appendChild(message.cloneNode(true));
+            container.scrollTop = container.scrollHeight;
+        });
+
+        // Send to server
+        // fetch('/api/lobby/vote', { method: 'POST', body: JSON.stringify({setting, action}) });
+    }
+
+    function showTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // Show selected tab
+        document.getElementById(tabName + 'Tab').classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // Auto-scroll messages to bottom
+    document.querySelectorAll('.messages-container').forEach(container => {
+        container.scrollTop = container.scrollHeight;
+    });
+</script>
+</body>
+</html>

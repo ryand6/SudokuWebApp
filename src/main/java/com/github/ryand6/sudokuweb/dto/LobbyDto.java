@@ -26,8 +26,6 @@ public class LobbyDto {
 
     private Boolean isPublic;
 
-    private Boolean inGame;
-
     private Boolean countdownActive;
 
     private Instant countdownEndsAt;

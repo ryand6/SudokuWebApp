@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.dto;
 
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.enums.PreferenceDirection;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class LobbyPlayerDto {
 
     private Instant joinedAt;
 
-    private Boolean isReady;
+    private LobbyStatus lobbyStatus;
 
     private Instant readyAt;
 

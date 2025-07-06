@@ -20,6 +20,7 @@ body {
     margin: 0;
     background: var(--bg-color);
     color: var(--text-color);
+    margin: 2rem;
 }
 
 header {
@@ -60,3 +61,20 @@ button, a.button-link {
     cursor: pointer;
     color: white;
 }
+
+.error {
+    color: red;
+    margin-bottom: 1rem;
+}
+
+form {
+    max-width: 400px;
+    margin: auto;
+}
+
+label, input, button {
+    display: block;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+

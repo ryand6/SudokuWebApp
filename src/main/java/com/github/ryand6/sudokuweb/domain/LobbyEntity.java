@@ -47,10 +47,6 @@ public class LobbyEntity {
     @Column(name = "is_public")
     private Boolean isPublic;
 
-    // true if a game is currently active, meaning users can't join the lobby at this time
-    @Column(name = "in_game")
-    private Boolean inGame;
-
     // code for joining the code (if private)
     @Column(name = "join_code", unique = true)
     private String joinCode;
@@ -61,11 +57,11 @@ public class LobbyEntity {
 
     // Used to determine the time the game will start, unless the host cancels the countdown
     @Column(name = "countdownEndsAt")
-    private Instant countdownEndsAt;
+    private Instant countdownEndsAt = null;
 
     // User ID who started the countdown - host can stop countdown if they triggered it, but if triggered by users readying up, can't be stopped
     @Column(name = "countdown_initiated_by")
-    private Long countdownInitiatedBy;
+    private Long countdownInitiatedBy = null;
 
     // Settings lock (prevents changes during countdown)
     @Column(name = "settings_locked")

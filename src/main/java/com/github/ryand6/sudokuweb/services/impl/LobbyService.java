@@ -66,7 +66,6 @@ public class LobbyService {
         newLobby.setLobbyName(lobbyName);
         // requester of lobby creation becomes the host
         newLobby.setHost(requester);
-        newLobby.setInGame(false);
         newLobby.setIsActive(true);
         if (joinCode != null && !joinCode.isEmpty()) {
             newLobby.setJoinCode(joinCode);

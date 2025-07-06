@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.domain;
 
+import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.enums.PreferenceDirection;
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,13 +32,13 @@ public class LobbyPlayerEntity {
     @Column(name = "joined_at", nullable = false, updatable = false)
     private Instant joinedAt;
 
-    // Determine whether player in lobby is ready to start the game
-    @Column(name = "is_ready")
-    private Boolean isReady = false;
+    // Status of player can be "ready", "in game" or "waiting" - determines what is shown in the lobby view
+    @Column(name = "lobby_status")
+    private LobbyStatus lobbyStatus = LobbyStatus.WAITING;
 
     // Time of when player became ready to start game
     @Column(name = "ready_at")
-    private Instant readyAt;
+    private Instant readyAt = null;
 
     // Player preference for game difficulty, used in Lobby polling window - null until preference vote cast
     @Enumerated(EnumType.STRING)
@@ -80,10 +81,10 @@ public class LobbyPlayerEntity {
         return id != null ? id.hashCode() : 0;
     }
 
-    // Sets the player's ready status and either sets the ready time or removes it depending on status
-    public void setReady(boolean ready) {
-        this.isReady = ready;
-        this.readyAt = ready ? Instant.now() : null;
+    // Sets the player's lobby status and either sets the ready time if the status = READY, or removes it
+    public void setStatus(LobbyStatus lobbyStatus) {
+        this.lobbyStatus = lobbyStatus;
+        this.readyAt = (lobbyStatus == LobbyStatus.READY) ? Instant.now() : null;
     }
 
 }
