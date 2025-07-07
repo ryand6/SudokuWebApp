@@ -67,20 +67,45 @@ public class LobbyController {
     }
 
     // Attempt to join a public lobby, failures could result in lobby now being full or being inactive (closed)
-    @PostMapping("/lobby/join/")
-    public String attemptJoinLobby(
+    @PostMapping("/lobby/join/public/{lobbyId}")
+    public String attemptJoinPublicLobby(
+                                    @AuthenticationPrincipal OAuth2User principal,
+                                    OAuth2AuthenticationToken authToken,
+                                    @PathVariable Long lobbyId,
+                                    RedirectAttributes redirectAttributes) {
+        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+        if (currentUser == null) {
+            throw new UserNotFoundException("User not found via OAuth token");
+        }
+        try {
+            LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), lobbyId);
+
+            /* Need to add WebSocket messaging to update lobby view in real time */
+
+            return "redirect:/lobby/" + lobbyDto.getId();
+            // Catch and handle any Lobby state related exceptions
+        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException |
+                 InvalidTokenException lobbyStateException) {
+            redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");
+        }
+        return "redirect:/dashboard";
+    }
+
+    // Attempt to join a private lobby via sending a token using a form, failures could result in lobby now being full or being inactive (closed)
+    @PostMapping("/lobby/join/private")
+    public String attemptJoinPrivateLobbyViaForm(
                                    @AuthenticationPrincipal OAuth2User principal,
                                    OAuth2AuthenticationToken authToken,
-                                   @RequestBody(required = false) Long publicLobbyId,
-                                   @RequestBody(required = false) PrivateLobbyJoinRequestDto joinRequest,
+                                   PrivateLobbyJoinRequestDto joinRequest,
                                    RedirectAttributes redirectAttributes) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         if (currentUser == null) {
             throw new UserNotFoundException("User not found via OAuth token");
         }
         try {
-            String token = joinRequest != null ? joinRequest.getToken() : null;
-            LobbyDto lobbyDto = lobbyService.joinLobby(publicLobbyId, currentUser.getId(), token);
+            LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
 
             /* Need to add WebSocket messaging to update lobby view in real time */
 

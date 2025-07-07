@@ -8,6 +8,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Base64;
 
@@ -16,8 +17,9 @@ public class SecureInvitationsUtil {
 
         private static byte[] SECRET_KEY;
         private static final String HMAC_ALGORITHM = "HmacSHA256";
-        // Token available for 1 hour
-        private static final long INVITATION_VALIDITY_HOURS = 1;
+        // Token available for 10 minutes
+        private static final long INVITATION_VALIDITY_MINUTES = 10;
+        private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
         public SecureInvitationsUtil(@Value("${hmac.secret_key}") String hmacSecretKey) {
             SECRET_KEY = hmacSecretKey.getBytes(StandardCharsets.UTF_8);
@@ -30,8 +32,9 @@ public class SecureInvitationsUtil {
          * @return A secure, time-limited invitation token
          */
         public static String createInvitationToken(Long lobbyId, Long userId) {
-            long expiryTime = Instant.now().plusSeconds(INVITATION_VALIDITY_HOURS * 3600).getEpochSecond();
-            String payload = lobbyId + ":" + userId + ":" + expiryTime;
+            long expiryTime = Instant.now().plusSeconds(INVITATION_VALIDITY_MINUTES * 60).getEpochSecond();
+            String nonce = generateNonce();
+            String payload = lobbyId + ":" + userId + ":" + expiryTime + ":" + nonce;
             String signature = generateSignature(payload);
             // Attach the HMAC signature to the token
             String token = payload + ":" + signature;
@@ -50,13 +53,14 @@ public class SecureInvitationsUtil {
                 String[] parts = decoded.split(":");
 
                 // Validate that the token has 4x parts as expected
-                if (parts.length != 4) {
+                if (parts.length != 5) {
                     return null;
                 }
                 Long lobbyId = Long.parseLong(parts[0]);
                 Long userId = Long.parseLong(parts[1]);
                 Long expiryTime = Long.parseLong(parts[2]);
-                String signature = parts[3];
+                String nonce = parts[3];
+                String signature = parts[4];
 
                 // Check if expired
                 if (Instant.now().getEpochSecond() > expiryTime) {
@@ -64,7 +68,7 @@ public class SecureInvitationsUtil {
                 }
 
                 // Verify signature
-                String payload = lobbyId + ":" + userId + ":" + expiryTime;
+                String payload = lobbyId + ":" + userId + ":" + expiryTime + ":" + nonce;
                 String expectedSignature = generateSignature(payload);
                 // Signature of received token must match the signature generated for the token to be authenticated as the same secret key is used
                 if (!signature.equals(expectedSignature)) {
@@ -97,5 +101,13 @@ public class SecureInvitationsUtil {
             } catch (NoSuchAlgorithmException | InvalidKeyException e) {
                 throw new RuntimeException("Failed to generate signature", e);
             }
+        }
+
+        // Create string of randomised bytes for use in payload to prevent predictability
+        private static String generateNonce() {
+            // Take a byte array and fill it with randomised bytes
+            byte[] nonce = new byte[16];
+            SECURE_RANDOM.nextBytes(nonce);
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(nonce);
         }
 }
