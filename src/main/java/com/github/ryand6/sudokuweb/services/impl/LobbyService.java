@@ -9,7 +9,6 @@ import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
-import com.github.ryand6.sudokuweb.util.SecureInvitationsUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,18 +25,18 @@ public class LobbyService {
     private final UserService userService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final LobbyPlayerRepository lobbyPlayerRepository;
-
-    private static final String CODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    private static final int CODE_LENGTH = 25;
+    private final PrivateLobbyTokenService privateLobbyTokenService;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
-                        LobbyPlayerRepository lobbyPlayerRepository) {
+                        LobbyPlayerRepository lobbyPlayerRepository,
+                        PrivateLobbyTokenService privateLobbyTokenService) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.lobbyPlayerRepository = lobbyPlayerRepository;
+        this.privateLobbyTokenService = privateLobbyTokenService;
     }
 
     @Transactional
@@ -114,7 +113,7 @@ public class LobbyService {
 
     // Using private lobby token, retrieve the ID of the associated private lobby
     private Long resolvePrivateLobbyId(String token) {
-        Long privateLobbyId = SecureInvitationsUtil.validateInvitationToken(token);
+        Long privateLobbyId = privateLobbyTokenService.joinPrivateLobbyWithToken(token);
         if (privateLobbyId == null) {
             throw new InvalidTokenException("Invalid or expired invitation token");
         }

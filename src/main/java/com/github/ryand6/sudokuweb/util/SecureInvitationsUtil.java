@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.util;
 
+import com.github.ryand6.sudokuweb.dto.TokenIdentifiers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -43,16 +44,16 @@ public class SecureInvitationsUtil {
         }
 
         /**
-         * Validates and extracts lobby ID from invitation token
+         * Validates and extracts lobby ID and ID of user that created token from invitation token
          * @param token The invitation token
-         * @return The lobby ID if valid, null if invalid or expired
+         * @return The TokenIdentifiers DTO (containing lobby ID and user ID) if valid, null if invalid or expired
          */
-        public static Long validateInvitationToken(String token) {
+        public static TokenIdentifiers validateInvitationToken(String token) {
             try {
                 String decoded = new String(Base64.getUrlDecoder().decode(token), StandardCharsets.UTF_8);
                 String[] parts = decoded.split(":");
 
-                // Validate that the token has 4x parts as expected
+                // Validate that the token has 5x parts as expected
                 if (parts.length != 5) {
                     return null;
                 }
@@ -62,7 +63,7 @@ public class SecureInvitationsUtil {
                 String nonce = parts[3];
                 String signature = parts[4];
 
-                // Check if expired
+                // Check if expired - additional preventative measure, also handled in Redis
                 if (Instant.now().getEpochSecond() > expiryTime) {
                     return null;
                 }
@@ -75,13 +76,12 @@ public class SecureInvitationsUtil {
                     return null;
                 }
 
-                return lobbyId;
+                return new TokenIdentifiers(lobbyId, userId);
 
             } catch (Exception e) {
                 return null;
             }
         }
-
 
         /**
          * Attempt to hash a payload using HMAC algorithm and secret key
