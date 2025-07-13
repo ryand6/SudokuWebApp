@@ -22,7 +22,7 @@ public class SecureInvitationsUtil {
         private static final long INVITATION_VALIDITY_MINUTES = 10;
         private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
-        public SecureInvitationsUtil(@Value("${hmac.secret_key}") String hmacSecretKey) {
+        public SecureInvitationsUtil(@Value("${hmac.secret-key}") String hmacSecretKey) {
             SECRET_KEY = hmacSecretKey.getBytes(StandardCharsets.UTF_8);
         }
 

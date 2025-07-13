@@ -19,6 +19,8 @@ public class LobbyPlayerDto {
 
     private LobbyPlayerId id;
 
+    private UserDto user;
+
     private Instant joinedAt;
 
     private LobbyStatus lobbyStatus;

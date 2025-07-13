@@ -34,6 +34,26 @@ public class LobbyController {
         return "lobby/create-lobby"; // Render view "templates/lobby/create-lobby.html"
     }
 
+    // Render lobby view
+    @GetMapping("/lobby/{lobbyId}")
+    public String getLobby(@PathVariable Long lobbyId,
+                           @AuthenticationPrincipal OAuth2User principal,
+                           OAuth2AuthenticationToken authToken,
+                           Model model) {
+        UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
+        if (userDto == null) {
+            throw new UserNotFoundException("User not found via OAuth token");
+        } else {
+            LobbyDto lobby = lobbyService.getLobbyById(lobbyId);
+            if (lobby == null) {
+                throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " not found");
+            }
+            model.addAttribute("lobby", lobby); // Pass the lobby DTO as context data
+            model.addAttribute("requesterId", userDto.getId()); // Pass the user ID of the requester accessing the lobby
+            return "lobby/lobby"; // Return lobby.html
+        }
+    }
+
     // Post form details to create Lobby in DB
     @PostMapping("/lobby/process-lobby-setup")
     public String processLobbySetupRequest(@AuthenticationPrincipal OAuth2User principal,
@@ -93,7 +113,7 @@ public class LobbyController {
         return "redirect:/dashboard";
     }
 
-    // Attempt to join a private lobby via sending a token using a form, failures could result in lobby now being full or being inactive (closed)
+    // Attempt to join a private lobby via sending a token using a form, failures could result in lobby now being full or being inactive, token being used or invalid
     @PostMapping("/lobby/join/private")
     public String attemptJoinPrivateLobbyViaForm(
                                    @AuthenticationPrincipal OAuth2User principal,
@@ -112,7 +132,34 @@ public class LobbyController {
             return "redirect:/lobby/" + lobbyDto.getId();
         // Catch and handle any Lobby state related exceptions
         } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException |
-                 InvalidTokenException lobbyStateException) {
+                 InvalidTokenException | TokenNotFoundException lobbyStateException) {
+            redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");
+        }
+        return "redirect:/dashboard";
+    }
+
+    // Attempt to join a private lobby by sending a token via the URL string, failures could result in lobby now being full or being inactive, token being used or invalid
+    @PostMapping("/lobby/join/private/{token}")
+    public String attemptJoinPrivateLobbyViaTokenInURL(
+            @AuthenticationPrincipal OAuth2User principal,
+            OAuth2AuthenticationToken authToken,
+            @PathVariable String token,
+            RedirectAttributes redirectAttributes) {
+        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+        if (currentUser == null) {
+            throw new UserNotFoundException("User not found via OAuth token");
+        }
+        try {
+            LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
+
+            /* Need to add WebSocket messaging to update lobby view in real time */
+
+            return "redirect:/lobby/" + lobbyDto.getId();
+            // Catch and handle any Lobby state related exceptions
+        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException |
+                 InvalidTokenException | TokenNotFoundException lobbyStateException) {
             redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");
@@ -136,26 +183,6 @@ public class LobbyController {
             return lobbyDto;
         } catch (Exception e) {
             return null;
-        }
-    }
-
-    // Render lobby view
-    @GetMapping("/lobby/{lobbyId}")
-    public String getLobby(@PathVariable Long lobbyId,
-                           @AuthenticationPrincipal OAuth2User principal,
-                           OAuth2AuthenticationToken authToken,
-                           Model model) {
-        UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
-
-        if (userDto == null) {
-            throw new UserNotFoundException("User not found via OAuth token");
-        } else {
-            LobbyDto lobby = lobbyService.getLobbyById(lobbyId);
-            if (lobby == null) {
-                throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " not found");
-            }
-            model.addAttribute("lobby", lobby); // Pass the lobby DTO as context data
-            return "lobby"; // Return lobby.html
         }
     }
 

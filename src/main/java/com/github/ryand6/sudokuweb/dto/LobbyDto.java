@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.dto;
 
 import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 import lombok.*;
 
 import java.time.Instant;
@@ -21,6 +22,8 @@ public class LobbyDto {
     private String lobbyName;
 
     private Difficulty difficulty;
+
+    private TimeLimitPreset timeLimit;
 
     private Boolean isActive;
 

@@ -44,6 +44,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .id(lobbyEntity.getId())
                 .lobbyName(lobbyEntity.getLobbyName())
                 .difficulty(lobbyEntity.getDifficulty())
+                .timeLimit(lobbyEntity.getTimeLimit())
                 .isActive(lobbyEntity.getIsActive())
                 .isPublic(lobbyEntity.getIsPublic())
                 .countdownActive(lobbyEntity.getCountdownActive())
@@ -64,6 +65,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
         LobbyEntity.LobbyEntityBuilder lobbyEntityBuilder = LobbyEntity.builder()
                 .lobbyName(lobbyDto.getLobbyName())
                 .difficulty(lobbyDto.getDifficulty())
+                .timeLimit(lobbyDto.getTimeLimit())
                 .isActive(lobbyDto.getIsActive())
                 .isPublic(lobbyDto.getIsPublic())
                 .countdownActive(lobbyDto.getCountdownActive())
@@ -90,6 +92,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
         // Update mutable fields
         existingLobby.setLobbyName(lobbyDto.getLobbyName());
         existingLobby.setDifficulty(lobbyDto.getDifficulty());
+        existingLobby.setTimeLimit(lobbyDto.getTimeLimit());
         existingLobby.setIsActive(lobbyDto.getIsActive());
         existingLobby.setIsPublic(lobbyDto.getIsPublic());
         existingLobby.setCountdownActive(lobbyDto.getCountdownActive());

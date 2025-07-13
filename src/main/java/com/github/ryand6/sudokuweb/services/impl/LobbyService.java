@@ -57,13 +57,7 @@ public class LobbyService {
         newLobby.setIsActive(true);
         // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
         lobbyRepository.saveAndFlush(newLobby);
-        // Create a set of users only containing the requester for now, until other users join the lobby
-        Set<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
-        // Create LobbyPlayerEntity for requester
-        LobbyPlayerEntity lobbyPlayerRequester = LobbyPlayerFactory.createLobbyPlayer(newLobby, requester);
-        lobbyPlayerRepository.save(lobbyPlayerRequester);
-        lobbyPlayers.add(lobbyPlayerRequester);
-        newLobby.setLobbyPlayers(lobbyPlayers);
+        addPlayerToLobby(newLobby, requester);
         return lobbyEntityDtoMapper.mapToDto(newLobby);
     }
 
@@ -113,11 +107,7 @@ public class LobbyService {
 
     // Using private lobby token, retrieve the ID of the associated private lobby
     private Long resolvePrivateLobbyId(String token) {
-        Long privateLobbyId = privateLobbyTokenService.joinPrivateLobbyWithToken(token);
-        if (privateLobbyId == null) {
-            throw new InvalidTokenException("Invalid or expired invitation token");
-        }
-        return privateLobbyId;
+        return privateLobbyTokenService.joinPrivateLobbyWithToken(token);
     }
 
     // Get lobby and lock it from concurrent editing

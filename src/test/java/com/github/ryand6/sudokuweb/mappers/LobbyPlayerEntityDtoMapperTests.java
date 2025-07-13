@@ -30,7 +30,7 @@ public class LobbyPlayerEntityDtoMapperTests {
     public void setup() {
         userRepository = mock(UserRepository.class);
         lobbyRepository = mock(LobbyRepository.class);
-        lobbyPlayerEntityDtoMapper = new LobbyPlayerEntityDtoMapper(userRepository, lobbyRepository);
+        lobbyPlayerEntityDtoMapper = new LobbyPlayerEntityDtoMapper(userRepository, lobbyRepository, userEntityDtoMapper);
     }
 
     @Test

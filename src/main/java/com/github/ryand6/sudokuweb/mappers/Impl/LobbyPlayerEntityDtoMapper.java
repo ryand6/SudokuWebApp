@@ -15,17 +15,20 @@ public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEn
 
     private final UserRepository userRepository;
     private final LobbyRepository lobbyRepository;
+    private final UserEntityDtoMapper userEntityDtoMapper;
 
     public LobbyPlayerEntityDtoMapper(UserRepository userRepository,
-                                      LobbyRepository lobbyRepository) {
+                                      LobbyRepository lobbyRepository, UserEntityDtoMapper userEntityDtoMapper) {
         this.userRepository = userRepository;
         this.lobbyRepository = lobbyRepository;
+        this.userEntityDtoMapper = userEntityDtoMapper;
     }
 
     @Override
     public LobbyPlayerDto mapToDto(LobbyPlayerEntity lobbyPlayerEntity) {
         return LobbyPlayerDto.builder()
                 .id(lobbyPlayerEntity.getId())
+                .user(userEntityDtoMapper.mapToDto(lobbyPlayerEntity.getUser()))
                 .joinedAt(lobbyPlayerEntity.getJoinedAt())
                 .lobbyStatus(lobbyPlayerEntity.getLobbyStatus())
                 .readyAt(lobbyPlayerEntity.getReadyAt())

@@ -1,5 +1,7 @@
 package com.github.ryand6.sudokuweb.config;
 
+import com.github.ryand6.sudokuweb.security.OAuth2SuccessHandler;
+import com.github.ryand6.sudokuweb.services.impl.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -10,6 +12,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final UserService userService;
+
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,7 +32,7 @@ public class SecurityConfig {
 
                 // Enable OAuth2 login
                 .oauth2Login(oauth -> oauth
-                        .defaultSuccessUrl("/login-success", true)
+                        .successHandler(new OAuth2SuccessHandler(userService))
                 )
 
                 // Add logout config
