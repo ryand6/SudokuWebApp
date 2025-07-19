@@ -15,6 +15,25 @@
     --logout-bg: #ff4d4d;
 }
 
+.desktop-layout {
+    display: block;
+}
+
+.mobile-layout {
+    display: none;
+}
+
+/* dynamically determine layout depending on device viewport width */
+@media (max-width: 768px) {
+    .desktop-layout {
+        display: none;
+    }
+
+    .mobile-layout {
+        display: block;
+    }
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;

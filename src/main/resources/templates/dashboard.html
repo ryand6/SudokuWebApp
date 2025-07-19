@@ -6,45 +6,44 @@
     <link rel="stylesheet" th:href="@{/css/lobby-modal-style.css}">
 </head>
 <body>
-<header>
-    <div class="username-info">
-        Welcome, <span th:text="${user.username}">User</span> | Score: <span th:text="${user.score.totalScore}">0</span> | Rank: <span th:text="${userRank}">#0</span>
-    </div>
-    <div>
-        <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
-        <form th:action="@{/logout}" method="post" style="display: inline;">
-            <button class="logout">Logout</button>
-        </form>
-    </div>
-</header>
-
-<div id="mainContentWrapper">
-    <div class="main-content">
-        <!-- Leaderboard Pane -->
-        <div class="leaderboard">
-            <h3>Top 5 Players</h3>
-            <ol>
-                <li th:each="player : ${topPlayers}">
-                    <span th:text="${player.username}">Name</span>: <span th:text="${player.score.totalScore}">0</span>
-                </li>
-            </ol>
-            <a th:href="@{/leaderboard}" class="button-link">View Full Leaderboard</a>
-        </div>
-
-        <!-- Actions Pane -->
-        <div class="actions">
-            <h2>Lobby Actions</h2>
-            <a th:href="@{/lobby/create-lobby}" class="button-link">Create New Lobby</a>
-
-            <a th:href="@{/user/change-username}" class="button-link">Change Username</a>
-
-            <!-- Button to open lobby modal -->
-            <button id="openLobbyModalBtn">Join Lobby</button>
-
+    <div class="desktop-layout">
+        <header>
+            <div class="username-info">
+                Welcome, <span th:text="${user.username}">User</span> | Score: <span th:text="${user.score.totalScore}">0</span> | Rank: <span th:text="${userRank}">#0</span>
+            </div>
+            <div>
+                <button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button class="logout">Logout</button>
+                </form>
+            </div>
+        </header>
+        <div id="mainContentWrapper">
+            <div class="main-content">
+                <!-- Leaderboard Pane -->
+                <div class="leaderboard">
+                    <h3>Top 5 Players</h3>
+                    <ol>
+                        <li th:each="player : ${topPlayers}">
+                            <span th:text="${player.username}">Name</span>: <span th:text="${player.score.totalScore}">0</span>
+                        </li>
+                    </ol>
+                    <a th:href="@{/leaderboard}" class="button-link">View Full Leaderboard</a>
+                </div>
+                <!-- Actions Pane -->
+                <div class="actions">
+                    <h2>Lobby Actions</h2>
+                    <a th:href="@{/lobby/create-lobby}" class="button-link">Create New Lobby</a>
+                    <a th:href="@{/user/change-username}" class="button-link">Change Username</a>
+                    <!-- Button to open lobby modal -->
+                    <button id="openLobbyModalBtn">Join Lobby</button>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-
+    <div class="mobile-layout">
+        <!-- Add mobile elements here -->
+    </div>
 <!-- Lobby Modal Overlay -->
 <div id="lobbyModal" class="modal hidden">
     <div class="modal-content">

@@ -4,7 +4,7 @@ function toggleTheme() {
     localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 }
 
-// Load theme on page load
+// Self-invoking function used to load theme on page load
 (function () {
     if (localStorage.getItem('theme') === 'dark') {
         document.documentElement.classList.add('dark');

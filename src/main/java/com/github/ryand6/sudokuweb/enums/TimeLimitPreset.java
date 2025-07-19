@@ -6,10 +6,10 @@ import lombok.Getter;
 public enum TimeLimitPreset {
 
     // Game duration settings
-    UNLIMITED("No Time Limit", null),
     QUICK("Quick Game", 900),
     STANDARD("Standard", 1800),
-    MARATHON("Marathon", 3600);
+    MARATHON("Marathon", 3600),
+    UNLIMITED("No Time Limit", null);
 
     private final String displayName;
     private final Integer seconds;

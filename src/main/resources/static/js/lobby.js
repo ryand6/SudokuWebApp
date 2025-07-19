@@ -1,5 +1,6 @@
 // Mock data for demonstration
 const difficultyLabels = ['Easy', 'Medium', 'Hard', 'Extreme'];
+const durationLabels = ["Quick Game", "Standard", "Marathon", "No Time Limit"];
 
 function updateDifficulty(value) {
     const label = difficultyLabels[value];
@@ -13,7 +14,7 @@ function updateDifficulty(value) {
 }
 
 function updateDuration(value) {
-    const label = value + ' min';
+    const label = durationLabels[value];
     document.getElementById('durationValue').textContent = label;
     if (document.getElementById('mobileDurationValue')) {
         document.getElementById('mobileDurationValue').textContent = label;
