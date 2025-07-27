@@ -1,39 +1,36 @@
-env.properties
+# ===========================
+# Backend
+# ===========================
+/backend/src/main/resources/application.properties
+/backend/src/test/resources/application.properties
+/backend/HELP.md
+/backend/target/
+!.mvn/wrapper/
+!.mvn/wrapper/**
+
+# ===========================
+# Frontend
+# ===========================
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.vite/
+/frontend/logs
+/frontend/npm-debug.log*
+/frontend/dist-ssr
+
+# ===========================
+# General
+# ===========================
 docker-compose.yaml
-src/main/resources/application.properties
-src/test/resources/application.properties
 *.env
+*.log
+*.local
 
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
+# ===========================
+# IntelliJ IDEA
+# ===========================
 .idea
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
