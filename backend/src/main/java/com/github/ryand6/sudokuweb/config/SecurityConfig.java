@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.config;
 
 import com.github.ryand6.sudokuweb.security.OAuth2SuccessHandler;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -19,10 +20,13 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserService userService;
+    // get from application.properties
+    @Value("${spa.base-url}")
+    private final String spaBaseUrl;
 
-    public SecurityConfig(UserService userService) {
-        this.userService = userService;
+
+    public SecurityConfig(String spaBaseUrl) {
+        this.spaBaseUrl = spaBaseUrl;
     }
 
     @Bean
@@ -44,7 +48,7 @@ public class SecurityConfig {
 
                 // Enable OAuth2 login
                 .oauth2Login(oauth -> oauth
-                        .successHandler(new OAuth2SuccessHandler(userService))
+                        .successHandler(new OAuth2SuccessHandler(spaBaseUrl))
                 )
 
                 // Add logout config
