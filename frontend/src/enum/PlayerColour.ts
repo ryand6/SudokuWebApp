@@ -1,0 +1,1 @@
+export type PlayerColour = "BLUE" | "GREEN" | "PURPLE" | "ORANGE";
