@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./auth/AuthProvider";
+import { AuthContextProvider } from "./auth/AuthContextProvider";
 
 function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
+      <AuthContextProvider>
         <Routes>
         </Routes>
-      </AuthProvider>
+      </AuthContextProvider>
     </BrowserRouter>
   );
 }

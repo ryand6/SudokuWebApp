@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.config;
 
 import com.github.ryand6.sudokuweb.security.OAuth2SuccessHandler;
-import com.github.ryand6.sudokuweb.services.impl.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
