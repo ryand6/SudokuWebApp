@@ -30,7 +30,11 @@ public class UserRestController {
     // Get current authenticated user
     @GetMapping("/current-user")
     public ResponseEntity<UserDto> userSetupForm(@AuthenticationPrincipal OAuth2User principal,
-                                OAuth2AuthenticationToken authToken) {
+                                                 OAuth2AuthenticationToken authToken) {
+        // OAuth2 login not occurred yet
+        if (principal == null || authToken == null) {
+            throw new
+        }
         // null if user not returned
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
         if (user == null) {

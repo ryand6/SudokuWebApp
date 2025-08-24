@@ -1,10 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers.handlers;
 
 import com.github.ryand6.sudokuweb.dto.ApiErrorDto;
-import com.github.ryand6.sudokuweb.exceptions.InvalidDifficultyException;
-import com.github.ryand6.sudokuweb.exceptions.TooManyActivePlayersException;
-import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
-import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
+import com.github.ryand6.sudokuweb.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -27,6 +24,11 @@ public class RestExceptionHandler {
         // different behavior depending on exception type
         if (ex instanceof UserNotFoundException) {
             status = HttpStatus.NOT_FOUND;
+        }
+
+        // 401 error
+        if (ex instanceof OAuth2LoginRequiredException) {
+            status = HttpStatus.UNAUTHORIZED;
         }
 
         ApiErrorDto error = new ApiErrorDto(ex.getMessage());

@@ -21,6 +21,8 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
     const [user, setUser] = useState<UserDto | null>(null);
     const [loadingUser, setLoadingUser] = useState<boolean>(false);
     const [userFetchError, setUserFetchError] = useState<string | null>(null);
+    const [userSetupRequired, setUserSetupRequired] = useState<boolean>(false);
+    const [loginRequired, setLoginRequired] = useState<boolean>(false);
 
     // Gets and sets current user, otherwise sets error if user cannot be fetched
     const refreshUser = async () => {
@@ -29,7 +31,15 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
         try {
             const userData: UserDto = await getCurrentUser();
             setUser(userData);
+            // reset flags
+            setLoginRequired(false);
+            setUserSetupRequired(false);
         } catch (err: any) {
+            if (err.message.includes("account set up required")) {
+                setUserSetupRequired(true);
+            } else if (err.message.includes("OAuth2 login required")) {
+                setLoginRequired(true);
+            }
             setUser(null);
             setUserFetchError(err?.message || "Failed to fetch user");
         } finally {
@@ -44,6 +54,9 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
         try {
             await userLogout();
             setUser(null);
+            // reset flags
+            setLoginRequired(false);
+            setUserSetupRequired(false);
         } catch (err: any) {
             setUserFetchError(err?.message || "Failed to logout");
         } finally {
@@ -51,9 +64,14 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
         }
     };
 
+    // Set initial state values when AuthContextProvider is mounted
+    useEffect(() => {
+        refreshUser();
+    }, []);
+
     // Provides state variables and functions to children - variables are updated via the functions
     return (
-        <AuthContext.Provider value={{ user, loadingUser, userFetchError, refreshUser, logout }}>
+        <AuthContext.Provider value={{ user, loadingUser, userFetchError, userSetupRequired, loginRequired, refreshUser, logout }}>
             {children}
         </AuthContext.Provider>
     );
