@@ -21,7 +21,7 @@ public class RestExceptionHandler {
         // Default HTTP code
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        // different behavior depending on exception type
+        // different behavior depending on exception type (404 error)
         if (ex instanceof UserNotFoundException) {
             status = HttpStatus.NOT_FOUND;
         }

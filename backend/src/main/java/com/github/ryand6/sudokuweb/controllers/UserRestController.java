@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.ApiErrorDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.exceptions.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
@@ -33,7 +34,7 @@ public class UserRestController {
                                                  OAuth2AuthenticationToken authToken) {
         // OAuth2 login not occurred yet
         if (principal == null || authToken == null) {
-            throw new
+            throw new OAuth2LoginRequiredException("OAuth2 login required to carry out this action");
         }
         // null if user not returned
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);

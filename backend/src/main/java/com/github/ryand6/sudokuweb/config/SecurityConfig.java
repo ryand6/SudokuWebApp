@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.config;
 
 import com.github.ryand6.sudokuweb.security.OAuth2SuccessHandler;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +42,7 @@ public class SecurityConfig {
                 // Configure when authorization is required
                 .authorizeHttpRequests(auth -> auth
                         // Require that any URL requires authentication except for homepage, css files, and user set-up
-                        .requestMatchers("/", "/error/**").permitAll()
+                        .requestMatchers("/error/**").permitAll()
                         .anyRequest().authenticated()
                 )
 
@@ -52,15 +53,13 @@ public class SecurityConfig {
 
                 // Add logout config
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/") // Where to go after logout
+                        // Return HTTP 200 status, let React handle redirect
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID") // Default name of cookie used by Java servlet containers (e.g. Tomcat, Jetty)
                 );
-
-                // Handle access errors gracefully
-                //.exceptionHandling(ex -> ex
-                //        .accessDeniedPage("/access-denied") // Custom Access Denied page
-                //);
 
         return http.build();
     }
@@ -70,7 +69,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         // React origin
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of(spaBaseUrl));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         // Required for JSESSIONID
         configuration.setAllowCredentials(true);
