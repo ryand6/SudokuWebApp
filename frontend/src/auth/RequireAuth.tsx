@@ -16,12 +16,16 @@ export function RequireAuth({ children }: { children : React.ReactNode }): JSX.E
     if (loadingUser) return <div>Loading...</div>;
 
     if (loginRequired) {
-        return <Navigate to="/login" replace={true} state={{ referrer: location }} />;
+        // Store the SPA route the user originally tried accessing so they can be redirected post login
+        sessionStorage.setItem("postLoginPath", location.pathname + location.search + location.hash);
+        return <Navigate to="/login" replace={true} />;
     }
 
     // If user account does not exist, redirect to setup page to set their account up - provide referrer URL so they can return to original intended URL
     if (userSetupRequired) {
-        return <Navigate to="/user-setup" replace={true} state={{ referrer: location }} />;
+        // Store the SPA route the user originally tried accessing so they can be redirected post account set up
+        sessionStorage.setItem("postLoginPath", location.pathname + location.search + location.hash);
+        return <Navigate to="/user-setup" replace={true} />;
     }
 
     // Update to handle - render Error page

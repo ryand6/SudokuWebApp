@@ -69,6 +69,8 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
         refreshUser();
     }, []);
 
+
+
     // Provides state variables and functions to children - variables are updated via the functions
     return (
         <AuthContext.Provider value={{ user, loadingUser, userFetchError, userSetupRequired, loginRequired, refreshUser, logout }}>
