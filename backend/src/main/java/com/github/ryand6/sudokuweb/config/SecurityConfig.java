@@ -21,11 +21,9 @@ import java.util.List;
 public class SecurityConfig {
 
     // get from application.properties
-    @Value("${spa.base-url}")
     private final String spaBaseUrl;
 
-
-    public SecurityConfig(String spaBaseUrl) {
+    public SecurityConfig(@Value("${spa.base-url}") String spaBaseUrl) {
         this.spaBaseUrl = spaBaseUrl;
     }
 

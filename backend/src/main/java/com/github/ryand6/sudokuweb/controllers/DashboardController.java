@@ -9,10 +9,11 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 public class DashboardController {
 
     private final UserService userService;
@@ -22,7 +23,7 @@ public class DashboardController {
     }
 
     // Render dashboard view
-    @GetMapping("/dashboard")
+    @GetMapping("/api/dashboard")
     public String getUserDashboard(@AuthenticationPrincipal OAuth2User principal,
                                    OAuth2AuthenticationToken authToken,
                                    Model model) {

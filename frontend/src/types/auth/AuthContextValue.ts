@@ -1,11 +1,11 @@
-import type { UserDto } from "../../dto/UserDto"
+import type { UserDto } from "../dto/UserDto"
+
 
 export type AuthContextValue = {
     user: UserDto | null,
     loadingUser: boolean,
     userFetchError: string | null,
-    userSetupRequired: boolean,
-    loginRequired: boolean,
-    refreshUser: () => Promise<void>,
+    refreshUserAuth: () => Promise<void>,
+    redirectPostLogin: () => void,
     logout: () => Promise<void>
 }
