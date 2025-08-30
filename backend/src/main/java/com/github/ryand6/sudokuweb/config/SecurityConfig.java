@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -27,15 +28,28 @@ public class SecurityConfig {
         this.spaBaseUrl = spaBaseUrl;
     }
 
+    // Register bean so that this can be injected into OAuth2SuccessHandler
+    @Bean
+    public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
+        CookieCsrfTokenRepository repo = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        repo.setCookiePath("/"); // ensures the cookie is valid site-wide
+        return repo;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        CookieCsrfTokenRepository csrfTokenRepository = cookieCsrfTokenRepository();
+
         http
                 // Enable CORS
                 .cors(Customizer.withDefaults())
                 // Publish csrf token in a cookie that React SPA can read
                 .csrf((csrf) -> csrf
                         // Send the csrf token as a cookie that is readable by React so that it can attach this to HTTP request headers
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        // Make the CSRF token available whenever a request is processed
+                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
+
 
                 // Configure when authorization is required
                 .authorizeHttpRequests(auth -> auth
@@ -46,7 +60,7 @@ public class SecurityConfig {
 
                 // Enable OAuth2 login
                 .oauth2Login(oauth -> oauth
-                        .successHandler(new OAuth2SuccessHandler(spaBaseUrl))
+                        .successHandler(new OAuth2SuccessHandler(spaBaseUrl, csrfTokenRepository))
                 )
 
                 // Add logout config

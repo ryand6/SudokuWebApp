@@ -1,0 +1,26 @@
+import { getCsrfToken } from "../../utils/csrf";
+
+export async function processUserSetup(username: string): Promise<void> {
+    try {
+        const response = await fetch("/api/users/process-user-setup", {
+            method: "POST",
+            credentials: "include",
+            headers: { 
+                // Send data in JSON format
+                "Content-Type": "application/json",
+                // assign token to empty string if it is null because header cannot accept null/undefined values
+                "X-XSRF-TOKEN": getCsrfToken() ?? "",
+            },
+            body: JSON.stringify({username})
+        });
+        if (!response.ok) {
+            // if error message doesn't parse properly, assign null to errorData
+            const errorData = await response.json().catch(() => null);
+            const error: any = new Error(errorData?.message || `HTTP ${response.status}`);
+            error.status = response.status;
+            throw error;
+        };
+    } catch (err: any) {
+        throw new Error(err?.message || "Failed to setup user account");
+    }
+}

@@ -1,14 +1,11 @@
-import { useLocation, useNavigate, type Location, type NavigateFunction } from "react-router-dom";
-import type { UserDto } from "../types/dto/UserDto";
+import { type Location, type NavigateFunction } from "react-router-dom";
+import type { UserDto } from "../../types/dto/UserDto";
 
 
 export async function getCurrentUser(
     navigate: NavigateFunction,
     location: Location
 ): Promise<UserDto> {
-
-    console.log("RUNNING");
-
     try {
         const response = await fetch("/api/users/current-user", {
             method: "GET",

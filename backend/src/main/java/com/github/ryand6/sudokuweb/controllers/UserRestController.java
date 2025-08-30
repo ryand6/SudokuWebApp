@@ -1,22 +1,17 @@
 package com.github.ryand6.sudokuweb.controllers;
 
-import com.github.ryand6.sudokuweb.dto.ApiErrorDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
-import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
-import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @RestController
 @RequestMapping("/api/users")
@@ -48,11 +43,10 @@ public class UserRestController {
     @PostMapping("/process-user-setup")
     public ResponseEntity<Void> processUserSetupRequest(@AuthenticationPrincipal OAuth2User principal,
                                                   OAuth2AuthenticationToken authToken,
-                                                  @RequestParam(name = "username") String username,
-                                                  RedirectAttributes redirectAttributes,
-                                                  HttpServletRequest request) {
+                                                  @RequestBody UserSetupRequestDto request) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
+        String username = request.getUsername();
         // Create user in DB
         userService.createNewUser(username, provider, providerId);
         return ResponseEntity

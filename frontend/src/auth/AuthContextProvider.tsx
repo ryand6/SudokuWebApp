@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, type JSX } from "react";
 import type { AuthContextValue } from "../types/auth/AuthContextValue";
-import { getCurrentUser } from "../utils/currentUser";
-import { userLogout } from "../utils/userLogout";
+import { getCurrentUser } from "../api/user/currentUser";
+import { userLogout } from "../api/user/userLogout";
 import type { UserDto } from "../types/dto/UserDto";
 import { useLocation, useNavigate } from "react-router-dom";
 

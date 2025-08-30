@@ -26,6 +26,10 @@ public class RestExceptionHandler {
             status = HttpStatus.NOT_FOUND;
         }
 
+        if (ex instanceof UsernameTakenException) {
+            status = HttpStatus.CONFLICT;
+        }
+
         // 401 error
         if (ex instanceof OAuth2LoginRequiredException) {
             status = HttpStatus.UNAUTHORIZED;
