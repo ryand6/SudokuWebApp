@@ -16,8 +16,8 @@ export function UserAmendPage() {
   return (
     <div>
       <h1>Amend User</h1>
-      <label>Current username:</label>
-      <div>{user?.username ?? ""}</div>
+      <label className="font-semibold text-gray-700">Current username:</label>
+      <div className="border border-gray-400 rounded-lg py-1 px-3 bg-gray-500">{user?.username ?? ""}</div>
       <UserForm
         onSubmit={handleAmend}
         submitLabel="Update Account"

@@ -4,6 +4,7 @@ import { UserSetupPage } from "./pages/UserSetupPage";
 import { HomePage } from "./pages/HomePage";
 import { RequireAuth } from "./auth/RequireAuth";
 import { DashboardPage } from "./pages/DashboardPage";
+import { UserAmendPage } from "./pages/UserAmendPage";
 
 function App() {
   return (
@@ -20,6 +21,14 @@ function App() {
             element={
               <RequireAuth>
                 <DashboardPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/user-update"
+            element={
+              <RequireAuth>
+                <UserAmendPage />
               </RequireAuth>
             }
           />

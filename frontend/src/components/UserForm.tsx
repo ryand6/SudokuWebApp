@@ -1,6 +1,4 @@
 import { useState, type JSX } from "react";
-import { useNavigate } from "react-router-dom";
-import { getAuthContext } from "../auth/AuthContextProvider";
 
 
 interface UserFormProps {
@@ -42,8 +40,8 @@ export function UserForm({
     }
 
     return (
-        <form onSubmit={handleSubmit} method="post">
-            <label htmlFor="username">Choose a Username:</label>
+        <form onSubmit={handleSubmit} method="post" className="flex flex-col gap-4">
+            <label htmlFor="username" className="font-semibold text-gray-700">Choose a Username:</label>
             <input
                 type="text"
                 id="username"
@@ -52,8 +50,14 @@ export function UserForm({
                 required
                 maxLength={20} 
                 onChange={(e) => setUsername(e.target.value)}
+                className="border border-gray-300 font-semibold bg-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-            <button type="submit">{submitLabel}Create Account</button>
+            <button 
+                type="submit"
+                className="bg-blue-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+                {submitLabel}
+            </button>
             {/* display any errors found during attempted form submission */}
             {error && <div className="error">{error}</div>}
         </form>

@@ -1,4 +1,4 @@
-import { useState, type JSX } from "react";
+import { type JSX } from "react";
 import { processUserSetup } from "../api/user/processUserSetup";
 import { useNavigate } from "react-router-dom";
 import { getAuthContext } from "../auth/AuthContextProvider";
