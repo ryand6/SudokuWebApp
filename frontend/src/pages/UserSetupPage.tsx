@@ -1,8 +1,10 @@
 import { useState, type JSX } from "react";
 import { processUserSetup } from "../api/user/processUserSetup";
 import { useNavigate } from "react-router-dom";
+import { getAuthContext } from "../auth/AuthContextProvider";
 
 export function UserSetupPage(): JSX.Element {
+    const { refreshUserAuth } = getAuthContext();
     const [username, setUsername] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
@@ -26,6 +28,8 @@ export function UserSetupPage(): JSX.Element {
         setError("");
         try {
             await processUserSetup(username);
+            // Set user global context variable by retrieving the newly created user from the backend
+            await refreshUserAuth();
             // Redirect to homepage when finished setting up account, which will then redirect to referrer if there is one
             navigate("/", { replace: true });
         } catch (err: any) {
@@ -50,6 +54,7 @@ export function UserSetupPage(): JSX.Element {
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <button type="submit">Create Account</button>
+                {/* display any errors found during attempted form submission */}
                 {error && <div className="error">{error}</div>}
             </form>
         </div>

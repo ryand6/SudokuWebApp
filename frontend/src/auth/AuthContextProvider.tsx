@@ -22,7 +22,6 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
     const [user, setUser] = useState<UserDto | null>(null);
     const [loadingUser, setLoadingUser] = useState<boolean>(false);
     const [userFetchError, setUserFetchError] = useState<string | null>(null);
-    const [didRedirectOccur, setDidRedirectOccur] = useState<boolean>(false);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -41,7 +40,7 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
                 setUser(null);
                 setUserFetchError(message);
             }
-
+            // TO REMOVE
             console.log("Error fetching data: " + err.message);
         } finally {
             setLoadingUser(false);
@@ -49,8 +48,6 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
     };
 
     const redirectPostLogin = () => {
-        // Prevent multiple post login redirects occurring per mount accidentally - should only redirect once
-        if (didRedirectOccur) return; 
         // Using session storage so that there isn't any overwriting of postLoginPath from different tabs - stores one per tab
         const referrer = sessionStorage.getItem("postLoginPath");
         // No redirect URL saved therefore stop
@@ -66,8 +63,6 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
             localStorage.removeItem("postLoginPath");
             return;
         }
-        // Mark redirect having occurred so that it can't occur again until a new mount
-        setDidRedirectOccur(true);
         sessionStorage.removeItem("postLoginPath");
         navigate(referrer, { replace: true });
     }

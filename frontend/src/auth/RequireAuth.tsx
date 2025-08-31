@@ -11,9 +11,6 @@ export function RequireAuth({ children }: { children : React.ReactNode }) {
 
     // Dynamically show loading status - conditional re-checked when state updates
     if (loadingUser) return <div>Loading...</div>;
-    
-    console.log("user: " + user);
-    console.log("loading user: " + loadingUser);
 
     // Update to handle - render Error page
     if (!user) return <div>Error fetching user</div>;
