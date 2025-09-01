@@ -1,6 +1,7 @@
 import { useState, type JSX } from "react";
 
 
+
 interface UserFormProps {
     onSubmit: (username: string) => Promise<void>,
     submitLabel: string,
@@ -40,15 +41,16 @@ export function UserForm({
     }
 
     return (
-        <form onSubmit={handleSubmit} method="post" className="flex flex-col gap-4">
-            <label htmlFor="username" className="font-semibold text-gray-700">Choose a Username:</label>
+        <form onSubmit={handleSubmit} method="post" className="flex flex-col gap-4 w-full max-w-md mx-auto">
+            <label htmlFor="username" className="font-semibold text-gray-700 mt-1">Choose a username:</label>
             <input
                 type="text"
                 id="username"
                 placeholder="Username"
                 value={username}
                 required
-                maxLength={20} 
+                maxLength={20}
+                minLength={3}
                 onChange={(e) => setUsername(e.target.value)}
                 className="border border-gray-300 font-semibold bg-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
