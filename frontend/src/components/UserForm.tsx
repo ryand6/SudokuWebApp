@@ -42,7 +42,7 @@ export function UserForm({
 
     return (
         <form onSubmit={handleSubmit} method="post" className="flex flex-col gap-4 w-full max-w-md mx-auto">
-            <label htmlFor="username" className="font-semibold text-gray-700 mt-1">Choose a username:</label>
+            <label htmlFor="username" className="font-semibold text-gray-700 mt-1 text-lg">Choose a username:</label>
             <input
                 type="text"
                 id="username"
@@ -56,7 +56,7 @@ export function UserForm({
             />
             <button 
                 type="submit"
-                className="bg-blue-400 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors"
+                className="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors cursor-pointer"
             >
                 {submitLabel}
             </button>
