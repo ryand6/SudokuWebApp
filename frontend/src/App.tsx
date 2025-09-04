@@ -5,6 +5,8 @@ import { HomePage } from "./pages/HomePage";
 import { RequireAuth } from "./auth/RequireAuth";
 import { DashboardPage } from "./pages/DashboardPage";
 import { UserAmendPage } from "./pages/UserAmendPage";
+import { NewUserOnly } from "./auth/NewUserOnly";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -13,7 +15,14 @@ function App() {
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/user-setup" element={<UserSetupPage />} />
+
+          {/* One time public routes - new users only */}
+          <Route path="/user-setup" element={
+            <NewUserOnly>
+                <UserSetupPage />
+            </NewUserOnly>
+            } 
+          />
 
           {/* Protected routes */}
           <Route
@@ -34,6 +43,7 @@ function App() {
           />
         </Routes>
       </AuthContextProvider>
+      <ToastContainer position="top-right" autoClose={5000} />
     </BrowserRouter>
   );
 }

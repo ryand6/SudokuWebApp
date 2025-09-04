@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, type JSX } from "react";
+import React, { createContext, useContext, useEffect, useRef, useState, type JSX } from "react";
 import type { AuthContextValue } from "../types/auth/AuthContextValue";
 import { getCurrentUser } from "../api/user/currentUser";
 import { userLogout } from "../api/user/userLogout";
@@ -52,7 +52,7 @@ export function AuthContextProvider({ children } : { children: React.ReactNode }
         const referrer = sessionStorage.getItem("postLoginPath");
         // No redirect URL saved therefore stop
         if (!referrer) return;
-        // Check for potential hamrful redirect URLs - referrer URLs should only be local page paths
+        // Check for potential harmful redirect URLs - referrer URLs should only be local page paths
         if (!referrer.startsWith("/")) {
             localStorage.removeItem("postLoginPath"); 
             return;
