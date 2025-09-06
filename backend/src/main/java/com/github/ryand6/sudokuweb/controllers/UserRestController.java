@@ -6,12 +6,17 @@ import com.github.ryand6.sudokuweb.exceptions.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.services.impl.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -41,9 +46,22 @@ public class UserRestController {
 
     // Post form details to create User in DB
     @PostMapping("/process-user-setup")
-    public ResponseEntity<Void> processUserSetupRequest(@AuthenticationPrincipal OAuth2User principal,
-                                                  OAuth2AuthenticationToken authToken,
-                                                  @RequestBody UserSetupRequestDto request) {
+    public ResponseEntity<?> processUserSetupRequest(@AuthenticationPrincipal OAuth2User principal,
+                                                        OAuth2AuthenticationToken authToken,
+                                                        @Valid @RequestBody UserSetupRequestDto request,
+                                                        BindingResult bindingResult) {
+        // Check if validation errors occurred in DTO
+        if (bindingResult.hasErrors()) {
+            // Collect all validation errors
+            List<String> errors = bindingResult.getAllErrors()
+                                                .stream()
+                                                .map(ObjectError::getDefaultMessage)
+                                                .toList();
+            return ResponseEntity
+                    .badRequest()
+                    .body(errors);
+        }
+
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         String username = request.getUsername();

@@ -34,7 +34,9 @@ export function UserForm({
         try {
             await onSubmit(username);
         } catch (err: any) {
-            if (err.status === 409) setError("That username is already taken.");
+            // Handle backend form validation errors
+            if (err.status === 400) setError(err.message);
+            else if (err.status === 409) setError("That username is already taken.");
             else if (err.status === 422) setError("Fix existing form errors.");
             else setError("Something went wrong whilst processing request.");
         }

@@ -23,7 +23,7 @@ export async function getCurrentUser(
         // Handle when a user has not been created, redirect to user set-up
         } else if (response.status === 404) {
             sessionStorage.setItem("postLoginPath", location.pathname + location.search + location.hash);
-            navigate("/user-setup", { replace: true });
+            navigate("/user-setup", { replace: true, state: { firstTimeSetup: true } });
             throw new Error("User not found, redirecting to user setup");
         } else if (!response.ok) {
             // if error message doesn't parse properly, assign null to errorData

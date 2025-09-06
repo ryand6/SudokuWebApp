@@ -1,3 +1,4 @@
+import { backendValidationErrors } from "../../utils/backendValidationErrors";
 import { getCsrfToken } from "../../utils/csrf";
 
 export async function processUserAmend(username: string): Promise<void> {
@@ -16,11 +17,16 @@ export async function processUserAmend(username: string): Promise<void> {
         if (!response.ok) {
             // if error message doesn't parse properly, assign null to errorData
             const errorData = await response.json().catch(() => null);
-            const error: any = new Error(errorData?.message || `HTTP ${response.status}`);
+            let error: any;
+            if (Array.isArray(errorData)) {
+                error = backendValidationErrors(errorData);
+            } else {
+                error = new Error(errorData?.message || `HTTP ${response.status}`);
+            }
             error.status = response.status;
             throw error;
         };
     } catch (err: any) {
-        throw new Error(err?.message || "Failed to update user account");
+        throw err;
     }
 }
