@@ -4,7 +4,6 @@ import com.github.ryand6.sudokuweb.dto.ApiErrorDto;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 

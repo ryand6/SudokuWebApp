@@ -25,28 +25,28 @@ public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto>
                 .build();
     }
 
-    // Additional context required to create the UserEntity (provider and providerId)
-    @Override
-    public UserEntity mapFromDto(UserDto dto) {
-        // Basic mapping without providerId, or throw UnsupportedOperationException
-        throw new UnsupportedOperationException("Provider and Provider ID required, please provide these as parameters when calling mapFromDto on UserDto");
-    }
-
-    // Overloaded method to handle additional context in order to create UserEntity
-    public UserEntity mapFromDto(UserDto userDto, String provider, String providerId) {
-        UserEntity.UserEntityBuilder userEntityBuilder = UserEntity.builder()
-                .username(userDto.getUsername())
-                .provider(provider)
-                .providerId(providerId)
-                .isOnline(userDto.getIsOnline())
-                .scoreEntity(scoreEntityDtoMapper.mapFromDto(userDto.getScore()));
-
-        // Don't assign id field if non-existent, DB will create
-        if (userDto.getId() != null) {
-            userEntityBuilder.id(userDto.getId());
-        }
-
-        return userEntityBuilder.build();
-    }
+//    // Additional context required to create the UserEntity (provider and providerId)
+//    @Override
+//    public UserEntity mapFromDto(UserDto dto) {
+//        // Basic mapping without providerId, or throw UnsupportedOperationException
+//        throw new UnsupportedOperationException("Provider and Provider ID required, please provide these as parameters when calling mapFromDto on UserDto");
+//    }
+//
+//    // Overloaded method to handle additional context in order to create UserEntity
+//    public UserEntity mapFromDto(UserDto userDto, String provider, String providerId) {
+//        UserEntity.UserEntityBuilder userEntityBuilder = UserEntity.builder()
+//                .username(userDto.getUsername())
+//                .provider(provider)
+//                .providerId(providerId)
+//                .isOnline(userDto.getIsOnline())
+//                .scoreEntity(scoreEntityDtoMapper.mapFromDto(userDto.getScore()));
+//
+//        // Don't assign id field if non-existent, DB will create
+//        if (userDto.getId() != null) {
+//            userEntityBuilder.id(userDto.getId());
+//        }
+//
+//        return userEntityBuilder.build();
+//    }
 
 }

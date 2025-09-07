@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef, useState, type JSX } from "react";
+import React, { createContext, useContext, useState, type JSX } from "react";
 import type { AuthContextValue } from "../types/auth/AuthContextValue";
 import { getCurrentUser } from "../api/user/currentUser";
 import { userLogout } from "../api/user/userLogout";

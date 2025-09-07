@@ -38,9 +38,6 @@ public class UserRestController {
         }
         // null if user not returned
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
-        if (user == null) {
-            throw new UserNotFoundException("Current user not found");
-        }
         return ResponseEntity.ok(user);
     }
 
@@ -61,7 +58,6 @@ public class UserRestController {
                     .badRequest()
                     .body(errors);
         }
-
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         String username = request.getUsername();
@@ -69,6 +65,31 @@ public class UserRestController {
         userService.createNewUser(username, provider, providerId);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .body(null);
+    }
+
+    // Post update form details to amend User in DB
+    @PostMapping("/process-user-amend")
+    public ResponseEntity<?> processUserAmendRequest(@AuthenticationPrincipal OAuth2User principal,
+                                                     OAuth2AuthenticationToken authToken,
+                                                     @Valid @RequestBody UserSetupRequestDto request,
+                                                     BindingResult bindingResult) {
+        // Check if validation errors occurred in DTO
+        if (bindingResult.hasErrors()) {
+            // Collect all validation errors
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
+            return ResponseEntity
+                    .badRequest()
+                    .body(errors);
+        }
+        String username = request.getUsername();
+        // Update user in DB
+        userService.updateUsername(username, principal, authToken);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
                 .body(null);
     }
 

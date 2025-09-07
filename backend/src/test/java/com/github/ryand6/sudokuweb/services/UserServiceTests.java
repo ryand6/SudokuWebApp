@@ -140,36 +140,35 @@ public class UserServiceTests {
         String provider = "google";
         String providerId = "google-123";
 
-        ScoreEntity score = new ScoreEntity();
-        score.setTotalScore(0);
-        score.setGamesPlayed(0);
-        // Persist the user entity to DB
-        UserEntity user = new UserEntity();
-        user.setUsername("Test");
-        user.setProvider("google");
-        user.setProviderId("google-123");
-        user.setIsOnline(true);
-        user.setScoreEntity(score);
-
-        when(userRepository.save(any(UserEntity.class))).thenReturn(user);
-
-        UserDto mockDto = new UserDto();
-        mockDto.setUsername("Test");
-        mockDto.setIsOnline(true);
-        ScoreDto scoreDto = new ScoreDto();
-        scoreDto.setTotalScore(0);
-        scoreDto.setGamesPlayed(0);
-        mockDto.setScore(scoreDto);
+        Optional<UserEntity> nonUser = userRepository.findByProviderAndProviderId(provider, providerId);
+        assertThat(nonUser.isPresent()).isEqualTo(false);
 
         when(userRepository.existsByUsername(any(String.class))).thenReturn(false);
 
-        when(userEntityDtoMapper.mapToDto(any(UserEntity.class))).thenReturn(mockDto);
+        userService.createNewUser(username, provider, providerId);
 
-        UserDto userDto = userService.createNewUser(username, provider, providerId);
-        assertThat(userDto.getUsername()).isEqualTo("Test");
-        assertThat(userDto.getIsOnline()).isEqualTo(true);
-        assertThat(userDto.getScore().getTotalScore()).isEqualTo(0);
-        assertThat(userDto.getScore().getGamesPlayed()).isEqualTo(0);
+        Optional<UserEntity> newUser = userRepository.findByProviderAndProviderId(provider, providerId);
+        assertThat(newUser.isPresent()).isEqualTo(true);
+        UserEntity newUserEntity = newUser.get();
+        assertThat(newUserEntity.getUsername()).isEqualTo("Test");
+        assertThat(newUserEntity.getIsOnline()).isEqualTo(true);
+        assertThat(newUserEntity.getScoreEntity().getTotalScore()).isEqualTo(0);
+        assertThat(newUserEntity.getScoreEntity().getGamesPlayed()).isEqualTo(0);
+    }
+
+    @Test
+    public void updateUsername_testUserTaken() {
+        String username = "Test";
+        OAuth2User principal = mock(OAuth2User.class);
+        OAuth2AuthenticationToken authToken = mock(OAuth2AuthenticationToken.class);
+
+        when(userRepository.existsByUsername(any(String.class))).thenReturn(true);
+
+        UsernameTakenException ex = assertThrows(
+                UsernameTakenException.class,
+                () -> userService.updateUsername(username, principal, authToken)
+        );
+        assertThat(ex.getMessage()).isEqualTo("Username provided is taken, please choose another");
     }
 
     @Test

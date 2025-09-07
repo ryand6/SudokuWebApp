@@ -11,6 +11,7 @@ import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -38,12 +39,24 @@ public class UserService {
         if (user.isPresent()) {
             return userEntityDtoMapper.mapToDto(user.get());
         } else {
-            return null;
+            throw new UserNotFoundException("User not found");
+        }
+    }
+
+    // Get the userEntity for internal use so that the entity can be updated
+    private UserEntity getCurrentUserEntityByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
+        String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
+        String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
+        Optional<UserEntity> user = userRepository.findByProviderAndProviderId(provider, providerId);
+        if (user.isPresent()) {
+            return user.get();
+        } else {
+            throw new UserNotFoundException("User not found");
         }
     }
 
     // Create user when they log into site for the first time
-    public UserDto createNewUser(String username, String provider, String providerId) {
+    public void createNewUser(String username, String provider, String providerId) {
         //Check if username already exists in DB
         if (userRepository.existsByUsername(username)) {
             throw new UsernameTakenException("Username provided is taken, please choose another");
@@ -60,7 +73,17 @@ public class UserService {
         newUser.setProviderId(providerId);
         newUser.setIsOnline(true);
         newUser.setScoreEntity(score);
-        return userEntityDtoMapper.mapToDto(userRepository.save(newUser));
+    }
+
+    // Update a user's username
+    public void updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
+        if (userRepository.existsByUsername(username)) {
+            throw new UsernameNotFoundException("Username provided is taken, please choose another");
+        }
+        UserEntity user = getCurrentUserEntityByOAuth(principal, authToken);
+        // update username
+        user.setUsername(username);
+        userRepository.save(user);
     }
 
     // Get top 5 players based on their total score

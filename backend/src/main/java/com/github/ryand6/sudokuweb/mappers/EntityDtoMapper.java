@@ -6,6 +6,6 @@ public interface EntityDtoMapper<Entity, Dto> {
     Dto mapToDto(Entity e);
 
     // Method for mapping Dto object to Entity object
-    Entity mapFromDto(Dto d);
+    //Entity mapFromDto(Dto d);
 
 }
