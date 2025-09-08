@@ -30,20 +30,20 @@ public class ScoreEntityDtoMapperTests {
         assertThat(scoreDto.getGamesPlayed()).isEqualTo(1);
     }
 
-    @Test
-    void mapFromDto_shouldReturnValidScoreEntity() {
-        ScoreDto scoreDto = ScoreDto.builder()
-                .id(1L)
-                .totalScore(230)
-                .gamesPlayed(3)
-                .build();
-
-        ScoreEntity scoreEntity = scoreEntityDtoMapper.mapFromDto(scoreDto);
-
-        assertThat(scoreEntity).isNotNull();
-        assertThat(scoreEntity.getId()).isEqualTo(1L);
-        assertThat(scoreEntity.getTotalScore()).isEqualTo(230);
-        assertThat(scoreEntity.getGamesPlayed()).isEqualTo(3);
-    }
+//    @Test
+//    void mapFromDto_shouldReturnValidScoreEntity() {
+//        ScoreDto scoreDto = ScoreDto.builder()
+//                .id(1L)
+//                .totalScore(230)
+//                .gamesPlayed(3)
+//                .build();
+//
+//        ScoreEntity scoreEntity = scoreEntityDtoMapper.mapFromDto(scoreDto);
+//
+//        assertThat(scoreEntity).isNotNull();
+//        assertThat(scoreEntity.getId()).isEqualTo(1L);
+//        assertThat(scoreEntity.getTotalScore()).isEqualTo(230);
+//        assertThat(scoreEntity.getGamesPlayed()).isEqualTo(3);
+//    }
 
 }

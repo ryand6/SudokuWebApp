@@ -7,8 +7,6 @@ import com.github.ryand6.sudokuweb.dto.GameStateDto;
 import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.repositories.*;
-import com.github.ryand6.sudokuweb.services.impl.BoardStateService;
-import com.github.ryand6.sudokuweb.services.impl.PuzzleGenerationService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,8 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 import java.util.Set;
@@ -28,11 +30,22 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Testcontainers
 /*
 Integration tests for BoardStateService
 */
 public class BoardStateServiceIntegrationTests {
+
+    @Container
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+
+    // Dynamically register Postgres container properties with Spring
+    @DynamicPropertySource
+    static void configureDataSource(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
+    }
 
     private final BoardStateService boardStateService;
     private final LobbyRepository lobbyRepository;
@@ -72,13 +85,10 @@ public class BoardStateServiceIntegrationTests {
 
     @BeforeEach
     void setup() {
-        jdbcTemplate.execute("DELETE FROM game_state");
-        jdbcTemplate.execute("DELETE FROM games");
-        jdbcTemplate.execute("DELETE FROM lobby_players");
-        jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM users");
-        jdbcTemplate.execute("DELETE FROM scores");
-        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
+        jdbcTemplate.execute(
+                "TRUNCATE TABLE game_state, games, lobby_players, lobbies, users, scores, sudoku_puzzles RESTART IDENTITY CASCADE"
+        );
+
         // Setup Score entities to insert into users
         score1 = TestDataUtil.createTestScoreA();
         score2 = TestDataUtil.createTestScoreB();

@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.GameDto;
 import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
-import com.github.ryand6.sudokuweb.services.impl.BoardStateService;
+import com.github.ryand6.sudokuweb.services.BoardStateService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;

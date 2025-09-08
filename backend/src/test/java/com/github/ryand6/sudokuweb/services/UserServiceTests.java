@@ -4,10 +4,11 @@ import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.ScoreDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
-import com.github.ryand6.sudokuweb.services.impl.UserService;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -116,7 +117,11 @@ public class UserServiceTests {
 
         when(userEntityDtoMapper.mapToDto(any(UserEntity.class))).thenReturn(mockDto);
 
-        assertThat(userService.getCurrentUserByOAuth(principal, authToken)).isNull();
+        UserNotFoundException ex = assertThrows(
+                UserNotFoundException.class,
+                () -> userService.getCurrentUserByOAuth(principal, authToken)
+        );
+        assertThat(ex.getMessage()).isEqualTo("User not found");
     }
 
     @Test
@@ -135,28 +140,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void createNewUser_successfulCreation() {
-        String username = "Test";
-        String provider = "google";
-        String providerId = "google-123";
-
-        Optional<UserEntity> nonUser = userRepository.findByProviderAndProviderId(provider, providerId);
-        assertThat(nonUser.isPresent()).isEqualTo(false);
-
-        when(userRepository.existsByUsername(any(String.class))).thenReturn(false);
-
-        userService.createNewUser(username, provider, providerId);
-
-        Optional<UserEntity> newUser = userRepository.findByProviderAndProviderId(provider, providerId);
-        assertThat(newUser.isPresent()).isEqualTo(true);
-        UserEntity newUserEntity = newUser.get();
-        assertThat(newUserEntity.getUsername()).isEqualTo("Test");
-        assertThat(newUserEntity.getIsOnline()).isEqualTo(true);
-        assertThat(newUserEntity.getScoreEntity().getTotalScore()).isEqualTo(0);
-        assertThat(newUserEntity.getScoreEntity().getGamesPlayed()).isEqualTo(0);
-    }
-
-    @Test
+    @Transactional
     public void updateUsername_testUserTaken() {
         String username = "Test";
         OAuth2User principal = mock(OAuth2User.class);

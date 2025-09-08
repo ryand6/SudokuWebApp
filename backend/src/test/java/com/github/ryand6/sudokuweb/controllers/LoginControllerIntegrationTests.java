@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.ScoreDto;
 import com.github.ryand6.sudokuweb.dto.UserDto;
-import com.github.ryand6.sudokuweb.services.impl.UserService;
+import com.github.ryand6.sudokuweb.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;

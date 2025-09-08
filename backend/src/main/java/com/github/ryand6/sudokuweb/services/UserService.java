@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.services.impl;
+package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
@@ -44,7 +44,7 @@ public class UserService {
     }
 
     // Get the userEntity for internal use so that the entity can be updated
-    private UserEntity getCurrentUserEntityByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
+    UserEntity getCurrentUserEntityByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         Optional<UserEntity> user = userRepository.findByProviderAndProviderId(provider, providerId);
@@ -73,12 +73,13 @@ public class UserService {
         newUser.setProviderId(providerId);
         newUser.setIsOnline(true);
         newUser.setScoreEntity(score);
+        userRepository.save(newUser);
     }
 
     // Update a user's username
     public void updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
         if (userRepository.existsByUsername(username)) {
-            throw new UsernameNotFoundException("Username provided is taken, please choose another");
+            throw new UsernameTakenException("Username provided is taken, please choose another");
         }
         UserEntity user = getCurrentUserEntityByOAuth(principal, authToken);
         // update username

@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.services.impl;
+package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;

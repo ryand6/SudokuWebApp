@@ -17,18 +17,17 @@ public class ScoreEntityDtoMapper implements EntityDtoMapper<ScoreEntity, ScoreD
                 .build();
     }
 
-    @Override
-    public ScoreEntity mapFromDto(ScoreDto scoreDto) {
-        ScoreEntity.ScoreEntityBuilder scoreEntityBuilder = ScoreEntity.builder()
-                .totalScore(scoreDto.getTotalScore())
-                .gamesPlayed(scoreDto.getGamesPlayed());
-
-        // Don't assign id field if non-existent, DB will create
-        if (scoreDto.getId() != null) {
-            scoreEntityBuilder.id(scoreDto.getId());
-        }
-
-        return scoreEntityBuilder.build();
-    }
+//    public ScoreEntity mapFromDto(ScoreDto scoreDto) {
+//        ScoreEntity.ScoreEntityBuilder scoreEntityBuilder = ScoreEntity.builder()
+//                .totalScore(scoreDto.getTotalScore())
+//                .gamesPlayed(scoreDto.getGamesPlayed());
+//
+//        // Don't assign id field if non-existent, DB will create
+//        if (scoreDto.getId() != null) {
+//            scoreEntityBuilder.id(scoreDto.getId());
+//        }
+//
+//        return scoreEntityBuilder.build();
+//    }
 
 }

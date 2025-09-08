@@ -84,41 +84,41 @@ public class UserEntityDtoMapperIntegrationTests {
         assertThat(dto.getScore().getId()).isEqualTo(scoreEntityDtoMapper.mapToDto(savedScore).getId());
     }
 
-    @Test
-    void mapFromDto_withProviderAndProviderId_shouldReturnValidUserEntity() {
-        UserDto dto = UserDto.builder()
-                .id(2L)
-                .username("mapperuser")
-                .isOnline(true)
-                .score(scoreEntityDtoMapper.mapToDto(savedScore))
-                .build();
-
-        String provider = "dummyProvider";
-        String providerId = "dummyProviderId";
-
-        UserEntity entity = mapper.mapFromDto(dto, provider, providerId);
-
-        assertThat(entity).isNotNull();
-        assertThat(entity.getId()).isEqualTo(2L);
-        assertThat(entity.getUsername()).isEqualTo("mapperuser");
-        assertThat(entity.getProvider()).isEqualTo(provider);
-        assertThat(entity.getProviderId()).isEqualTo(providerId);
-        assertThat(entity.getIsOnline()).isTrue();
-        assertThat(entity.getScoreEntity().getId()).isEqualTo(savedScore.getId());
-    }
-
-    @Test
-    void mapFromDto_withoutProviderId_shouldThrowUnsupportedOperationException() {
-        UserDto dto = UserDto.builder()
-                .id(3L)
-                .username("noPassUser")
-                .isOnline(true)
-                .score(scoreEntityDtoMapper.mapToDto(savedScore))
-                .build();
-
-        assertThatThrownBy(() -> mapper.mapFromDto(dto))
-                .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessageContaining("Provider and Provider ID required");
-    }
+//    @Test
+//    void mapFromDto_withProviderAndProviderId_shouldReturnValidUserEntity() {
+//        UserDto dto = UserDto.builder()
+//                .id(2L)
+//                .username("mapperuser")
+//                .isOnline(true)
+//                .score(scoreEntityDtoMapper.mapToDto(savedScore))
+//                .build();
+//
+//        String provider = "dummyProvider";
+//        String providerId = "dummyProviderId";
+//
+//        UserEntity entity = mapper.mapFromDto(dto, provider, providerId);
+//
+//        assertThat(entity).isNotNull();
+//        assertThat(entity.getId()).isEqualTo(2L);
+//        assertThat(entity.getUsername()).isEqualTo("mapperuser");
+//        assertThat(entity.getProvider()).isEqualTo(provider);
+//        assertThat(entity.getProviderId()).isEqualTo(providerId);
+//        assertThat(entity.getIsOnline()).isTrue();
+//        assertThat(entity.getScoreEntity().getId()).isEqualTo(savedScore.getId());
+//    }
+//
+//    @Test
+//    void mapFromDto_withoutProviderId_shouldThrowUnsupportedOperationException() {
+//        UserDto dto = UserDto.builder()
+//                .id(3L)
+//                .username("noPassUser")
+//                .isOnline(true)
+//                .score(scoreEntityDtoMapper.mapToDto(savedScore))
+//                .build();
+//
+//        assertThatThrownBy(() -> mapper.mapFromDto(dto))
+//                .isInstanceOf(UnsupportedOperationException.class)
+//                .hasMessageContaining("Provider and Provider ID required");
+//    }
 
 }

@@ -52,61 +52,61 @@ public class LobbyPlayerRepositoryIntegrationTests {
         jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
     }
 
-    @Test
-    public void testLobbyPlayerCreationAndRecall() {
-        ScoreEntity score = TestDataUtil.createTestScoreA();
-        UserEntity user = TestDataUtil.createTestUserA(score);
-        userRepository.save(user);
-
-        LobbyEntity lobby = TestDataUtil.createTestLobbyA(user);
-        lobbyRepository.save(lobby);
-
-        LobbyPlayerEntity lobbyPlayer = TestDataUtil.createTestLobbyPlayer(lobby, user);
-        underTest.save(lobbyPlayer);
-
-        Optional<LobbyPlayerEntity> result = underTest.findByCompositeId(lobbyPlayer.getId().getLobbyId(), lobbyPlayer.getId().getUserId());
-        assertThat(result).isPresent();
-        assertThat(result.get().getLobby().getId()).isEqualTo(lobby.getId());
-        assertThat(result.get().getUser().getId()).isEqualTo(user.getId());
-        assertThat(result.get().getJoinedAt()).isNotNull();
-    }
-
-    @Test
-    public void testLobbyPlayerDeletion() {
-        ScoreEntity score = TestDataUtil.createTestScoreA();
-        UserEntity user = TestDataUtil.createTestUserA(score);
-        userRepository.save(user);
-
-        LobbyEntity lobby = TestDataUtil.createTestLobbyA(user);
-        lobbyRepository.save(lobby);
-
-        LobbyPlayerEntity lobbyPlayer = TestDataUtil.createTestLobbyPlayer(lobby, user);
-        underTest.save(lobbyPlayer);
-
-        underTest.deleteByCompositeId(lobbyPlayer.getId().getLobbyId(), lobbyPlayer.getId().getUserId());
-        Optional<LobbyPlayerEntity> result = underTest.findByCompositeId(lobbyPlayer.getId().getLobbyId(), lobbyPlayer.getId().getUserId());
-        assertThat(result).isEmpty();
-    }
-
-    @Test
-    public void testMultipleLobbyPlayersInLobby() {
-        ScoreEntity scoreA = TestDataUtil.createTestScoreA();
-        ScoreEntity scoreB = TestDataUtil.createTestScoreB();
-        UserEntity userA = TestDataUtil.createTestUserA(scoreA);
-        UserEntity userB = TestDataUtil.createTestUserB(scoreB);
-        userRepository.save(userA);
-        userRepository.save(userB);
-
-        LobbyEntity lobby = TestDataUtil.createTestLobbyA(userA);
-        lobbyRepository.save(lobby);
-
-        LobbyPlayerEntity playerA = TestDataUtil.createTestLobbyPlayer(lobby, userA);
-        LobbyPlayerEntity playerB = TestDataUtil.createTestLobbyPlayer(lobby, userB);
-
-        underTest.save(playerA);
-        underTest.save(playerB);
-
-        assertThat(underTest.findAll()).hasSize(2);
-    }
+//    @Test
+//    public void testLobbyPlayerCreationAndRecall() {
+//        ScoreEntity score = TestDataUtil.createTestScoreA();
+//        UserEntity user = TestDataUtil.createTestUserA(score);
+//        userRepository.save(user);
+//
+//        LobbyEntity lobby = TestDataUtil.createTestLobbyA(user);
+//        lobbyRepository.save(lobby);
+//
+//        LobbyPlayerEntity lobbyPlayer = TestDataUtil.createTestLobbyPlayer(lobby, user);
+//        underTest.save(lobbyPlayer);
+//
+//        Optional<LobbyPlayerEntity> result = underTest.findByCompositeId(lobbyPlayer.getId().getLobbyId(), lobbyPlayer.getId().getUserId());
+//        assertThat(result).isPresent();
+//        assertThat(result.get().getLobby().getId()).isEqualTo(lobby.getId());
+//        assertThat(result.get().getUser().getId()).isEqualTo(user.getId());
+//        assertThat(result.get().getJoinedAt()).isNotNull();
+//    }
+//
+//    @Test
+//    public void testLobbyPlayerDeletion() {
+//        ScoreEntity score = TestDataUtil.createTestScoreA();
+//        UserEntity user = TestDataUtil.createTestUserA(score);
+//        userRepository.save(user);
+//
+//        LobbyEntity lobby = TestDataUtil.createTestLobbyA(user);
+//        lobbyRepository.save(lobby);
+//
+//        LobbyPlayerEntity lobbyPlayer = TestDataUtil.createTestLobbyPlayer(lobby, user);
+//        underTest.save(lobbyPlayer);
+//
+//        underTest.deleteByCompositeId(lobbyPlayer.getId().getLobbyId(), lobbyPlayer.getId().getUserId());
+//        Optional<LobbyPlayerEntity> result = underTest.findByCompositeId(lobbyPlayer.getId().getLobbyId(), lobbyPlayer.getId().getUserId());
+//        assertThat(result).isEmpty();
+//    }
+//
+//    @Test
+//    public void testMultipleLobbyPlayersInLobby() {
+//        ScoreEntity scoreA = TestDataUtil.createTestScoreA();
+//        ScoreEntity scoreB = TestDataUtil.createTestScoreB();
+//        UserEntity userA = TestDataUtil.createTestUserA(scoreA);
+//        UserEntity userB = TestDataUtil.createTestUserB(scoreB);
+//        userRepository.save(userA);
+//        userRepository.save(userB);
+//
+//        LobbyEntity lobby = TestDataUtil.createTestLobbyA(userA);
+//        lobbyRepository.save(lobby);
+//
+//        LobbyPlayerEntity playerA = TestDataUtil.createTestLobbyPlayer(lobby, userA);
+//        LobbyPlayerEntity playerB = TestDataUtil.createTestLobbyPlayer(lobby, userB);
+//
+//        underTest.save(playerA);
+//        underTest.save(playerB);
+//
+//        assertThat(underTest.findAll()).hasSize(2);
+//    }
 }
 

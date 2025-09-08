@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.services.impl;
+package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.services.PuzzleGenerator;
 import org.springframework.core.io.ClassPathResource;
