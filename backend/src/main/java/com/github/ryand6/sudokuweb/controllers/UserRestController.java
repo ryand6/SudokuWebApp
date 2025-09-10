@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.BindingResult;
@@ -31,6 +32,8 @@ public class UserRestController {
     @GetMapping("/current-user")
     public ResponseEntity<UserDto> userSetupForm(@AuthenticationPrincipal OAuth2User principal,
                                                  OAuth2AuthenticationToken authToken) {
+        System.out.println("PRINCIPAL: " + principal.toString());
+        System.out.println("AUTH TOKEN: " + authToken.toString());
         // OAuth2 login not occurred yet
         if (principal == null || authToken == null) {
             throw new OAuth2LoginRequiredException("OAuth2 login required to carry out this action");
@@ -50,9 +53,9 @@ public class UserRestController {
         if (bindingResult.hasErrors()) {
             // Collect all validation errors
             List<String> errors = bindingResult.getAllErrors()
-                                                .stream()
-                                                .map(ObjectError::getDefaultMessage)
-                                                .toList();
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
             return ResponseEntity
                     .badRequest()
                     .body(errors);

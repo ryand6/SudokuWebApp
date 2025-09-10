@@ -82,15 +82,14 @@ public final class TestDataUtil {
                 build();
     }
 
-//    public static LobbyEntity createTestLobbyA(UserEntity userEntity) {
-//        return LobbyEntity.builder().
-//                lobbyName("Guru Lobby").
-//                isActive(true).
-//                isPublic(true).
-//                inGame(false).
-//                host(userEntity).
-//                build();
-//    }
+    public static LobbyEntity createTestLobbyA(UserEntity userEntity) {
+        return LobbyEntity.builder().
+                lobbyName("Guru Lobby").
+                isActive(true).
+                isPublic(true).
+                host(userEntity).
+                build();
+    }
 //
 //    public static LobbyEntity createTestLobbyB(UserEntity userEntity) {
 //        return LobbyEntity.builder().

@@ -73,7 +73,7 @@ public class BoardStateControllerIntegrationTests {
         score = TestDataUtil.createTestScoreA();
         user = TestDataUtil.createTestUserA(score);
         userRepository.save(user);
-        //lobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(user));
+        lobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(user));
     }
 
     @Test
