@@ -2,6 +2,7 @@
 # Backend
 # ===========================
 /backend/src/main/resources/application.properties
+/backend/src/main/resources/data/profanity/
 /backend/src/test/resources/application.properties
 /backend/HELP.md
 /backend/target/
