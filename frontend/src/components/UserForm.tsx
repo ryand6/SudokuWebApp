@@ -1,7 +1,6 @@
 import { useState, type JSX } from "react";
 
 
-
 interface UserFormProps {
     onSubmit: (username: string) => Promise<void>,
     submitLabel: string,
