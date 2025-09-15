@@ -1,15 +1,15 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
-import { UserSetupPage } from '../UserSetupPage';
-import { processUserSetup } from '../../api/user/processUserSetup';
+import { UserAmendPage } from '../UserAmendPage';
+import { processUserAmend } from '../../api/user/processUserAmend';
 import { renderWithRouterAndContext } from '../../setupTests';
 
 // ----------------- MOCKS -----------------
 
-// Mock processUserSetup API
-vi.mock('../../api/user/processUserSetup', () => ({
-  processUserSetup: vi.fn(() => Promise.resolve()),
+// Mock processUserAmend API
+vi.mock('../../api/user/processUserAmend', () => ({
+  processUserAmend: vi.fn(() => Promise.resolve()),
 }));
 
 // Mock Auth Context
@@ -26,23 +26,23 @@ vi.mock('react-router-dom', () => ({
 
 // ----------------- TESTS -----------------
 
-describe('UserSetupPage', () => {
+describe('UserAmendPage', () => {
   beforeEach(() => {
     vi.clearAllMocks(); // Reset mocks before each test
   });
 
   test('renders UserForm', () => {
-    renderWithRouterAndContext(<UserSetupPage />);
+    renderWithRouterAndContext(<UserAmendPage />);
     expect(screen.getByRole('textbox')).toBeInTheDocument(); // assumes input is rendered in UserForm
     // name uses case insensitive regex to find button text
-    expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /update account/i })).toBeInTheDocument();
   });
 
   test('submits username and navigates', async () => {
-    renderWithRouterAndContext(<UserSetupPage />);
+    renderWithRouterAndContext(<UserAmendPage />);
 
     const input = screen.getByRole('textbox');
-    const button = screen.getByRole('button', { name: /create account/i });
+    const button = screen.getByRole('button', { name: /update account/i });
 
     // Simulate typing a username
     await userEvent.type(input, 'testuser');
@@ -51,12 +51,12 @@ describe('UserSetupPage', () => {
     await userEvent.click(button);
 
     // Check that API was called
-    expect(processUserSetup).toHaveBeenCalledWith('testuser');
+    expect(processUserAmend).toHaveBeenCalledWith('testuser');
 
     // Check that refreshUserAuth was called
     expect(mockRefreshUserAuth).toHaveBeenCalled();
 
     // Check that navigation happened
-    expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard', { replace: true });
   });
 });
