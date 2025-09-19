@@ -32,8 +32,6 @@ public class UserRestController {
     @GetMapping("/current-user")
     public ResponseEntity<UserDto> userSetupForm(@AuthenticationPrincipal OAuth2User principal,
                                                  OAuth2AuthenticationToken authToken) {
-        System.out.println("PRINCIPAL: " + principal.toString());
-        System.out.println("AUTH TOKEN: " + authToken.toString());
         // OAuth2 login not occurred yet
         if (principal == null || authToken == null) {
             throw new OAuth2LoginRequiredException("OAuth2 login required to carry out this action");
