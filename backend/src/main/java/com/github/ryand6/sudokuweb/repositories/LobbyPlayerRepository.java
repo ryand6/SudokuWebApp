@@ -22,4 +22,7 @@ public interface LobbyPlayerRepository extends JpaRepository<LobbyPlayerEntity, 
     @Modifying
     void deleteByCompositeId(@Param("lobbyId") Long lobbyId, @Param("userId") Long userId);
 
+    // Check is a user is an active member in a lobby
+    boolean existsByUserIdAndLobbyId(Long userId, Long lobbyId);
+
 }

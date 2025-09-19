@@ -70,6 +70,11 @@ public class LobbyService {
                 .collect(Collectors.toList());
     }
 
+    // Confirm if a user is currently part of a lobby
+    public boolean isUserInLobby(Long userId, Long lobbyId) {
+        return lobbyPlayerRepository.existsByUserIdAndLobbyId(userId, lobbyId);
+    }
+
     // Overloaded method, used to join public lobby when lobby ID is provided
     @Transactional
     public LobbyDto joinLobby(Long userId, Long publicLobbyId) {
