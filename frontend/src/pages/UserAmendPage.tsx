@@ -1,15 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { getAuthContext } from "../auth/AuthContextProvider";
 import { UserForm } from "../components/UserForm";
 import { processUserAmend } from "../api/user/processUserAmend";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export function UserAmendPage() {
-  const { user, refreshUserAuth } = getAuthContext();
+  const { data: user } = useCurrentUser();
   const navigate = useNavigate();
 
   async function handleAmend(username: string) {
     await processUserAmend(username);
-    await refreshUserAuth();
     navigate("/dashboard", { replace: true });
   }
 

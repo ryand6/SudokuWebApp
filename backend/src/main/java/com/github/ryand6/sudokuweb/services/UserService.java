@@ -76,14 +76,15 @@ public class UserService {
     }
 
     // Update a user's username
-    public void updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
+    public UserDto updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
         if (userRepository.existsByUsername(username)) {
             throw new UsernameTakenException("Username provided is taken, please choose another");
         }
         UserEntity user = getCurrentUserEntityByOAuth(principal, authToken);
         // update username
         user.setUsername(username);
-        userRepository.save(user);
+        UserEntity updatedUser = userRepository.save(user);
+        return userEntityDtoMapper.mapToDto(updatedUser);
     }
 
     // Get top 5 players based on their total score

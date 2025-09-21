@@ -36,17 +36,18 @@ public class WebSocketSecurityConfig {
     @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         messages
-                .simpDestMatchers("/app/user/{providerId}")
-                    .access(this::checkUserProviderIdMatch)
                 // Ensure that users can only send messages to lobbies that they are a member of
                 .simpDestMatchers("/app/lobby/{lobbyId}")
                     .access(this::checkLobbyMembership)
                 // Ensure that users can only send messages to games that they are a member of
                 .simpDestMatchers("/app/game/{gameId}")
                     .access(this::checkGameMembership)
-                // Ensure specific user endpoint can only be subscribed to by that user
-                .simpSubscribeDestMatchers("/topic/user/{providerId}")
-                    .access(this::checkUserProviderIdMatch)
+                // Spring automatically maps messages to the correct user using the Principal - additional validation to ensure user is authenticated
+                .simpSubscribeDestMatchers("/user/**")
+                    .access((authSupplier, context) -> {
+                        Authentication auth = authSupplier.get();
+                        return new AuthorizationDecision(auth.isAuthenticated());
+                    })
                 // Ensure that users can only subscribe to lobbies that they are a member of
                 .simpSubscribeDestMatchers("/topic/lobby/{lobbyId}")
                     .access(this::checkLobbyMembership)
@@ -55,16 +56,6 @@ public class WebSocketSecurityConfig {
                     .access(this::checkGameMembership)
                 .anyMessage().denyAll();
         return messages.build();
-    }
-
-    // Ensure endpoint variable matches user's OAuth2 unique ID
-    private AuthorizationDecision checkUserProviderIdMatch(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
-        Authentication authentication = authenticationSupplier.get();
-        OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
-        OAuth2User principal = token.getPrincipal();
-        String providerId = context.getVariables().get("providerId");
-        String userProviderId = OAuthUtil.retrieveOAuthProviderId(token.getAuthorizedClientRegistrationId(), principal);
-        return new AuthorizationDecision(userProviderId.equals(providerId));
     }
 
     // Uses Authentication context to find user in DB and confirm if they're an active member in the lobby

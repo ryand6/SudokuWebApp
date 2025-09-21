@@ -8,8 +8,8 @@ import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.BindingResult;
@@ -17,15 +17,19 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserRestController {
 
     private final UserService userService;
+    private final SimpMessagingTemplate  messagingTemplate;
 
-    public UserRestController(UserService userService) {
+    public UserRestController(UserService userService,
+                              SimpMessagingTemplate messagingTemplate) {
         this.userService = userService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     // Get current authenticated user
@@ -87,7 +91,18 @@ public class UserRestController {
         }
         String username = request.getUsername();
         // Update user in DB
-        userService.updateUsername(username, principal, authToken);
+        UserDto updatedUser = userService.updateUsername(username, principal, authToken);
+
+        // Get providerId so that updated Dto can be sent to correct user via websockets
+        String providerName = OAuthUtil.retrieveOAuthProviderName(authToken);
+        String providerId = OAuthUtil.retrieveOAuthProviderId(providerName, principal);
+
+        // Create a message header detailing what type of update this is so that the frontend can respond accordingly
+        Map<String, Object> messageHeader = Map.of("type", "USER_UPDATED");
+
+        // Send the updated user Dto over websockets to that user's topic - Spring automatically prefixes path with "user" and maps to the current user using the providerId
+        messagingTemplate.convertAndSendToUser(providerId, "/queue/updates" + providerId, updatedUser, messageHeader);
+
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body(null);

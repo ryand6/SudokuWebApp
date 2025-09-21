@@ -1,0 +1,13 @@
+import { useQuery } from "@tanstack/react-query";
+import type { UserDto } from "../types/dto/UserDto";
+import { getCurrentUser } from "../api/user/getCurrentUser";
+
+export function useCurrentUser() {
+    return useQuery<UserDto, Error>({
+        queryKey: ["currentUser"],
+        queryFn: getCurrentUser,
+        retry: false,
+        // cache is updated by websocket connection, therefore refetching data not required
+        staleTime: Infinity,
+    });
+}
