@@ -8,6 +8,7 @@ import { NewUserOnly } from "./auth/NewUserOnly";
 import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WebSocketProvider } from "./context/WebSocketProvider";
+import { GlobalUserSubscriptionHandler } from "./context/GlobalUserSubscriptionHandler";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -17,6 +18,7 @@ function App() {
     <QueryClientProvider client={queryClient} >
       <WebSocketProvider>
         <BrowserRouter>
+          <GlobalUserSubscriptionHandler />
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<HomePage />} />
