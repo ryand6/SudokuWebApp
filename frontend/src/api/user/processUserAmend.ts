@@ -1,5 +1,5 @@
 import { backendValidationErrors } from "../../utils/backendValidationErrors";
-import { getCsrfToken } from "../../utils/csrf";
+import { getCsrfTokenFromCookie } from "../../utils/csrf";
 
 export async function processUserAmend(username: string): Promise<void> {
     try {
@@ -10,7 +10,7 @@ export async function processUserAmend(username: string): Promise<void> {
                 // Send data in JSON format
                 "Content-Type": "application/json",
                 // assign token to empty string if it is null because header cannot accept null/undefined values
-                "X-XSRF-TOKEN": getCsrfToken() ?? "",
+                "X-XSRF-TOKEN": getCsrfTokenFromCookie() ?? "",
             },
             body: JSON.stringify({username})
         });

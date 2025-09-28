@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 
 @Configuration
@@ -22,7 +23,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         // Prefix for topics that clients can subscribe to
-        config.enableSimpleBroker("/topic");
+        config.enableSimpleBroker("/topic", "/queue");
         // Prefix for destinations clients can send messages to
         config.setApplicationDestinationPrefixes("/app");
     }
@@ -32,7 +33,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")
                 .setAllowedOrigins(spaBaseUrl)
                 // fallback for old browsers/firewall configs that don't support/allow websockets
-                .withSockJS();
+                .withSockJS()
+                .setInterceptors(new HttpSessionHandshakeInterceptor());;
     }
+
+//    @Override
+//    public void configureClientInboundChannel(ChannelRegistration registration) {
+//        registration.interceptors(new ChannelInterceptor() {
+//            @Override
+//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
+//                System.out.println("\uD83D\uDD25 INBOUND: headers=" + message.getHeaders());
+//                return message;
+//            }
+//        });
+//    }
 
 }

@@ -22,7 +22,6 @@ Object.defineProperty(window, 'matchMedia', {
 // Optional helper: render components with React Router context
 import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthContextProvider } from './auth/AuthContextProvider';
 
 /**
  * Renders a React element wrapped in BrowserRouter.
@@ -31,9 +30,7 @@ import { AuthContextProvider } from './auth/AuthContextProvider';
 export function renderWithRouterAndContext(ui: React.ReactElement) {
   return render(
   <BrowserRouter>
-    <AuthContextProvider>
       {ui}
-    </ AuthContextProvider>
   </BrowserRouter>);
 }
 

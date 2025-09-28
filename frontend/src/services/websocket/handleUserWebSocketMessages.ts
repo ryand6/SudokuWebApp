@@ -1,8 +1,6 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 
-export function handleUserWebSocketMessages(message: any) {
-    const queryClient = useQueryClient();
-
+export function handleUserWebSocketMessages(message: any, queryClient: QueryClient) {
     switch (message.type) {
         // Updates React Query currentUser cache if the user is updated in the backend
         case "USER_UPDATED":

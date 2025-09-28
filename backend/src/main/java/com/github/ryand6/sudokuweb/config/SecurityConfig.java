@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -48,8 +49,7 @@ public class SecurityConfig {
                         // Send the csrf token as a cookie that is readable by React so that it can attach this to HTTP request headers
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                         // Make the CSRF token available whenever a request is processed
-                        .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
-
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
 
                 // Configure when authorization is required
                 .authorizeHttpRequests(auth -> auth

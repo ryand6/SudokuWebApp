@@ -1,6 +1,10 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { createContext, useContext, useRef } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
+import { useCurrentUser } from "../hooks/useCurrentUser";
+import { getCsrfToken } from "../api/csrf/getCsrfToken";
+import { handleUserWebSocketMessages } from "../services/websocket/handleUserWebSocketMessages";
+import { useQueryClient } from "@tanstack/react-query";
 
 type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;
@@ -11,29 +15,72 @@ type WebSocketContextType = {
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
 export function WebSocketProvider({ children }: { children : React.ReactNode }) {
+    const { data: currentUser } = useCurrentUser();
     // Store singleton socket client in ref state so that re-renders don't affect the client
     const clientRef = useRef<Client | null>(null);
     // Persist map across app that keeps track of topics a user is subscribed to so they don't repeatedly subscribe to the same topic
     const subscriptionsRef = useRef<Map<string, StompSubscription>>(new Map());
 
-    // Ensure that client doesn't exist in ref state before setting up
-    if (!clientRef.current) {
-        // Create a SockJS socket pointing to the server endpoint
-        const socket = new SockJS("http:localhost:8080/ws");
-        // Create a new STOMP client that will use the SockJS socket
-        clientRef.current = new Client({
-            // Tells STOMP to use our SockJS instance
-            webSocketFactory: () => socket,
-            // Auto-reconnect after 5 seconds if connection drops
-            reconnectDelay: 5000,
-            // Called if the server sends a STOMP error
-            onStompError: (frame) => {
-                console.error('STOMP Error', frame.headers['message'], frame.body);
-            },
-        });
-        // Activate the STOMP client - connection is started
-        clientRef.current.activate();
-    }
+    const queryClient = useQueryClient();
+
+    // Effect handles socket lifecycle - exists whilst there is an authenticated session
+    useEffect(() => {
+        if (!currentUser) {
+            // don't create websocket connection until user is authenticated
+            return;
+        }
+
+        console.log(currentUser);
+
+        const setUpWebSocket = async function setUpWebSocket() {
+            let csrfTokenData = await getCsrfToken();
+            if (csrfTokenData === null) {
+                return;
+            }
+            if (!currentUser) return;
+            
+            // Ensure that client doesn't exist in ref state before setting up
+            if (!clientRef.current) {
+                // Create a SockJS socket pointing to the server endpoint
+                const socket = new SockJS("http://localhost:8080/ws");
+                
+                // Create a new STOMP client that will use the SockJS socket
+                clientRef.current = new Client({
+                    // Tells STOMP to use our SockJS instance
+                    webSocketFactory: () => socket,
+                    // Auto-reconnect after 5 seconds if connection drops
+                    reconnectDelay: 5000,
+                    connectHeaders: {
+                        [csrfTokenData.headerName]: csrfTokenData.token
+                    },
+                    // Called if the server sends a STOMP error
+                    onStompError: (frame) => {
+                        console.error('STOMP Error', frame.headers['message'], frame.body);
+                    },
+                    onConnect: () => {
+                        const topic = "/user/queue/updates";
+                        // Re-subscribe to all topics we were tracking before disconnect
+                        if (!clientRef.current) return;
+                        const newSub = clientRef.current.subscribe(topic, (message: IMessage) => {
+                            handleUserWebSocketMessages(JSON.parse(message.body), queryClient);
+                        });
+                        subscriptionsRef.current.set(topic, newSub);
+                    }
+                });
+                // Activate the STOMP client - connection is started
+                clientRef.current.activate();
+            }
+        }
+
+        setUpWebSocket();
+
+        // Cleanup if user logs out
+        return () => {
+            clientRef.current?.deactivate();
+            clientRef.current = null;
+            subscriptionsRef.current.clear();
+        }
+    }, [currentUser]);
 
     const subscribe = (topic: string, onMessage: (body: any) => void) => {
         // If the user is already subscribed, return that subscription - exclamation mark used to confirm the return type will never be undefined

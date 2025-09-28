@@ -1,4 +1,4 @@
-import { getCsrfToken } from "../../utils/csrf";
+import { getCsrfTokenFromCookie } from "../../utils/csrf";
 
 export async function userLogout() {
     const response = await fetch("/logout", {
@@ -8,7 +8,7 @@ export async function userLogout() {
             // expect json data to be returned
             "Accept": "application/json",
             // assign token to empty string if it is null because header cannot accept null/undefined values
-            "X-XSRF-TOKEN": getCsrfToken() ?? "",
+            "X-XSRF-TOKEN": getCsrfTokenFromCookie() ?? "",
         }
     });
     if (!response.ok) {
