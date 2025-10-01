@@ -1,5 +1,5 @@
-import type { Difficulty } from "../enum/Difficulty"
-import type { TimeLimitPreset } from "../enum/TimeLimitPreset"
+import type { Difficulty } from "../../enum/Difficulty"
+import type { TimeLimitPreset } from "../../enum/TimeLimitPreset"
 import type { LobbyPlayerDto } from "./LobbyPlayerDto"
 
 export type LobbyDto = {

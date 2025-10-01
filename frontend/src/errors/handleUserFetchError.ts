@@ -14,11 +14,12 @@ export function handleUserFetchError(
         return;
     }
     // Redirect to user setup - prevent redirection if the check is being performed inside the UserSetupPage route to prevent infinite looping
-    if (error.message === "UserSetupRequired" && onUserSetupRoute !== true) {
+    else if (error.message === "UserSetupRequired" && !onUserSetupRoute) {
         sessionStorage.setItem("postLoginPath", currentPath);
         navigate("/user-setup", { replace: true, state: { firstTimeSetup: true } });
         return;
-    }
+    } 
+    else if (onUserSetupRoute) return;
     // For other errors, you could log or handle differently
     console.error("Unhandled user fetch error:", error);
 }

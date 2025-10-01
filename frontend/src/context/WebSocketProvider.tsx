@@ -1,10 +1,9 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
 import { createContext, useContext, useEffect, useRef } from "react";
-import SockJS from "sockjs-client";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import { getCsrfToken } from "../api/csrf/getCsrfToken";
-import { handleUserWebSocketMessages } from "../services/websocket/handleUserWebSocketMessages";
 import { useQueryClient } from "@tanstack/react-query";
+import { initWebSocket } from "../utils/initWebSocket";
+import { initStompClient } from "../utils/initStompClient";
 
 type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;
@@ -29,50 +28,11 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
             // don't create websocket connection until user is authenticated
             return;
         }
+        // Only want to set up socket and stomp client if stomp client doesn't already exist
+        if (clientRef.current) return;
+        const socket = initWebSocket();
 
-        console.log(currentUser);
-
-        const setUpWebSocket = async function setUpWebSocket() {
-            let csrfTokenData = await getCsrfToken();
-            if (csrfTokenData === null) {
-                return;
-            }
-            if (!currentUser) return;
-            
-            // Ensure that client doesn't exist in ref state before setting up
-            if (!clientRef.current) {
-                // Create a SockJS socket pointing to the server endpoint
-                const socket = new SockJS("http://localhost:8080/ws");
-                
-                // Create a new STOMP client that will use the SockJS socket
-                clientRef.current = new Client({
-                    // Tells STOMP to use our SockJS instance
-                    webSocketFactory: () => socket,
-                    // Auto-reconnect after 5 seconds if connection drops
-                    reconnectDelay: 5000,
-                    connectHeaders: {
-                        [csrfTokenData.headerName]: csrfTokenData.token
-                    },
-                    // Called if the server sends a STOMP error
-                    onStompError: (frame) => {
-                        console.error('STOMP Error', frame.headers['message'], frame.body);
-                    },
-                    onConnect: () => {
-                        const topic = "/user/queue/updates";
-                        // Re-subscribe to all topics we were tracking before disconnect
-                        if (!clientRef.current) return;
-                        const newSub = clientRef.current.subscribe(topic, (message: IMessage) => {
-                            handleUserWebSocketMessages(JSON.parse(message.body), queryClient);
-                        });
-                        subscriptionsRef.current.set(topic, newSub);
-                    }
-                });
-                // Activate the STOMP client - connection is started
-                clientRef.current.activate();
-            }
-        }
-
-        setUpWebSocket();
+        initStompClient(socket, clientRef, subscriptionsRef, queryClient);
 
         // Cleanup if user logs out
         return () => {

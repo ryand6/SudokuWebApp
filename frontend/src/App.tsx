@@ -20,32 +20,11 @@ function App() {
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<HomePage />} />
-
             {/* One time public routes - new users only */}
-            <Route path="/user-setup" element={
-              <NewUserOnly>
-                  <UserSetupPage />
-              </NewUserOnly>
-              } 
-            />
-
+            <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
             {/* Protected routes */}
-            <Route
-              path="/dashboard"
-              element={
-                <RequireAuth>
-                  <DashboardPage />
-                </RequireAuth>
-              }
-            />
-            <Route
-              path="/user-update"
-              element={
-                <RequireAuth>
-                  <UserAmendPage />
-                </RequireAuth>
-              }
-            />
+            <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+            <Route path="/user-update" element={<RequireAuth><UserAmendPage /></RequireAuth>} />
           </Routes>
           <ToastContainer position="top-right" autoClose={5000} />
         </BrowserRouter>

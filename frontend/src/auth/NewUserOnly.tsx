@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useCurrentUser } from "../hooks/useCurrentUser";
-import { handleUserFetchError } from "../utils/handleUserFetchError";
+import { handleUserFetchError } from "../errors/handleUserFetchError";
 
 export function NewUserOnly({ children }: { children : React.ReactNode }) {
     const navigate = useNavigate();

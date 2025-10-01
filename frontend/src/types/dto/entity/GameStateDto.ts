@@ -1,5 +1,5 @@
 import type { UserDto } from './UserDto';
-import type { PlayerColour } from '../enum/PlayerColour';
+import type { PlayerColour } from '../../enum/PlayerColour';
 
 export type GameStateDto = {
     id: number,

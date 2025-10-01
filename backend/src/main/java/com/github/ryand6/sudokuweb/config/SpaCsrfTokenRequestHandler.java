@@ -27,6 +27,7 @@ final class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
         csrfToken.get();
     }
 
+    // Xor encoding applied to csrf token when csrf token is provided in HTTP Response Body e.g. CsrfController - used for websocket connections
     @Override
     public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
         String headerValue = request.getHeader(csrfToken.getHeaderName());
