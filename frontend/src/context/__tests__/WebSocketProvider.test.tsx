@@ -1,19 +1,17 @@
 import React from "react";
 import { waitFor, act, cleanup, render } from "@testing-library/react";
 import { describe, expect, vi } from "vitest";
-import { useWebSocketContext } from "../WebSocketProvider";
+import { useWebSocketContext, WebSocketProvider } from "../WebSocketProvider";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client"; 
 import { getCsrfToken } from "../../api/csrf/getCsrfToken";
-// import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { handleUserWebSocketMessages } from "../../services/websocket/handleUserWebSocketMessages";
-// import { useQueryClient, useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { renderWithRouterAndContext } from "../../setupTests";
-import { getCurrentUser } from "../../api/user/getCurrentUser";
-import { QueryClient, type UseQueryResult } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, type UseQueryResult } from "@tanstack/react-query";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import type { ScoreDto } from "../../types/dto/entity/ScoreDto";
 import type { UserDto } from "../../types/dto/entity/UserDto";
+import * as ReactQuery from '@tanstack/react-query'
 
 const queryClient = new QueryClient();
 
@@ -37,109 +35,79 @@ const mockCsrfResponse = {
     parameterName: "_csrf"
 };
 
-/* ------------------ Spy on @stomp/stompjs Client ------------------ */
-const subscribeSpy = vi.spyOn(Client.prototype, "subscribe");
-const unsubscribeSpy = vi.spyOn(Client.prototype, "unsubscribe");
-const publishSpy = vi.spyOn(Client.prototype, "publish");
-const activateSpy = vi.spyOn(Client.prototype, "activate");
 
-/* ------------------ Mock SockJS ------------------ */
-vi.mock("sockjs-client", () => ({
-    // provider only supplies the SockJS instance into Client via webSocketFactory.
-    // An empty stub object is fine for unit testing.
-    SockJS: vi.fn().mockImplementation(() => ({})),
+// Mock STOMP Client
+vi.mock('@stomp/stompjs', () => ({
+    Client: vi.fn().mockImplementation(() => ({
+        activate: vi.fn(),
+        deactivate: vi.fn(),
+        subscribe: vi.fn((topic, callback) => ({
+            unsubscribe: vi.fn(),
+            topic,
+            callback,
+        })),
+        publish: vi.fn(),
+        connected: true,
+    })),
 }));
 
-/* ------------------ Mock your app modules ------------------ */
-
-vi.mock("../../api/csrf/getCsrfToken", () => ({
-    getCsrfToken: vi.fn(),
+// Mock utilities
+vi.mock('./utils/initWebSocket', () => ({
+    initWebSocket: vi.fn().mockReturnValue({}),
 }));
-const mockedGetCsrfToken = vi.mocked(getCsrfToken);
 
-vi.mock("../../api/user/getCurrentUser", () => ({
-    getCurrentUser: vi.fn(),
+vi.mock('./utils/initStompClient', () => ({
+    initStompClient: vi.fn(),
 }));
-const mockedGetCurrentUser = vi.mocked(getCurrentUser);
 
-vi.mock("../../hooks/useCurrentUser", () => ({
+// Mock current user hook
+vi.mock('../../hooks/useCurrentUser', () => ({
     useCurrentUser: vi.fn(),
 }));
 const mockedUseCurrentUser = vi.mocked(useCurrentUser);
 
-mockedUseCurrentUser.mockReturnValue({
-    data: mockUser,
-    status: "success",
-    isLoading: false,
-    isFetching: false,
-    error: null,
-    refetch: vi.fn(),
-    isError: false,
-    isSuccess: true,
-} as unknown as UseQueryResult<UserDto, Error>);
-
-vi.mock("../../services/websocket/handleUserWebSocketMessages", () => ({
-    handleUserWebSocketMessages: vi.fn(),
-}));
-const mockedHandleUserWebSocketMessages = vi.mocked(handleUserWebSocketMessages);
-
-// vi.mock("@tanstack/react-query", () => ({ useQueryClient: vi.fn() }));
-
-/* ------------------ Test helpers & cleanup ------------------ */
-afterEach(() => {
-    vi.clearAllMocks();
-    cleanup();
-});
 
 /* Consumer that exposes the context to the test by calling onReady(ctx) */
-function Consumer({ onReady }: { onReady: (ctx: any) => void }) {
+function TestConsumer({ onContext }: { onContext: (ctx: any) => void }) {
     const ctx = useWebSocketContext();
     React.useEffect(() => {
-        onReady(ctx);
-    }, [ctx, onReady]);
+        onContext(ctx);
+    }, [ctx, onContext]);
     return null;
 }
 
 
 /* ------------------ Tests ------------------ */
-// describe("WebSocketProvider (Vitest)", () => {
+describe('WebSocketProviderTests', () => {
 
-//     test("creates and activates client when user present and token available; onConnect subscribes to /user/queue/updates", async () => {
-//         mockedGetCurrentUser.mockResolvedValue(mockUser);
-//         mockedGetCsrfToken.mockResolvedValue(mockCsrfResponse);
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
-//         let clientInstance: Client | undefined;
+    test('throws error if useWebSocketContext is used outside provider', () => {
+        const fn = () => render(<TestConsumer onContext={() => {}} />);
+        expect(fn).toThrowError('useWebSocketContext must be used inside WebSocketProvider wrapper');
+    });
 
-//         let ctx: any = null;
-//         renderWithRouterAndContext(
-//             queryClient,
-//             <Consumer onReady={(c) => ctx = c } />
-//         );
+    test('provides subscribe, unsubscribe, send when wrapped in provider', () => {
 
-//         const clientSpy = ctx.clientRef.current;
+        let contextValue: any;
+        renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
 
-//         // let effects flush
-//         await act(async () => {});
+        expect(contextValue).toHaveProperty('subscribe');
+        expect(contextValue).toHaveProperty('unsubscribe');
+        expect(contextValue).toHaveProperty('send');
+    });
 
+    // test('does not initialise WebSocket if currentUser is null', () => {
+    //     mockedUseCurrentUser.mockReturnValue({
+    //         data: mockUser,
+    //         isLoading: false,
+    //         isSuccess: true,
+    //     } as any);
+    //     let contextValue: any;
+    //     renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
 
-//         console.log("effect running, currentUser=", mockedGetCurrentUser);
-
-//         await waitFor(() => {
-//             console.log('mockedUseCurrentUser call count:', mockedUseCurrentUser.mock.calls.length);
-//             console.log("mockedGetCurrentUser", mockedGetCurrentUser.mock.results);
-//             console.log("mockedGetCsrfToken", mockedGetCsrfToken.mock.results);
-//             console.log("clientRef inside waitFor", ctx.clientRef.current);
-//             expect(ctx.clientRef.current).not.toBeNull();
-//         });
-
-//         expect(activateSpy).toHaveBeenCalled();
-
-//         expect(clientInstance?.connectHeaders).toEqual({
-//             [mockCsrfResponse.headerName]: mockCsrfResponse.token
-//         })
-
-//         expect(subscribeSpy).toHaveBeenCalledWith("/user/queue/updates", expect.any(Function));
-
-//     });
-
-// });
+    //     expect(mockedUseCurrentUser).toHaveBeenCalled();
+    // })
+});
