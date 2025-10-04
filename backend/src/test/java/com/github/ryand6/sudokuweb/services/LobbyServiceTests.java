@@ -1,36 +1,13 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
-import com.github.ryand6.sudokuweb.domain.UserEntity;
-import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
-import com.github.ryand6.sudokuweb.dto.LobbyDto;
-import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;
-import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.*;
 
 public class LobbyServiceTests {
 

@@ -1,13 +1,11 @@
 package com.github.ryand6.sudokuweb.mappers.Impl;
 
-import com.github.ryand6.sudokuweb.domain.GameEntity;
 import com.github.ryand6.sudokuweb.domain.GameStateEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
-import com.github.ryand6.sudokuweb.dto.GameStateDto;
+import com.github.ryand6.sudokuweb.dto.entity.GameStateDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.GameRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component

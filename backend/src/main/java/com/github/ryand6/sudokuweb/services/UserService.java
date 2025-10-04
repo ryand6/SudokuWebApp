@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
-import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;

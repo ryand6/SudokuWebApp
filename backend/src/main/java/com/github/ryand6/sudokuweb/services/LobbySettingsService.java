@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.enums.PreferenceDirection;
 import com.github.ryand6.sudokuweb.exceptions.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.VoteTooSoonException;

@@ -2,9 +2,9 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
-import com.github.ryand6.sudokuweb.dto.GameDto;
-import com.github.ryand6.sudokuweb.dto.GameStateDto;
-import com.github.ryand6.sudokuweb.dto.GenerateBoardRequestDto;
+import com.github.ryand6.sudokuweb.dto.entity.GameDto;
+import com.github.ryand6.sudokuweb.dto.entity.GameStateDto;
+import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.repositories.*;
 import jakarta.transaction.Transactional;

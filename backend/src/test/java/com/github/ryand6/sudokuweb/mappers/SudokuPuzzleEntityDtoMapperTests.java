@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.dto.SudokuPuzzleDto;
+import com.github.ryand6.sudokuweb.dto.entity.SudokuPuzzleDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.mappers.Impl.SudokuPuzzleEntityDtoMapper;
 import org.junit.jupiter.api.Test;

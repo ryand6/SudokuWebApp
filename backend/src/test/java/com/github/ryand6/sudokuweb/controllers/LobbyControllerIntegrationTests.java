@@ -1,15 +1,13 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ryand6.sudokuweb.dto.LobbyDto;
-import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.UserService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;

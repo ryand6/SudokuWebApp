@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
-import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.ScoreRepository;

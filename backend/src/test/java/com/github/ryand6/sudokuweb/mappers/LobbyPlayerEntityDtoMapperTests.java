@@ -1,26 +1,21 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
-import com.github.ryand6.sudokuweb.domain.UserEntity;
-import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyPlayerEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class LobbyPlayerEntityDtoMapperTests {
 

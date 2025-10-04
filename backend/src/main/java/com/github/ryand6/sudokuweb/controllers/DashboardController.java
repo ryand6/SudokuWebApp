@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers;
 
-import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.UserNotFoundException;
 import com.github.ryand6.sudokuweb.services.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

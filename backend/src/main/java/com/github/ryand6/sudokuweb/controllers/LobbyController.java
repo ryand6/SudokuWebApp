@@ -1,8 +1,8 @@
 package com.github.ryand6.sudokuweb.controllers;
 
-import com.github.ryand6.sudokuweb.dto.LobbyDto;
-import com.github.ryand6.sudokuweb.dto.PrivateLobbyJoinRequestDto;
-import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.request.PrivateLobbyJoinRequestDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.UserService;

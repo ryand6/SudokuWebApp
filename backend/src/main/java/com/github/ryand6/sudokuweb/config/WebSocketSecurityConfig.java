@@ -1,10 +1,9 @@
 package com.github.ryand6.sudokuweb.config;
 
-import com.github.ryand6.sudokuweb.dto.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.services.GameService;
 import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.UserService;
-import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.security.authorization.AuthorizationDecision;

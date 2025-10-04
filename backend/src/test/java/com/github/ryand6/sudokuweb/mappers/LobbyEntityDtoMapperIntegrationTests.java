@@ -1,25 +1,16 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
-import com.github.ryand6.sudokuweb.dto.LobbyDto;
-import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.time.Instant;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

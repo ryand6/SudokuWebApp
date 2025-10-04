@@ -1,27 +1,21 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.TestOAuthUtil;
-import com.github.ryand6.sudokuweb.dto.UserDto;
-import com.github.ryand6.sudokuweb.dto.UserSetupRequestDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.services.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;

@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dto;
+package com.github.ryand6.sudokuweb.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;

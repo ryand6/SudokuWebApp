@@ -1,18 +1,12 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
-import com.github.ryand6.sudokuweb.dto.GameStateDto;
-import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.mappers.Impl.GameStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.GameRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

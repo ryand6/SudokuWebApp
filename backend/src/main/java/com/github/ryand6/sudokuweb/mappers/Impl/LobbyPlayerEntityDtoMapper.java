@@ -1,13 +1,10 @@
 package com.github.ryand6.sudokuweb.mappers.Impl;
 
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.UserEntity;
-import com.github.ryand6.sudokuweb.dto.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 @Component

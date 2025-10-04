@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dto;
+package com.github.ryand6.sudokuweb.dto.request;
 
 import com.github.ryand6.sudokuweb.validation.NoProfanity;
 import jakarta.validation.constraints.NotBlank;
