@@ -15,6 +15,7 @@ const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
 export function WebSocketProvider({ children }: { children : React.ReactNode }) {
     const { data: currentUser } = useCurrentUser();
+
     // Store singleton socket client in ref state so that re-renders don't affect the client
     const clientRef = useRef<Client | null>(null);
     // Persist map across app that keeps track of topics a user is subscribed to so they don't repeatedly subscribe to the same topic
@@ -28,6 +29,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
             // don't create websocket connection until user is authenticated
             return;
         }
+
         // Only want to set up socket and stomp client if stomp client doesn't already exist
         if (clientRef.current) return;
         const socket = initWebSocket();
