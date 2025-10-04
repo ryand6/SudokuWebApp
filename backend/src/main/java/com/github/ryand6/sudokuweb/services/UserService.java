@@ -8,12 +8,14 @@ import com.github.ryand6.sudokuweb.exceptions.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,7 @@ public class UserService {
         this.userEntityDtoMapper = userEntityDtoMapper;
     }
 
+    @Cacheable(value = "userCache", key = "#root.methodName + '_' + T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderId(T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderName(#authToken),#principal)")
     // Try retrieve User's OAuth provider name and ID
     public UserDto getCurrentUserByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
@@ -75,6 +78,7 @@ public class UserService {
         userRepository.save(newUser);
     }
 
+    @CacheEvict(value = "userCache", key = "'getCurrentUserByOAuth_' + T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderId(T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderName(#authToken), #principal)")
     // Update a user's username
     public UserDto updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
         if (userRepository.existsByUsername(username)) {
