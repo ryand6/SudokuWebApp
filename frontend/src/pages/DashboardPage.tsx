@@ -1,9 +1,19 @@
+import { useState } from "react";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export function DashboardPage() {
 
-    // const { data: currentUser } = useCurrentUser();
-    // console.log(currentUser);
+    const { data: currentUser } = useCurrentUser();
 
-    return <h1>DASHBOARD</h1>;
+    const [isModalOpen, setModalOpen] = useState(false);
+
+    return (
+        <div>
+            <header>
+                <div>
+                    Welcome, <span>{currentUser?.username ?? "User"}</span> | Score: <span>{currentUser?.score.totalScore ?? 0}</span> | Rank: <span></span>
+                </div>
+            </header>
+        </div>
+    );
 }

@@ -26,11 +26,11 @@ const mockUser: UserDto = {
     score: mockScore
 };
 
-const mockCsrfResponse = {
-    headerName: "X-XSRF-TOKEN", 
-    token: "abc",
-    parameterName: "_csrf"
-};
+// const mockCsrfResponse = {
+//     headerName: "X-XSRF-TOKEN", 
+//     token: "abc",
+//     parameterName: "_csrf"
+// };
 
 // Mock STOMP Client
 vi.mock('@stomp/stompjs', () => ({
