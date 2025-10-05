@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { UserForm } from "../components/UserForm";
-import { processUserAmend } from "../api/user/processUserAmend";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { processUserAmend } from "../api/users/processUserAmend";
+import { useCurrentUser } from "../hooks/users/useCurrentUser";
 
 export function UserAmendPage() {
   const { data: user } = useCurrentUser();

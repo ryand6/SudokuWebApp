@@ -1,6 +1,6 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
 import { createContext, useContext, useEffect, useRef } from "react";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCurrentUser } from "../hooks/users/useCurrentUser";
 import { useQueryClient } from "@tanstack/react-query";
 import { initWebSocket } from "../utils/initWebSocket";
 import { initStompClient } from "../utils/initStompClient";

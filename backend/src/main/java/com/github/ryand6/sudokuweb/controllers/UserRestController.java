@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
+import com.github.ryand6.sudokuweb.dto.response.TopFivePlayersDto;
 import com.github.ryand6.sudokuweb.dto.response.UserRankDto;
 import com.github.ryand6.sudokuweb.exceptions.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.services.UserService;
@@ -118,5 +119,11 @@ public class UserRestController {
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
         Long playerRank = userService.getPlayerRank(user.getId());
         return ResponseEntity.ok(new UserRankDto(playerRank));
+    }
+
+    @GetMapping("/get-top-five-players")
+    public ResponseEntity<?> getTopFivePlayers() {
+        List<UserDto> topFive = userService.getTop5PlayersTotalScore();
+        return ResponseEntity.ok(new TopFivePlayersDto(topFive));
     }
 }

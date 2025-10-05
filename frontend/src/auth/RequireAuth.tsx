@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { handleUserFetchError } from "../errors/handleUserFetchError";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCurrentUser } from "../hooks/users/useCurrentUser";
 import { useEffect } from "react";
 
 export function RequireAuth({ children }: { children : React.ReactNode }) {

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useCurrentUser } from "../hooks/users/useCurrentUser";
 import { handleUserFetchError } from "../errors/handleUserFetchError";
 
 export function NewUserOnly({ children }: { children : React.ReactNode }) {
