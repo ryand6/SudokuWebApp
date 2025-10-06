@@ -112,50 +112,24 @@ public class LobbyRestController {
 
     // Attempt to join a private lobby via sending a token using a form, failures could result in lobby now being full or being inactive, token being used or invalid
     @PostMapping("/join/private")
-    public String attemptJoinPrivateLobbyViaForm(
+    public ResponseEntity<?> attemptJoinPrivateLobbyViaForm(
                                    @AuthenticationPrincipal OAuth2User principal,
                                    OAuth2AuthenticationToken authToken,
-                                   PrivateLobbyJoinRequestDto joinRequest,
-                                   RedirectAttributes redirectAttributes) {
+                                   PrivateLobbyJoinRequestDto joinRequest) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-        try {
-            LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
-
-            /* Need to add WebSocket messaging to update lobby view in real time */
-
-            return "redirect:/lobby/" + lobbyDto.getId();
-        // Catch and handle any Lobby state related exceptions
-        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException |
-                 InvalidTokenException | TokenNotFoundException lobbyStateException) {
-            redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");
-        }
-        return "redirect:/dashboard";
+        LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
+        return ResponseEntity.ok(lobbyDto);
     }
 
     // Attempt to join a private lobby by sending a token via the URL string, failures could result in lobby now being full or being inactive, token being used or invalid
     @PostMapping("/join/private/{token}")
-    public String attemptJoinPrivateLobbyViaTokenInURL(
+    public ResponseEntity<?> attemptJoinPrivateLobbyViaTokenInURL(
             @AuthenticationPrincipal OAuth2User principal,
             OAuth2AuthenticationToken authToken,
-            @PathVariable String token,
-            RedirectAttributes redirectAttributes) {
+            @PathVariable String token) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-        try {
-            LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
-
-            /* Need to add WebSocket messaging to update lobby view in real time */
-
-            return "redirect:/lobby/" + lobbyDto.getId();
-            // Catch and handle any Lobby state related exceptions
-        } catch (LobbyFullException | LobbyInactiveException | LobbyNotFoundException |
-                 InvalidTokenException | TokenNotFoundException lobbyStateException) {
-            redirectAttributes.addFlashAttribute("errorMessage", lobbyStateException.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to join Lobby");
-        }
-        return "redirect:/dashboard";
+        LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
+        return ResponseEntity.ok(lobbyDto);
     }
 
     // Make a POST request to alter Lobby and LobbyPlayer DB tables when a user leaves the lobby, either through disconnecting or manually leaving
