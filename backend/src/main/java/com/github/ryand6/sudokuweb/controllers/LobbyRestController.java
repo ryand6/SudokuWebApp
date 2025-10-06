@@ -118,9 +118,6 @@ public class LobbyRestController {
                                    PrivateLobbyJoinRequestDto joinRequest,
                                    RedirectAttributes redirectAttributes) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-        if (currentUser == null) {
-            throw new UserNotFoundException("User not found via OAuth token");
-        }
         try {
             LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
 
@@ -145,9 +142,6 @@ public class LobbyRestController {
             @PathVariable String token,
             RedirectAttributes redirectAttributes) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-        if (currentUser == null) {
-            throw new UserNotFoundException("User not found via OAuth token");
-        }
         try {
             LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
 
