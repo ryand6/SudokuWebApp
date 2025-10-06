@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { UserForm } from "../components/UserForm";
+import { UserForm } from "../components/users/UserForm";
 import { processUserAmend } from "../api/users/processUserAmend";
 import { useCurrentUser } from "../hooks/users/useCurrentUser";
 

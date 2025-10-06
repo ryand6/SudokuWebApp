@@ -1,7 +1,7 @@
 import { type JSX } from "react";
 import { processUserSetup } from "../api/users/processUserSetup";
 import { useNavigate } from "react-router-dom";
-import { UserForm } from "../components/UserForm";
+import { UserForm } from "../components/users/UserForm";
 
 export function UserSetupPage(): JSX.Element {
     const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Button } from "./ui/button";
+import { Button } from "./button";
 
 interface ModalProps {
     isOpen: boolean,
