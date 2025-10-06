@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class LobbyControllerIntegrationTests {
+public class LobbyRestControllerIntegrationTests {
 
     @Autowired
     private MockMvc mockMvc;
