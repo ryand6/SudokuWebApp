@@ -1,7 +1,7 @@
 import { describe, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from '@testing-library/user-event';
-import { UserForm } from "../users/UserForm";
+import { UserForm } from "../UserForm";
 
 describe("UserForm", () => {
   const setup = (onSubmit = vi.fn()) => {

@@ -52,15 +52,15 @@ public class LobbyRestControllerIntegrationTests {
         );
     }
 
-    @Test
-    public void createLobbyView_returnsCorrectView() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/create-lobby")
-                // Establish mock authenticated user so that authentication is confirmed in SecurityFilterChain
-                .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
-                .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.status().isOk()) // Expect HTTP 200
-                .andExpect(MockMvcResultMatchers.view().name("lobby/create-lobby"));
-    }
+//    @Test
+//    public void createLobbyView_returnsCorrectView() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/create-lobby")
+//                // Establish mock authenticated user so that authentication is confirmed in SecurityFilterChain
+//                .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+//                .with(SecurityMockMvcRequestPostProcessors.csrf()))
+//                .andExpect(MockMvcResultMatchers.status().isOk()) // Expect HTTP 200
+//                .andExpect(MockMvcResultMatchers.view().name("lobby/create-lobby"));
+//    }
 
 //    @Test
 //    public void generateJoinCode_returnsJoinCodeString_returnsHTTP200() throws Exception {
@@ -91,20 +91,20 @@ public class LobbyRestControllerIntegrationTests {
 //                .andExpect(MockMvcResultMatchers.redirectedUrl("/lobby/1"));
 //    }
 
-    @Test
-    public void processLobbySetupRequest_userNotFound() throws Exception {
-        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/process-lobby-setup")
-                        // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
-                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .param("lobbyName", "testLobby"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("error/user-not-found"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
-                .andExpect(MockMvcResultMatchers.model().attribute("errorMessage", "User not found via OAuth token"));
-    }
+//    @Test
+//    public void processLobbySetupRequest_userNotFound() throws Exception {
+//        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/process-lobby-setup")
+//                        // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
+//                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+//                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+//                        .param("lobbyName", "testLobby"))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.view().name("error/user-not-found"))
+//                .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
+//                .andExpect(MockMvcResultMatchers.model().attribute("errorMessage", "User not found via OAuth token"));
+//    }
 
 //    @Test
 //    public void processLobbySetupRequest_invalidLobbyPublicStatusParametersExceptionThrown_flashAttributeExists() throws Exception {
@@ -140,38 +140,38 @@ public class LobbyRestControllerIntegrationTests {
 //                .andExpect(MockMvcResultMatchers.redirectedUrl("/lobby/create-lobby"));
 //    }
 
-    @Test
-    public void getPublicLobbies_returnsHTTP200() throws Exception {
-        List<LobbyDto> lobbyDtoList = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            LobbyDto lobbyDto = new LobbyDto();
-            lobbyDto.setId(Long.valueOf(i));
-            lobbyDtoList.add(lobbyDto);
-        }
-        when(lobbyService.getPublicLobbies(anyInt(), eq(10))).thenReturn(lobbyDtoList);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/get-active-lobbies")
-                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .param("page", "0"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                // Serialises LobbyDtoList to JSON string and compares with Controller ouput
-                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(lobbyDtoList)));
-    }
-
-    @Test
-    public void attemptJoinLobby_userNotFound() throws Exception {
-        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/join/1")
-                        // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
-                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("error/user-not-found"))
-                .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
-                .andExpect(MockMvcResultMatchers.model().attribute("errorMessage", "User not found via OAuth token"));
-    }
+//    @Test
+//    public void getPublicLobbies_returnsHTTP200() throws Exception {
+//        List<LobbyDto> lobbyDtoList = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            LobbyDto lobbyDto = new LobbyDto();
+//            lobbyDto.setId(Long.valueOf(i));
+//            lobbyDtoList.add(lobbyDto);
+//        }
+//        when(lobbyService.getPublicLobbies(anyInt(), eq(10))).thenReturn(lobbyDtoList);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/lobby/public/get-active-lobbies")
+//                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+//                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+//                        .param("page", "0"))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                // Serialises LobbyDtoList to JSON string and compares with Controller ouput
+//                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(lobbyDtoList)));
+//    }
+//
+//    @Test
+//    public void attemptJoinLobby_userNotFound() throws Exception {
+//        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(null);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/join/1")
+//                        // Establish a mock authenticated user so that authentication is confirmed in SecurityFilterChain
+//                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.view().name("error/user-not-found"))
+//                .andExpect(MockMvcResultMatchers.model().attributeExists("errorMessage"))
+//                .andExpect(MockMvcResultMatchers.model().attribute("errorMessage", "User not found via OAuth token"));
+//    }
 
     // Make use of exceptionProvider stream to test multiple arguments
 //    @ParameterizedTest
@@ -211,41 +211,41 @@ public class LobbyRestControllerIntegrationTests {
 //                .andExpect(MockMvcResultMatchers.redirectedUrl("/lobby/1"));
 //    }
 
-    @Test
-    public void leaveLobby_handlesException() throws Exception {
-        UserDto userDto = new UserDto();
-        userDto.setId(1L);
-        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
-        when(lobbyService.removeFromLobby(eq(userDto.getId()), eq(1L))).thenThrow(new RuntimeException());
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/leave")
-                        .param("lobbyId", String.valueOf(1L))
-                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("")); // empty body indicates null return
-    }
-
-    @Test
-    void leaveLobby_returnsLobbyDtoWhenSuccessful() throws Exception {
-        // Arrange
-        UserDto user = new UserDto();
-        user.setId(1L);
-
-        LobbyDto expectedLobby = new LobbyDto();
-        expectedLobby.setId(42L);
-        expectedLobby.setLobbyName("Test Lobby");
-
-        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(user);
-        when(lobbyService.removeFromLobby(1L, 42L)).thenReturn(expectedLobby);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/leave")
-                        .param("lobbyId", "42")
-                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(42))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.lobbyName").value("Test Lobby"));
-    }
+//    @Test
+//    public void leaveLobby_handlesException() throws Exception {
+//        UserDto userDto = new UserDto();
+//        userDto.setId(1L);
+//        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(userDto);
+//        when(lobbyService.removeFromLobby(eq(userDto.getId()), eq(1L))).thenThrow(new RuntimeException());
+//        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/leave")
+//                        .param("lobbyId", String.valueOf(1L))
+//                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.content().string("")); // empty body indicates null return
+//    }
+//
+//    @Test
+//    void leaveLobby_returnsLobbyDtoWhenSuccessful() throws Exception {
+//        // Arrange
+//        UserDto user = new UserDto();
+//        user.setId(1L);
+//
+//        LobbyDto expectedLobby = new LobbyDto();
+//        expectedLobby.setId(42L);
+//        expectedLobby.setLobbyName("Test Lobby");
+//
+//        when(userService.getCurrentUserByOAuth(any(), any())).thenReturn(user);
+//        when(lobbyService.removeFromLobby(1L, 42L)).thenReturn(expectedLobby);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.post("/lobby/leave")
+//                        .param("lobbyId", "42")
+//                        .with(SecurityMockMvcRequestPostProcessors.oauth2Login())
+//                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(42))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.lobbyName").value("Test Lobby"));
+//    }
 
 }

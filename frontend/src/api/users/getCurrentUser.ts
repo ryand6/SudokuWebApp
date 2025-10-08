@@ -19,7 +19,7 @@ export async function getCurrentUser(): Promise<UserDto> {
     } else if (!response.ok) {
         // if error message doesn't parse properly, assign null to errorData
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.message || `HTTP ${response.status}`);
+        throw new Error(errorData?.errorMessage || `HTTP ${response.status}`);
     };
     return await response.json();
 }

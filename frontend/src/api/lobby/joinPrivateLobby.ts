@@ -1,7 +1,7 @@
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { getCsrfTokenFromCookie } from "@/utils/csrf";
 
-export async function joinPrivateLobbyWithRequestToken(token: string): Promise<LobbyDto> {
+export async function joinPrivateLobby(token: string): Promise<LobbyDto> {
     const response = await fetch("/api/lobby/join/private", {
         method: "POST",
         credentials: "include",
@@ -11,5 +11,9 @@ export async function joinPrivateLobbyWithRequestToken(token: string): Promise<L
         },
         body: JSON.stringify({token})
     });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.errorMessage || "Failed to join private lobby")
+    }
     return response.json();
 }

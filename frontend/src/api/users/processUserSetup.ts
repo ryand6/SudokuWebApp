@@ -21,7 +21,7 @@ export async function processUserSetup(username: string): Promise<void> {
             if (Array.isArray(errorData)) {
                 error = backendValidationErrors(errorData);
             } else {
-                error = new Error(errorData?.message || `HTTP ${response.status}`);
+                error = new Error(errorData?.errorMessage || `HTTP ${response.status}`);
             }
             error.status = response.status;
             throw error;

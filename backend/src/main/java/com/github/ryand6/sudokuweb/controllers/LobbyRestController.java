@@ -115,7 +115,7 @@ public class LobbyRestController {
     public ResponseEntity<?> attemptJoinPrivateLobbyViaForm(
                                    @AuthenticationPrincipal OAuth2User principal,
                                    OAuth2AuthenticationToken authToken,
-                                   PrivateLobbyJoinRequestDto joinRequest) {
+                                   @RequestBody PrivateLobbyJoinRequestDto joinRequest) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
         return ResponseEntity.ok(lobbyDto);

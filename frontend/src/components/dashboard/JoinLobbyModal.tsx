@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { PrivateLobbyJoinModalPane } from "./PrivateLobbyJoinModalPane";
+import { PublicLobbyList } from "./PublicLobbyList";
 
 export function JoinLobbyModal() {
     const [pane, setPane] = useState<"public" | "private">("public");

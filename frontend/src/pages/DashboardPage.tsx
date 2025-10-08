@@ -5,6 +5,7 @@ import { useTopFivePlayers } from "../hooks/users/useTopFivePlayers";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/Modal";
+import { JoinLobbyModal } from "@/components/dashboard/JoinLobbyModal";
 
 export function DashboardPage() {
 
@@ -35,7 +36,7 @@ export function DashboardPage() {
                         )}
                     </ol>
                 </div>
-                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}><></></Modal>
+                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}><JoinLobbyModal /></Modal>
 
             </div>
         </div>
