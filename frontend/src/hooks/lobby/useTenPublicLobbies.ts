@@ -11,6 +11,7 @@ export function useTenPublicLobbies() {
             return dto.publicLobbies;
         },
         initialPageParam: 0,
-        getNextPageParam: (lastPage, allPages) => lastPage.length === PAGE_SIZE ? allPages.length + 1 : undefined,
+        // Pages use zero-based indexing, therefore next page is equal to the size of the length of the current page array rather than incrementing the length by 1
+        getNextPageParam: (lastPage, allPages) => lastPage.length === PAGE_SIZE ? allPages.length : undefined,
     })
 }

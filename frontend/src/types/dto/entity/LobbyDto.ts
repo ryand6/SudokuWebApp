@@ -9,6 +9,7 @@ export type LobbyDto = {
     timeLimit: TimeLimitPreset,
     isActive: boolean,
     isPublic: boolean,
+    inGame: boolean,
     countdownActive: boolean,
     countdownEndsAt: string,
     countdownInitiatedBy: number,

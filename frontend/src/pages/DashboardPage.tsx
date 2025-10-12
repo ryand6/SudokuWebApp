@@ -4,7 +4,7 @@ import { useUserRank } from "../hooks/users/useUserRank";
 import { useTopFivePlayers } from "../hooks/users/useTopFivePlayers";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/Modal";
+import { Modal } from "@/components/ui/custom/Modal";
 import { JoinLobbyModal } from "@/components/dashboard/JoinLobbyModal";
 
 export function DashboardPage() {

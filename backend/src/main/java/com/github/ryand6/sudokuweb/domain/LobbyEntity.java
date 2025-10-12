@@ -47,6 +47,10 @@ public class LobbyEntity {
     @Column(name = "is_public")
     private Boolean isPublic;
 
+    // true if players are currently in the middle of a Sudoku game
+    @Column(name = "in_game")
+    private Boolean inGame;
+
     // Countdown system for starting games
     @Column(name = "countdown_active")
     private Boolean countdownActive = false;
