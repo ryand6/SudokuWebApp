@@ -10,24 +10,24 @@ export function PublicLobbyList() {
 
     const {data: publicLobbies, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage } = useTenPublicLobbies();
 
-    if (isError) {
-        console.log(error);
-        return <ErrorAlert />;
-    }
-
-    if (isLoading) return <SpinnerButton />;
-
     const { ref, inView } = useInView({
         // Call more page results as soon as the 'sentinel' div is in view
         threshold: 0,
     });
 
     useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-        }
-    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+            if (inView && hasNextPage && !isFetchingNextPage) {
+                fetchNextPage();
+            }
+        }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
 
+    if (isError) {
+        console.log(error);
+        return <ErrorAlert />;
+    }
+
+    if (isLoading) return <SpinnerButton />;
+    
     const lobbies = publicLobbies?.pages.flat() ?? [];
 
     // UPDATE

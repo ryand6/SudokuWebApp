@@ -23,7 +23,8 @@ public class RestExceptionHandler {
             UsernameTakenException.class, HttpStatus.CONFLICT,
             LobbyInactiveException.class, HttpStatus.GONE,
             OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED,
-            InvalidTokenException.class, HttpStatus.UNAUTHORIZED
+            InvalidTokenException.class, HttpStatus.UNAUTHORIZED,
+            InvalidLobbyPublicStatusParameterException.class, HttpStatus.BAD_REQUEST
     );
 
     // catches all Controller thrown exceptions

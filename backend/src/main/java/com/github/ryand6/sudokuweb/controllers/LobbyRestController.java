@@ -1,18 +1,23 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.request.LobbySetupRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.PrivateLobbyJoinRequestDto;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.PublicLobbiesListDto;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.UserService;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -53,31 +58,32 @@ public class LobbyRestController {
 
     // Post form details to create Lobby in DB
     @PostMapping("/process-lobby-setup")
-    public String processLobbySetupRequest(@AuthenticationPrincipal OAuth2User principal,
-                                           OAuth2AuthenticationToken authToken,
-                                           @RequestParam(name = "lobbyName") String lobbyName,
-                                           @RequestParam(name = "isPublic", required = false) Boolean isPublic,
-                                           @RequestParam(name = "isPrivate", required = false) Boolean isPrivate,
-                                           RedirectAttributes redirectAttributes) {
+    public ResponseEntity<?> processLobbySetupRequest(@AuthenticationPrincipal OAuth2User principal,
+                                                      OAuth2AuthenticationToken authToken,
+                                                      @Valid @RequestBody LobbySetupRequestDto lobbySetupRequestDto,
+                                                      BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            // Collect all validation errors
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
+            return ResponseEntity
+                    .badRequest()
+                    .body(errors);
+        }
+        String lobbyName = lobbySetupRequestDto.getLobbyName();
+        Boolean isPublic = lobbySetupRequestDto.getIsPublic();
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-        if (currentUser == null) {
-            throw new UserNotFoundException("User not found via OAuth token");
-        }
-        try {
-            // Create lobby in DB then go to that corresponding lobby's view
-            LobbyDto lobbyDto = lobbyService.createNewLobby(lobbyName, isPublic, isPrivate, currentUser.getId());
-            return "redirect:/lobby/" + lobbyDto.getId();
-        } catch (InvalidLobbyPublicStatusParametersException invalidLobbyPublicStatusParametersException) {
-            redirectAttributes.addFlashAttribute("errorMessage", invalidLobbyPublicStatusParametersException.getMessage());
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Unexpected error occurred when trying to create Lobby");
-        }
-        return "redirect:/lobby/create-lobby";
+        // Create lobby in DB then go to that corresponding lobby's view
+        LobbyDto lobbyDto = lobbyService.createNewLobby(lobbyName, isPublic, currentUser.getId());
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(lobbyDto);
     }
 
     // Return list of up to 10x lobbies
     @GetMapping("/public/get-active-lobbies")
-    @ResponseBody
     public ResponseEntity<?> getPublicLobbies(@RequestParam int page) {
         List<LobbyDto> publicLobbies = lobbyService.getPublicLobbies(page, 10);
         return ResponseEntity.ok(new PublicLobbiesListDto(publicLobbies));

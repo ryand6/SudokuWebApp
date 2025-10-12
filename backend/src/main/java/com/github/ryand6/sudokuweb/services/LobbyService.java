@@ -40,15 +40,15 @@ public class LobbyService {
     }
 
     @Transactional
-    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Boolean isPrivate, Long requesterId) {
+    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Long requesterId) {
         LobbyEntity newLobby = new LobbyEntity();
         // One of these must be true or there is an error with the parameters
         if (Boolean.TRUE.equals(isPublic)) {
             newLobby.setIsPublic(true);
-        } else if (Boolean.TRUE.equals(isPrivate)) {
+        } else if (Boolean.FALSE.equals(isPublic)) {
             newLobby.setIsPublic(false);
         } else {
-            throw new InvalidLobbyPublicStatusParametersException("Either Public or Private lobby must be checked");
+            throw new InvalidLobbyPublicStatusParameterException("Either Public or Private lobby must be checked");
         }
         UserEntity requester = userService.findUserById(requesterId);
         newLobby.setLobbyName(lobbyName);

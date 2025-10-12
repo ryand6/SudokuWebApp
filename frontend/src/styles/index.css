@@ -10,7 +10,7 @@
 
   color-scheme: light dark;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 60%);
-  color: #333;
+  color: #333; 
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -133,7 +133,6 @@
     @apply bg-background text-foreground;
   }
 }
-
 
 a {
   font-weight: 500;

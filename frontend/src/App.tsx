@@ -8,6 +8,7 @@ import { NewUserOnly } from "./auth/NewUserOnly";
 import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WebSocketProvider } from "./context/WebSocketProvider";
+import { CreateLobbyPage } from "./pages/CreateLobbyPage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ function App() {
             <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
             {/* Protected routes */}
             <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+            <Route path="/create-lobby" element={<RequireAuth><CreateLobbyPage /></RequireAuth>} />
             <Route path="/user-update" element={<RequireAuth><UserAmendPage /></RequireAuth>} />
           </Routes>
           <ToastContainer position="top-right" autoClose={5000} />

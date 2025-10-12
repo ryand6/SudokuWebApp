@@ -25,7 +25,7 @@ export function DashboardPage() {
             <div id="dashboard-content" className="flex flex-1">
                 <div id="actions-pane" className="p-[15px] m-[15px] bg-card border-[2px] rounded-md h-1/3 flex flex-col w-1/4 shadow-[0_2px_5px_rgba(0,0,0,0.1)]">
                     <h2>Lobby Actions</h2>
-                    <Button variant="outline" className="m-1"><Link to="/lobby/create-lobby">Create New Lobby</Link></Button>
+                    <Button variant="outline" className="m-1"><Link to="/create-lobby">Create New Lobby</Link></Button>
                     <Button variant="outline" className="m-1 cursor-pointer" onClick={() => setModalOpen(true)}>Join Lobby</Button>
                 </div>
                 <div id="mini-leaderboard" className="p-[15px] m-[15px] bg-card border-[2px] rounded-md h-1/3 flex flex-col w-1/4 shadow-[0_2px_5px_rgba(0,0,0,0.1)]">
