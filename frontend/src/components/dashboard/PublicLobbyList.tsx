@@ -32,7 +32,7 @@ export function PublicLobbyList() {
 
     // UPDATE
     const handleClick = (lobbyId: number) => {
-
+        
     };
 
     return (

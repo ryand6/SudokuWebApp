@@ -14,7 +14,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
         <div className="fixed top-[10%] left-[10%] w-[80%] h-[80%] bg-white z-1000 flex border-[2px] border-border rounded-md">
             <div className="flex w-[100%] h-[100%] relative">
                 <Button 
-                    className="absolute cursor-pointer top-2 right-2 text-dark-gray text-[25px] hover:font-bold"
+                    className="absolute cursor-pointer top-2 right-2 text-dark-gray text-[25px] hover:font-bold z-[1000]"
                     onClick={onClose}
                     variant="secondary"
                 >
