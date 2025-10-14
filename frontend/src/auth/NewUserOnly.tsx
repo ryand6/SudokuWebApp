@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { handleUserFetchError } from "../errors/handleUserFetchError";
+import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 
 export function NewUserOnly({ children }: { children : React.ReactNode }) {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ export function NewUserOnly({ children }: { children : React.ReactNode }) {
     }, [isLoading, user, navigate]);
 
     // Dynamically show loading status - conditional re-checked when state updates
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <SpinnerButton />;
 
     // Redirect to referrer page, or to homepage if no referrer exists
     if (user) return null;

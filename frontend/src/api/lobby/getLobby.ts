@@ -1,4 +1,6 @@
-export async function getLobby(lobbyId: number) {
+import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+
+export async function getLobby(lobbyId: number): Promise<LobbyDto> {
     const response = await fetch(`/api/lobby/get-lobby?lobbyId=${lobbyId}`, {
         method: "GET",
         credentials: "include",

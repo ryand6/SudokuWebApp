@@ -28,7 +28,7 @@ export function CreateLobbyPage() {
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        //if (!validate()) return;
+        if (!validate()) return;
         setError("");
         try {
             const response = await processLobbySetup(lobbyName, isPublic);

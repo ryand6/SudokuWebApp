@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { handleUserFetchError } from "../errors/handleUserFetchError";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { useEffect } from "react";
+import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 
 export function RequireAuth({ children }: { children : React.ReactNode }) {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ export function RequireAuth({ children }: { children : React.ReactNode }) {
     }, [error, navigate, location.pathname, location.search, location.hash]);
 
     // Dynamically show loading status - conditional re-checked when state updates
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <SpinnerButton />;
 
     // Update to handle - render Error page
     if (!user) return <div>Error fetching user</div>;

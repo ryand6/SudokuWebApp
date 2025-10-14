@@ -14,5 +14,5 @@ export async function joinPublicLobby(lobbyId: number): Promise<LobbyDto> {
         const errorData = await response.json().catch(() => null);
         throw new Error(errorData?.errorMessage || "Failed to join public lobby")
     }
-    return response.json();
+    return await response.json();
 }
