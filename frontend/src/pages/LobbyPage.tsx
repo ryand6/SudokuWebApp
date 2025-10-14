@@ -4,7 +4,7 @@ import { useHandleGetLobbyError } from "@/hooks/lobby/useHandleGetLobbyError";
 import { useValidateLobbyId } from "@/hooks/lobby/useValidateLobbyId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 
 export function LobbyPage() {

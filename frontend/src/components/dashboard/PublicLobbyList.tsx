@@ -1,14 +1,15 @@
 import { useGetTenPublicLobbies } from "@/hooks/lobby/useGetTenPublicLobbies";
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { SpinnerButton } from "../ui/custom/SpinnerButton";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { useInView } from "react-intersection-observer";
 import { LobbyResultRow } from "../lobby/LobbyResultRow";
+import { useJoinPublicLobby } from "@/hooks/lobby/useJoinPublicLobby";
 
 export function PublicLobbyList() {
 
     const {data: publicLobbies, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetTenPublicLobbies();
+    const joinPublicLobby = useJoinPublicLobby();
 
     const { ref, inView } = useInView({
         // Call more page results as soon as the 'sentinel' div is in view
@@ -30,9 +31,8 @@ export function PublicLobbyList() {
     
     const lobbies = publicLobbies?.pages.flat() ?? [];
 
-    // UPDATE
     const handleClick = (lobbyId: number) => {
-        
+        joinPublicLobby.mutate(lobbyId);
     };
 
     return (

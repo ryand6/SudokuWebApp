@@ -29,6 +29,7 @@ function App() {
             <Route path="/user-update" element={<RequireAuth><UserAmendPage /></RequireAuth>} />
             <Route path="/create-lobby" element={<RequireAuth><CreateLobbyPage /></RequireAuth>} />
             <Route path="/lobby/:lobbyId" element={<RequireAuth><LobbyPage /></RequireAuth>} />
+            <Route path="/lobby/private/:token" element={<RequireAuth><PrivateLobbyJoinPage /></RequireAuth>} />
           </Routes>
           <ToastContainer position="top-right" autoClose={5000} />
         </BrowserRouter>
