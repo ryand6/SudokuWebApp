@@ -58,6 +58,13 @@ public class LobbyRestController {
                 .body(lobbyDto);
     }
 
+    // Get lobby DTO using lobbyId
+    @GetMapping("/get-lobby")
+    public ResponseEntity<?> getLobby(@RequestParam Long lobbyId) {
+        LobbyDto lobbyDto = lobbyService.getLobbyById(lobbyId);
+        return ResponseEntity.ok(lobbyDto);
+    }
+
     // Return list of up to 10x lobbies
     @GetMapping("/public/get-active-lobbies")
     public ResponseEntity<?> getPublicLobbies(@RequestParam int page) {
@@ -100,7 +107,6 @@ public class LobbyRestController {
 
     // Make a POST request to alter Lobby and LobbyPlayer DB tables when a user leaves the lobby, either through disconnecting or manually leaving
     @PostMapping("/leave")
-    @ResponseBody
     public ResponseEntity<?> leaveLobby(@AuthenticationPrincipal OAuth2User principal,
                                OAuth2AuthenticationToken authToken,
                                @RequestParam Long lobbyId) {

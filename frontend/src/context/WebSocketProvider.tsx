@@ -1,6 +1,6 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
 import { createContext, useContext, useEffect, useRef } from "react";
-import { useCurrentUser } from "../hooks/users/useCurrentUser";
+import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { useQueryClient } from "@tanstack/react-query";
 import { initWebSocket } from "../utils/initWebSocket";
 import { initStompClient } from "../utils/initStompClient";
@@ -14,7 +14,7 @@ type WebSocketContextType = {
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
 
 export function WebSocketProvider({ children }: { children : React.ReactNode }) {
-    const { data: currentUser } = useCurrentUser();
+    const { data: currentUser } = useGetCurrentUser();
 
     // Store singleton socket client in ref state so that re-renders don't affect the client
     const clientRef = useRef<Client | null>(null);

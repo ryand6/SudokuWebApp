@@ -3,7 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 const PAGE_SIZE = 10;
 
-export function useTenPublicLobbies() {
+export function useGetTenPublicLobbies() {
     return useInfiniteQuery({
         queryKey: ["publicLobbiesList"],
         queryFn: async ({ pageParam }) => {

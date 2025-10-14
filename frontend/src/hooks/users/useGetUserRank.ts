@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getUserRank } from "../../api/users/getUserRank";
 import type { UserRankDto } from "../../types/dto/response/UserRankDto";
 
-export function useUserRank() {
+export function useGetUserRank() {
     return useQuery<UserRankDto, Error>({
         queryKey: ["userRank"],
         queryFn: getUserRank,

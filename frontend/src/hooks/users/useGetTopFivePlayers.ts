@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTopFivePlayers } from "../../api/users/getTopFivePlayers";
 import type { TopFivePlayersDto } from "../../types/dto/response/TopFivePlayersDto";
 
-export function useTopFivePlayers() {
+export function useGetTopFivePlayers() {
     return useQuery<TopFivePlayersDto, Error>({
         queryKey: ["topFivePlayers"],
         queryFn: getTopFivePlayers,

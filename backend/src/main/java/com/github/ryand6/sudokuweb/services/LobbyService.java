@@ -195,7 +195,11 @@ public class LobbyService {
     // Return the requested lobby
     public LobbyDto getLobbyById(Long lobbyId) {
         Optional<LobbyEntity> lobby = lobbyRepository.findById(lobbyId);
-        return lobby.map(lobbyEntityDtoMapper::mapToDto).orElse(null);
+        if (lobby.isPresent()) {
+            return lobby.map(lobbyEntityDtoMapper::mapToDto).orElse(null);
+        } else {
+            throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
+        }
     }
 
 }

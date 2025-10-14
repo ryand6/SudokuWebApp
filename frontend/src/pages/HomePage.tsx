@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCurrentUser } from "../hooks/users/useCurrentUser";
+import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { redirectPostLogin } from "../utils/redirectPostLogin";
 
 export function HomePage() {
-    const { data: user } = useCurrentUser();
+    const { data: user } = useGetCurrentUser();
     const navigate = useNavigate();
 
     // When homepage is accessed, check if it was via a redirect following a login/account set up - if so, redirect to original URL

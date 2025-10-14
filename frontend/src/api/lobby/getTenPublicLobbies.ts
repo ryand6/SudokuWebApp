@@ -5,5 +5,5 @@ export async function getTenPublicLobbies(pageNumber: number): Promise<PublicLob
         method: "GET",
         headers: { "Accept" : "application/json" },
     });
-    return response.json();
+    return await response.json();
 }

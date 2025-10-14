@@ -1,4 +1,4 @@
-import { useTenPublicLobbies } from "@/hooks/lobby/useTenPublicLobbies";
+import { useGetTenPublicLobbies } from "@/hooks/lobby/useGetTenPublicLobbies";
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { useEffect, useState } from "react";
 import { SpinnerButton } from "../ui/custom/SpinnerButton";
@@ -8,7 +8,7 @@ import { LobbyResultRow } from "../lobby/LobbyResultRow";
 
 export function PublicLobbyList() {
 
-    const {data: publicLobbies, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage } = useTenPublicLobbies();
+    const {data: publicLobbies, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetTenPublicLobbies();
 
     const { ref, inView } = useInView({
         // Call more page results as soon as the 'sentinel' div is in view

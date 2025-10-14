@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useCurrentUser } from "../hooks/users/useCurrentUser";
+import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { handleUserFetchError } from "../errors/handleUserFetchError";
 
 export function NewUserOnly({ children }: { children : React.ReactNode }) {
@@ -15,7 +15,7 @@ export function NewUserOnly({ children }: { children : React.ReactNode }) {
     const onUserSetupRoute = location.pathname === "/user-setup" ? true : false;
 
     // Retrieve use auth status on mount - triggers currentUser to run which will redirect user to login page if not authenticated
-    const { data: user, error, isLoading } = useCurrentUser();
+    const { data: user, error, isLoading } = useGetCurrentUser();
 
     // Handle any redirects that are required
     if (error) {

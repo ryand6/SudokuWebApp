@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useCurrentUser } from "../hooks/users/useCurrentUser";
-import { useUserRank } from "../hooks/users/useUserRank";
-import { useTopFivePlayers } from "../hooks/users/useTopFivePlayers";
+import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
+import { useGetUserRank } from "../hooks/users/useGetUserRank";
+import { useGetTopFivePlayers } from "../hooks/users/useGetTopFivePlayers";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/custom/Modal";
@@ -9,9 +9,9 @@ import { JoinLobbyModal } from "@/components/dashboard/JoinLobbyModal";
 
 export function DashboardPage() {
 
-    const { data: currentUser } = useCurrentUser();
-    const { data: userRankDto } = useUserRank();
-    const { data: topFivePlayersDto } = useTopFivePlayers();
+    const { data: currentUser } = useGetCurrentUser();
+    const { data: userRankDto } = useGetUserRank();
+    const { data: topFivePlayersDto } = useGetTopFivePlayers();
 
     const [isModalOpen, setModalOpen] = useState(false);
 

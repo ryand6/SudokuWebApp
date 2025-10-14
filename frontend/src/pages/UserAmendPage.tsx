@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { UserForm } from "../components/users/UserForm";
 import { processUserAmend } from "../api/users/processUserAmend";
-import { useCurrentUser } from "../hooks/users/useCurrentUser";
+import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 
 export function UserAmendPage() {
-  const { data: user } = useCurrentUser();
+  const { data: user } = useGetCurrentUser();
   const navigate = useNavigate();
 
   async function handleAmend(username: string) {
