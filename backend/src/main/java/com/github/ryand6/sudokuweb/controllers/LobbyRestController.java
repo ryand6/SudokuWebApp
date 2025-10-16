@@ -6,10 +6,12 @@ import com.github.ryand6.sudokuweb.dto.request.PrivateLobbyJoinRequestDto;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.PublicLobbiesListDto;
 import com.github.ryand6.sudokuweb.services.LobbyService;
+import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
 import com.github.ryand6.sudokuweb.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -25,11 +27,17 @@ public class LobbyRestController {
 
     private final LobbyService lobbyService;
     private final UserService userService;
+    private final LobbyWebSocketsService lobbyWebSocketsService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public LobbyRestController(LobbyService lobbyService,
-                               UserService userService) {
+                               UserService userService,
+                               LobbyWebSocketsService lobbyWebSocketsService,
+                               SimpMessagingTemplate messagingTemplate) {
         this.lobbyService = lobbyService;
         this.userService = userService;
+        this.lobbyWebSocketsService = lobbyWebSocketsService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     // Post form details to create Lobby in DB
@@ -80,30 +88,36 @@ public class LobbyRestController {
                                     @PathVariable Long lobbyId) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), lobbyId);
+
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
         return ResponseEntity.ok(lobbyDto);
     }
 
     // Attempt to join a private lobby via sending a token using a form, failures could result in lobby now being full or being inactive, token being used or invalid
     @PostMapping("/join/private")
-    public ResponseEntity<?> joinPrivateLobbyViaForm(
+    public ResponseEntity<?> joinPrivateLobby(
                                    @AuthenticationPrincipal OAuth2User principal,
                                    OAuth2AuthenticationToken authToken,
                                    @RequestBody PrivateLobbyJoinRequestDto joinRequest) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
+
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
         return ResponseEntity.ok(lobbyDto);
     }
 
     // Attempt to join a private lobby by sending a token via the URL string, failures could result in lobby now being full or being inactive, token being used or invalid
-    @PostMapping("/join/private/{token}")
-    public ResponseEntity<?> joinPrivateLobbyViaTokenInURL(
-            @AuthenticationPrincipal OAuth2User principal,
-            OAuth2AuthenticationToken authToken,
-            @PathVariable String token) {
-        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-        LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
-        return ResponseEntity.ok(lobbyDto);
-    }
+//    @PostMapping("/join/private/{token}")
+//    public ResponseEntity<?> joinPrivateLobbyViaTokenInURL(
+//            @AuthenticationPrincipal OAuth2User principal,
+//            OAuth2AuthenticationToken authToken,
+//            @PathVariable String token) {
+//        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+//        LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
+//        return ResponseEntity.ok(lobbyDto);
+//    }
 
     // Make a POST request to alter Lobby and LobbyPlayer DB tables when a user leaves the lobby, either through disconnecting or manually leaving
     @PostMapping("/leave")
@@ -112,7 +126,9 @@ public class LobbyRestController {
                                @RequestParam Long lobbyId) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.removeFromLobby(currentUser.getId(), lobbyId);
-        /* Need to add WebSocket messaging to update lobby / game view in real time */
+
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
         return ResponseEntity.ok(null);
     }
 

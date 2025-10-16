@@ -100,13 +100,13 @@ public class UserRestController {
         String providerId = OAuthUtil.retrieveOAuthProviderId(providerName, principal);
 
         // Create a message header detailing what type of update this is so that the frontend can respond accordingly
-        Map<String, Object> payload = Map.of(
+        Map<String, Object> messageHeader = Map.of(
                 "type", "USER_UPDATED",
                 "payload", updatedUser
         );
 
         // Send the updated user Dto over websockets to that user's topic - Spring automatically prefixes path with "user" and maps to the current user using the providerId
-        messagingTemplate.convertAndSendToUser(providerId, "/queue/updates", payload);
+        messagingTemplate.convertAndSendToUser(providerId, "/queue/updates", messageHeader);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
