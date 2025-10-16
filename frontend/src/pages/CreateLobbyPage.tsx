@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
+import { handleLobbyWebSocketMessages } from "@/services/websocket/handleLobbyWebSocketMessages";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +16,8 @@ export function CreateLobbyPage() {
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
+    const { subscribe } = useWebSocketContext();
+    const queryClient = useQueryClient();
 
     // Validates form fields
     function validate(): boolean {
@@ -32,6 +37,11 @@ export function CreateLobbyPage() {
         setError("");
         try {
             const response = await processLobbySetup(lobbyName, isPublic);
+            // Subscribe the user to the websocket topic to receive updates regarding joined lobby
+            const topic = `/topic/lobby/${response.id}`;
+            subscribe(topic, (body: any) => {
+                handleLobbyWebSocketMessages(body, queryClient, response.id);
+            })
             navigate(`/lobby/${response.id}`, { replace: true });
         } catch (err: any) {
             // Handle backend form validation errors

@@ -25,7 +25,6 @@ export async function initStompClient(
 
     const handleConnect = () => {
         const topic = "/user/queue/updates";
-        // Re-subscribe to all topics we were tracking before disconnect
         if (!clientRef.current) return;
         const newSub = clientRef.current.subscribe(topic, (message: IMessage) => {
             handleUserWebSocketMessages(JSON.parse(message.body), queryClient);
