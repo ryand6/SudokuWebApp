@@ -2,9 +2,11 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Service
 public class LobbyWebSocketsService {
 
     public void handleLobbyUpdate(LobbyDto lobbyDto, SimpMessagingTemplate messagingTemplate) {

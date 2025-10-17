@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WebSocketProvider } from "./context/WebSocketProvider";
 import { CreateLobbyPage } from "./pages/CreateLobbyPage";
 import { LobbyPage } from "./pages/LobbyPage";
+import { PrivateLobbyJoinPage } from "./pages/PrivateLobbyJoinPage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();

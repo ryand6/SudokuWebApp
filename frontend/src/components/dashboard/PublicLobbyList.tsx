@@ -5,10 +5,13 @@ import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { useInView } from "react-intersection-observer";
 import { LobbyResultRow } from "../lobby/LobbyResultRow";
 import { useJoinPublicLobby } from "@/hooks/lobby/useJoinPublicLobby";
+import { Button } from "../ui/button";
+import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
 
 export function PublicLobbyList() {
 
-    const {data: publicLobbies, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage } = useGetTenPublicLobbies();
+    const {data: publicLobbies, isLoading: isLoadingLobbies, isError: isLobbiesError, error: lobbyError, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetTenPublicLobbies();
+    const {data: currentUser, isLoading: isLoadingUser, isError: isUserError, error: userError} = useGetCurrentUser();
     const joinPublicLobby = useJoinPublicLobby();
 
     const { ref, inView } = useInView({
@@ -22,12 +25,15 @@ export function PublicLobbyList() {
             }
         }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
 
-    if (isError) {
-        console.log(error);
+    if (isLobbiesError || isUserError) {
+        if (isLobbiesError) console.log(lobbyError);
+        else console.log(userError);
         return <ErrorAlert />;
     }
 
-    if (isLoading) return <SpinnerButton />;
+    if (isLoadingLobbies || isLoadingUser) return <SpinnerButton />;
+
+    if (!currentUser) return null;
     
     const lobbies = publicLobbies?.pages.flat() ?? [];
 
@@ -36,11 +42,17 @@ export function PublicLobbyList() {
     };
 
     return (
-        <div className="flex flex-col scroll-auto" >
-            {lobbies.map((lobby) => (
-                <LobbyResultRow lobby={lobby} handleClick={handleClick}></LobbyResultRow>
-            ))}
-            <div ref={ref} className="h-5" />
+        <div>
+            <div className="flex justify-center">
+                <Button className="rounded-3xl bg-sidebar-primary cursor-pointer" onClick={() => refetch()}>⭯ Refresh</Button>
+            </div>
+            <div className="flex flex-col scroll-auto" >
+                {lobbies.map((lobby) => (
+                    <LobbyResultRow lobby={lobby} currentUser={currentUser} handleClick={handleClick}></LobbyResultRow>
+                ))}
+                <div ref={ref} className="h-5" />
+            </div>
         </div>
+
     );
 }

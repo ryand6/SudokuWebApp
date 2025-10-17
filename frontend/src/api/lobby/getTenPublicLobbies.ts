@@ -3,6 +3,7 @@ import type { PublicLobbiesListDto } from "@/types/dto/response/PublicLobbiesLis
 export async function getTenPublicLobbies(pageNumber: number): Promise<PublicLobbiesListDto> {
     const response = await fetch(`/api/lobby/public/get-active-lobbies?page=${pageNumber}`, {
         method: "GET",
+        credentials: "include",
         headers: { "Accept" : "application/json" },
     });
     return await response.json();
