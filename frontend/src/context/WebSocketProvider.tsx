@@ -2,8 +2,8 @@ import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
 import { createContext, useContext, useEffect, useRef } from "react";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { useQueryClient } from "@tanstack/react-query";
-import { initWebSocket } from "../utils/initWebSocket";
-import { initStompClient } from "../utils/initStompClient";
+import { initWebSocket } from "../utils/services/initWebSocket";
+import { initStompClient } from "../utils/services/initStompClient";
 
 type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;

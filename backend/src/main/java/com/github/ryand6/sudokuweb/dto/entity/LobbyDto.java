@@ -21,6 +21,8 @@ public class LobbyDto {
 
     private String lobbyName;
 
+    private Instant createdAt;
+
     private Difficulty difficulty;
 
     private TimeLimitPreset timeLimit;

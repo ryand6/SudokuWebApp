@@ -18,9 +18,9 @@ export function PrivateLobbyJoinModalPane() {
     }
 
     return (
-        <div>
-            <Input id="join-code-input" ref={inputRef} type="text" placeholder="Enter join code" required />
-            <Button id="join-private-btn" onClick={handleClick}>Join</Button>
+        <div className="flex flex-col items-center gap-4 mt-12">
+            <Input id="join-code-input" className="w-[75%]" ref={inputRef} type="text" placeholder="Enter join code" required />
+            <Button id="join-private-btn" className="w-[20%] cursor-pointer" onClick={handleClick}>Join</Button>
         </div>
     )
 }

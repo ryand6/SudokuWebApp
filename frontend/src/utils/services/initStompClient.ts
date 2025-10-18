@@ -1,8 +1,8 @@
 import { Client, type IFrame, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { handleUserWebSocketMessages } from "../services/websocket/handleUserWebSocketMessages";
+import { handleUserWebSocketMessages } from "../../services/websocket/handleUserWebSocketMessages";
 import type { QueryClient } from "@tanstack/react-query";
-import { stompClientFactory } from "../factories/stompClientFactory";
-import { getCsrfToken } from "../api/csrf/getCsrfToken";
+import { stompClientFactory } from "../../factories/stompClientFactory";
+import { getCsrfToken } from "../../api/csrf/getCsrfToken";
 
 export async function initStompClient(
     socket: WebSocket,

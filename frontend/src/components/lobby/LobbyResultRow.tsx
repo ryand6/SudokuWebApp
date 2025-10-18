@@ -3,6 +3,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "../ui/button";
 import { isCurrentUserInLobby } from "@/utils/lobby/isCurrentUserInLobby";
 import type { UserDto } from "@/types/dto/entity/UserDto";
+import { computeTimeDifferenceMinutes } from "@/utils/time/computeTimeDifferenceMinutes";
+import { wordToProperCase } from "@/utils/string/wordToProperCase";
 
 export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: LobbyDto, currentUser: UserDto, handleClick: (id: number) => void }) {
     return (
@@ -13,13 +15,14 @@ export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: Lob
                     {lobby.inGame && <CardDescription>Lobby is currently in game</CardDescription>}
                 </CardHeader>
                 <CardContent>
-                    <div className="flex gap-4">
-                        <div className="flex-1 text-left">Difficulty: {lobby.difficulty?.toLowerCase()}</div>
-                        <div className="flex-1 text-left">Time limit: {lobby.timeLimit.toLowerCase()}</div>
+                    <div className="flex gap-4 text-xs sm:text-sm md:text-base">
+                        <div className="flex-1 text-left">Difficulty: {wordToProperCase(lobby.difficulty)}</div>
+                        <div className="flex-1 text-left">Time limit: {wordToProperCase(lobby.timeLimit)}</div>
+                        <div className="flex-1 text-left">Created {computeTimeDifferenceMinutes(lobby.createdAt)} minutes ago</div>
                     </div>
                 </CardContent>
                 <CardFooter className="items-stretch">
-                    <div className="flex w-full">
+                    <div className="flex w-full text-xs sm:text-sm md:text-base">
                         <div className="flex-1">{lobby.lobbyPlayers.length} / 4 Players</div>
                         {!isCurrentUserInLobby(lobby, currentUser) && <Button className="justify-self-end cursor-pointer bg-sidebar-primary" onClick={() => handleClick(lobby.id)} >Join Lobby</Button>}
                     </div>

@@ -5,7 +5,8 @@ import type { LobbyPlayerDto } from "./LobbyPlayerDto"
 export type LobbyDto = {
     id: number,
     lobbyName: string,
-    difficulty: Difficulty | null,
+    createdAt: string,
+    difficulty: Difficulty,
     timeLimit: TimeLimitPreset,
     isActive: boolean,
     isPublic: boolean,

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
-import { redirectPostLogin } from "../utils/redirectPostLogin";
+import { redirectPostLogin } from "../utils/routing/redirectPostLogin";
 
 export function HomePage() {
     const { data: user } = useGetCurrentUser();

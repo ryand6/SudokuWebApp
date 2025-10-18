@@ -1,5 +1,5 @@
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
-import { getCsrfTokenFromCookie } from "@/utils/csrf";
+import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function joinPublicLobby(lobbyId: number): Promise<LobbyDto> {
     const response = await fetch(`/api/lobby/join/public/${lobbyId}`, {
