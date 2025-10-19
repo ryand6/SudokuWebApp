@@ -7,6 +7,7 @@ import { LobbyResultRow } from "../lobby/LobbyResultRow";
 import { useJoinPublicLobby } from "@/hooks/lobby/useJoinPublicLobby";
 import { Button } from "../ui/button";
 import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
+import { toast } from "react-toastify";
 
 export function PublicLobbyList() {
 
@@ -33,8 +34,11 @@ export function PublicLobbyList() {
 
     if (isLoadingLobbies || isLoadingUser) return <SpinnerButton />;
 
-    if (!currentUser) return null;
-    
+    if (!currentUser) {
+        toast.error("An error has occurred.");
+        return null;
+    }
+
     const lobbies = publicLobbies?.pages.flat() ?? [];
 
     const handleClick = (lobbyId: number) => {
