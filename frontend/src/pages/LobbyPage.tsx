@@ -1,4 +1,5 @@
 import { LobbyPlayersPanel } from "@/components/lobby/LobbyPlayersPanel";
+import { LobbySettingsPanel } from "@/components/lobby/LobbySettingsPanel";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { useGetLobby } from "@/hooks/lobby/useGetLobby";
 import { useHandleGetLobbyError } from "@/hooks/lobby/useHandleGetLobbyError";
@@ -25,7 +26,7 @@ export function LobbyPage() {
 
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 
-    if (!lobby) {
+    if (!lobby || !currentUser) {
         toast.error("An error has occurred.");
         return null;
     }
@@ -37,6 +38,7 @@ export function LobbyPage() {
             </div>
             <div id="lobby-content">
                 <LobbyPlayersPanel lobby={lobby} />
+                <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
             </div>
         </div>
     )

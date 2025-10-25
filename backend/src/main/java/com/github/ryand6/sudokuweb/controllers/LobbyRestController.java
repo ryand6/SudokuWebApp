@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb.controllers;
 
+import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.request.LobbyDifficultyUpdateRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.LobbySetupRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.PrivateLobbyJoinRequestDto;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
@@ -130,6 +132,15 @@ public class LobbyRestController {
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
         return ResponseEntity.ok(null);
+    }
+
+    @PostMapping("/update-difficulty")
+    public ResponseEntity<?> updateLobbyDifficulty(@RequestBody LobbyDifficultyUpdateRequestDto requestDto) {
+        LobbyDto lobbyDto = lobbyService.updateLobbyDifficulty(requestDto.getLobbyId(), requestDto.getDifficulty());
+
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
+        return ResponseEntity.ok(lobbyDto);
     }
 
 }

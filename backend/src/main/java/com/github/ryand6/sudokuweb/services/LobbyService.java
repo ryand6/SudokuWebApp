@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
@@ -162,6 +163,15 @@ public class LobbyService {
         // Delete the LobbyPlayer from the DB
         lobbyPlayerRepository.deleteByCompositeId(lobbyId, userId);
         lobby.setLobbyPlayers(activePlayers);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    @Transactional
+    public LobbyDto updateLobbyDifficulty(Long lobbyId, Difficulty difficulty) {
+        // Retrieve lobby
+        LobbyEntity lobby = findAndLockLobby(lobbyId);
+        lobby.setDifficulty(difficulty);
+        LobbyEntity updatedLobby = lobbyRepository.save(lobby);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 

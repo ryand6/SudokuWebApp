@@ -4,9 +4,9 @@ export function LobbyPlayersPanel({lobby}: {lobby: LobbyDto}) {
     return (
         <div id="lobby-player-panel">
             <h2>Players ({lobby.lobbyPlayers.length}/4)</h2>
-            {lobby.lobbyPlayers.map((player) => {
+            {lobby.lobbyPlayers.map((player, index) => {
                 return (
-                    <div id="player-row">
+                    <div id="player-row" key={index}>
                         {player.user.id === lobby.hostId && <span id="host-star">★</span>}
                         <span id="player-name">{player.user.username}</span>
                         {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d]"></span> : player.lobbyStatus === "INGAME" ? 
