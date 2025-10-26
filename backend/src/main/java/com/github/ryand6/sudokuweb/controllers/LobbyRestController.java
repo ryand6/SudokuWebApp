@@ -4,6 +4,7 @@ import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.request.LobbyDifficultyUpdateRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.LobbySetupRequestDto;
+import com.github.ryand6.sudokuweb.dto.request.LobbyTimeLimitUpdateRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.PrivateLobbyJoinRequestDto;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.PublicLobbiesListDto;
@@ -11,6 +12,7 @@ import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
 import com.github.ryand6.sudokuweb.services.UserService;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -134,9 +136,20 @@ public class LobbyRestController {
         return ResponseEntity.ok(null);
     }
 
+    // Update difficulty to be applied to lobby games
     @PostMapping("/update-difficulty")
     public ResponseEntity<?> updateLobbyDifficulty(@RequestBody LobbyDifficultyUpdateRequestDto requestDto) {
         LobbyDto lobbyDto = lobbyService.updateLobbyDifficulty(requestDto.getLobbyId(), requestDto.getDifficulty());
+
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
+        return ResponseEntity.ok(lobbyDto);
+    }
+
+    // Update time limit to be applied to lobby games
+    @PostMapping("/update-time-limit")
+    public ResponseEntity<?> updateLobbyTimeLimit(@RequestBody LobbyTimeLimitUpdateRequestDto requestDto) {
+        LobbyDto lobbyDto = lobbyService.updateLobbyTimeLimit(requestDto.getLobbyId(), requestDto.getTimeLimit());
 
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
