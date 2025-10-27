@@ -15,7 +15,6 @@ export async function initStompClient(
     let csrfTokenData = await getCsrfToken();
     if (csrfTokenData === null) {
         console.warn("Missing CSRF token, cannot initialize STOMP client.");
-        // Option 1: notify user
         alert("We couldn’t establish a secure connection. Please refresh the page.");
     }
 

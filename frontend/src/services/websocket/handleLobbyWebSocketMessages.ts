@@ -1,9 +1,21 @@
 import { QueryClient } from "@tanstack/react-query";
+import { addLobbyMessage } from "../lobby/lobbyMessagesService";
+import { useLobbyMessages } from "@/hooks/lobby/useLobbyMessages";
 
 export function handleLobbyWebSocketMessages(message: any, queryClient: QueryClient, lobbyId: number) {
+    const sessionStorageKey = `lobbyChat${lobbyId}`;
+
     switch (message.type) {
-        // Updates React Query currentUser cache if the user is updated in the backend
+        // Updates React Query lobby cache if the lobby is updated in the backend
         case "LOBBY_UPDATED":
             queryClient.setQueryData(["lobby", lobbyId], message.payload);
+            break;
+        // Updates session storage if message is received in lobby chat
+        case "LOBBY_CHAT_MESSAGE":
+            queryClient.setQueryData<string[]>(["lobbyChat", lobbyId], () => {
+                const updatedMessages = addLobbyMessage(sessionStorageKey, message.payload);
+                return updatedMessages;
+            });
+            break;
     }
 }
