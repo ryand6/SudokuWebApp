@@ -29,10 +29,7 @@ public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEn
                 .joinedAt(lobbyPlayerEntity.getJoinedAt())
                 .lobbyStatus(lobbyPlayerEntity.getLobbyStatus())
                 .readyAt(lobbyPlayerEntity.getReadyAt())
-                .difficultyPreference(lobbyPlayerEntity.getDifficultyPreference())
-                .difficultyVoteTimestamp(lobbyPlayerEntity.getDifficultyVoteTimestamp())
-                .durationPreference(lobbyPlayerEntity.getDurationPreference())
-                .durationVoteTimestamp(lobbyPlayerEntity.getDurationVoteTimestamp())
+                .lobbyMessageTimestamp(lobbyPlayerEntity.getLobbyMessageTimestamp())
                 .build();
     }
 

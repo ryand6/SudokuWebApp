@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.domain;
 
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
-import com.github.ryand6.sudokuweb.enums.PreferenceDirection;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,23 +39,9 @@ public class LobbyPlayerEntity {
     @Column(name = "ready_at")
     private Instant readyAt = null;
 
-    // Player preference for game difficulty, used in Lobby polling window - null until preference vote cast
-    @Enumerated(EnumType.STRING)
-    @Column(name = "difficulty_preference")
-    private PreferenceDirection difficultyPreference = null;
-
-    // Stored the UTC timestamp of the last submitted vote by the player for the difficulty setting
-    @Column(name = "difficulty_vote_timestamp")
-    private Instant difficultyVoteTimestamp = null;
-
-    // Player preference for game duration, used in Lobby polling window - null until preference vote cast
-    @Enumerated(EnumType.STRING)
-    @Column(name = "duration_preference")
-    private PreferenceDirection durationPreference = null;
-
-    // Stored the UTC timestamp of the last submitted vote by the player for the duration setting
-    @Column(name = "duration_vote_timestamp")
-    private Instant durationVoteTimestamp = null;
+    // Stored the UTC timestamp of the last submitted chat message by the player - used to prevent message spamming
+    @Column(name = "lobby_message_timestamp")
+    private Instant lobbyMessageTimestamp = null;
 
     // set the join time before persisting the entity to the DB for the first time - no manual setting required
     @PrePersist

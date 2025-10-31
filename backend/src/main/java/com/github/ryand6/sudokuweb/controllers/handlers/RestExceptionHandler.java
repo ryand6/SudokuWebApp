@@ -15,16 +15,19 @@ Handles exceptions and through HTTP Status and Messaging - handles exceptions th
  */
 public class RestExceptionHandler {
 
-    private static final Map<Class<? extends Throwable>, HttpStatus> EXCEPTION_HTTP_STATUS_MAP = Map.of(
-            UserNotFoundException.class, HttpStatus.NOT_FOUND,
-            LobbyNotFoundException.class, HttpStatus.NOT_FOUND,
-            TokenNotFoundException.class, HttpStatus.NOT_FOUND,
-            LobbyFullException.class, HttpStatus.CONFLICT,
-            UsernameTakenException.class, HttpStatus.CONFLICT,
-            LobbyInactiveException.class, HttpStatus.GONE,
-            OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED,
-            InvalidTokenException.class, HttpStatus.UNAUTHORIZED,
-            InvalidLobbyPublicStatusParameterException.class, HttpStatus.BAD_REQUEST
+    private static final Map<Class<? extends Throwable>, HttpStatus> EXCEPTION_HTTP_STATUS_MAP = Map.ofEntries(
+            Map.entry(UserNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(LobbyNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
+            Map.entry(UsernameTakenException.class, HttpStatus.CONFLICT),
+            Map.entry(LobbyInactiveException.class, HttpStatus.GONE),
+            Map.entry(OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED),
+            Map.entry(InvalidTokenException.class, HttpStatus.UNAUTHORIZED),
+            Map.entry(InvalidLobbyPublicStatusParameterException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(MessageProfanityException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS)
     );
 
     // catches all Controller thrown exceptions

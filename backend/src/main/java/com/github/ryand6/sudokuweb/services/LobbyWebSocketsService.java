@@ -22,4 +22,17 @@ public class LobbyWebSocketsService {
         messagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleLobbyChatMessage(Long lobbyId, String username, String message, SimpMessagingTemplate messagingTemplate) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "LOBBY_CHAT_MESSAGE",
+                "username", username,
+                "payload", message
+        );
+
+        String topic = "/topic/lobby/" + lobbyId;
+
+        // Send message over websocket to lobby topic where all active players are subscribed to
+        messagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
 }
