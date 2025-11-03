@@ -5,12 +5,12 @@ import com.github.ryand6.sudokuweb.dto.response.LobbyChatSubmitMessageResponseDt
 import com.github.ryand6.sudokuweb.services.LobbyChatService;
 import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +33,7 @@ public class LobbyChatRestController {
     }
 
     @PostMapping("/submit-chat-message")
-    public ResponseEntity<?> sendLobbyChatMessage(@Valid LobbyChatMessageRequestDto requestDto,
+    public ResponseEntity<?> sendLobbyChatMessage(@Valid @RequestBody LobbyChatMessageRequestDto requestDto,
                                                   BindingResult bindingResult) {
         // Check if validation errors occurred in DTO
         if (bindingResult.hasErrors()) {
@@ -46,6 +46,9 @@ public class LobbyChatRestController {
                     .badRequest()
                     .body(errors);
         }
+
+        System.out.println("\n\n" + requestDto + "\n\n");
+
         lobbyChatService.submitMessage(requestDto.getLobbyId(), requestDto.getUserId(), requestDto.getMessage());
 
         lobbyWebSocketsService.handleLobbyChatMessage(requestDto.getLobbyId(), requestDto.getUsername(), requestDto.getMessage(), messagingTemplate);

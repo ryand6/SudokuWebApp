@@ -1,3 +1,4 @@
+import { LobbyChatPanel } from "@/components/lobby/LobbyChatPanel";
 import { LobbyPlayersPanel } from "@/components/lobby/LobbyPlayersPanel";
 import { LobbySettingsPanel } from "@/components/lobby/LobbySettingsPanel";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
@@ -39,6 +40,7 @@ export function LobbyPage() {
             <div id="lobby-content">
                 <LobbyPlayersPanel lobby={lobby} />
                 <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
+                <LobbyChatPanel lobby={lobby} currentUser={currentUser} />
             </div>
         </div>
     )

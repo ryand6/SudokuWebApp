@@ -7,7 +7,7 @@ export function addLobbyMessage(lobbyId: number, username: string, message: stri
     let updatedMessages = [...existingMessages, newMessage];
     // Maximum of 100 messages allowed in a lobby chat at any one time
     if (updatedMessages.length > 100) {
-        updatedMessages = updatedMessages.slice(100 - updatedMessages.length);
+        updatedMessages = updatedMessages.slice(updatedMessages.length - 100);
     }
     sessionStorage.setItem(sessionStorageKey, JSON.stringify(updatedMessages));
     return updatedMessages;
