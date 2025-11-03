@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.dto.request.LobbyChatMessageRequestDto;
+import com.github.ryand6.sudokuweb.dto.response.LobbyChatSubmitMessageResponseDto;
 import com.github.ryand6.sudokuweb.services.LobbyChatService;
 import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
 import jakarta.validation.Valid;
@@ -50,8 +51,7 @@ public class LobbyChatRestController {
         lobbyWebSocketsService.handleLobbyChatMessage(requestDto.getLobbyId(), requestDto.getUsername(), requestDto.getMessage(), messagingTemplate);
 
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .body(null);
+                .ok(new LobbyChatSubmitMessageResponseDto(requestDto.getLobbyId(), requestDto.getUsername(), requestDto.getMessage()));
     }
 
 }

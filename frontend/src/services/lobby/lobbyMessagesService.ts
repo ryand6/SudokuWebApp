@@ -1,17 +1,24 @@
 // Functions for handling client side retrieval and deletion of session stored lobby chat messages
 
-export function addLobbyMessage(key: string, username: string, message: string) {
-    const existingMessages: {user: string, message: string}[] = getLobbyMessages(key);
+export function addLobbyMessage(lobbyId: number, username: string, message: string) {
+    const sessionStorageKey = `lobbyChat${lobbyId}`;
+    const existingMessages: {user: string, message: string}[] = getLobbyMessages(lobbyId);
     const newMessage = {user: username, message: message};
-    const updatedMessages = [...existingMessages, newMessage];
-    sessionStorage.setItem(key, JSON.stringify(updatedMessages));
+    let updatedMessages = [...existingMessages, newMessage];
+    // Maximum of 100 messages allowed in a lobby chat at any one time
+    if (updatedMessages.length > 100) {
+        updatedMessages = updatedMessages.slice(100 - updatedMessages.length);
+    }
+    sessionStorage.setItem(sessionStorageKey, JSON.stringify(updatedMessages));
     return updatedMessages;
 }
 
-export function getLobbyMessages(key: string): {user: string, message: string}[] {
-    return JSON.parse(sessionStorage.getItem(key) || "[]");
+export function getLobbyMessages(lobbyId: number): {user: string, message: string}[] {
+    const sessionStorageKey = `lobbyChat${lobbyId}`;
+    return JSON.parse(sessionStorage.getItem(sessionStorageKey) || "[]");
 }
 
-export function removeLobbyMessage(key: string) {
-    sessionStorage.removeItem(key);
+export function removeLobbyMessage(lobbyId: number) {
+    const sessionStorageKey = `lobbyChat${lobbyId}`;
+    sessionStorage.removeItem(sessionStorageKey);
 }
