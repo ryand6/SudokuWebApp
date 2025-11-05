@@ -47,8 +47,6 @@ public class LobbyChatRestController {
                     .body(errors);
         }
 
-        System.out.println("\n\n" + requestDto + "\n\n");
-
         lobbyChatService.submitMessage(requestDto.getLobbyId(), requestDto.getUserId(), requestDto.getMessage());
 
         lobbyWebSocketsService.handleLobbyChatMessage(requestDto.getLobbyId(), requestDto.getUsername(), requestDto.getMessage(), messagingTemplate);

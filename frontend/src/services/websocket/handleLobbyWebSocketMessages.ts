@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { addLobbyMessage } from "../lobby/lobbyMessagesService";
+import { updateLobbyMessages } from "../lobby/lobbyMessagesService";
 
 export function handleLobbyWebSocketMessages(message: any, queryClient: QueryClient, lobbyId: number) {
     switch (message.type) {
@@ -9,8 +9,10 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
             break;
         // Updates session storage if message is received in lobby chat
         case "LOBBY_CHAT_MESSAGE":
-            queryClient.setQueryData<{user: string, message: string}[]>(["lobbyChat", lobbyId], () => {
-                const updatedMessages = addLobbyMessage(lobbyId, message.username, message.payload);
+            const newMessage: {username: string, message: string} = {username: message.username, message: message.payload};
+            queryClient.setQueryData<{username: string, message: string}[]>(["lobbyChat", lobbyId], (existingMessages = []) => {
+                let updatedMessages = [...existingMessages, newMessage].slice(-10);
+                updateLobbyMessages(lobbyId, updatedMessages);
                 return updatedMessages;
             });
             break;

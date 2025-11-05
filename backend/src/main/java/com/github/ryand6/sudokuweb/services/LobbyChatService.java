@@ -10,6 +10,7 @@ import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.validation.ProfanityValidator;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -34,16 +35,13 @@ public class LobbyChatService {
             throw new LobbyPlayerNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist");
         }
         LobbyPlayerEntity lobbyPlayerRequester = lobbyPlayerRequesterOptional.get();
-        Instant lastMessageTime = getLastMessageTime(lobbyPlayerRequester);
+        Instant lastMessageTime = lobbyPlayerRequester.getLobbyMessageTimestamp();
         if (lastMessageTime != null) {
             validateMessageTime(lastMessageTime);
         }
         LobbyPlayerEntity updatedLobbyPlayerRequester = updateLobbyMessageTime(lobbyPlayerRequester);
+        lobbyPlayerRepository.save(updatedLobbyPlayerRequester);
         return lobbyPlayerEntityDtoMapper.mapToDto(updatedLobbyPlayerRequester);
-    }
-
-    private Instant getLastMessageTime(LobbyPlayerEntity lobbyPlayer) {
-        return lobbyPlayer.getLobbyMessageTimestamp();
     }
 
     private LobbyPlayerEntity updateLobbyMessageTime(LobbyPlayerEntity lobbyPlayer) {
@@ -59,7 +57,7 @@ public class LobbyChatService {
         if (timeSinceMessage < 5) {
             Long remainingSeconds = 5 - timeSinceMessage;
             throw new MessageTooSoonException(
-                    "Please wait " + remainingSeconds + " more seconds before voting again",
+                    "Please wait " + remainingSeconds + " more seconds before sending another message",
                     remainingSeconds
             );
         }

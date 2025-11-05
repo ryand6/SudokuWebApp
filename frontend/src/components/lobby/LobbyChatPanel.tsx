@@ -26,7 +26,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                     return (
                         <div id="lobby-message-container" key={index}>
                             <div id="lobby-message-user">
-                                {msg.user}
+                                {msg.username}
                             </div>
                             <div id="lobby-message-content">
                                 {msg.message}
