@@ -30,6 +30,7 @@ public class LobbyChatService {
     }
 
     public LobbyPlayerDto submitMessage(Long lobbyId, Long userId, String message) {
+        validateMessageContent(message);
         Optional<LobbyPlayerEntity> lobbyPlayerRequesterOptional = lobbyPlayerRepository.findByCompositeId(lobbyId, userId);
         if (lobbyPlayerRequesterOptional.isEmpty()) {
             throw new LobbyPlayerNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist");

@@ -32,7 +32,7 @@ export function DashboardPage() {
                     <h3>Top 5 Players</h3>
                     <ol>
                         {topFivePlayersDto?.topFivePlayers.map((player, index) => 
-                            <li key={index}><span>{player.username}</span> | Score: <span>{player.score.totalScore}</span> | Rank: #<span>{index + 1}</span></li>
+                            <li key={index}><span>{player.username}</span> | Score: <span>{player.score.totalScore}</span> | Rank: #<span>{userRankDto?.userRank}</span></li>
                         )}
                     </ol>
                 </div>
