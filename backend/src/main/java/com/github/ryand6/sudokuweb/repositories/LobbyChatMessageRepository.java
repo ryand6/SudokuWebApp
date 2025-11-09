@@ -7,16 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
 
 public interface LobbyChatMessageRepository extends JpaRepository<LobbyChatMessageEntity, Long> {
 
     // Returns page containing list of messages for
-    Page<LobbyChatMessageEntity> findByLobbyIdOrderByCreatedAtDesc(Long lobbyId, Pageable pageable);
+    Page<LobbyChatMessageEntity> findByLobbyEntity_IdOrderByCreatedAtDesc(Long lobbyId, Pageable pageable);
 
     // Used to trim down lobby messages so that only the most recent 100 messages are persisted
     // Using middle sub-query to ensure the ids are read into memory before attempting a deletion on the table
+    // NOT CURRENTLY IN USE
     @Transactional
     @Modifying
     @Query(value = """

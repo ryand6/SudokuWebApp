@@ -1,0 +1,19 @@
+import { getLobbyChatMessages } from "@/api/lobby/getLobbyChatMessages";
+import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
+import { useInfiniteQuery } from "@tanstack/react-query";
+
+export const PAGE_SIZE = 20;
+
+export function useGetLobbyChatMessages(lobbyId: number) { 
+    return useInfiniteQuery<LobbyChatMessageDto[], Error>({ 
+        queryKey: ["lobbyChat", lobbyId],
+        queryFn: async ({ queryKey, pageParam }) => {
+            const [, lobbyId] = queryKey;
+            const dto = await getLobbyChatMessages(lobbyId as number, pageParam as number);
+            return dto.messages;
+        },
+        initialPageParam: 0,
+        // Pages use zero-based indexing, therefore next page is equal to the size of the length of the current page array rather than incrementing the length by 1
+        getNextPageParam: (lastPage, allPages) => lastPage?.length === PAGE_SIZE ? allPages.length : undefined,
+    });
+}

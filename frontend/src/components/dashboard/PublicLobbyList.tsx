@@ -21,10 +21,10 @@ export function PublicLobbyList() {
     });
 
     useEffect(() => {
-            if (inView && hasNextPage && !isFetchingNextPage) {
-                fetchNextPage();
-            }
-        }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
 
     if (isLobbiesError || isUserError) {
         if (isLobbiesError) console.log(lobbyError);

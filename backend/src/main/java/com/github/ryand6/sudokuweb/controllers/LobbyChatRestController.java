@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb.controllers;
 
+import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.request.LobbyChatMessageRequestDto;
+import com.github.ryand6.sudokuweb.dto.response.LobbyGetChatMessagesResponseDto;
 import com.github.ryand6.sudokuweb.dto.response.LobbyChatSubmitMessageResponseDto;
 import com.github.ryand6.sudokuweb.services.LobbyChatService;
 import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
@@ -9,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,6 +31,13 @@ public class LobbyChatRestController {
         this.messagingTemplate = messagingTemplate;
     }
 
+    @GetMapping("/get-chat-messages")
+    public ResponseEntity<?> getLobbyChatMessages(@RequestParam Long lobbyId,
+                                                  @RequestParam int page) {
+        List<LobbyChatMessageDto> lobbyChatMessages = lobbyChatService.getLobbyChatMessages(lobbyId, page);
+        return ResponseEntity.ok(new LobbyGetChatMessagesResponseDto(lobbyChatMessages));
+    }
+
     @PostMapping("/submit-chat-message")
     public ResponseEntity<?> sendLobbyChatMessage(@Valid @RequestBody LobbyChatMessageRequestDto requestDto,
                                                   BindingResult bindingResult) {
@@ -47,12 +53,12 @@ public class LobbyChatRestController {
                     .body(errors);
         }
 
-        lobbyChatService.submitMessage(requestDto.getLobbyId(), requestDto.getUserId(), requestDto.getMessage());
+        LobbyChatMessageDto lobbyChatMessageDto = lobbyChatService.submitMessage(requestDto.getLobbyId(), requestDto.getUserId(), requestDto.getMessage());
 
-        lobbyWebSocketsService.handleLobbyChatMessage(requestDto.getLobbyId(), requestDto.getUsername(), requestDto.getMessage(), messagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(lobbyChatMessageDto, messagingTemplate);
 
         return ResponseEntity
-                .ok(new LobbyChatSubmitMessageResponseDto(requestDto.getLobbyId(), requestDto.getUsername(), requestDto.getMessage()));
+                .ok(lobbyChatMessageDto);
     }
 
 }

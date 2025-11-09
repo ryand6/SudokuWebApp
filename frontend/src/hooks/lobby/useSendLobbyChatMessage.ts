@@ -1,12 +1,12 @@
 import { sendLobbyChatMessage } from "@/api/lobby/sendLobbyChatMessage";
+import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
 import type { LobbyChatMessageRequestDto } from "@/types/dto/request/LobbyChatMessageRequestDto";
-import type { LobbyChatSubmitMessageResponseDto } from "@/types/dto/response/LobbyChatSubmitMessageResponseDto";
 import { useMutation } from "@tanstack/react-query";
 
 export function useSendLobbyChatMessage() {
-    return useMutation<LobbyChatSubmitMessageResponseDto, Error, LobbyChatMessageRequestDto>({
+    return useMutation<LobbyChatMessageDto, Error, LobbyChatMessageRequestDto>({
         mutationFn: ({lobbyId, userId, username, message}) => sendLobbyChatMessage(lobbyId, userId, username, message),
-        onSuccess: (data: LobbyChatSubmitMessageResponseDto) => {
+        onSuccess: (data: LobbyChatMessageDto) => {
             // cache will be updated following websocket message receipt
         },
         onError: (error) => {

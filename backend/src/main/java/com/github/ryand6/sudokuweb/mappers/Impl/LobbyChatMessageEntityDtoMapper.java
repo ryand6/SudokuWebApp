@@ -3,7 +3,9 @@ package com.github.ryand6.sudokuweb.mappers.Impl;
 import com.github.ryand6.sudokuweb.domain.LobbyChatMessageEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LobbyChatMessageEntityDtoMapper implements EntityDtoMapper<LobbyChatMessageEntity, LobbyChatMessageDto> {
 
     @Override

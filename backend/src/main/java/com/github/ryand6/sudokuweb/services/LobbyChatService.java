@@ -1,35 +1,63 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.domain.LobbyChatMessageEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.exceptions.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.MessageTooSoonException;
+import com.github.ryand6.sudokuweb.mappers.Impl.LobbyChatMessageEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyPlayerEntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.LobbyChatMessageRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.validation.ProfanityValidator;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.io.Console;
+import org.springframework.data.domain.Pageable;
 import java.time.Instant;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LobbyChatService {
 
     private final LobbyPlayerRepository lobbyPlayerRepository;
+    private final LobbyChatMessageRepository lobbyChatMessageRepository;
+    private final LobbyChatMessageEntityDtoMapper lobbyChatMessageEntityDtoMapper;
     private final LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
     private final ProfanityValidator profanityValidator;
 
     public LobbyChatService(LobbyPlayerRepository lobbyPlayerRepository,
+                            LobbyChatMessageRepository lobbyChatMessageRepository,
+                            LobbyChatMessageEntityDtoMapper lobbyChatMessageEntityDtoMapper,
                             LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper,
                             ProfanityValidator profanityValidator) {
         this.lobbyPlayerRepository = lobbyPlayerRepository;
+        this.lobbyChatMessageRepository = lobbyChatMessageRepository;
+        this.lobbyChatMessageEntityDtoMapper = lobbyChatMessageEntityDtoMapper;
         this.lobbyPlayerEntityDtoMapper = lobbyPlayerEntityDtoMapper;
         this.profanityValidator = profanityValidator;
     }
 
-    public LobbyPlayerDto submitMessage(Long lobbyId, Long userId, String message) {
+    private int PAGE_SIZE = 20;
+
+    public List<LobbyChatMessageDto> getLobbyChatMessages(Long lobbyId, int page) {
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        // Return a list of 20 chat messages ordered oldest to newest
+        return lobbyChatMessageRepository.findByLobbyEntity_IdOrderByCreatedAtDesc(lobbyId, pageable)
+                .stream()
+                .map(lobbyChatMessageEntityDtoMapper::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public LobbyChatMessageDto submitMessage(Long lobbyId, Long userId, String message) {
         validateMessageContent(message);
         Optional<LobbyPlayerEntity> lobbyPlayerRequesterOptional = lobbyPlayerRepository.findByCompositeId(lobbyId, userId);
         if (lobbyPlayerRequesterOptional.isEmpty()) {
@@ -42,7 +70,12 @@ public class LobbyChatService {
         }
         LobbyPlayerEntity updatedLobbyPlayerRequester = updateLobbyMessageTime(lobbyPlayerRequester);
         lobbyPlayerRepository.save(updatedLobbyPlayerRequester);
-        return lobbyPlayerEntityDtoMapper.mapToDto(updatedLobbyPlayerRequester);
+        LobbyChatMessageEntity lobbyChatMessage = new LobbyChatMessageEntity();
+        lobbyChatMessage.setLobbyEntity(updatedLobbyPlayerRequester.getLobby());
+        lobbyChatMessage.setUserEntity(updatedLobbyPlayerRequester.getUser());
+        lobbyChatMessage.setMessage(message);
+        lobbyChatMessageRepository.save(lobbyChatMessage);
+        return lobbyChatMessageEntityDtoMapper.mapToDto(lobbyChatMessage);
     }
 
     private LobbyPlayerEntity updateLobbyMessageTime(LobbyPlayerEntity lobbyPlayer) {
@@ -68,7 +101,7 @@ public class LobbyChatService {
     private void validateMessageContent(String message) {
         String[] messageWords = message.split(" ");
         for (String word: messageWords) {
-            boolean isClean = profanityValidator.isValid(message);
+            boolean isClean = profanityValidator.isValid(word);
             if (!isClean) throw new MessageProfanityException("Message contains prohibited content");
         }
     }
