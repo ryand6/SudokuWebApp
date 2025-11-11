@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
@@ -9,7 +10,7 @@ import org.mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
-public class LobbyServiceTests {
+public class LobbyServiceTests extends AbstractIntegrationTest {
 
     @Mock
     private LobbyRepository lobbyRepository;

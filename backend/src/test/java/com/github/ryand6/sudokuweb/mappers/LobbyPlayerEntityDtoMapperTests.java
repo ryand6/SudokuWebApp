@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.mappers;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyPlayerEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
@@ -17,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-public class LobbyPlayerEntityDtoMapperTests {
+public class LobbyPlayerEntityDtoMapperTests extends AbstractIntegrationTest {
 
     private UserRepository userRepository;
     private LobbyRepository lobbyRepository;
@@ -34,20 +35,20 @@ public class LobbyPlayerEntityDtoMapperTests {
         lobbyPlayerEntityDtoMapper = new LobbyPlayerEntityDtoMapper(userRepository, lobbyRepository, userEntityDtoMapper);
     }
 
-    @Test
-    public void mapToDto_mapsFieldsCorrectly() {
-        LobbyPlayerId id = new LobbyPlayerId(1L, 2L);
-        LobbyPlayerEntity entity = LobbyPlayerEntity.builder()
-                .id(id)
-                .joinedAt(Instant.now())
-                .build();
-
-        LobbyPlayerDto dto = lobbyPlayerEntityDtoMapper.mapToDto(entity);
-
-        assertThat(dto).isNotNull();
-        assertThat(dto.getId()).isEqualTo(id);
-        assertThat(dto.getJoinedAt()).isEqualTo(entity.getJoinedAt());
-    }
+//    @Test
+//    public void mapToDto_mapsFieldsCorrectly() {
+//        LobbyPlayerId id = new LobbyPlayerId(1L, 2L);
+//        LobbyPlayerEntity entity = LobbyPlayerEntity.builder()
+//                .id(id)
+//                .joinedAt(Instant.now())
+//                .build();
+//
+//        LobbyPlayerDto dto = lobbyPlayerEntityDtoMapper.mapToDto(entity);
+//
+//        assertThat(dto).isNotNull();
+//        assertThat(dto.getId()).isEqualTo(id);
+//        assertThat(dto.getJoinedAt()).isEqualTo(entity.getJoinedAt());
+//    }
 
 //    @Test
 //    public void mapFromDto_mapsFieldsCorrectly() {

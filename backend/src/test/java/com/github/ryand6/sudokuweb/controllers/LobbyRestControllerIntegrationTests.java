@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.*;
+import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.UserService;
 import org.junit.jupiter.api.Test;
@@ -25,12 +26,7 @@ import java.util.stream.Stream;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class LobbyRestControllerIntegrationTests {
-
-    @Autowired
-    private MockMvc mockMvc;
+public class LobbyRestControllerIntegrationTests extends AbstractControllerIntegrationTests {
 
     @MockBean
     private LobbyService lobbyService;

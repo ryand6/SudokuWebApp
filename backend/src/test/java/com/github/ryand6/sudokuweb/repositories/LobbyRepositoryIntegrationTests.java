@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,38 +31,20 @@ import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class LobbyRepositoryIntegrationTests {
+public class LobbyRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     private final LobbyRepository underTest;
     private final UserRepository userRepository;
-    private final JdbcTemplate jdbcTemplate;
     private final PlatformTransactionManager platformTransactionManager;
 
     @Autowired
     public LobbyRepositoryIntegrationTests(
             LobbyRepository underTest,
             UserRepository userRepository,
-            JdbcTemplate jdbcTemplate,
             PlatformTransactionManager platformTransactionManager) {
         this.underTest = underTest;
         this.userRepository = userRepository;
-        this.jdbcTemplate = jdbcTemplate;
         this.platformTransactionManager = platformTransactionManager;
-    }
-
-    @BeforeEach
-    public void setUp() {
-        // Correct SQL syntax for deleting all rows from the tables
-        jdbcTemplate.execute("DELETE FROM game_state");
-        jdbcTemplate.execute("DELETE FROM games");
-        jdbcTemplate.execute("DELETE FROM lobby_players");
-        jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM users");
-        jdbcTemplate.execute("DELETE FROM scores");
-        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
     }
 
 //    @Test

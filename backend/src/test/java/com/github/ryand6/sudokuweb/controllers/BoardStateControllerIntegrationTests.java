@@ -1,12 +1,14 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
+import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import org.hamcrest.Matchers;
@@ -29,30 +31,19 @@ import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequ
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+public class BoardStateControllerIntegrationTests extends AbstractControllerIntegrationTests {
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@AutoConfigureMockMvc
-public class BoardStateControllerIntegrationTests {
-
-    private MockMvc mockMvc;
+    @Autowired
     private ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final LobbyRepository lobbyRepository;
-    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public BoardStateControllerIntegrationTests(
-            MockMvc mockMvc,
             UserRepository userRepository,
-            LobbyRepository lobbyRepository,
-            JdbcTemplate jdbcTemplate) {
-        this.mockMvc = mockMvc;
+            LobbyRepository lobbyRepository) {
         this.userRepository = userRepository;
         this.lobbyRepository = lobbyRepository;
-        this.jdbcTemplate = jdbcTemplate;
-        this.objectMapper = new ObjectMapper();
     }
 
     private ScoreEntity score;
@@ -61,14 +52,6 @@ public class BoardStateControllerIntegrationTests {
 
     @BeforeEach
     public void setUp() {
-        // Correct SQL syntax for deleting all rows from the tables
-        jdbcTemplate.execute("DELETE FROM game_state");
-        jdbcTemplate.execute("DELETE FROM games");
-        jdbcTemplate.execute("DELETE FROM lobby_players");
-        jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM users");
-        jdbcTemplate.execute("DELETE FROM scores");
-        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
         // Lobby needs to exist for generateSudokuBoard() to work
         score = TestDataUtil.createTestScoreA();
         user = TestDataUtil.createTestUserA(score);

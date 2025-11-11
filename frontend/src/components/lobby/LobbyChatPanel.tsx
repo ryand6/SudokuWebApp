@@ -2,7 +2,7 @@ import { useGetLobbyChatMessages } from "@/hooks/lobby/useGetLobbyChatMessages"
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useSendLobbyChatMessage } from "@/hooks/lobby/useSendLobbyChatMessage";
 import type { UserDto } from "@/types/dto/entity/UserDto";
 import { useInView } from "react-intersection-observer";
@@ -27,7 +27,12 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
         if (inView && hasNextPage && !isFetchingNextPage) {
             fetchNextPage();
         }
-    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
+
+    // Ensures the chat shows persisted messages on refresh
+    useEffect(() => {
+        refetch(); 
+    }, []);
 
     // On mount, scroll to bottom of chat
     useEffect(() => {
@@ -48,7 +53,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
         if (!chatElement) return;
         // If user is within 50px from bottom, declare that they are 'at the bottom' therefore new message icon can be removed
         const isNearBottom = (chatElement.scrollHeight - chatElement.clientHeight - chatElement.scrollTop) > 50;
-        setIsAtBottom(isAtBottom);
+        setIsAtBottom(isNearBottom);
         if (isNearBottom) setHasNewMessages(false);
     }
 
@@ -65,7 +70,11 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
         sendLobbyChatMessage.mutate({lobbyId: lobby.id, userId: currentUser.id, username: currentUser.username, message: inputMessage});
     }
 
-    const messages = chatMessages?.pages.flat() ?? [];
+    const messages = useMemo(() => {
+    // pages hold newest-first order - to render oldest->newest flatten reversed pages
+    if (!chatMessages) return [];
+        return chatMessages.pages.slice().reverse().flat();
+    }, [chatMessages]);
 
     console.log(messages);
 

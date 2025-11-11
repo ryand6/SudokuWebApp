@@ -1,9 +1,10 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { useQueryClient } from "@tanstack/react-query";
 import { initWebSocket } from "../utils/services/initWebSocket";
 import { initStompClient } from "../utils/services/initStompClient";
+import { handleUserWebSocketMessages } from "@/services/websocket/handleUserWebSocketMessages";
 
 type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;
@@ -20,7 +21,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     const clientRef = useRef<Client | null>(null);
     // Persist map across app that keeps track of topics a user is subscribed to so they don't repeatedly subscribe to the same topic
     const subscriptionsRef = useRef<Map<string, StompSubscription>>(new Map());
-
+    const pendingQueueRef = useRef<Array<{ topic: string; callback: (body: any) => void }>>([]);
     const queryClient = useQueryClient();
 
     // Effect handles socket lifecycle - exists whilst there is an authenticated session
@@ -34,13 +35,31 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         if (clientRef.current) return;
         const socket = initWebSocket();
 
-        initStompClient(socket, clientRef, subscriptionsRef, queryClient);
+        // handler which connects user to their personal queue, and also handles any pending subscriptions once the client is connected
+        // handler passed to initStompClient
+        const handleConnect = () => {
+            const topic = "/user/queue/updates";
+            if (!clientRef.current) return;
+            const newSub = clientRef.current.subscribe(topic, (message: IMessage) => {
+                handleUserWebSocketMessages(JSON.parse(message.body), queryClient);
+            });
+            subscriptionsRef.current.set(topic, newSub);
+
+            pendingQueueRef.current.forEach(({ topic, callback }) => {
+                const subscription = clientRef.current!.subscribe(topic, (msg: IMessage) => callback(JSON.parse(msg.body)));
+                subscriptionsRef.current.set(topic, subscription);
+            });
+            pendingQueueRef.current = [];
+        }
+
+        initStompClient(socket, clientRef, handleConnect);
 
         // Cleanup if user logs out
         return () => {
             clientRef.current?.deactivate();
             clientRef.current = null;
             subscriptionsRef.current.clear();
+            pendingQueueRef.current = [];
         }
     }, [currentUser]);
 
@@ -49,7 +68,11 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         if (subscriptionsRef.current.has(topic)) return subscriptionsRef.current.get(topic)!;
         const client = clientRef.current;
         // No socket client connection established to fulfill subscribe
-        if (!client || !client.connected) return null;
+        if (!client || !client.connected) {
+            // Add it to pending queue so that once connection is established, subscriptions are fulfilled
+            pendingQueueRef.current.push({ topic, callback: onMessage });
+            return null;
+        }
         const subscription: StompSubscription = client.subscribe(topic, (message: IMessage) => {
             // Provide parsed IMessages to the provided callback function to handle based on message type
             onMessage(JSON.parse(message.body));

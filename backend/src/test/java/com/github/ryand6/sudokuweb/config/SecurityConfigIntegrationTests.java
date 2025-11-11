@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,27 +23,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@Testcontainers
-class SecurityConfigIntegrationTests {
-
-    @Autowired
-    private MockMvc mockMvc;
+class SecurityConfigIntegrationTests extends AbstractControllerIntegrationTests {
 
     @MockBean
     private UserService userService;
-
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
-
-    // Dynamically register Postgres container properties with Spring
-    @DynamicPropertySource
-    static void configureDataSource(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-    }
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 

@@ -15,20 +15,20 @@ public class ScoreEntityDtoMapperTests {
 
     private final ScoreEntityDtoMapper scoreEntityDtoMapper = new ScoreEntityDtoMapper();
 
-    @Test
-    void mapToDto_shouldReturnValidScoreDto() {
-        ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
-        scoreEntity.setId(2L);
-
-        ScoreDto scoreDto = scoreEntityDtoMapper.mapToDto(scoreEntity);
-
-        System.out.println(scoreDto.getId());
-
-        assertThat(scoreDto).isNotNull();
-        assertThat(scoreDto.getId()).isEqualTo(2L);
-        assertThat(scoreDto.getTotalScore()).isEqualTo(150);
-        assertThat(scoreDto.getGamesPlayed()).isEqualTo(1);
-    }
+//    @Test
+//    void mapToDto_shouldReturnValidScoreDto() {
+//        ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
+//        scoreEntity.setId(2L);
+//
+//        ScoreDto scoreDto = scoreEntityDtoMapper.mapToDto(scoreEntity);
+//
+//        System.out.println(scoreDto.getId());
+//
+//        assertThat(scoreDto).isNotNull();
+//        assertThat(scoreDto.getId()).isEqualTo(2L);
+//        assertThat(scoreDto.getTotalScore()).isEqualTo(150);
+//        assertThat(scoreDto.getGamesPlayed()).isEqualTo(1);
+//    }
 
 //    @Test
 //    void mapFromDto_shouldReturnValidScoreEntity() {

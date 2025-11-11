@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,41 +17,23 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class GameRepositoryIntegrationTests {
+public class GameRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     private final GameRepository underTest;
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final LobbyRepository lobbyRepository;
-    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public GameRepositoryIntegrationTests(
             GameRepository underTest,
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
-            LobbyRepository lobbyRepository,
-            JdbcTemplate jdbcTemplate) {
+            LobbyRepository lobbyRepository) {
         this.underTest = underTest;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
         this.lobbyRepository = lobbyRepository;
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    @BeforeEach
-    public void setUp() {
-        // Correct SQL syntax for deleting all rows from the tables
-        jdbcTemplate.execute("DELETE FROM game_state");
-        jdbcTemplate.execute("DELETE FROM games");
-        jdbcTemplate.execute("DELETE FROM lobby_players");
-        jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM users");
-        jdbcTemplate.execute("DELETE FROM scores");
-        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
     }
 
 //    @Test

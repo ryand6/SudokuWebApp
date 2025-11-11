@@ -1,15 +1,16 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-public class PuzzleGenerationServiceTests {
+public class PuzzleGenerationServiceTests extends AbstractIntegrationTest {
 
     @Autowired
     private PuzzleGenerator puzzleGenerator;

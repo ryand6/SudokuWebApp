@@ -16,7 +16,7 @@ import java.time.Instant;
 @Table(
         name = "lobby_chat_messages",
         indexes = {
-                @Index(name = "idx_lobby_messages_lobby_created", columnList = "lobbyEntity, createdAt DESC")
+                @Index(name = "idx_lobby_messages_lobby_created", columnList = "lobby_id, created_at DESC")
         }
 )
 public class LobbyChatMessageEntity {

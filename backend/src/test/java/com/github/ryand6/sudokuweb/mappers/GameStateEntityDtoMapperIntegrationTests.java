@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.mappers.Impl.GameStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.GameRepository;
@@ -17,19 +18,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 /*
 Integration tests for GameStateEntityDtoMapper
 */
-public class GameStateEntityDtoMapperIntegrationTests {
+public class GameStateEntityDtoMapperIntegrationTests extends AbstractIntegrationTest {
 
     private final LobbyRepository lobbyRepository;
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final GameStateEntityDtoMapper gameStateEntityDtoMapper;
-    private final JdbcTemplate jdbcTemplate;
     private final UserEntityDtoMapper userEntityDtoMapper;
     private final GameRepository gameRepository;
 
@@ -39,14 +36,12 @@ public class GameStateEntityDtoMapperIntegrationTests {
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
             GameStateEntityDtoMapper gameStateEntityDtoMapper,
-            JdbcTemplate jdbcTemplate,
             UserEntityDtoMapper userEntityDtoMapper,
             GameRepository gameRepository) {
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
         this.gameStateEntityDtoMapper = gameStateEntityDtoMapper;
-        this.jdbcTemplate = jdbcTemplate;
         this.userEntityDtoMapper = userEntityDtoMapper;
         this.gameRepository = gameRepository;
     }
@@ -59,14 +54,6 @@ public class GameStateEntityDtoMapperIntegrationTests {
 
 //    @BeforeEach
 //    public void setUp() {
-//        // Correct SQL syntax for deleting all rows from the tables
-//        jdbcTemplate.execute("DELETE FROM game_state");
-//        jdbcTemplate.execute("DELETE FROM games");
-//        jdbcTemplate.execute("DELETE FROM lobby_players");
-//        jdbcTemplate.execute("DELETE FROM lobbies");
-//        jdbcTemplate.execute("DELETE FROM users");
-//        jdbcTemplate.execute("DELETE FROM scores");
-//        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
 //        // Setup test score data - don't save as the User object will save it via cascade.ALL
 //        savedScore = TestDataUtil.createTestScoreA();
 //        // Setup test user data in the test DB

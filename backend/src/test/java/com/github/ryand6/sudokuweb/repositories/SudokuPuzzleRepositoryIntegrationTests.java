@@ -3,44 +3,21 @@ package com.github.ryand6.sudokuweb.repositories;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
-import org.junit.jupiter.api.BeforeEach;
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class SudokuPuzzleRepositoryIntegrationTests {
+public class SudokuPuzzleRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     private final SudokuPuzzleRepository underTest;
 
     @Autowired
     public SudokuPuzzleRepositoryIntegrationTests(SudokuPuzzleRepository underTest) {
         this.underTest = underTest;
-    }
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @BeforeEach
-    public void setUp() {
-        // Correct SQL syntax for deleting all rows from the tables
-        jdbcTemplate.execute("DELETE FROM game_state");
-        jdbcTemplate.execute("DELETE FROM games");
-        jdbcTemplate.execute("DELETE FROM lobby_players");
-        jdbcTemplate.execute("DELETE FROM lobbies");
-        jdbcTemplate.execute("DELETE FROM users");
-        jdbcTemplate.execute("DELETE FROM scores");
-        jdbcTemplate.execute("DELETE FROM sudoku_puzzles");
     }
 
     @Test

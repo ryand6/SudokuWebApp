@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,11 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
@@ -24,27 +21,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Testcontainers
-class UserServiceIntegrationTests {
-
-    @Container
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
-
-    // Dynamically register Postgres container properties with Spring
-    @DynamicPropertySource
-    static void configureDataSource(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-    }
+class UserServiceIntegrationTests extends AbstractIntegrationTest {
 
     private final UserService userService;
     private final UserRepository userRepository;
-    private final JdbcTemplate jdbcTemplate;
 
     // Allows us to partially mock so that methods within the service can be mocked
     private UserService spyUserService;
@@ -60,9 +44,6 @@ class UserServiceIntegrationTests {
 
     @BeforeEach
     void setup() {
-        jdbcTemplate.execute(
-                "TRUNCATE TABLE game_state, games, lobby_players, lobbies, users, scores, sudoku_puzzles RESTART IDENTITY CASCADE"
-        );
         this.spyUserService = Mockito.spy(userService);
     }
 
