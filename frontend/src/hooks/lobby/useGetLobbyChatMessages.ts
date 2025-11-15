@@ -10,7 +10,7 @@ export function useGetLobbyChatMessages(lobbyId: number) {
         queryFn: async ({ queryKey, pageParam }) => {
             const [, lobbyId] = queryKey;
             const dto = await getLobbyChatMessages(lobbyId as number, pageParam as number);
-            return dto.messages;
+            return dto.lobbyChatMessages;
         },
         initialPageParam: 0,
         // Pages use zero-based indexing, therefore next page is equal to the length of the current page array (containing all pages retrieved so far) rather than incrementing the length by 1

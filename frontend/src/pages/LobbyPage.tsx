@@ -32,6 +32,7 @@ export function LobbyPage() {
 
     useValidateLobbyUser(lobby, currentUser);
 
+    // Subscribe user to lobby websocket topic - ensures when page is refreshed or new session starts, user continues to receive lobby updates 
     useEffect(() => {
         if (!lobbyId || hasSubscribedRef.current) return;
         hasSubscribedRef.current = true;

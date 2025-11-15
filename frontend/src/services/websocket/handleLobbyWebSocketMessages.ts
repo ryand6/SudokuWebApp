@@ -16,8 +16,9 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
 
             queryClient.setQueryData<LobbyChatMessageDto[]>(["lobbyChat", lobbyId], (existingData: any) => {
 
-                console.log(existingData);
+                console.log(existingData.pageParams);
 
+                // If no data exists, add first message
                 if (!existingData || !existingData.pages[0]) {
                     return {
                         // first page
@@ -26,22 +27,22 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
                     }
                 }
 
-                const lastPageIndex = existingData.pages.length - 1;
-                const lastPage = existingData.pages[lastPageIndex];
+                const firstPage = existingData.pages[0];
 
-                if (lastPage && lastPage?.length >= PAGE_SIZE) {
-                    // Create a new page and add the message to it
+                if (firstPage && firstPage?.length >= PAGE_SIZE) {
+                    // Create a new page with message in it and insert at front of nested array 
                     return {
                         ...existingData,
-                        pages: [...existingData.pages, [newMessage.chatMessage]],
+                        pages: [[newMessage.chatMessage], ...existingData.pages],
                         pageParams: [...existingData.pageParams, existingData.pageParams.length]
                     };
                 } else {
+                    // Add message to first page as this contains the most recent messages - add to start of page as the order will be reversed on render
                     return {
                         ...existingData,
                         pages: [
-                            ...existingData.pages.slice(0, lastPageIndex),
-                            [...lastPage, newMessage.chatMessage],
+                            [newMessage.chatMessage, ...firstPage],
+                            ...existingData.pages.slice(1),
                         ],
                     };
                 }

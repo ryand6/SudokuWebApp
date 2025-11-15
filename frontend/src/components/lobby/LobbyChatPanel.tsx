@@ -71,9 +71,9 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
     }
 
     const messages = useMemo(() => {
-    // pages hold newest-first order - to render oldest->newest flatten reversed pages
-    if (!chatMessages) return [];
-        return chatMessages.pages.slice().reverse().flat();
+        // pages hold newest-first order - to render oldest->newest flatten reversed pages
+        if (!chatMessages) return [];
+        return chatMessages.pages.flat().reverse();
     }, [chatMessages]);
 
     console.log(messages);

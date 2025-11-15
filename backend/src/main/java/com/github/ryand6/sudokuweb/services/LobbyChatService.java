@@ -74,7 +74,9 @@ public class LobbyChatService {
         lobbyChatMessage.setLobbyEntity(updatedLobbyPlayerRequester.getLobby());
         lobbyChatMessage.setUserEntity(updatedLobbyPlayerRequester.getUser());
         lobbyChatMessage.setMessage(message);
-        lobbyChatMessageRepository.save(lobbyChatMessage);
+        lobbyChatMessage = lobbyChatMessageRepository.save(lobbyChatMessage);
+        // Force Hibernate to flush, ensuring the row is inserted in the DB before returning (ensures createdAt is not null)
+        lobbyChatMessageRepository.flush();
         return lobbyChatMessageEntityDtoMapper.mapToDto(lobbyChatMessage);
     }
 
