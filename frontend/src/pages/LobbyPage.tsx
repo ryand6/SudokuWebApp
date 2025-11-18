@@ -1,6 +1,7 @@
 import { LobbyChatPanel } from "@/components/lobby/LobbyChatPanel";
 import { LobbyPlayersPanel } from "@/components/lobby/LobbyPlayersPanel";
 import { LobbySettingsPanel } from "@/components/lobby/LobbySettingsPanel";
+import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useGetLobby } from "@/hooks/lobby/useGetLobby";
@@ -10,12 +11,14 @@ import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
 import { handleLobbyWebSocketMessages } from "@/services/websocket/handleLobbyWebSocketMessages";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export function LobbyPage() {
     const { lobbyId } = useParams();
+
+    const [activePanel, setActivePanel] = useState<"players" | "settings" | "chat">("players");
 
     const id = lobbyId ? Number(lobbyId) : NaN;
 
@@ -58,12 +61,25 @@ export function LobbyPage() {
     return (
         <div id="lobby-container">
             <div id="lobby-header">
-                <h1>{lobby?.lobbyName}</h1>
+                <h1 className="text-secondary font-bold text-shadow mb-3">{lobby?.lobbyName}</h1>
             </div>
-            <div id="lobby-content">
-                <LobbyPlayersPanel lobby={lobby} />
-                <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
-                <LobbyChatPanel lobby={lobby} currentUser={currentUser} />
+            <div id="lobby-content" className="flex flex-col gap-4">
+                <div id="mobile-tabs" className="md:hidden">
+                    <Button onClick={() => setActivePanel("players")}>Players</Button>
+                    <Button onClick={() => setActivePanel("settings")}>Settings</Button>
+                    <Button onClick={() => setActivePanel("chat")}>Lobby Chat</Button>
+                </div>
+                <div className={`${activePanel === "players" ? "block" : "hidden"} md:block`}>
+                    <LobbyPlayersPanel lobby={lobby} />
+                </div>
+
+                <div className={`${activePanel === "settings" ? "block" : "hidden"} md:block`}>
+                    <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
+                </div>
+
+                <div className={`${activePanel === "chat" ? "block" : "hidden"} md:block`}>
+                    <LobbyChatPanel lobby={lobby} currentUser={currentUser} />
+                </div>
             </div>
         </div>
     )

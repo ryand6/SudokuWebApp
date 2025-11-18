@@ -113,7 +113,10 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                 <Textarea 
                     id="lobby-chat-input" 
                     placeholder="Type your message here." 
-                    onChange={(e) => setInputMessage(e.target.value)}
+                    onChange={(e) => {
+                        e.preventDefault();
+                        setInputMessage(e.target.value);
+                    }}
                 />
                 <Button onClick={handleClick}>Send message</Button>
             </div>
