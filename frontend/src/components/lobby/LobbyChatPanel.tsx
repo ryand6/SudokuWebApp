@@ -79,7 +79,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
     console.log(messages);
 
     return (
-        <div id="lobby-chat-panel">
+        <div id="lobby-chat-panel" className="flex flex-col lobby-card">
             <h2>Lobby Chat</h2>
             <div id="lobby-chat-messages" className="overflow-y-auto" ref={chatRef} onScroll={handleScroll}>
                 <div ref={ref} className="h-5" />

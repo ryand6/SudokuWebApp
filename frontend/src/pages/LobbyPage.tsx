@@ -69,16 +69,21 @@ export function LobbyPage() {
                     <Button onClick={() => setActivePanel("settings")}>Settings</Button>
                     <Button onClick={() => setActivePanel("chat")}>Lobby Chat</Button>
                 </div>
-                <div className={`${activePanel === "players" ? "block" : "hidden"} md:block`}>
-                    <LobbyPlayersPanel lobby={lobby} />
-                </div>
+                <div className="md:flex md:flex-row">
+                    <div className="md:flex md:flex-col md:flex-1">
+                        <div className={`${activePanel === "players" ? "block" : "hidden"} md:block`}>
+                            <LobbyPlayersPanel lobby={lobby} />
+                        </div>
 
-                <div className={`${activePanel === "settings" ? "block" : "hidden"} md:block`}>
-                    <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
-                </div>
-
-                <div className={`${activePanel === "chat" ? "block" : "hidden"} md:block`}>
-                    <LobbyChatPanel lobby={lobby} currentUser={currentUser} />
+                        <div className={`${activePanel === "settings" ? "block" : "hidden"} md:block`}>
+                            <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
+                        </div>
+                    </div>
+                    <div className="md:flex md:flex-col md:flex-1">
+                        <div className={`${activePanel === "chat" ? "block" : "hidden"} md:block`}>
+                            <LobbyChatPanel lobby={lobby} currentUser={currentUser} />
+                        </div>
+                    </div> 
                 </div>
             </div>
         </div>

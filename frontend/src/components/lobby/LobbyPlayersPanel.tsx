@@ -2,7 +2,7 @@ import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 
 export function LobbyPlayersPanel({lobby}: {lobby: LobbyDto}) {
     return (
-        <div id="lobby-player-panel" className="flex flex-col bg-card border-r-3 backdrop-blur-sm p-5 border-[2px] rounded-md border-border">
+        <div id="lobby-player-panel" className="flex flex-col lobby-card">
             <h2>Players ({lobby.lobbyPlayers.length}/4)</h2>
             {lobby.lobbyPlayers.sort((lobbyPlayerA, lobbyPlayerB) => lobbyPlayerA.user.username.localeCompare(lobbyPlayerB.user.username)).map((player, index) => {
                 return (
