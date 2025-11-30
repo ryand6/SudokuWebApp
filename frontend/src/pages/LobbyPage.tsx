@@ -59,31 +59,40 @@ export function LobbyPage() {
     }
 
     return (
-        <div id="lobby-container">
+        <div id="lobby-container" className="flex flex-col flex-1">
             <div id="lobby-header">
                 <h1 className="text-secondary font-bold text-shadow mb-3">{lobby?.lobbyName}</h1>
             </div>
-            <div id="lobby-content" className="flex flex-col gap-4">
+            <div id="lobby-content" className="flex flex-col flex-1 gap-4">
                 <div id="mobile-tabs" className="md:hidden">
                     <Button onClick={() => setActivePanel("players")}>Players</Button>
                     <Button onClick={() => setActivePanel("settings")}>Settings</Button>
                     <Button onClick={() => setActivePanel("chat")}>Lobby Chat</Button>
                 </div>
-                <div className="md:flex md:flex-row">
-                    <div className="md:flex md:flex-col md:flex-1">
-                        <div className={`${activePanel === "players" ? "block" : "hidden"} md:block`}>
-                            <LobbyPlayersPanel lobby={lobby} />
-                        </div>
-
-                        <div className={`${activePanel === "settings" ? "block" : "hidden"} md:block`}>
-                            <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
-                        </div>
+                <div className="flex flex-row flex-1">
+                    {/* Mobile only: render the active panel directly */}
+                    <div className="flex-1 flex flex-col min-h-0 md:hidden m-5">
+                        {activePanel === "players" && <LobbyPlayersPanel lobby={lobby} />}
+                        {activePanel === "settings" && <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />}
+                        {activePanel === "chat" && <LobbyChatPanel lobby={lobby} currentUser={currentUser} />}
                     </div>
-                    <div className="md:flex md:flex-col md:flex-1">
-                        <div className={`${activePanel === "chat" ? "block" : "hidden"} md:block`}>
+
+                    {/* Desktop only: split left/right columns */}
+                    <div className="hidden md:flex flex-1 min-h-0">
+                        {/* Left column */}
+                        <div className="flex flex-col flex-1 min-h-0">
+                            <div className="flex flex-col flex-1 min-h-0">
+                            <LobbyPlayersPanel lobby={lobby} />
+                            </div>
+                            <div className="flex flex-col flex-1 min-h-0">
+                            <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
+                            </div>
+                        </div>
+                        {/* Right column */}
+                        <div className="flex flex-col flex-1 min-h-0">
                             <LobbyChatPanel lobby={lobby} currentUser={currentUser} />
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>

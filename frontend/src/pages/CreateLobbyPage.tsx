@@ -41,8 +41,8 @@ export function CreateLobbyPage() {
     }
 
     return (
-        <div className="flex min-h-full justify-center items-center">
-            <div className="w-[80%] h-[80%] border-border bg-white rounded-md p-10 shadow-md" >
+        <div className="flex flex-1 justify-center items-center min-h-0">
+            <div className="w-full max-w-[1200px] max-h-[90vh] border-border m-5 bg-white rounded-md p-10 shadow-md overflow-y-auto min-h-0" >
                 <form onSubmit={handleSubmit} method="post">
                     <FieldSet>
                         <FieldLegend>Lobby Creation</FieldLegend>
@@ -57,7 +57,7 @@ export function CreateLobbyPage() {
                                 <Input 
                                     id="lobbyName"
                                     type="text"
-                                    placeholder="Lobby Name"
+                                    placeholder="Enter Lobby Name"
                                     value={lobbyName}
                                     required
                                     maxLength={20}
@@ -101,7 +101,7 @@ export function CreateLobbyPage() {
                         </Field>
                     </FieldSet>
                 </form>
-            </div>
+            </div>    
         </div>
     )
 }
