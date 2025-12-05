@@ -24,7 +24,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
  
     return (
         <div id="lobby-settings-panel" className="flex flex-col flex-1 lobby-card">
-            <h2>Game Settings</h2>
+            <h2 className="card-header">Game Settings</h2>
             <div>
                 <div>
                     🎯 Difficulty 

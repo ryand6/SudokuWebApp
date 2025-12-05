@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface LobbyChatMessageRepository extends JpaRepository<LobbyChatMessageEntity, Long> {
 
-    // Returns page containing list of messages for
+    // Returns page containing list of messages
     Page<LobbyChatMessageEntity> findByLobbyEntity_IdOrderByCreatedAtDesc(Long lobbyId, Pageable pageable);
 
     // Used to trim down lobby messages so that only the most recent 100 messages are persisted

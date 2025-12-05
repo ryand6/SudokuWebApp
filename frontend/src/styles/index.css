@@ -153,6 +153,9 @@
   .lobby-card {
     @apply bg-card border-r-3 backdrop-blur-sm p-5 border-[2px] rounded-md border-border m-2
   }
+  .card-header {
+    @apply font-bold text-border m-1
+  }
 }
 
 @layer utilities {

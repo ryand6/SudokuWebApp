@@ -61,15 +61,15 @@ export function LobbyPage() {
     return (
         <div id="lobby-container" className="flex flex-col flex-1">
             <div id="lobby-header">
-                <h1 className="text-secondary font-bold text-shadow mb-3">{lobby?.lobbyName}</h1>
+                <h1 className="text-secondary font-bold text-shadow m-3">{lobby?.lobbyName}</h1>
             </div>
-            <div id="lobby-content" className="flex flex-col flex-1 gap-4">
+            <div id="lobby-content" className="flex flex-col flex-1 gap-4 max-h-[70vh] md:max-h-[75vh]">
                 <div id="mobile-tabs" className="md:hidden">
                     <Button onClick={() => setActivePanel("players")}>Players</Button>
                     <Button onClick={() => setActivePanel("settings")}>Settings</Button>
                     <Button onClick={() => setActivePanel("chat")}>Lobby Chat</Button>
                 </div>
-                <div className="flex flex-row flex-1">
+                <div className="flex flex-row flex-1 min-h-0">
                     {/* Mobile only: render the active panel directly */}
                     <div className="flex-1 flex flex-col min-h-0 md:hidden m-5">
                         {activePanel === "players" && <LobbyPlayersPanel lobby={lobby} />}

@@ -49,7 +49,7 @@ public class LobbyChatService {
 
     public List<LobbyChatMessageDto> getLobbyChatMessages(Long lobbyId, int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
-        // Return a list of 20 chat messages ordered oldest to newest
+        // Return a list of 20 chat messages ordered newest to oldest
         return lobbyChatMessageRepository.findByLobbyEntity_IdOrderByCreatedAtDesc(lobbyId, pageable)
                 .stream()
                 .map(lobbyChatMessageEntityDtoMapper::mapToDto)
