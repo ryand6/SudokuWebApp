@@ -8,11 +8,14 @@ import { updateLobbyDifficulty } from "@/api/lobby/updateLobbyDifficulty";
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
 import { updateLobbyTimeLimit } from "@/api/lobby/updateLobbyTimeLimit";
+import { Button } from "../ui/button";
+import { ButtonCopy } from "../ui/custom/ButtonCopy";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
     const [difficulty, setDifficulty] = useState<Difficulty>(lobby.difficulty);
     const [timeLimit, setTimeLimit] = useState<TimeLimitPreset>(lobby.timeLimit);
+    const [joinCode, setJoinCode] = useState(null);
 
     useEffect(() => {
         updateLobbyDifficulty(lobby.id, difficulty)
@@ -87,6 +90,18 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                 </div>
                 }
             </div>
+            {!lobby.isPublic && 
+            <div className="mt-2">
+                <h2>Lobby Join Code</h2>
+                <div className="flex flex-row items-center gap-4 mt-2">
+                    <div className="flex flex-row w-[75%] h-[100%] border-1 p-1 text-gray-400">
+                        Join code
+                        <ButtonCopy text={joinCode} className="text-black"/>
+                    </div>
+                    <Button id="join-private-btn" className="w-[20%] cursor-pointer">Generate Code</Button>
+                </div>
+            </div>
+            }
         </div>
     )
 }

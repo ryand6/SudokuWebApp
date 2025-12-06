@@ -118,13 +118,13 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                     if (!msg) return;
                     return (
                         <div id="lobby-message-container" className="flex flex-row m-2" key={index}>
-                            <div id="lobby-message-user">
+                            <div id="lobby-message-user" className="w-[25%]">
                                 {msg.username}
                             </div>
-                            <div id="lobby-message-content">
+                            <div id="lobby-message-content" className="w-[65%]">
                                 {msg.message}
                             </div>
-                            <div id="lobby-message-timestamp">
+                            <div id="lobby-message-timestamp" className="W-[10%]">
                                 {getLocalTime(msg.createdAt)}
                             </div>
                         </div>
