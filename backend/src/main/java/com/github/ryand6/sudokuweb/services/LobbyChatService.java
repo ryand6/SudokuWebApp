@@ -39,7 +39,7 @@ public class LobbyChatService {
         this.profanityValidator = profanityValidator;
     }
 
-    private int PAGE_SIZE = 20;
+    private final int PAGE_SIZE = 20;
 
     public List<LobbyChatMessageDto> getLobbyChatMessages(Long lobbyId, int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));

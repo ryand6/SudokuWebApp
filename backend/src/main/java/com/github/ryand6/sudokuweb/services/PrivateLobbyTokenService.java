@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.dto.TokenIdentifiers;
+import com.github.ryand6.sudokuweb.dto.response.UserActiveTokensDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidTokenException;
 import com.github.ryand6.sudokuweb.exceptions.MaxActiveTokenException;
 import com.github.ryand6.sudokuweb.exceptions.TokenNotFoundException;
@@ -9,12 +10,18 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class PrivateLobbyTokenService {
 
     private final RedisTemplate<String, String> redisTemplate;
+
+    private final int MAX_TOKENS = 3;
 
     public PrivateLobbyTokenService(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
@@ -26,8 +33,8 @@ public class PrivateLobbyTokenService {
         String userKey = "user:" + userId + ":tokens";
         cleanUpUserTokens(userKey);
         Long countActiveTokens = getActiveTokensCountCreatedByUser(userKey);
-        if (countActiveTokens != null && countActiveTokens >= 3) {
-            throw new MaxActiveTokenException("Maximum number of active private tokens reached (3)");
+        if (countActiveTokens != null && countActiveTokens >= MAX_TOKENS) {
+            throw new MaxActiveTokenException(String.format("Maximum number of active private tokens reached (%d)", MAX_TOKENS));
         }
         String token = SecureInvitationsUtil.createInvitationToken(lobbyId, userId);
         // Set the value of the key value pair to be the lobby ID so that tokens are associated with a lobby in Redis
@@ -61,6 +68,29 @@ public class PrivateLobbyTokenService {
         } else {
             throw new TokenNotFoundException("Token provided does not exist, it may have expired");
         }
+    }
+
+    // Get list of all active tokens for a user
+    public UserActiveTokensDto  getActiveTokensForUser(Long userId) {
+        String userKey = "user:" + userId + ":tokens";
+        cleanUpUserTokens(userKey); // remove expired tokens
+
+        Set<String> tokens = redisTemplate.opsForSet().members(userKey);
+        List<UserActiveTokensDto.TokenWithExpiry> activeTokens = new ArrayList<>();
+        if (tokens != null) {
+            Long now = System.currentTimeMillis();
+            for (String token : tokens) {
+                // Calculate time at which the token will expire
+                Long ttlMs = redisTemplate.getExpire(token, TimeUnit.MILLISECONDS);
+                if (ttlMs != null && ttlMs > 0) {
+                    long expiresAt = now + ttlMs;
+                    activeTokens.add(new UserActiveTokensDto.TokenWithExpiry(token, expiresAt));
+                }
+            }
+        }
+        return UserActiveTokensDto.builder()
+                .activeTokens(activeTokens)
+                .build();
     }
 
     // Adds a newly created token to the set of active tokens for that user that created
