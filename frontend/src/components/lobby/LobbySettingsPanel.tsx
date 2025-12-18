@@ -133,14 +133,16 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                     </div>
                     <Button id="join-private-btn" className="w-[20%] cursor-pointer whitespace-normal text-wrap" onClick={handleClick}>Generate Code</Button>
                 </div>
-                <div className="mt-2 max-h-40 border p-2 rounded">
+                <div className="mt-2 max-h-40 border p-2 rounded overflow-y-auto">
+                    <h2 className="border-b mb-2 py-1">Active Join Codes:</h2>
                     {activeTokens?.length ? (
                         activeTokens.map((token) => {
                             // Calculate the minutes left to expiry on the token, rounded up to the nearest minute
                             const minutesLeft = Math.max(0, Math.ceil((token.expiresAt - Date.now()) / 60000));
                             return (
-                                <div key={token.token} className="flex justify-between py-1 px-2 border-b last:border-b-0">
+                                <div key={token.token} className="flex justify-between py-1 px-2 mb-2 border-b last:border-b-0">
                                     <span className="break-all w-[70%]">{token.token}</span>
+                                    <ButtonCopy text={token.token} />
                                     <span className="text-gray-500">{minutesLeft} min left</span>
                                 </div>
                             );

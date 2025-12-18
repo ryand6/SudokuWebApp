@@ -20,8 +20,8 @@ export function ButtonCopy({ text, className }: ButtonCopyProps) {
         try {
             await navigator.clipboard.writeText(text);
             setCopied(true);
-            // resets after 3 seconds
-            setTimeout(() => setCopied(false), 3000);
+            // resets after 30 seconds
+            setTimeout(() => setCopied(false), 30000);
         } catch (err) {
             console.error("Copy failed: ", err);
         }
