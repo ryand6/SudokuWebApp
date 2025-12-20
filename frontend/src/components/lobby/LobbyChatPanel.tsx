@@ -3,19 +3,21 @@ import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useSendLobbyChatMessage } from "@/hooks/lobby/useSendLobbyChatMessage";
 import type { UserDto } from "@/types/dto/entity/UserDto";
 import { useInView } from "react-intersection-observer";
 import { ChevronDown } from "lucide-react";
 import { getLocalTime } from "@/utils/time/getLocalTime";
+import { sendLobbyChatMessage } from "@/api/ws/lobby/sendLobbyChatMessage";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
 
 export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
+
+    const { send } = useWebSocketContext();
 
     const {data: chatMessages, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetLobbyChatMessages(lobby.id);
     const [inputMessage, setInputMessage] = useState("");
     // Used to prevent the sentinel from loading all older messages when in view, prompting the load one page at a time until the chat is next scrolled to the top
     const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
-    const sendLobbyChatMessage = useSendLobbyChatMessage();
     const chatRef = useRef<HTMLDivElement | null>(null);
     const [isAtBottom, setIsAtBottom] = useState(true);
     const [hasNewMessages, setHasNewMessages] = useState(false);
@@ -98,15 +100,8 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
 
     const handleClick = () => {
         if (!inputMessage.trim()) return;
-        sendLobbyChatMessage.mutate(
-            {lobbyId: lobby.id, userId: currentUser.id, username: currentUser.username, message: inputMessage},
-            {
-                // Wait for message to be sent - fixes issue of scrolling to the bottom before new message is shown in DOM
-                onSuccess: () => {
-                    scrollToBottom();
-                }
-            }
-        );
+        sendLobbyChatMessage(send, lobby.id, currentUser.id, inputMessage);
+        scrollToBottom();
     }
 
     return (

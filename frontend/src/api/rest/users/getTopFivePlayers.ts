@@ -1,4 +1,4 @@
-import type { TopFivePlayersDto } from "../../types/dto/response/TopFivePlayersDto";
+import type { TopFivePlayersDto } from "../../../types/dto/response/TopFivePlayersDto";
 
 export async function getTopFivePlayers(): Promise<TopFivePlayersDto> {
     const response = await fetch("/api/users/get-top-five-players", {

@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { UserForm } from "../components/users/UserForm";
-import { processUserAmend } from "../api/users/processUserAmend";
+import { processUserAmend } from "../api/rest/users/processUserAmend";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 
 export function UserAmendPage() {

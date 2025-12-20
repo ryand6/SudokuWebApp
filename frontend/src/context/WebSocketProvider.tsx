@@ -1,10 +1,11 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, type RefObject } from "react";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
-import { useQueryClient } from "@tanstack/react-query";
 import { initWebSocket } from "../utils/services/initWebSocket";
 import { initStompClient } from "../utils/services/initStompClient";
-import { handleUserWebSocketMessages } from "@/services/websocket/handleUserWebSocketMessages";
+import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates";
+import { useQueryClient } from "@tanstack/react-query";
+import { subscribeUserErrors } from "@/services/websocket/subscribeUserErrors";
 
 type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;
@@ -22,6 +23,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     // Persist map across app that keeps track of topics a user is subscribed to so they don't repeatedly subscribe to the same topic
     const subscriptionsRef = useRef<Map<string, StompSubscription>>(new Map());
     const pendingQueueRef = useRef<Array<{ topic: string; callback: (body: any) => void }>>([]);
+
     const queryClient = useQueryClient();
 
     // Effect handles socket lifecycle - exists whilst there is an authenticated session
@@ -38,12 +40,8 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         // handler which connects user to their personal queue, and also handles any pending subscriptions once the client is connected
         // handler passed to initStompClient
         const handleConnect = () => {
-            const topic = "/user/queue/updates";
-            if (!clientRef.current) return;
-            const newSub = clientRef.current.subscribe(topic, (message: IMessage) => {
-                handleUserWebSocketMessages(JSON.parse(message.body), queryClient);
-            });
-            subscriptionsRef.current.set(topic, newSub);
+            subscribeUserUpdates(queryClient, clientRef, subscriptionsRef);
+            subscribeUserErrors(clientRef, subscriptionsRef);
 
             pendingQueueRef.current.forEach(({ topic, callback }) => {
                 const subscription = clientRef.current!.subscribe(topic, (msg: IMessage) => callback(JSON.parse(msg.body)));

@@ -1,5 +1,5 @@
-import { backendValidationErrors } from "../../utils/error/backendValidationErrors";
-import { getCsrfTokenFromCookie } from "../../utils/auth/csrf";
+import { backendValidationErrors } from "../../../utils/error/backendValidationErrors";
+import { getCsrfTokenFromCookie } from "../../../utils/auth/csrf";
 
 export async function processUserAmend(username: string): Promise<void> {
     try {

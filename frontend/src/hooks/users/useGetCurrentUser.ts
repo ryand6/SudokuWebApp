@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { UserDto } from "../../types/dto/entity/UserDto";
-import { getCurrentUser } from "../../api/users/getCurrentUser";
+import { getCurrentUser } from "../../api/rest/users/getCurrentUser";
 
 export function useGetCurrentUser() {
     return useQuery<UserDto, Error>({

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserRank } from "../../api/users/getUserRank";
+import { getUserRank } from "../../api/rest/users/getUserRank";
 import type { UserRankDto } from "../../types/dto/response/UserRankDto";
 
 export function useGetUserRank() {

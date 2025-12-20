@@ -1,4 +1,4 @@
-import { getCsrfTokenFromCookie } from "../../utils/auth/csrf";
+import { getCsrfTokenFromCookie } from "../../../utils/auth/csrf";
 
 export async function userLogout() {
     const response = await fetch("/logout", {

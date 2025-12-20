@@ -39,13 +39,13 @@ public class WebSocketSecurityConfig {
                 // Ensure CONNECT and DISCONNECT frames are authenticated
                 .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT).authenticated()
                 // Ensure that users can only send messages to lobbies that they are a member of
-                .simpDestMatchers("/app/lobby/{lobbyId}")
+                .simpDestMatchers("/app/lobby/{lobbyId}/**")
                     .access(this::checkLobbyMembership)
                 // Ensure that users can only send messages to games that they are a member of
-                .simpDestMatchers("/app/game/{gameId}")
+                .simpDestMatchers("/app/game/{gameId}/**")
                     .access(this::checkGameMembership)
                 // Spring automatically maps messages to the correct user using the Principal - additional validation to ensure user is authenticated
-                .simpSubscribeDestMatchers("/user/queue/updates")
+                .simpSubscribeDestMatchers("/user/queue/updates", "/user/queue/errors")
                     .access((authSupplier, context) -> {
                         Authentication auth = authSupplier.get();
                         return new AuthorizationDecision(auth.isAuthenticated());
@@ -64,6 +64,9 @@ public class WebSocketSecurityConfig {
     private AuthorizationDecision checkLobbyMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
         UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
         Long lobbyId = Long.valueOf(context.getVariables().get("lobbyId"));
+
+        System.out.println("\n\n\nLobby ID: " + lobbyId + " - checking membership for User: " + user.getId());
+        System.out.println("\n\n\nIs User in Lobby?: " + lobbyService.isUserInLobby(user.getId(), lobbyId));
         return new AuthorizationDecision(lobbyService.isUserInLobby(user.getId(), lobbyId));
     }
 

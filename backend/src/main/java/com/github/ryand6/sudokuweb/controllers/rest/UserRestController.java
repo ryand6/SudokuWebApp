@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.controllers;
+package com.github.ryand6.sudokuweb.controllers.rest;
 
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;

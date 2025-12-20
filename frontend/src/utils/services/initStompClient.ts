@@ -1,6 +1,6 @@
 import { Client, type IFrame, type IMessage, type StompSubscription } from "@stomp/stompjs";
 import { stompClientFactory } from "../../factories/stompClientFactory";
-import { getCsrfToken } from "../../api/csrf/getCsrfToken";
+import { getCsrfToken } from "../../api/rest/csrf/getCsrfToken";
 
 export async function initStompClient(
     socket: WebSocket,
@@ -24,8 +24,6 @@ export async function initStompClient(
         clientRef.current = stompClientFactory(socket, csrfTokenData, handleStompError, handleConnect);
         // Activate the STOMP client - connection is started
         clientRef.current.activate();
-
-        console.log("ACTIVATED");
     } catch (error) {
         console.error("Failed to initialize STOMP client", error);
     }

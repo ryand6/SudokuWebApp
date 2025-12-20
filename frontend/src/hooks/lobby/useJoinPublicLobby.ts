@@ -1,4 +1,4 @@
-import { joinPublicLobby } from "@/api/lobby/joinPublicLobby";
+import { joinPublicLobby } from "@/api/rest/lobby/joinPublicLobby";
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";

@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 import { UserSetupPage } from '../UserSetupPage';
-import { processUserSetup } from '../../api/users/processUserSetup';
+import { processUserSetup } from '../../api/rest/users/processUserSetup';
 import { renderWithRouterAndContext } from '../../setupTests';
 import { QueryClient } from '@tanstack/react-query';
 

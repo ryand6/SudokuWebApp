@@ -1,4 +1,4 @@
-import { getLobby } from "@/api/lobby/getLobby";
+import { getLobby } from "@/api/rest/lobby/getLobby";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGetLobby(lobbyId: number) {

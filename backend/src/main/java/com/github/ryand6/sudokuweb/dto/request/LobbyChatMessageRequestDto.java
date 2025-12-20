@@ -11,11 +11,7 @@ import lombok.*;
 @Builder
 public class LobbyChatMessageRequestDto {
 
-    private Long lobbyId;
-
     private Long userId;
-
-    private String username;
 
     @NotBlank
     @Size(min=3, max=250)

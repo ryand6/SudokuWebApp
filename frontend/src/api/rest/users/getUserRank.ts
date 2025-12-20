@@ -1,4 +1,4 @@
-import type { UserRankDto } from "../../types/dto/response/UserRankDto";
+import type { UserRankDto } from "../../../types/dto/response/UserRankDto";
 
 export async function getUserRank(): Promise<UserRankDto> {
     const response = await fetch("/api/users/get-user-rank", {
