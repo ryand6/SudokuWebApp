@@ -10,8 +10,6 @@ import lombok.*;
 @Builder
 public class LobbyTimeLimitUpdateRequestDto {
 
-    private Long lobbyId;
-
     private TimeLimitPreset timeLimit;
 
 }

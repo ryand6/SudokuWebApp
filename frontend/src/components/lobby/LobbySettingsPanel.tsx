@@ -4,18 +4,21 @@ import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
 import { useEffect, useState } from "react";
-import { updateLobbyDifficulty } from "@/api/rest/lobby/updateLobbyDifficulty";
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
-import { updateLobbyTimeLimit } from "@/api/rest/lobby/updateLobbyTimeLimit";
 import { Button } from "../ui/button";
 import { ButtonCopy } from "../ui/custom/ButtonCopy";
 import { JoinCodeAlertDialog } from "../ui/custom/JoinCodeAlertDialog";
 import { useRequestJoinCode } from "@/hooks/lobby/useRequestJoinCode";
 import { useGetActiveUserTokens } from "@/hooks/lobby/useGetActiveUserTokens";
 import { useQueryClient } from "@tanstack/react-query";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
+import { updateLobbyDifficulty } from "@/api/ws/lobby/updateLobbyDifficulty";
+import { updateLobbyTimeLimit } from "@/api/ws/lobby/updateLobbyTimeLimit";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
+
+    const { send } = useWebSocketContext();
 
     const [difficulty, setDifficulty] = useState<Difficulty>(lobby.difficulty);
     const [timeLimit, setTimeLimit] = useState<TimeLimitPreset>(lobby.timeLimit);
@@ -27,11 +30,11 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
     const activeTokens = data?.activeTokens ?? [];
 
     useEffect(() => {
-        updateLobbyDifficulty(lobby.id, difficulty)
+        updateLobbyDifficulty(send, lobby.id, difficulty)
     }, [difficulty]);
 
     useEffect(() => {
-        updateLobbyTimeLimit(lobby.id, timeLimit)
+        updateLobbyTimeLimit(send, lobby.id, timeLimit)
     }, [timeLimit]);
 
     // Interval to refresh active tokens display every minute
@@ -54,7 +57,6 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
 
     const requestJoinCode = async () => {
         await mutation.mutateAsync({ lobbyId: lobby.id, userId: currentUser.id });
-        // setJoinCodes(updatedTokens);
     };
  
     return (

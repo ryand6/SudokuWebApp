@@ -37,15 +37,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .setInterceptors(new HttpSessionHandshakeInterceptor());;
     }
 
-//    @Override
-//    public void configureClientInboundChannel(ChannelRegistration registration) {
-//        registration.interceptors(new ChannelInterceptor() {
-//            @Override
-//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-//                System.out.println("\uD83D\uDD25 INBOUND: headers=" + message.getHeaders());
-//                return message;
-//            }
-//        });
-//    }
-
 }

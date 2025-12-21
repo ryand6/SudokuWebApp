@@ -24,7 +24,12 @@ public class ErrorMapping {
 
     public static final Map<Class<? extends Throwable>, String> EXCEPTION_WS_ERROR_TYPE_MAP = Map.ofEntries(
             Map.entry(MessageProfanityException.class, "CHAT_ERROR"),
-            Map.entry(MessageTooSoonException.class, "CHAT_ERROR")
+            Map.entry(MessageTooSoonException.class, "CHAT_ERROR"),
+            Map.entry(LobbyNotFoundException.class, "LOBBY_ERROR"),
+            Map.entry(LobbyPlayerNotFoundException.class, "LOBBY_ERROR"),
+            Map.entry(LobbyFullException.class, "LOBBY_ERROR"),
+            Map.entry(LobbyInactiveException.class, "LOBBY_ERROR"),
+            Map.entry(InvalidLobbyPublicStatusParameterException.class, "LOBBY_ERROR")
     );
 
 }

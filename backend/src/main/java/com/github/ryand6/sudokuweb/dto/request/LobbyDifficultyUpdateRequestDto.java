@@ -10,8 +10,6 @@ import lombok.*;
 @Builder
 public class LobbyDifficultyUpdateRequestDto {
 
-    private Long lobbyId;
-
     private Difficulty difficulty;
 
 }
