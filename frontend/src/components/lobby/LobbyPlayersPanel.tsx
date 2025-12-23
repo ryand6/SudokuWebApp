@@ -1,6 +1,12 @@
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import { Button } from "../ui/button";
 
 export function LobbyPlayersPanel({lobby}: {lobby: LobbyDto}) {
+
+    const handleClick = () => {
+        // backend lobby update
+    };
+
     return (
         <div id="lobby-player-panel" className="flex flex-col flex-1 lobby-card">
             <h2 className="card-header">Players ({lobby.lobbyPlayers.length}/4)</h2>
@@ -14,6 +20,7 @@ export function LobbyPlayersPanel({lobby}: {lobby: LobbyDto}) {
                     </div>
                 )
             })}
+            <Button onClick={handleClick}>Ready Up</Button>
         </div>
     )
 }

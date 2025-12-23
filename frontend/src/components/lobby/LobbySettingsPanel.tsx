@@ -73,7 +73,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                     <RadioGroup defaultValue={wordToProperCase(lobby.difficulty)} onValueChange={(value) => {
                         let valueEnum = value.toUpperCase() as Difficulty;
                         setDifficulty(valueEnum);
-                    }} className="flex flex-row">
+                    }} disabled={lobby.settingsLocked} className="flex flex-row">
                         <div>
                             <RadioGroupItem value="Easy" id="r-easy" />
                             <Label htmlFor="r-easy">Easy</Label>
@@ -104,7 +104,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                     <RadioGroup defaultValue={wordToProperCase(lobby.timeLimit)} onValueChange={(value) => {
                         let valueEnum = value.toUpperCase() as TimeLimitPreset;
                         setTimeLimit(valueEnum);
-                    }} className="flex flex-row">
+                    }} disabled={lobby.settingsLocked} className="flex flex-row">
                         <div>
                             <RadioGroupItem value="Quick" id="r-quick" />
                             <Label htmlFor="r-quick">15 min</Label>
