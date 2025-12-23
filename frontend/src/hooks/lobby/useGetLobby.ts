@@ -3,7 +3,7 @@ import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGetLobby(lobbyId: number) {
-    return useQuery({
+    return useQuery<LobbyDto>({
         queryKey: ["lobby", lobbyId],
         queryFn: () => getLobby(lobbyId),
         // Only run if lobbyId has a value
@@ -13,10 +13,11 @@ export function useGetLobby(lobbyId: number) {
         staleTime: 5000,
         refetchOnWindowFocus: true,
         refetchOnReconnect: true,
-        refetchInterval: (data: LobbyDto) => {
-            if (!data) return 10000; // lobby unknown / loading
+        refetchInterval: (query): number | false => {
+            const data = query.state.data;
+            if (!data) return 10000; // lobby unknown or loading
             if (data.inGame) return false; // terminal state
-            if (data.countdownActive) return 2000; // critical
+            if (data.countdownActive) return 2000; // poll every 2 seconds to ensure any potential changes to countdown are accounted for
             return 10000; // idle
         }
     })
