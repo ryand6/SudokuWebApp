@@ -13,8 +13,8 @@ import { useRequestJoinCode } from "@/hooks/lobby/useRequestJoinCode";
 import { useGetActiveUserTokens } from "@/hooks/lobby/useGetActiveUserTokens";
 import { useQueryClient } from "@tanstack/react-query";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
-import { updateLobbyDifficulty } from "@/api/ws/lobby/updateLobbyDifficulty";
-import { updateLobbyTimeLimit } from "@/api/ws/lobby/updateLobbyTimeLimit";
+import { updateLobbyDifficulty } from "@/api/rest/lobby/updateLobbyDifficulty";
+import { updateLobbyTimeLimit } from "@/api/rest/lobby/updateLobbyLimitLimit";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
@@ -30,11 +30,11 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
     const activeTokens = data?.activeTokens ?? [];
 
     useEffect(() => {
-        updateLobbyDifficulty(send, lobby.id, difficulty)
+        updateLobbyDifficulty(lobby.id, difficulty)
     }, [difficulty]);
 
     useEffect(() => {
-        updateLobbyTimeLimit(send, lobby.id, timeLimit)
+        updateLobbyTimeLimit(lobby.id, timeLimit)
     }, [timeLimit]);
 
     // Interval to refresh active tokens display every minute

@@ -135,4 +135,21 @@ public class LobbyRestController {
         return ResponseEntity.ok(null);
     }
 
+
+    // Update difficulty to be applied to lobby games
+    @PostMapping("/update-difficulty")
+    public ResponseEntity<?> updateLobbyDifficulty(@RequestBody LobbyDifficultyUpdateRequestDto requestDto) {
+        LobbyDto lobbyDto = lobbyService.updateLobbyDifficulty(requestDto.getLobbyId(), requestDto.getDifficulty());
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+        return ResponseEntity.ok(lobbyDto);
+    }
+
+    // Update time limit to be applied to lobby games
+    @PostMapping("/update-time-limit")
+    public ResponseEntity<?> updateLobbyTimeLimit(@RequestBody LobbyTimeLimitUpdateRequestDto requestDto) {
+        LobbyDto lobbyDto = lobbyService.updateLobbyTimeLimit(requestDto.getLobbyId(), requestDto.getTimeLimit());
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+        return ResponseEntity.ok(lobbyDto);
+    }
+
 }
