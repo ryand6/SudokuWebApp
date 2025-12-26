@@ -73,11 +73,6 @@ public class LobbyService {
                 .collect(Collectors.toList());
     }
 
-    // Confirm if a user is currently part of a lobby
-    public boolean isUserInLobby(Long userId, Long lobbyId) {
-        return lobbyPlayerRepository.existsByUserIdAndLobbyId(userId, lobbyId);
-    }
-
     // Overloaded method, used to join public lobby when lobby ID is provided
     @Transactional
     public LobbyDto joinLobby(Long userId, Long publicLobbyId) {
@@ -119,7 +114,7 @@ public class LobbyService {
     }
 
     // Get lobby and lock it from concurrent editing
-    private LobbyEntity findAndLockLobby(Long lobbyId) {
+    public LobbyEntity findAndLockLobby(Long lobbyId) {
         return lobbyRepository.findByIdForUpdate(lobbyId)
                 .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist"));
     }

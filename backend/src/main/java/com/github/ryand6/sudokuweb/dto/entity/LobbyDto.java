@@ -33,6 +33,8 @@ public class LobbyDto {
 
     private Boolean inGame;
 
+    private Long currentGameId;
+
     private Boolean countdownActive;
 
     private Instant countdownEndsAt;

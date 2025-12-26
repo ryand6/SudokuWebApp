@@ -1,12 +1,21 @@
 import { PAGE_SIZE } from "@/hooks/lobby/useGetLobbyChatMessages";
+import type { GameDto } from "@/types/dto/entity/GameDto";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
 import { QueryClient } from "@tanstack/react-query";
+import { type NavigateFunction } from "react-router-dom";
 
-export function handleLobbyWebSocketMessages(message: any, queryClient: QueryClient, lobbyId: number) {
+export function handleLobbyWebSocketMessages(message: any, queryClient: QueryClient, lobbyId: number, navigate: NavigateFunction) {
+    console.log(message.type);
     switch (message.type) {
         // Updates React Query lobby cache if the lobby is updated in the backend
         case "LOBBY_UPDATED":
             queryClient.setQueryData(["lobby", lobbyId], message.payload);
+            break;
+        // Transport lobby players to game page when game has started
+        case "GAME_STARTED":
+            const gameDto: GameDto = message.payload;
+            queryClient.setQueryData(["game", gameDto.id], gameDto);
+            navigate(`/game/${gameDto.id}`);
             break;
         // Updates session storage if message is received in lobby chat
         case "LOBBY_CHAT_MESSAGE":

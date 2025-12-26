@@ -11,6 +11,7 @@ export type LobbyDto = {
     isActive: boolean,
     isPublic: boolean,
     inGame: boolean,
+    currentGameId: number | null,
     countdownActive: boolean,
     countdownEndsAt: string,
     countdownInitiatedBy: number,

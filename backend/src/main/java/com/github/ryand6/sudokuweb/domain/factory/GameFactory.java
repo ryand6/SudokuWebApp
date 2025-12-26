@@ -1,13 +1,23 @@
 package com.github.ryand6.sudokuweb.domain.factory;
 
 import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import jakarta.transaction.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class GameFactory {
 
+    public final LobbyRepository lobbyRepository;
+
+    public GameFactory(LobbyRepository lobbyRepository) {
+        this.lobbyRepository = lobbyRepository;
+    }
+
+    @Transactional
     public static GameEntity createGame(LobbyEntity lobbyEntity, SudokuPuzzleEntity sudokuPuzzleEntity) {
 
         GameEntity newGame = new GameEntity();

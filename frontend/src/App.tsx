@@ -11,6 +11,7 @@ import { WebSocketProvider } from "./context/WebSocketProvider";
 import { CreateLobbyPage } from "./pages/CreateLobbyPage";
 import { LobbyPage } from "./pages/LobbyPage";
 import { PrivateLobbyJoinPage } from "./pages/PrivateLobbyJoinPage";
+import { GamePage } from "./pages/GamePage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ function App() {
             <Route path="/create-lobby" element={<RequireAuth><CreateLobbyPage /></RequireAuth>} />
             <Route path="/lobby/:lobbyId" element={<RequireAuth><LobbyPage /></RequireAuth>} />
             <Route path="/lobby/private/:token" element={<RequireAuth><PrivateLobbyJoinPage /></RequireAuth>} />
+            <Route path="/game/:gameId" element={<RequireAuth><GamePage /></RequireAuth>} />
           </Routes>
           <ToastContainer position="top-right" autoClose={5000} />
         </BrowserRouter>

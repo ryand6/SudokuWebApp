@@ -46,6 +46,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .isActive(lobbyEntity.getIsActive())
                 .isPublic(lobbyEntity.getIsPublic())
                 .inGame(lobbyEntity.getInGame())
+                .currentGameId(lobbyEntity.getCurrentGameId())
                 .countdownActive(lobbyEntity.getCountdownActive())
                 .countdownEndsAt(lobbyEntity.getCountdownEndsAt())
                 .countdownInitiatedBy(lobbyEntity.getCountdownInitiatedBy())

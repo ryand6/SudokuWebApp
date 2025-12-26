@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.request;
 
+import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,10 +12,7 @@ import jakarta.validation.constraints.NotNull;
 @Builder
 public class GenerateBoardRequestDto {
 
-    @NotBlank(message = "Difficulty is required")
-    private String difficulty;
-
-    @NotNull(message = "Lobby ID is required")
-    private Long lobbyId;
+    @NotNull(message = "Lobby Dto is required")
+    private LobbyDto lobby;
 
 }

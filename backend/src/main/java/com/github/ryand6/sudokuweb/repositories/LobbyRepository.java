@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,5 +25,16 @@ public interface LobbyRepository extends JpaRepository<LobbyEntity, Long> {
     // Changed to JPQL query instead of native query due to InvalidDataAccessApiUsageException caused by setting lock on native query
     @Query("SELECT l FROM LobbyEntity l WHERE l.id = :id")
     Optional<LobbyEntity> findByIdForUpdate(@Param("id") Long id);
+
+    // Returns a list of lobby entities where the countdowns have now ended
+    @Query(
+            value = """
+            SELECT lobby
+            FROM LobbyEntity lobby
+            WHERE lobby.countdownActive = true
+            AND lobby.countdownEndsAt <= :now
+            AND lobby.inGame = false
+        """)
+    List<LobbyEntity> findAllLobbiesWithExpiredCountdowns(@Param("now") Instant now);
 
 }

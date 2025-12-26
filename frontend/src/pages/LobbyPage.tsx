@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { TimerCountdown } from "@/components/ui/custom/TimerCountdown";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
-import { useTimeRemaining } from "@/hooks/global/useTimeRemaining";
+import { useCheckIfUserInGame } from "@/hooks/game/useCheckIfUserInGame";
 import { useGetLobby } from "@/hooks/lobby/useGetLobby";
 import { useHandleGetLobbyError } from "@/hooks/lobby/useHandleGetLobbyError";
 import { useValidateLobbyId } from "@/hooks/lobby/useValidateLobbyId";
@@ -21,8 +21,6 @@ import { toast } from "react-toastify";
 export function LobbyPage() {
     const { lobbyId } = useParams();
 
-    const navigate = useNavigate();
-
     const [activePanel, setActivePanel] = useState<"players" | "settings" | "chat">("players");
 
     const id = lobbyId ? Number(lobbyId) : NaN;
@@ -30,6 +28,8 @@ export function LobbyPage() {
     useValidateLobbyId(id);
 
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
+
     const { subscribe, unsubscribe } = useWebSocketContext();
     
     const {data: lobby, isLoading: isLobbyLoading, isError: isLobbyError, error: lobbyError} = useGetLobby(id);
@@ -46,15 +46,29 @@ export function LobbyPage() {
         hasSubscribedRef.current = true;
         const lobbyIdNum = parseInt(lobbyId);
         const topic = `/topic/lobby/${lobbyId}`;
-        const subscription = subscribe(topic, (body: any) => handleLobbyWebSocketMessages(body, queryClient, lobbyIdNum));
-
-        console.log(subscription);
+        const subscription = subscribe(topic, (body: any) => handleLobbyWebSocketMessages(body, queryClient, lobbyIdNum, navigate));
 
         return () => {
             if (subscription) unsubscribe(topic);
             hasSubscribedRef.current = false;
         };
     }, [lobbyId]);
+
+    const gameQuery = useCheckIfUserInGame(
+        lobby?.currentGameId ?? -1, // fallback to dummy id if lobby not ready
+        currentUser?.id ?? -1       // fallback to dummy id if user not ready
+    );
+
+    // Then handle navigation only when data exists
+    useEffect(() => {
+        if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId) return;
+
+        console.log(gameQuery.data);
+        
+        if (gameQuery.data) {
+            navigate(`/game/${gameQuery.data.id}`);
+        }
+    }, [lobby, currentUser, gameQuery.data, navigate]);
     
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 

@@ -55,12 +55,15 @@ public class LobbyEntity {
     @Column(name = "in_game")
     private Boolean inGame = false;
 
+    @Column(name = "current_game_id")
+    private Long currentGameId = null;
+
     // Countdown system for starting games
     @Column(name = "countdown_active")
     private Boolean countdownActive = false;
 
     // Used to determine the time the game will start, unless the host cancels the countdown
-    @Column(name = "countdownEndsAt")
+    @Column(name = "countdown_ends_at")
     private Instant countdownEndsAt = null;
 
     // User ID who started the countdown - host can stop countdown if they triggered it, but if triggered by users readying up, can't be stopped

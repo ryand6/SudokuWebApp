@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.config;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.services.GameService;
 import com.github.ryand6.sudokuweb.services.LobbyService;
+import com.github.ryand6.sudokuweb.services.MembershipCheckService;
 import com.github.ryand6.sudokuweb.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessageType;
@@ -23,14 +24,13 @@ import java.util.function.Supplier;
 @EnableWebSocketSecurity
 public class WebSocketSecurityConfig {
 
-    private final LobbyService lobbyService;
     private final UserService userService;
-    private final GameService gameService;
+    private final MembershipCheckService membershipCheckService;
 
-    public WebSocketSecurityConfig(LobbyService lobbyService, UserService userService, GameService gameService) {
-        this.lobbyService = lobbyService;
+    public WebSocketSecurityConfig(UserService userService,
+                                   MembershipCheckService membershipCheckService) {
         this.userService = userService;
-        this.gameService = gameService;
+        this.membershipCheckService = membershipCheckService;
     }
 
     @Bean
@@ -64,14 +64,14 @@ public class WebSocketSecurityConfig {
     private AuthorizationDecision checkLobbyMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
         UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
         Long lobbyId = Long.valueOf(context.getVariables().get("lobbyId"));
-        return new AuthorizationDecision(lobbyService.isUserInLobby(user.getId(), lobbyId));
+        return new AuthorizationDecision(membershipCheckService.isUserInLobby(user.getId(), lobbyId));
     }
 
     // Uses Authentication context to find user in DB and confirm if they're a member of the game
     private AuthorizationDecision checkGameMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
         UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
         Long gameId = Long.valueOf(context.getVariables().get("gameId"));
-        return new AuthorizationDecision(gameService.isUserInGame(user.getId(), gameId));
+        return new AuthorizationDecision(membershipCheckService.isUserInGame(user.getId(), gameId));
     }
 
     // Get UserDto using Authentication object

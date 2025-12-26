@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -10,6 +11,7 @@ import java.util.Map;
 @Service
 public class LobbyWebSocketsService {
 
+    // Emmit event notification when a lobby update occurs
     public void handleLobbyUpdate(LobbyDto lobbyDto, SimpMessagingTemplate messagingTemplate) {
         // Create a message header detailing what type of update this is so that the frontend can respond accordingly
         Map<String, Object> messageHeader = Map.of(
@@ -23,6 +25,7 @@ public class LobbyWebSocketsService {
         messagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    // Emmit event notification when a new message is sent in a lobby
     public void handleLobbyChatMessage(LobbyChatMessageDto lobbyChatMessageDto, SimpMessagingTemplate messagingTemplate) {
         Map<String, Object> messageHeader = Map.of(
                 "type", "LOBBY_CHAT_MESSAGE",
@@ -32,6 +35,18 @@ public class LobbyWebSocketsService {
         String topic = "/topic/lobby/" + lobbyChatMessageDto.getLobbyId();
 
         // Send message over websocket to lobby topic where all active players are subscribed to
+        messagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
+    // Emmit event notification when a new game starts in a lobby
+    public void handleLobbyGameStart(GameDto gameDto, SimpMessagingTemplate messagingTemplate) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_CREATED",
+                "payload", gameDto
+        );
+
+        String topic = "/topic/lobby/" + gameDto.getLobby().getId();
+
         messagingTemplate.convertAndSend(topic, messageHeader);
     }
 
