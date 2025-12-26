@@ -86,7 +86,7 @@ export function LobbyPage() {
                 <div className="flex flex-row flex-1 min-h-0">
                     {/* Mobile only: render the active panel directly */}
                     <div className="flex-1 flex flex-col min-h-0 max-w-[95%] md:hidden m-5">
-                        {activePanel === "players" && <LobbyPlayersPanel lobby={lobby} />}
+                        {activePanel === "players" && <LobbyPlayersPanel lobby={lobby} currentUser={currentUser} />}
                         {activePanel === "settings" && <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />}
                         {activePanel === "chat" && <LobbyChatPanel lobby={lobby} currentUser={currentUser} />}
                     </div>
@@ -96,7 +96,7 @@ export function LobbyPage() {
                         {/* Left column */}
                         <div className="flex flex-col flex-1 min-h-0 max-w-[50%]">
                             <div className="flex flex-col flex-1 min-h-0">
-                            <LobbyPlayersPanel lobby={lobby} />
+                            <LobbyPlayersPanel lobby={lobby} currentUser={currentUser} />
                             </div>
                             <div className="flex flex-col flex-1 min-h-0">
                             <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />

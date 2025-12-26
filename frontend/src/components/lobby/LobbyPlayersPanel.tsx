@@ -1,10 +1,23 @@
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { Button } from "../ui/button";
+import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { LobbyPlayerDto } from "@/types/dto/entity/LobbyPlayerDto";
+import { toast } from "react-toastify";
+import type { LobbyStatus } from "@/types/enum/LobbyStatus";
+import { useUpdateLobbyPlayerStatus } from "@/hooks/lobby/useUpdateLobbyPlayerStatus";
 
-export function LobbyPlayersPanel({lobby}: {lobby: LobbyDto}) {
+export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
+
+    const currentLobbyPlayer: LobbyPlayerDto | undefined = lobby.lobbyPlayers.find((lp) => lp.id.userId === currentUser.id);
+    const updateLobbyPlayerStatus = useUpdateLobbyPlayerStatus();
 
     const handleClick = () => {
-        // backend lobby update
+        if (!currentLobbyPlayer) {
+            toast.error("Lobby player does not exist");
+            return;
+        }
+        const updatedStatus: LobbyStatus = currentLobbyPlayer.lobbyStatus === "READY" ? "WAITING" : "READY";
+        updateLobbyPlayerStatus.mutate({ lobbyId: lobby.id, userId: currentUser.id, lobbyStatus: updatedStatus });
     };
 
     return (
@@ -20,7 +33,7 @@ export function LobbyPlayersPanel({lobby}: {lobby: LobbyDto}) {
                     </div>
                 )
             })}
-            <Button onClick={handleClick}>Ready Up</Button>
+            <Button onClick={handleClick}>Toggle Ready</Button>
         </div>
     )
 }

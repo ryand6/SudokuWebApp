@@ -174,7 +174,7 @@ public class LobbyEntity {
     }
 
     // Helper to reset countdown only if it is active
-    private void resetCountdownIfActive() {
+    public void resetCountdownIfActive() {
         if (isCountdownActive()) {
             resetCountdownData();
         }
