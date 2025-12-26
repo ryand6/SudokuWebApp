@@ -1,12 +1,16 @@
 package com.github.ryand6.sudokuweb.domain;
 
 import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
+import com.github.ryand6.sudokuweb.exceptions.LobbyHostNotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -101,14 +105,83 @@ public class LobbyEntity {
         return countdownActive != null && countdownActive && countdownEndsAt != null && countdownEndsAt.isAfter(Instant.now());
     }
 
-    // There must be at least 3x players to initiate a countdown due to 2/3 minimum threshold
-    // Countdown must not already be active
-    public boolean canPlayersInitiateCountdown() {
-        return !isCountdownActive() && lobbyPlayers.size() > 2;
+    // Method used to determine if and when the countdown should be initiated
+    public void evaluateCountdownState() {
+        int playerCount = lobbyPlayers.size();
+        // Must be at least two players in a lobby to start countdown
+        if (playerCount < 2) {
+            resetCountdownIfActive();
+            return;
+        }
+
+        // Track number of players that are ready - determines the length of the countdown timer
+        long readyCount = lobbyPlayers.stream()
+                .filter(lp -> lp.getLobbyStatus() == LobbyStatus.READY)
+                .count();
+
+        // Get the lobby host
+        LobbyPlayerEntity hostPlayer = lobbyPlayers.stream()
+                .filter(lp -> lp.getUser().getId().equals(host.getId()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new LobbyHostNotFoundException(
+                                "Lobby Host with ID " + host.getId() + " does not exist as a Lobby Player"
+                        ));
+
+        // First of two potential conditions that can initiate a countdown
+        boolean hostReady = hostPlayer.getLobbyStatus() == LobbyStatus.READY;
+
+        // Second countdown initiating condition - majority of players ready in lobby sizes of 3 or more
+        boolean majorityReady = playerCount >= 3 && (readyCount >= playerCount - 1);
+
+        boolean shouldCountdownBeActive = hostReady || majorityReady;
+
+        // Reset any active countdown if neither of the required conditions are met
+        if (!shouldCountdownBeActive) {
+            resetCountdownIfActive();
+            return;
+        }
+
+        // Determine which user initiated the countdown
+        Long initiatorId = hostReady
+                ? hostPlayer.getUser().getId()
+                : lobbyPlayers.stream()
+                .filter(lp -> lp.getLobbyStatus() == LobbyStatus.READY)
+                // Last player to ready up
+                .max(Comparator.comparing(LobbyPlayerEntity::getReadyAt))
+                .map(lp -> lp.getUser().getId())
+                .orElse(null);
+
+        if (initiatorId != null) {
+            int notReadyCount = playerCount - (int) readyCount;
+            setCountdown(initiatorId, notReadyCount);
+        }
+    }
+
+    // Used to initiate or update countdown and set necessary settings - if more players ready up, the countdown is updated
+    private void setCountdown(Long userId, int notReadyCount) {
+        Instant timerEnd = Instant.now();
+        // Calculate the number of minutes for the countdown timer
+        if (notReadyCount >= 1) {
+            // Add a minute for every non-ready user
+            timerEnd = timerEnd.plus(Duration.ofMinutes(notReadyCount));
+        }
+
+        countdownActive = true;
+        countdownEndsAt = timerEnd;
+        countdownInitiatedBy = userId;
+        settingsLocked = true;
+    }
+
+    // Helper to reset countdown only if it is active
+    private void resetCountdownIfActive() {
+        if (isCountdownActive()) {
+            resetCountdownData();
+        }
     }
 
     // Used for various scenarios e.g. countdown has ended due to host cancelling or game starting
-    public void resetCountdownData() {
+    private void resetCountdownData() {
         countdownActive = false;
         countdownEndsAt = null;
         countdownInitiatedBy = null;

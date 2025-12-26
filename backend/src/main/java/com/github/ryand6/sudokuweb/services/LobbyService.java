@@ -6,6 +6,7 @@ import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
@@ -180,6 +181,25 @@ public class LobbyService {
         // Retrieve lobby
         LobbyEntity lobby = findAndLockLobby(lobbyId);
         lobby.setTimeLimit(timeLimit);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    @Transactional
+    public LobbyDto updateLobbyPlayerStatus(Long lobbyId, Long userId, LobbyStatus lobbyStatus) {
+        // Retrieve lobby
+        LobbyEntity lobby = findAndLockLobby(lobbyId);
+        LobbyPlayerEntity lobbyPlayer = lobby.getLobbyPlayers().stream()
+                .filter(lp -> lp.getUser().getId().equals(userId))
+                .findFirst()
+                .orElseThrow(() ->
+                        new LobbyPlayerNotFoundException(
+                                "Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist"
+                        )
+                );
+        // Lobby Player managed by JPA therefore update will apply
+        lobbyPlayer.setStatus(lobbyStatus);
+        // Handle any countdown updates that may be required
+        lobby.evaluateCountdownState();
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
