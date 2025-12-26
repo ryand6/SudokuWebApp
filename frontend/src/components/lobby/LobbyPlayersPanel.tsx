@@ -9,6 +9,9 @@ import { useUpdateLobbyPlayerStatus } from "@/hooks/lobby/useUpdateLobbyPlayerSt
 export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
     const currentLobbyPlayer: LobbyPlayerDto | undefined = lobby.lobbyPlayers.find((lp) => lp.id.userId === currentUser.id);
+
+    console.log(currentLobbyPlayer);
+
     const updateLobbyPlayerStatus = useUpdateLobbyPlayerStatus();
 
     const handleClick = () => {
@@ -28,7 +31,7 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
                     <div id="player-row" key={index}>
                         {player.user.id === lobby.hostId && <span id="host-star">★</span>}
                         <span id="player-name">{player.user.username}</span>
-                        {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d]"></span> : player.lobbyStatus === "INGAME" ? 
+                        {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d]">Ready</span> : player.lobbyStatus === "INGAME" ? 
                         <span className="bg-[#bee3f8] text-[#2a69ac]">In Game</span> : <span className="bg-[#fed7d7] text-[#742a2a]">Waiting</span>}
                     </div>
                 )

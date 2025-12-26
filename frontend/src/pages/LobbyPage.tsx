@@ -36,8 +36,6 @@ export function LobbyPage() {
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
     const hasSubscribedRef = useRef(false);
 
-    let timeRemaining = null;
-
     useHandleGetLobbyError(isLobbyError, lobbyError);
 
     useValidateLobbyUser(lobby, currentUser);
@@ -57,11 +55,6 @@ export function LobbyPage() {
             hasSubscribedRef.current = false;
         };
     }, [lobbyId]);
-
-    useEffect(() => {
-        if (!lobby?.countdownActive || !lobby.countdownEndsAt) return;
-        timeRemaining = useTimeRemaining(getEpochTimeFromTimestamp(lobby.countdownEndsAt));
-    }, [lobby?.countdownEndsAt]);
     
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 
@@ -75,7 +68,9 @@ export function LobbyPage() {
             <div id="lobby-header" className="flex flex-row justify-between">
                 <h1 className="text-secondary font-bold text-shadow m-3">{lobby?.lobbyName}</h1>
                 {/* Show countdown timer to game start if it's running */}
-                {lobby.countdownActive && timeRemaining && <TimerCountdown time={timeRemaining} />}
+                {lobby.countdownActive && lobby.countdownEndsAt && (
+                    <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.countdownEndsAt)} />
+                )}
             </div>
             <div id="lobby-content" className="flex flex-col flex-1 gap-4 max-h-[70vh] md:max-h-[75vh]">
                 <div id="mobile-tabs" className="md:hidden">
