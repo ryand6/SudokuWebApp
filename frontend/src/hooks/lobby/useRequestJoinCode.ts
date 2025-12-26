@@ -2,6 +2,7 @@ import { requestJoinCode } from "@/api/rest/lobby/requestJoinCode";
 import type { RequestLobbyTokenDto } from "@/types/dto/request/RequestLobbyTokenDto";
 import type { UserActiveTokensDto } from "@/types/dto/response/UserActiveTokensDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 export type TokenWithExpiry = {
         token: string,
@@ -28,7 +29,7 @@ export function useRequestJoinCode() {
             });
         },
         onError: (error) => {
-            alert(error.message);
+            toast.error(error.message);
         }
     })
 }

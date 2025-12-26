@@ -12,30 +12,20 @@ import { JoinCodeAlertDialog } from "../ui/custom/JoinCodeAlertDialog";
 import { useRequestJoinCode } from "@/hooks/lobby/useRequestJoinCode";
 import { useGetActiveUserTokens } from "@/hooks/lobby/useGetActiveUserTokens";
 import { useQueryClient } from "@tanstack/react-query";
-import { useWebSocketContext } from "@/context/WebSocketProvider";
-import { updateLobbyDifficulty } from "@/api/rest/lobby/updateLobbyDifficulty";
-import { updateLobbyTimeLimit } from "@/api/rest/lobby/updateLobbyLimitLimit";
+import { useUpdateLobbyDifficulty } from "@/hooks/lobby/useUpdateLobbyDifficulty";
+import { useUpdateLobbyTimeLimit } from "@/hooks/lobby/useUpdateLobbyTimeLimit";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
-    const { send } = useWebSocketContext();
-
-    const [difficulty, setDifficulty] = useState<Difficulty>(lobby.difficulty);
-    const [timeLimit, setTimeLimit] = useState<TimeLimitPreset>(lobby.timeLimit);
     const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
-    const mutation = useRequestJoinCode();
+    const requestJoinCodeMutation = useRequestJoinCode();
     const queryClient = useQueryClient();
     const { data } = useGetActiveUserTokens(currentUser.id);
     const activeTokens = data?.activeTokens ?? [];
 
-    useEffect(() => {
-        updateLobbyDifficulty(lobby.id, difficulty)
-    }, [difficulty]);
-
-    useEffect(() => {
-        updateLobbyTimeLimit(lobby.id, timeLimit)
-    }, [timeLimit]);
+    const updateDifficulty = useUpdateLobbyDifficulty();
+    const updateLimitLimit = useUpdateLobbyTimeLimit();
 
     // Interval to refresh active tokens display every minute
     useEffect(() => {
@@ -56,7 +46,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
     }
 
     const requestJoinCode = async () => {
-        await mutation.mutateAsync({ lobbyId: lobby.id, userId: currentUser.id });
+        await requestJoinCodeMutation.mutateAsync({ lobbyId: lobby.id, userId: currentUser.id });
     };
  
     return (
@@ -70,10 +60,15 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                 </div>
                 {currentUser.id === lobby.hostId && 
                 <div>
-                    <RadioGroup defaultValue={wordToProperCase(lobby.difficulty)} onValueChange={(value) => {
-                        let valueEnum = value.toUpperCase() as Difficulty;
-                        setDifficulty(valueEnum);
-                    }} disabled={lobby.settingsLocked} className="flex flex-row">
+                    <RadioGroup 
+                        defaultValue={wordToProperCase(lobby.difficulty)} 
+                        onValueChange={(value) => {
+                            let valueEnum = value.toUpperCase() as Difficulty;
+                            updateDifficulty.mutate({ lobbyId: lobby.id, difficulty: valueEnum });
+                        }} 
+                        disabled={lobby.settingsLocked} 
+                        className="flex flex-row"
+                    >
                         <div>
                             <RadioGroupItem value="Easy" id="r-easy" />
                             <Label htmlFor="r-easy">Easy</Label>
@@ -101,10 +96,15 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                 </div>
                 {currentUser.id === lobby.hostId && 
                 <div>
-                    <RadioGroup defaultValue={wordToProperCase(lobby.timeLimit)} onValueChange={(value) => {
-                        let valueEnum = value.toUpperCase() as TimeLimitPreset;
-                        setTimeLimit(valueEnum);
-                    }} disabled={lobby.settingsLocked} className="flex flex-row">
+                    <RadioGroup 
+                        defaultValue={wordToProperCase(lobby.timeLimit)} 
+                        onValueChange={(value) => {
+                            let valueEnum = value.toUpperCase() as TimeLimitPreset;
+                            updateLimitLimit.mutate({lobbyId: lobby.id, timeLimit: valueEnum});
+                        }} 
+                        disabled={lobby.settingsLocked} 
+                        className="flex flex-row"
+                    >
                         <div>
                             <RadioGroupItem value="Quick" id="r-quick" />
                             <Label htmlFor="r-quick">15 min</Label>
