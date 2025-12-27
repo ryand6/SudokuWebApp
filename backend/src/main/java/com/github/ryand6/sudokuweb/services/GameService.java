@@ -63,6 +63,8 @@ public class GameService {
         // Emit notification of lobby update
         lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lockedLobby), messagingTemplate);
 
+        System.out.println("\n\n\n" + game.toString() + "\n\n\n");
+
         return game;
     }
 
@@ -92,7 +94,8 @@ public class GameService {
     }
 
     public GameDto getGameById(Long gameId) {
-        return gameEntityDtoMapper.mapToDto(gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist")));
+        GameEntity gameEntity = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
+        return gameEntityDtoMapper.mapToDto(gameEntity);
     }
 
 }

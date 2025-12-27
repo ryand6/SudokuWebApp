@@ -55,8 +55,8 @@ export function LobbyPage() {
     }, [lobbyId]);
 
     const gameQuery = useCheckIfUserInGame(
-        lobby?.currentGameId ?? -1, // fallback to dummy id if lobby not ready
-        currentUser?.id ?? -1       // fallback to dummy id if user not ready
+        lobby?.currentGameId ?? -1, // fallback to dummy id if lobby or game id not available
+        currentUser?.id ?? -1    // fallback to dummy id if user not ready
     );
 
     // Then handle navigation only when data exists
@@ -69,13 +69,10 @@ export function LobbyPage() {
             navigate(`/game/${gameQuery.data.id}`);
         }
     }, [lobby, currentUser, gameQuery.data, navigate]);
-    
+
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 
-    if (!lobby || !currentUser) {
-        toast.error("An error has occurred.");
-        return null;
-    }
+    if (!lobby || !currentUser) return null;
 
     return (
         <div id="lobby-container" className="flex flex-col flex-1">

@@ -12,8 +12,11 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
             queryClient.setQueryData(["lobby", lobbyId], message.payload);
             break;
         // Transport lobby players to game page when game has started
-        case "GAME_STARTED":
+        case "GAME_CREATED":
             const gameDto: GameDto = message.payload;
+            
+            console.log(gameDto);
+
             queryClient.setQueryData(["game", gameDto.id], gameDto);
             navigate(`/game/${gameDto.id}`);
             break;
