@@ -16,7 +16,6 @@ import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestam
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 
 export function LobbyPage() {
     const { lobbyId } = useParams();
@@ -59,12 +58,10 @@ export function LobbyPage() {
         currentUser?.id ?? -1    // fallback to dummy id if user not ready
     );
 
-    // Then handle navigation only when data exists
+    // Handle navigation only when confirmed if user is part of current game
     useEffect(() => {
         if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId) return;
 
-        console.log(gameQuery.data);
-        
         if (gameQuery.data) {
             navigate(`/game/${gameQuery.data.id}`);
         }

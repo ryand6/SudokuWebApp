@@ -10,8 +10,6 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
 
     const currentLobbyPlayer: LobbyPlayerDto | undefined = lobby.lobbyPlayers.find((lp) => lp.id.userId === currentUser.id);
 
-    console.log(currentLobbyPlayer);
-
     const updateLobbyPlayerStatus = useUpdateLobbyPlayerStatus();
 
     const handleClick = () => {
@@ -36,7 +34,7 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
                     </div>
                 )
             })}
-            <Button onClick={handleClick}>Toggle Ready</Button>
+            <Button onClick={handleClick} disabled={lobby.lobbyPlayers.length < 2}>Toggle Ready</Button>
         </div>
     )
 }
