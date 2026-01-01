@@ -148,7 +148,8 @@ public class LobbyService {
             Optional<UserEntity> newHostOptional = getNewHost(lobby);
             // Current host was the only active player in lobby - close down lobby
             if (newHostOptional.isEmpty()) {
-                lobby = closeLobby(lobby);
+                closeLobby(lobby);
+                throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
             } else {
                 UserEntity newHost = newHostOptional.get();
                 // Update the lobby host
@@ -219,10 +220,12 @@ public class LobbyService {
                 .findFirst();
     }
 
+    @Transactional
     // Register the Lobby inactive
-    public LobbyEntity closeLobby(LobbyEntity lobby) {
+    public void closeLobby(LobbyEntity lobby) {
         lobby.setIsActive(false);
-        return lobby;
+        // Delete the lobby from the DB, removing all associated lobby messages, games, game states
+        lobbyRepository.deleteById(lobby.getId());
     }
 
     // Return the requested lobby

@@ -123,13 +123,13 @@ public class LobbyRestController {
     @PostMapping("/leave")
     public ResponseEntity<?> leaveLobby(@AuthenticationPrincipal OAuth2User principal,
                                OAuth2AuthenticationToken authToken,
-                               @RequestParam Long lobbyId) {
+                               @Valid @RequestBody LeaveLobbyRequestDto requestDto) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-        LobbyDto lobbyDto = lobbyService.removeFromLobby(currentUser.getId(), lobbyId);
+        LobbyDto lobbyDto = lobbyService.removeFromLobby(requestDto.getLobbyId(), currentUser.getId());
 
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(lobbyDto);
     }
 
 

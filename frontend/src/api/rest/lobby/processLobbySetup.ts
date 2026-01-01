@@ -1,6 +1,7 @@
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { backendValidationErrors } from "@/utils/error/backendValidationErrors";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
+import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
 export async function processLobbySetup(lobbyName: string, isPublic: boolean): Promise<LobbyDto> {
     try {
@@ -18,7 +19,7 @@ export async function processLobbySetup(lobbyName: string, isPublic: boolean): P
         if (!response.ok) {
             // if error message doesn't parse properly, assign null to errorData
             const errorData = await response.json().catch(() => null);
-            let error: any;
+            let error: ErrorWithStatus;
             if (Array.isArray(errorData)) {
                 error = backendValidationErrors(errorData);
             } else {

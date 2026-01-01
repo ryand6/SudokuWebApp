@@ -8,6 +8,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useCheckIfUserInGame } from "@/hooks/game/useCheckIfUserInGame";
 import { useGetLobby } from "@/hooks/lobby/useGetLobby";
 import { useHandleGetLobbyError } from "@/hooks/lobby/useHandleGetLobbyError";
+import { useLeaveLobby } from "@/hooks/lobby/useLeaveLobby";
 import { useValidateLobbyId } from "@/hooks/lobby/useValidateLobbyId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
@@ -34,6 +35,8 @@ export function LobbyPage() {
     const {data: lobby, isLoading: isLobbyLoading, isError: isLobbyError, error: lobbyError} = useGetLobby(id);
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
     const hasSubscribedRef = useRef(false);
+
+    const leaveLobbyHandler = useLeaveLobby();
 
     useHandleGetLobbyError(isLobbyError, lobbyError);
 
@@ -71,6 +74,10 @@ export function LobbyPage() {
 
     if (!lobby || !currentUser) return null;
 
+    const handleClick = () => {
+        leaveLobbyHandler.mutate({ lobbyId: lobby.id });
+    }
+
     return (
         <div id="lobby-container" className="flex flex-col flex-1">
             <div id="lobby-header" className="flex flex-row justify-between">
@@ -79,6 +86,7 @@ export function LobbyPage() {
                 {lobby.countdownActive && lobby.countdownEndsAt && (
                     <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.countdownEndsAt)} />
                 )}
+                <Button className="m-2 cursor-pointer" onClick={handleClick}>Leave Lobby</Button>
             </div>
             <div id="lobby-content" className="flex flex-col flex-1 gap-4 max-h-[70vh] md:max-h-[75vh]">
                 <div id="mobile-tabs" className="md:hidden">

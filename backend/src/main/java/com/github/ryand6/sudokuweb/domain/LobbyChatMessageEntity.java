@@ -3,6 +3,8 @@ package com.github.ryand6.sudokuweb.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
@@ -27,10 +29,12 @@ public class LobbyChatMessageEntity {
 
     @ManyToOne
     @JoinColumn(name = "lobby_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private LobbyEntity lobbyEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity userEntity;
 
     @CreationTimestamp
