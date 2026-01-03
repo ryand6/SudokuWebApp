@@ -136,35 +136,6 @@ public class LobbyService {
     }
 
     @Transactional
-    // Removes a player from the lobby either due to disconnecting or manual leave, re-orders host if the host left
-    public LobbyDto removeFromLobby(Long lobbyId, Long userId) {
-        // Retrieve lobby
-        LobbyEntity lobby = findAndLockLobby(lobbyId);
-        // Retrieve LobbyPlayer
-        LobbyPlayerEntity lobbyPlayer = findLobbyPlayerByCompositeId(lobbyId, userId);
-        UserEntity requesterEntity = userService.findUserById(userId);
-        // If host has left, update the host to the player that joined first after the host
-        if (requesterEntity.equals(lobby.getHost())) {
-            Optional<UserEntity> newHostOptional = getNewHost(lobby);
-            // Current host was the only active player in lobby - close down lobby
-            if (newHostOptional.isEmpty()) {
-                closeLobby(lobby);
-                throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
-            } else {
-                UserEntity newHost = newHostOptional.get();
-                // Update the lobby host
-                lobby.setHost(newHost);
-            }
-        }
-        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
-        activePlayers.remove(lobbyPlayer);
-        // Delete the LobbyPlayer from the DB
-        lobbyPlayerRepository.deleteByCompositeId(lobbyId, userId);
-        lobby.setLobbyPlayers(activePlayers);
-        return lobbyEntityDtoMapper.mapToDto(lobby);
-    }
-
-    @Transactional
     public LobbyDto updateLobbyDifficulty(Long lobbyId, Difficulty difficulty) {
         // Retrieve lobby
         LobbyEntity lobby = findAndLockLobby(lobbyId);
@@ -205,8 +176,37 @@ public class LobbyService {
                 .orElseThrow(() -> new LobbyPlayerNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist"));
     }
 
+    @Transactional
+    // Removes a player from the lobby either due to disconnecting or manual leave, re-orders host if the host left
+    public LobbyDto removeFromLobby(Long lobbyId, Long userId) {
+        // Retrieve lobby
+        LobbyEntity lobby = findAndLockLobby(lobbyId);
+        // Retrieve LobbyPlayer
+        LobbyPlayerEntity lobbyPlayer = findLobbyPlayerByCompositeId(lobbyId, userId);
+        UserEntity requesterEntity = userService.findUserById(userId);
+        // If host has left, update the host to the player that joined first after the host
+        if (requesterEntity.equals(lobby.getHost())) {
+            Optional<UserEntity> newHostOptional = getNewHost(lobby);
+            // Current host was the only active player in lobby - close down lobby
+            if (newHostOptional.isEmpty()) {
+                closeLobby(lobby);
+                return null;
+            } else {
+                UserEntity newHost = newHostOptional.get();
+                // Update the lobby host
+                lobby.setHost(newHost);
+            }
+        }
+        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
+        activePlayers.remove(lobbyPlayer);
+        // Delete the LobbyPlayer from the DB
+        lobbyPlayerRepository.deleteByCompositeId(lobbyId, userId);
+        lobby.setLobbyPlayers(activePlayers);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
     // Return the entity record of the new host based on the order in which players joined
-    public Optional<UserEntity> getNewHost(LobbyEntity lobby) {
+    private Optional<UserEntity> getNewHost(LobbyEntity lobby) {
         UserEntity currentHost = lobby.getHost();
         Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
         return activePlayers.stream()

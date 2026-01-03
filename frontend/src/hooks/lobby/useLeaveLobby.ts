@@ -8,21 +8,24 @@ export function useLeaveLobby() {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
 
-    return useMutation<LobbyDto, Error, LeaveLobbyRequestDto>({
+    return useMutation<LobbyDto | null, Error, LeaveLobbyRequestDto>({
         mutationFn: ({lobbyId}) => leaveLobby(lobbyId),
         onSuccess: (updatedLobby, variables) => {
+            // handles when a lobby is closed
+            if (updatedLobby === null) {
+                // Reset public lobbies list and removed lobby caches to account for removal of the lobby from the backend
+                queryClient.removeQueries({ queryKey: ["lobby", variables.lobbyId], exact: true });
+                queryClient.resetQueries({ queryKey: ["publicLobbiesList"], exact: true });
+                navigate("/dashboard", { replace: true });
+                return;
+            }
             const lobbyId = variables.lobbyId;
             queryClient.setQueryData(["lobby", lobbyId], updatedLobby);
-            queryClient.removeQueries({ queryKey: ["publicLobbiesList"] });
             navigate("/dashboard", { replace: true });
         },
         onError: (err: any) => {
             // Handle any error for display in UI
             console.error("Leaving Lobby error: ", err?.message || err);
-            // Handle lobby does not exist
-            if (err.status === 404) {
-                navigate("/dashboard", { replace: true });
-            }
         }
     })
 }

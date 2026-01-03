@@ -127,6 +127,10 @@ public class LobbyRestController {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.removeFromLobby(requestDto.getLobbyId(), currentUser.getId());
 
+        if (lobbyDto == null) {
+            return ResponseEntity.noContent().build();
+        }
+
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
         return ResponseEntity.ok(lobbyDto);
