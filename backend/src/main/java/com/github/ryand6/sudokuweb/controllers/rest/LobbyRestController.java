@@ -1,10 +1,11 @@
 package com.github.ryand6.sudokuweb.controllers.rest;
 
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.request.*;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.PublicLobbiesListDto;
+import com.github.ryand6.sudokuweb.services.LobbyChatService;
 import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
 import com.github.ryand6.sudokuweb.services.UserService;
@@ -27,15 +28,18 @@ public class LobbyRestController {
 
     private final LobbyService lobbyService;
     private final UserService userService;
+    private final LobbyChatService lobbyChatService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final SimpMessagingTemplate messagingTemplate;
 
     public LobbyRestController(LobbyService lobbyService,
                                UserService userService,
+                               LobbyChatService lobbyChatService,
                                LobbyWebSocketsService lobbyWebSocketsService,
                                SimpMessagingTemplate messagingTemplate) {
         this.lobbyService = lobbyService;
         this.userService = userService;
+        this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.messagingTemplate = messagingTemplate;
     }
@@ -91,6 +95,10 @@ public class LobbyRestController {
 
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
+        // Send an info update to the lobby chat
+        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "joined the lobby.");
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+
         return ResponseEntity.ok(lobbyDto);
     }
 
@@ -104,6 +112,10 @@ public class LobbyRestController {
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
 
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
+        // Send an info update to the lobby chat
+        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "joined the lobby.");
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
 
         return ResponseEntity.ok(lobbyDto);
     }
@@ -133,6 +145,10 @@ public class LobbyRestController {
 
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
+        // Send an info update to the lobby chat
+        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "left the lobby.");
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+
         return ResponseEntity.ok(lobbyDto);
     }
 
@@ -142,6 +158,12 @@ public class LobbyRestController {
     public ResponseEntity<?> updateLobbyDifficulty(@RequestBody LobbyDifficultyUpdateRequestDto requestDto) {
         LobbyDto lobbyDto = lobbyService.updateLobbyDifficulty(requestDto.getLobbyId(), requestDto.getDifficulty());
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
+        // Send an info update to the lobby chat
+        String message = "updated the difficulty to " + requestDto.getDifficulty().toString().toLowerCase() + ".";
+        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), requestDto.getUserId(), message);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+
         return ResponseEntity.ok(lobbyDto);
     }
 
@@ -150,6 +172,12 @@ public class LobbyRestController {
     public ResponseEntity<?> updateLobbyTimeLimit(@RequestBody LobbyTimeLimitUpdateRequestDto requestDto) {
         LobbyDto lobbyDto = lobbyService.updateLobbyTimeLimit(requestDto.getLobbyId(), requestDto.getTimeLimit());
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
+        // Send an info update to the lobby chat
+        String message = "updated the time limit to " + requestDto.getTimeLimit().toString().toLowerCase() + ".";
+        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), requestDto.getUserId(), message);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+
         return ResponseEntity.ok(lobbyDto);
     }
 
@@ -158,6 +186,12 @@ public class LobbyRestController {
     public ResponseEntity<?> updateLobbyPlayerStatus(@RequestBody LobbyPlayerStatusUpdateRequestDto requestDto) {
         LobbyDto lobbyDto = lobbyService.updateLobbyPlayerStatus(requestDto.getLobbyId(), requestDto.getUserId(), requestDto.getLobbyStatus());
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+
+        // Send an info update to the lobby chat
+        String message = "updated their status to " + requestDto.getLobbyStatus().toString().toLowerCase() + ".";
+        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), requestDto.getUserId(), message);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+
         return ResponseEntity.ok(lobbyDto);
     }
 

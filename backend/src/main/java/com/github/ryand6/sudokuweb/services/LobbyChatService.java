@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.services;
 import com.github.ryand6.sudokuweb.domain.LobbyChatMessageEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.enums.MessageType;
 import com.github.ryand6.sudokuweb.exceptions.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.MessageTooSoonException;
@@ -51,6 +52,7 @@ public class LobbyChatService {
     }
 
     @Transactional
+    // Method for submitting chat messages created by the user using the chat interface
     public LobbyChatMessageDto submitMessage(Long lobbyId, Long userId, String message) {
         validateMessageContent(message);
         Optional<LobbyPlayerEntity> lobbyPlayerRequesterOptional = lobbyPlayerRepository.findByCompositeId(lobbyId, userId);
@@ -68,6 +70,26 @@ public class LobbyChatService {
         lobbyChatMessage.setLobbyEntity(updatedLobbyPlayerRequester.getLobby());
         lobbyChatMessage.setUserEntity(updatedLobbyPlayerRequester.getUser());
         lobbyChatMessage.setMessage(message);
+        lobbyChatMessage.setMessageType(MessageType.MESSAGE);
+        lobbyChatMessage = lobbyChatMessageRepository.save(lobbyChatMessage);
+        // Force Hibernate to flush, ensuring the row is inserted in the DB before returning (ensures createdAt is not null)
+        lobbyChatMessageRepository.flush();
+        return lobbyChatMessageEntityDtoMapper.mapToDto(lobbyChatMessage);
+    }
+
+    @Transactional
+    // Method for submitting info messages triggered when a user carries out certain actions e.g. joins lobby, starts countdown, changes settings
+    public LobbyChatMessageDto submitInfoMessage(Long lobbyId, Long userId, String message) {
+        Optional<LobbyPlayerEntity> lobbyPlayerRequesterOptional = lobbyPlayerRepository.findByCompositeId(lobbyId, userId);
+        if (lobbyPlayerRequesterOptional.isEmpty()) {
+            throw new LobbyPlayerNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist");
+        }
+        LobbyPlayerEntity lobbyPlayerRequester = lobbyPlayerRequesterOptional.get();
+        LobbyChatMessageEntity lobbyChatMessage = new LobbyChatMessageEntity();
+        lobbyChatMessage.setLobbyEntity(lobbyPlayerRequester.getLobby());
+        lobbyChatMessage.setUserEntity(lobbyPlayerRequester.getUser());
+        lobbyChatMessage.setMessage(message);
+        lobbyChatMessage.setMessageType(MessageType.INFO);
         lobbyChatMessage = lobbyChatMessageRepository.save(lobbyChatMessage);
         // Force Hibernate to flush, ensuring the row is inserted in the DB before returning (ensures createdAt is not null)
         lobbyChatMessageRepository.flush();

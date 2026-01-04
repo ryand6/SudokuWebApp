@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.domain;
 
+import com.github.ryand6.sudokuweb.enums.MessageType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -43,5 +44,8 @@ public class LobbyChatMessageEntity {
 
     @Column(name = "message", nullable = false)
     private String message;
+
+    @Column(name = "message_type", nullable = false)
+    private MessageType messageType;
 
 }

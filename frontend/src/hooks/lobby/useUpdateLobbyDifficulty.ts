@@ -8,7 +8,7 @@ export function useUpdateLobbyDifficulty() {
     const queryClient = useQueryClient();
 
     return useMutation<LobbyDto, Error, UpdateLobbyDifficultyDto>({
-        mutationFn: ({lobbyId, difficulty}) => updateLobbyDifficulty(lobbyId, difficulty),
+        mutationFn: ({lobbyId, userId, difficulty}) => updateLobbyDifficulty(lobbyId, userId, difficulty),
         onSuccess: (updatedLobby, variables) => {
             const lobbyId = variables.lobbyId;
             queryClient.setQueryData(["lobby", lobbyId], updatedLobby);

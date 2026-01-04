@@ -111,19 +111,34 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                 <div ref={ref} className="h-1" />
                 {messages?.map((msg, index) => {
                     if (!msg) return;
-                    return (
-                        <div id="lobby-message-container" className="flex flex-row m-2" key={index}>
-                            <div id="lobby-message-user" className="w-[25%]">
-                                {msg.username}
-                            </div>
-                            <div id="lobby-message-content" className="w-[65%]">
-                                {msg.message}
-                            </div>
-                            <div id="lobby-message-timestamp" className="W-[10%]">
-                                {getLocalTime(msg.createdAt)}
-                            </div>
-                        </div>
-                    )
+                    switch (msg.messageType) {
+                        case "MESSAGE":
+                            return (
+                                <div id="lobby-message-container" className="flex flex-row m-2" key={index}>
+                                    <div id="lobby-message-user" className="w-[25%]">
+                                        {msg.username}
+                                    </div>
+                                    <div id="lobby-message-content" className="w-[65%]">
+                                        {msg.message}
+                                    </div>
+                                    <div id="lobby-message-timestamp" className="W-[10%]">
+                                        {getLocalTime(msg.createdAt)}
+                                    </div>
+                                </div>
+                                );
+                        case "INFO": 
+                            return (
+                                <div id="lobby-info-message-container" className="flex flex-row m-1 text-sm" key={index}>
+                                    <div id="lobby-info-message-content" className="w-[90%]">
+                                        <span>{msg.username} </span>
+                                        <span>{msg.message}</span>
+                                    </div>
+                                    <div id="lobby-info-message-timestamp" className="W-[10%]">
+                                        {getLocalTime(msg.createdAt)}
+                                    </div>
+                                </div>
+                            )
+                    }
                 })}
                 {/* "Scroll to bottom" indicator */}
                 {hasNewMessages && !isAtBottom && (

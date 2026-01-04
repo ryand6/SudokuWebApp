@@ -12,6 +12,8 @@ public class LobbyTimeLimitUpdateRequestDto {
 
     private Long lobbyId;
 
+    private Long userId;
+
     private TimeLimitPreset timeLimit;
 
 }

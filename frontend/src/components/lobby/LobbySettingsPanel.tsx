@@ -14,6 +14,7 @@ import { useGetActiveUserTokens } from "@/hooks/lobby/useGetActiveUserTokens";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateLobbyDifficulty } from "@/hooks/lobby/useUpdateLobbyDifficulty";
 import { useUpdateLobbyTimeLimit } from "@/hooks/lobby/useUpdateLobbyTimeLimit";
+import { C } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
@@ -64,7 +65,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                         defaultValue={wordToProperCase(lobby.difficulty)} 
                         onValueChange={(value) => {
                             let valueEnum = value.toUpperCase() as Difficulty;
-                            updateDifficulty.mutate({ lobbyId: lobby.id, difficulty: valueEnum });
+                            updateDifficulty.mutate({ lobbyId: lobby.id, userId: currentUser.id, difficulty: valueEnum });
                         }} 
                         disabled={lobby.settingsLocked} 
                         className="flex flex-row"
@@ -100,7 +101,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                         defaultValue={wordToProperCase(lobby.timeLimit)} 
                         onValueChange={(value) => {
                             let valueEnum = value.toUpperCase() as TimeLimitPreset;
-                            updateLimitLimit.mutate({lobbyId: lobby.id, timeLimit: valueEnum});
+                            updateLimitLimit.mutate({lobbyId: lobby.id, userId: currentUser.id, timeLimit: valueEnum});
                         }} 
                         disabled={lobby.settingsLocked} 
                         className="flex flex-row"

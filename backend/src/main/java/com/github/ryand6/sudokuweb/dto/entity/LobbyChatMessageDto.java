@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.entity;
 
+import com.github.ryand6.sudokuweb.enums.MessageType;
 import lombok.*;
 
 import java.time.Instant;
@@ -18,6 +19,8 @@ public class LobbyChatMessageDto {
     private String username;
 
     private String message;
+
+    private MessageType messageType;
 
     private Instant createdAt;
 

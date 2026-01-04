@@ -8,7 +8,7 @@ export function useUpdateLobbyTimeLimit() {
     const queryClient = useQueryClient();
 
     return useMutation<LobbyDto, Error, UpdateLobbyTimeLimitDto>({
-        mutationFn: ({lobbyId, timeLimit}) => updateLobbyTimeLimit(lobbyId, timeLimit),
+        mutationFn: ({lobbyId, userId, timeLimit}) => updateLobbyTimeLimit(lobbyId, userId, timeLimit),
         onSuccess: (updatedLobby, variables) => {
             const lobbyId = variables.lobbyId;
             queryClient.setQueryData(["lobby", lobbyId], updatedLobby);

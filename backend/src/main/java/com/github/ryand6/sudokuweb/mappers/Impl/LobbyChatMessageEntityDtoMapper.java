@@ -15,6 +15,7 @@ public class LobbyChatMessageEntityDtoMapper implements EntityDtoMapper<LobbyCha
                 .lobbyId(lobbyChatMessageEntity.getLobbyEntity().getId())
                 .username(lobbyChatMessageEntity.getUserEntity().getUsername())
                 .message(lobbyChatMessageEntity.getMessage())
+                .messageType(lobbyChatMessageEntity.getMessageType())
                 .createdAt(lobbyChatMessageEntity.getCreatedAt())
                 .build();
     }

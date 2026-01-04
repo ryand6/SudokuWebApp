@@ -12,6 +12,8 @@ public class LobbyDifficultyUpdateRequestDto {
 
     private Long lobbyId;
 
+    private Long userId;
+
     private Difficulty difficulty;
 
 }
