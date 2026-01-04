@@ -23,7 +23,7 @@ public class LobbyPlayerEntity {
     @JoinColumn(name = "lobby_id", nullable = false)
     private LobbyEntity lobby;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;

@@ -97,7 +97,7 @@ export function CreateLobbyPage() {
                         </FieldGroup>
                         <FieldSeparator />
                         <Field orientation="responsive">
-                            <Button type="submit">Create Lobby</Button>
+                            <Button type="submit" className="cursor-pointer">Create Lobby</Button>
                         </Field>
                     </FieldSet>
                 </form>

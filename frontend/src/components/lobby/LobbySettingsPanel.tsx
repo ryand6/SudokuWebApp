@@ -14,7 +14,6 @@ import { useGetActiveUserTokens } from "@/hooks/lobby/useGetActiveUserTokens";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateLobbyDifficulty } from "@/hooks/lobby/useUpdateLobbyDifficulty";
 import { useUpdateLobbyTimeLimit } from "@/hooks/lobby/useUpdateLobbyTimeLimit";
-import { C } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 

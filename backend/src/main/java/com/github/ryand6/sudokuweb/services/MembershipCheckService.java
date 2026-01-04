@@ -24,6 +24,6 @@ public class MembershipCheckService {
 
     // Confirm if a user is currently part of a lobby
     public boolean isUserInLobby(Long userId, Long lobbyId) {
-        return lobbyPlayerRepository.existsByUserIdAndLobbyId(userId, lobbyId);
+        return lobbyPlayerRepository.existsByUser_IdAndLobby_Id(userId, lobbyId);
     }
 }

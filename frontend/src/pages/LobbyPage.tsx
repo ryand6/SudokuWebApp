@@ -40,7 +40,7 @@ export function LobbyPage() {
 
     useHandleGetLobbyError(isLobbyError, lobbyError);
 
-    useValidateLobbyUser(lobby, currentUser);
+    useValidateLobbyUser(lobby, currentUser, leaveLobbyHandler.isLeaving);
 
     // Subscribe user to lobby websocket topic - ensures when page is refreshed or new session starts, user continues to receive lobby updates 
     useEffect(() => {

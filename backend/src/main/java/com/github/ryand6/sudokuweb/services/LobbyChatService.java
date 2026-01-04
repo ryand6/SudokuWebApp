@@ -1,15 +1,19 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.LobbyChatMessageEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.enums.MessageType;
+import com.github.ryand6.sudokuweb.exceptions.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.MessageTooSoonException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyChatMessageEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyChatMessageRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
+import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.validation.ProfanityValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
@@ -25,15 +29,21 @@ import java.util.stream.Collectors;
 @Service
 public class LobbyChatService {
 
+    private final UserService userService;
+    private final LobbyRepository lobbyRepository;
     private final LobbyPlayerRepository lobbyPlayerRepository;
     private final LobbyChatMessageRepository lobbyChatMessageRepository;
     private final LobbyChatMessageEntityDtoMapper lobbyChatMessageEntityDtoMapper;
     private final ProfanityValidator profanityValidator;
 
-    public LobbyChatService(LobbyPlayerRepository lobbyPlayerRepository,
+    public LobbyChatService(UserService userService,
+                            LobbyRepository lobbyRepository,
+                            LobbyPlayerRepository lobbyPlayerRepository,
                             LobbyChatMessageRepository lobbyChatMessageRepository,
                             LobbyChatMessageEntityDtoMapper lobbyChatMessageEntityDtoMapper,
                             ProfanityValidator profanityValidator) {
+        this.userService = userService;
+        this.lobbyRepository = lobbyRepository;
         this.lobbyPlayerRepository = lobbyPlayerRepository;
         this.lobbyChatMessageRepository = lobbyChatMessageRepository;
         this.lobbyChatMessageEntityDtoMapper = lobbyChatMessageEntityDtoMapper;

@@ -17,12 +17,7 @@ public interface LobbyPlayerRepository extends JpaRepository<LobbyPlayerEntity, 
     @Query(value = "SELECT * FROM lobby_players WHERE lobby_id = :lobbyId AND user_id = :userId", nativeQuery = true)
     Optional<LobbyPlayerEntity> findByCompositeId(@Param("lobbyId") Long lobbyId, @Param("userId") Long userId);
 
-    @Transactional
-    @Query(value = "DELETE FROM lobby_players WHERE lobby_id = :lobbyId AND user_id = :userId", nativeQuery = true)
-    @Modifying
-    void deleteByCompositeId(@Param("lobbyId") Long lobbyId, @Param("userId") Long userId);
-
     // Check is a user is an active member in a lobby
-    boolean existsByUserIdAndLobbyId(Long userId, Long lobbyId);
+    boolean existsByUser_IdAndLobby_Id(Long userId, Long lobbyId);
 
 }

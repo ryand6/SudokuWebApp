@@ -11,7 +11,6 @@ import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 import com.github.ryand6.sudokuweb.exceptions.*;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +30,6 @@ public class LobbyService {
     private final LobbyChatService lobbyChatService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
-    private final LobbyPlayerRepository lobbyPlayerRepository;
     private final PrivateLobbyTokenService privateLobbyTokenService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -40,7 +38,6 @@ public class LobbyService {
                         LobbyChatService lobbyChatService,
                         LobbyWebSocketsService lobbyWebSocketsService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
-                        LobbyPlayerRepository lobbyPlayerRepository,
                         PrivateLobbyTokenService privateLobbyTokenService,
                         SimpMessagingTemplate simpMessagingTemplate) {
         this.lobbyRepository = lobbyRepository;
@@ -48,7 +45,6 @@ public class LobbyService {
         this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
-        this.lobbyPlayerRepository = lobbyPlayerRepository;
         this.privateLobbyTokenService = privateLobbyTokenService;
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
@@ -166,14 +162,7 @@ public class LobbyService {
     public LobbyDto updateLobbyPlayerStatus(Long lobbyId, Long userId, LobbyStatus lobbyStatus) {
         // Retrieve lobby
         LobbyEntity lobby = findAndLockLobby(lobbyId);
-        LobbyPlayerEntity lobbyPlayer = lobby.getLobbyPlayers().stream()
-                .filter(lp -> lp.getUser().getId().equals(userId))
-                .findFirst()
-                .orElseThrow(() ->
-                        new LobbyPlayerNotFoundException(
-                                "Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist"
-                        )
-                );
+        LobbyPlayerEntity lobbyPlayer = findLobbyPlayer(lobby, userId);
         // Lobby Player managed by JPA therefore update will apply
         lobbyPlayer.setStatus(lobbyStatus);
         // Handle any countdown updates that may be required
@@ -185,19 +174,13 @@ public class LobbyService {
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
-    // Get LobbyPlayerEntity using Composite ID comprised of lobbyId and userId
-    private LobbyPlayerEntity findLobbyPlayerByCompositeId(Long lobbyId, Long userId) {
-        return lobbyPlayerRepository.findByCompositeId(lobbyId, userId)
-                .orElseThrow(() -> new LobbyPlayerNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist"));
-    }
-
     @Transactional
     // Removes a player from the lobby either due to disconnecting or manual leave, re-orders host if the host left
     public LobbyDto removeFromLobby(Long lobbyId, Long userId) {
         // Retrieve lobby
         LobbyEntity lobby = findAndLockLobby(lobbyId);
         // Retrieve LobbyPlayer
-        LobbyPlayerEntity lobbyPlayer = findLobbyPlayerByCompositeId(lobbyId, userId);
+        LobbyPlayerEntity lobbyPlayer = findLobbyPlayer(lobby, userId);
         UserEntity requesterEntity = userService.findUserById(userId);
         // If host has left, update the host to the player that joined first after the host
         if (requesterEntity.equals(lobby.getHost())) {
@@ -212,12 +195,23 @@ public class LobbyService {
                 lobby.setHost(newHost);
             }
         }
-        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
-        activePlayers.remove(lobbyPlayer);
-        // Delete the LobbyPlayer from the DB
-        lobbyPlayerRepository.deleteByCompositeId(lobbyId, userId);
-        lobby.setLobbyPlayers(activePlayers);
+
+        // Send an info update to the lobby chat - must be sent before the transaction is committed, otherwise it will fail WebSocketSecurity checks that ensure messages come from active lobby members
+        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, userId, "left the lobby.");
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
+
+        // Remove the lobby player from the lobby - hibernate will clean up by removing the lobby player from the DB due to orphan removal
+        lobby.getLobbyPlayers().remove(lobbyPlayer);
         return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    private LobbyPlayerEntity findLobbyPlayer(LobbyEntity lobby, Long userId) {
+        return lobby.getLobbyPlayers().stream()
+                .filter(lp -> lp.getUser().getId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new LobbyPlayerNotFoundException(
+                        "Lobby Player with Lobby ID " + lobby.getId() + " and User ID " + userId + " does not exist"
+                ));
     }
 
     // Return the entity record of the new host based on the order in which players joined
@@ -243,7 +237,7 @@ public class LobbyService {
         lobbyRepository.deleteById(lobby.getId());
     }
 
-    // Return the requested lobby
+    // Return the requested lobby DTO
     public LobbyDto getLobbyById(Long lobbyId) {
         Optional<LobbyEntity> lobby = lobbyRepository.findById(lobbyId);
         if (lobby.isPresent()) {

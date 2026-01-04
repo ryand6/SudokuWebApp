@@ -22,6 +22,16 @@ export async function initStompClient(
     try {
         // Create a new STOMP client that will use the SockJS socket
         clientRef.current = stompClientFactory(socket, csrfTokenData, handleStompError, handleConnect);
+
+        // Attempt to reconnect every 1s if connection drops
+        clientRef.current.reconnectDelay = 1000;
+
+        // clientRef.current.debug = (str) => {
+        //     console.debug("[STOMP]", str);
+        // }
+
+        clientRef.current.onStompError = handleStompError;
+
         // Activate the STOMP client - connection is started
         clientRef.current.activate();
     } catch (error) {

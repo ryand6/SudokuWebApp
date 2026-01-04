@@ -51,8 +51,8 @@ export function PublicLobbyList() {
                 <Button className="rounded-3xl bg-sidebar-primary cursor-pointer" onClick={() => refetch()}>⭯ Refresh</Button>
             </div>
             <div className="flex flex-col scroll-auto" >
-                {lobbies.map((lobby) => (
-                    <LobbyResultRow lobby={lobby} currentUser={currentUser} handleClick={handleClick}></LobbyResultRow>
+                {lobbies.map((lobby, key) => (
+                    <LobbyResultRow lobby={lobby} currentUser={currentUser} handleClick={handleClick} key={key}></LobbyResultRow>
                 ))}
                 <div ref={ref} className="h-5" />
             </div>

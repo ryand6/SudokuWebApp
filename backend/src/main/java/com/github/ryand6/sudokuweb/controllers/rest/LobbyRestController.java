@@ -145,10 +145,6 @@ public class LobbyRestController {
 
         lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
-        // Send an info update to the lobby chat
-        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "left the lobby.");
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
-
         return ResponseEntity.ok(lobbyDto);
     }
 

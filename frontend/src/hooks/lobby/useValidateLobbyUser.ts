@@ -7,12 +7,13 @@ import { toast } from "react-toastify";
 
 export function useValidateLobbyUser(
     lobby?: LobbyDto,
-    currentUser?: UserDto
+    currentUser?: UserDto,
+    isLeaving?: boolean
 ) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!lobby || !currentUser) return;
+        if (!lobby || !currentUser || isLeaving) return;
 
         const isUserInLobby = isCurrentUserInLobby(lobby, currentUser);
         
@@ -20,5 +21,5 @@ export function useValidateLobbyUser(
             toast.error("You are not an active player in this lobby");
             navigate("/dashboard", { replace: true });
         }
-    }, [lobby, currentUser, navigate]);
+    }, [lobby, currentUser, navigate, isLeaving]);
 }
