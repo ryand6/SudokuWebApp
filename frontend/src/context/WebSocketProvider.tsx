@@ -1,5 +1,5 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { createContext, useContext, useEffect, useRef, type RefObject } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { initWebSocket } from "../utils/services/initWebSocket";
 import { initStompClient } from "../utils/services/initStompClient";
@@ -64,6 +64,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     const subscribe = (topic: string, onMessage: (body: any) => void) => {
         // If the user is already subscribed, return that subscription - exclamation mark used to confirm the return type will never be undefined
         if (subscriptionsRef.current.has(topic)) return subscriptionsRef.current.get(topic)!;
+
         const client = clientRef.current;
         // No socket client connection established to fulfill subscribe
         if (!client || !client.connected) {
@@ -71,10 +72,12 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
             pendingQueueRef.current.push({ topic, callback: onMessage });
             return null;
         }
+
         const subscription: StompSubscription = client.subscribe(topic, (message: IMessage) => {
             // Provide parsed IMessages to the provided callback function to handle based on message type
             onMessage(JSON.parse(message.body));
         });
+
         // Add the subscription to the map if newly subscribed
         subscriptionsRef.current.set(topic, subscription);
         return subscription;

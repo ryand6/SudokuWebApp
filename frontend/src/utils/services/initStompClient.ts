@@ -1,4 +1,4 @@
-import { Client, type IFrame, type IMessage, type StompSubscription } from "@stomp/stompjs";
+import { Client, type IFrame } from "@stomp/stompjs";
 import { stompClientFactory } from "../../factories/stompClientFactory";
 import { getCsrfToken } from "../../api/rest/csrf/getCsrfToken";
 
