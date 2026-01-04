@@ -12,6 +12,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Getter
@@ -109,12 +110,13 @@ public class LobbyEntity {
     }
 
     // Method used to determine if and when the countdown should be initiated
-    public void evaluateCountdownState() {
+    // Returns the ID of the new initiator if exists
+    public Optional<Long> evaluateCountdownState() {
         int playerCount = lobbyPlayers.size();
         // Must be at least two players in a lobby to start countdown
         if (playerCount < 2) {
             resetCountdownIfActive();
-            return;
+            return Optional.empty();
         }
 
         // Track number of players that are ready - determines the length of the countdown timer
@@ -123,13 +125,7 @@ public class LobbyEntity {
                 .count();
 
         // Get the lobby host
-        LobbyPlayerEntity hostPlayer = lobbyPlayers.stream()
-                .filter(lp -> lp.getUser().getId().equals(host.getId()))
-                .findFirst()
-                .orElseThrow(() ->
-                        new LobbyHostNotFoundException(
-                                "Lobby Host with ID " + host.getId() + " does not exist as a Lobby Player"
-                        ));
+        LobbyPlayerEntity hostPlayer = findHostPlayer();
 
         // First of two potential conditions that can initiate a countdown
         boolean hostReady = hostPlayer.getLobbyStatus() == LobbyStatus.READY;
@@ -142,27 +138,39 @@ public class LobbyEntity {
         // Reset any active countdown if neither of the required conditions are met
         if (!shouldCountdownBeActive) {
             resetCountdownIfActive();
-            return;
+            return Optional.empty();
         }
 
-        // Determine which user initiated the countdown
-        Long initiatorId = hostReady
-                ? hostPlayer.getUser().getId()
-                : lobbyPlayers.stream()
-                .filter(lp -> lp.getLobbyStatus() == LobbyStatus.READY)
-                // Last player to ready up
-                .max(Comparator.comparing(LobbyPlayerEntity::getReadyAt))
-                .map(lp -> lp.getUser().getId())
-                .orElse(null);
+        int notReadyCount = playerCount - (int) readyCount;
 
-        if (initiatorId != null) {
-            int notReadyCount = playerCount - (int) readyCount;
-            setCountdown(initiatorId, notReadyCount);
+        // Countdown already started, only update the countdown
+        if (countdownInitiatedBy != null) {
+            setCountdown(notReadyCount);
         }
+
+        Optional<Long> newInitiator = determineCountdownInitiator(hostReady, hostPlayer);
+
+        newInitiator.ifPresent(id -> {
+            countdownInitiatedBy = id;
+            setCountdown(notReadyCount);
+        });
+
+        return newInitiator;
+    }
+
+    private LobbyPlayerEntity findHostPlayer() {
+        // Get the lobby host
+        return lobbyPlayers.stream()
+                .filter(lp -> lp.getUser().getId().equals(host.getId()))
+                .findFirst()
+                .orElseThrow(() ->
+                        new LobbyHostNotFoundException(
+                                "Lobby Host with ID " + host.getId() + " does not exist as a Lobby Player"
+                        ));
     }
 
     // Used to initiate or update countdown and set necessary settings - if more players ready up, the countdown is updated
-    private void setCountdown(Long userId, int notReadyCount) {
+    private void setCountdown(int notReadyCount) {
         Instant timerEnd = Instant.now();
         // Calculate the number of minutes for the countdown timer
         if (notReadyCount >= 1) {
@@ -172,8 +180,18 @@ public class LobbyEntity {
 
         countdownActive = true;
         countdownEndsAt = timerEnd;
-        countdownInitiatedBy = userId;
         settingsLocked = true;
+    }
+
+    // If the host has readied up, they are always the initiator, otherwise it is the last person to ready up out of the majority
+    private Optional<Long> determineCountdownInitiator(boolean hostReady, LobbyPlayerEntity hostPlayer) {
+        return hostReady
+                ? Optional.of(hostPlayer.getUser().getId())
+                : lobbyPlayers.stream()
+                .filter(lp -> lp.getLobbyStatus() == LobbyStatus.READY)
+                // Last player to ready up
+                .max(Comparator.comparing(LobbyPlayerEntity::getReadyAt))
+                .map(lp -> lp.getUser().getId());
     }
 
     // Helper to reset countdown only if it is active

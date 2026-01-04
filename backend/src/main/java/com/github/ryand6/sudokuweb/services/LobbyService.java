@@ -4,6 +4,7 @@ import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
 import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
@@ -16,6 +17,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,20 +28,29 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
     private final UserService userService;
+    private final LobbyChatService lobbyChatService;
+    private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final LobbyPlayerRepository lobbyPlayerRepository;
     private final PrivateLobbyTokenService privateLobbyTokenService;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
+                        LobbyChatService lobbyChatService,
+                        LobbyWebSocketsService lobbyWebSocketsService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
                         LobbyPlayerRepository lobbyPlayerRepository,
-                        PrivateLobbyTokenService privateLobbyTokenService) {
+                        PrivateLobbyTokenService privateLobbyTokenService,
+                        SimpMessagingTemplate simpMessagingTemplate) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
+        this.lobbyChatService = lobbyChatService;
+        this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.lobbyPlayerRepository = lobbyPlayerRepository;
         this.privateLobbyTokenService = privateLobbyTokenService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @Transactional
@@ -166,7 +177,11 @@ public class LobbyService {
         // Lobby Player managed by JPA therefore update will apply
         lobbyPlayer.setStatus(lobbyStatus);
         // Handle any countdown updates that may be required
-        lobby.evaluateCountdownState();
+        Optional<Long> newInitiator = lobby.evaluateCountdownState();
+        newInitiator.ifPresent(id -> {
+            LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, id, "started the new game countdown.");
+            lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
+        });
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
