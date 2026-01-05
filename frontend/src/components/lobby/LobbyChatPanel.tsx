@@ -9,6 +9,7 @@ import { ChevronDown } from "lucide-react";
 import { getLocalTime } from "@/utils/time/getLocalTime";
 import { sendLobbyChatMessage } from "@/api/ws/lobby/sendLobbyChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
+import { input } from "@testing-library/user-event/dist/cjs/event/input.js";
 
 export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
@@ -101,6 +102,8 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
     const handleClick = () => {
         if (!inputMessage.trim()) return;
         sendLobbyChatMessage(send, lobby.id, currentUser.id, inputMessage);
+        // Clear text area 
+        setInputMessage("");
         scrollToBottom();
     }
 
@@ -153,10 +156,16 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
             <div>
                 <Textarea 
                     id="lobby-chat-input" 
-                    placeholder="Type your message here." 
+                    placeholder="Type your message here."
+                    value={inputMessage} 
                     onChange={(e) => {
-                        e.preventDefault();
                         setInputMessage(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleClick();
+                        }
                     }}
                 />
                 <Button onClick={handleClick}>Send message</Button>

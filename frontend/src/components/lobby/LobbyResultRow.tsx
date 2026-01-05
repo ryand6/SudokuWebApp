@@ -18,6 +18,7 @@ export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: Lob
                     <div className="flex gap-4 text-xs sm:text-sm md:text-base">
                         <div className="flex-1 text-left">Difficulty: {wordToProperCase(lobby.difficulty)}</div>
                         <div className="flex-1 text-left">Time limit: {wordToProperCase(lobby.timeLimit)}</div>
+                        <div className="flex-1 text-left">Host: {lobby.host.username}</div>
                         <div className="flex-1 text-left">Created {computeTimeDifferenceMinutes(lobby.createdAt)} minutes ago</div>
                     </div>
                 </CardContent>

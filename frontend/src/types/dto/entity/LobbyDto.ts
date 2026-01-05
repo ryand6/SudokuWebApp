@@ -1,6 +1,7 @@
 import type { Difficulty } from "../../enum/Difficulty"
 import type { TimeLimitPreset } from "../../enum/TimeLimitPreset"
 import type { LobbyPlayerDto } from "./LobbyPlayerDto"
+import type { UserDto } from "./UserDto"
 
 export type LobbyDto = {
     id: number,
@@ -17,5 +18,5 @@ export type LobbyDto = {
     countdownInitiatedBy: number,
     settingsLocked: boolean,
     lobbyPlayers: LobbyPlayerDto[],
-    hostId: number
+    host: UserDto
 }

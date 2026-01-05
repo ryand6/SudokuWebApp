@@ -202,6 +202,9 @@ public class LobbyService {
 
         // Remove the lobby player from the lobby - hibernate will clean up by removing the lobby player from the DB due to orphan removal
         lobby.getLobbyPlayers().remove(lobbyPlayer);
+
+        // Stop the timer if the player count goes below 2
+        lobby.evaluateCountdownState();
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 

@@ -17,13 +17,16 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
 
     private final UserRepository userRepository;
     private final LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
+    private final UserEntityDtoMapper userEntityDtoMapper;
     private final LobbyPlayerRepository lobbyPlayerRepository;
 
     public LobbyEntityDtoMapper(UserRepository userRepository,
                                 LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper,
+                                UserEntityDtoMapper userEntityDtoMapper,
                                 LobbyPlayerRepository lobbyPlayerRepository) {
         this.userRepository = userRepository;
         this.lobbyPlayerEntityDtoMapper = lobbyPlayerEntityDtoMapper;
+        this.userEntityDtoMapper = userEntityDtoMapper;
         this.lobbyPlayerRepository = lobbyPlayerRepository;
     }
 
@@ -52,7 +55,7 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .countdownInitiatedBy(lobbyEntity.getCountdownInitiatedBy())
                 .settingsLocked(lobbyEntity.getSettingsLocked())
                 .lobbyPlayers(lobbyPlayerDtos)
-                .hostId(lobbyEntity.getHost().getId())
+                .host(userEntityDtoMapper.mapToDto(lobbyEntity.getHost()))
                 .build();
     }
 

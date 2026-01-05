@@ -1,8 +1,6 @@
 package com.github.ryand6.sudokuweb.config;
 
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
-import com.github.ryand6.sudokuweb.services.GameService;
-import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.MembershipCheckService;
 import com.github.ryand6.sudokuweb.services.UserService;
 import org.springframework.context.annotation.Bean;

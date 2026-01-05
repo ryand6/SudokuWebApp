@@ -12,6 +12,11 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
 
     const updateLobbyPlayerStatus = useUpdateLobbyPlayerStatus();
 
+    // Create an array of undefined values the size of the number of player slots left to fill - used to indicate in UI how many player slots are left
+    const playerSlotsRemaining = Array.from(
+        { length: 4 - lobby.lobbyPlayers.length }
+    );
+
     const handleClick = () => {
         if (!currentLobbyPlayer) {
             toast.error("Lobby player does not exist");
@@ -27,10 +32,17 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
             {lobby.lobbyPlayers.sort((lobbyPlayerA, lobbyPlayerB) => lobbyPlayerA.user.username.localeCompare(lobbyPlayerB.user.username)).map((player, index) => {
                 return (
                     <div id="player-row" key={index}>
-                        {player.user.id === lobby.hostId && <span id="host-star">★</span>}
+                        {player.user.id === lobby.host.id && <span id="host-star">★</span>}
                         <span id="player-name">{player.user.username}</span>
                         {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d]">Ready</span> : player.lobbyStatus === "INGAME" ? 
                         <span className="bg-[#bee3f8] text-[#2a69ac]">In Game</span> : <span className="bg-[#fed7d7] text-[#742a2a]">Waiting</span>}
+                    </div>
+                )
+            })}
+            {!lobby.settingsLocked && playerSlotsRemaining.map((_, index) => {
+                return (
+                    <div id="empty-player-row" key={index}>
+                        <span>Waiting for player...</span>
                     </div>
                 )
             })}

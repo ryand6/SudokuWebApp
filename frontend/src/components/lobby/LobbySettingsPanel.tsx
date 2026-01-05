@@ -58,7 +58,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                     🎯 Difficulty 
                     <span id="difficulty-value"> {wordToProperCase(lobby.difficulty)}</span>
                 </div>
-                {currentUser.id === lobby.hostId && 
+                {currentUser.id === lobby.host.id && 
                 <div>
                     <RadioGroup 
                         defaultValue={wordToProperCase(lobby.difficulty)} 
@@ -94,7 +94,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                     ⏱️ Game Duration
                     <span id="duration-value"> {wordToProperCase(lobby.timeLimit)}</span>
                 </div>
-                {currentUser.id === lobby.hostId && 
+                {currentUser.id === lobby.host.id && 
                 <div>
                     <RadioGroup 
                         defaultValue={wordToProperCase(lobby.timeLimit)} 

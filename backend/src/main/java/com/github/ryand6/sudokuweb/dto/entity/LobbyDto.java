@@ -45,6 +45,6 @@ public class LobbyDto {
 
     private Set<LobbyPlayerDto> lobbyPlayers;
 
-    private Long hostId;
+    private UserDto host;
 
 }
