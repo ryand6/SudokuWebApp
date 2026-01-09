@@ -26,6 +26,10 @@ public interface LobbyRepository extends JpaRepository<LobbyEntity, Long> {
     @Query("SELECT l FROM LobbyEntity l WHERE l.id = :id")
     Optional<LobbyEntity> findByIdForUpdate(@Param("id") Long id);
 
+    // Finds first active lobby where the user is a player in - business logic uses this to enforce a constraint where the user can
+    // only be a player in one active lobby at a time
+    Optional<LobbyEntity>  findFirstByIsActiveTrueAndLobbyPlayers_User_Id(Long userId);
+
     // Returns a list of lobby entities where the countdowns have now ended
     @Query(
             value = """

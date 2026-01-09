@@ -17,6 +17,7 @@ public class ErrorMapping {
             Map.entry(LobbyInactiveException.class, HttpStatus.GONE),
             Map.entry(OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(InvalidTokenException.class, HttpStatus.UNAUTHORIZED),
+            Map.entry(UserExistsInActiveLobbyException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(InvalidLobbyPublicStatusParameterException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageProfanityException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS)

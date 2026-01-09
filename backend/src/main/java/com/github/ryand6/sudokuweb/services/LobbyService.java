@@ -51,6 +51,10 @@ public class LobbyService {
 
     @Transactional
     public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Long requesterId) {
+        Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(requesterId);
+        if (isUserInActiveLobby.isPresent()) {
+            throw new UserExistsInActiveLobbyException("User exists in active lobby with ID " + isUserInActiveLobby.get().getId() + ". User can only be a player in one active lobby at a time.");
+        }
         LobbyEntity newLobby = new LobbyEntity();
         // One of these must be true or there is an error with the parameters
         if (Boolean.TRUE.equals(isPublic)) {
@@ -87,6 +91,10 @@ public class LobbyService {
         if (publicLobbyId == null || userId == null) {
             throw new IllegalArgumentException("Public lobby ID and requester user ID must be provided");
         }
+        Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(userId);
+        if (isUserInActiveLobby.isPresent()) {
+            throw new UserExistsInActiveLobbyException("User exists in active lobby with ID " + isUserInActiveLobby.get().getId() + ". User can only be a player in one active lobby at a time.");
+        }
         // Retrieve lobby
         LobbyEntity lobby = findAndLockLobby(publicLobbyId);
         // Validate lobby state
@@ -103,6 +111,10 @@ public class LobbyService {
         // Validate input parameter
         if (token == null || userId == null) {
             throw new IllegalArgumentException("Private lobby token and requester user ID must be provided");
+        }
+        Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(userId);
+        if (isUserInActiveLobby.isPresent()) {
+            throw new UserExistsInActiveLobbyException("User exists in active lobby with ID " + isUserInActiveLobby.get().getId() + ". User can only be a player in one active lobby at a time.");
         }
         // Determine lobby ID and retrieve lobby
         Long lobbyId = resolvePrivateLobbyId(token);
