@@ -53,7 +53,7 @@ public class LobbyService {
     public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Long requesterId) {
         Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(requesterId);
         if (isUserInActiveLobby.isPresent()) {
-            throw new UserExistsInActiveLobbyException("User exists in active lobby with ID " + isUserInActiveLobby.get().getId() + ". User can only be a player in one active lobby at a time.");
+            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
         }
         LobbyEntity newLobby = new LobbyEntity();
         // One of these must be true or there is an error with the parameters
@@ -93,7 +93,7 @@ public class LobbyService {
         }
         Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(userId);
         if (isUserInActiveLobby.isPresent()) {
-            throw new UserExistsInActiveLobbyException("User exists in active lobby with ID " + isUserInActiveLobby.get().getId() + ". User can only be a player in one active lobby at a time.");
+            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
         }
         // Retrieve lobby
         LobbyEntity lobby = findAndLockLobby(publicLobbyId);
@@ -114,7 +114,7 @@ public class LobbyService {
         }
         Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(userId);
         if (isUserInActiveLobby.isPresent()) {
-            throw new UserExistsInActiveLobbyException("User exists in active lobby with ID " + isUserInActiveLobby.get().getId() + ". User can only be a player in one active lobby at a time.");
+            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
         }
         // Determine lobby ID and retrieve lobby
         Long lobbyId = resolvePrivateLobbyId(token);

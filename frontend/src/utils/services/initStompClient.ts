@@ -1,6 +1,7 @@
 import { Client, type IFrame } from "@stomp/stompjs";
 import { stompClientFactory } from "../../factories/stompClientFactory";
 import { getCsrfToken } from "../../api/rest/csrf/getCsrfToken";
+import { resetWebSocketConnection } from "@/services/websocket/resetWebSocketConnection";
 
 export async function initStompClient(
     socket: WebSocket,
@@ -17,6 +18,8 @@ export async function initStompClient(
 
     const handleStompError = (frame: IFrame) => {
         console.error('STOMP Error', frame.headers['message'], frame.body);
+        // force reset to ensure reconnect is consistent and clean
+        resetWebSocketConnection(clientRef, handleConnect, handleStompError);
     }
     
     try {
@@ -25,11 +28,7 @@ export async function initStompClient(
 
         // Attempt to reconnect every 1s if connection drops
         clientRef.current.reconnectDelay = 1000;
-
-        // clientRef.current.debug = (str) => {
-        //     console.debug("[STOMP]", str);
-        // }
-
+        
         clientRef.current.onStompError = handleStompError;
 
         // Activate the STOMP client - connection is started

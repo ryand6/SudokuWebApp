@@ -7,10 +7,15 @@ import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates"
 import { useQueryClient } from "@tanstack/react-query";
 import { subscribeUserErrors } from "@/services/websocket/subscribeUserErrors";
 
-type WebSocketContextType = {
+export type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;
     unsubscribe: (topic: string) => void;
     send: (destination: string, body: any) => void;
+}
+
+export type StompSubscriptionDetails = {
+    subscription: StompSubscription,
+    subscriptionCallback: (body: any) => void
 }
 
 const WebSocketContext = createContext<WebSocketContextType | null>(null);
@@ -21,7 +26,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     // Store singleton socket client in ref state so that re-renders don't affect the client
     const clientRef = useRef<Client | null>(null);
     // Persist map across app that keeps track of topics a user is subscribed to so they don't repeatedly subscribe to the same topic
-    const subscriptionsRef = useRef<Map<string, StompSubscription>>(new Map());
+    const subscriptionsRef = useRef<Map<string, StompSubscriptionDetails>>(new Map());
     const pendingQueueRef = useRef<Array<{ topic: string; callback: (body: any) => void }>>([]);
 
     const queryClient = useQueryClient();
@@ -37,15 +42,27 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         if (clientRef.current) return;
         const socket = initWebSocket();
 
-        // handler which connects user to their personal queue, and also handles any pending subscriptions once the client is connected
-        // handler passed to initStompClient
+        // NOTE:
+        // - System subscriptions are recreated on every connect
+        // - subscriptionsRef contains ONLY dynamic subscriptions that must survive reconnects
         const handleConnect = () => {
-            subscribeUserUpdates(queryClient, clientRef, subscriptionsRef);
-            subscribeUserErrors(clientRef, subscriptionsRef);
 
+            // System level subscriptions that are resubscribed every reconnect
+            subscribeUserUpdates(queryClient, clientRef);
+            subscribeUserErrors(clientRef);
+
+            // Handle dynamic subscriptions - these should re-subscribe to any existing subscriptions that were terminated due to a disconnect rather than an unsubscribe event e.g. lobby and games topics
+            subscriptionsRef.current.forEach((subscriptionDetails: StompSubscriptionDetails, topic: string) => {
+                const newSubscription = clientRef.current!.subscribe(topic, (msg: IMessage) => subscriptionDetails.subscriptionCallback(JSON.parse(msg.body)));
+                const newSubscriptionDetails: StompSubscriptionDetails = {subscription: newSubscription, subscriptionCallback: subscriptionDetails.subscriptionCallback};
+                subscriptionsRef.current.set(topic, newSubscriptionDetails);
+            })
+
+            /// Subscribe to pending subscriptions that could not be completed before whilst client was not connected
             pendingQueueRef.current.forEach(({ topic, callback }) => {
                 const subscription = clientRef.current!.subscribe(topic, (msg: IMessage) => callback(JSON.parse(msg.body)));
-                subscriptionsRef.current.set(topic, subscription);
+                const subscriptionDetails: StompSubscriptionDetails = {subscription: subscription, subscriptionCallback: callback};
+                subscriptionsRef.current.set(topic, subscriptionDetails);
             });
             pendingQueueRef.current = [];
         }
@@ -63,7 +80,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
 
     const subscribe = (topic: string, onMessage: (body: any) => void) => {
         // If the user is already subscribed, return that subscription - exclamation mark used to confirm the return type will never be undefined
-        if (subscriptionsRef.current.has(topic)) return subscriptionsRef.current.get(topic)!;
+        if (subscriptionsRef.current.has(topic)) return subscriptionsRef.current.get(topic)?.subscription!;
 
         const client = clientRef.current;
         // No socket client connection established to fulfill subscribe
@@ -78,16 +95,18 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
             onMessage(JSON.parse(message.body));
         });
 
+        const subscriptionDetails: StompSubscriptionDetails = {subscription: subscription, subscriptionCallback: onMessage};
+
         // Add the subscription to the map if newly subscribed
-        subscriptionsRef.current.set(topic, subscription);
+        subscriptionsRef.current.set(topic, subscriptionDetails);
         return subscription;
     };
 
     const unsubscribe = (topic: string) => {
         // If the topic has been subscribed to by the user, unsubscribe and remove from the tracking Maps
-        const subscription = subscriptionsRef.current.get(topic);
-        if (subscription) {
-            subscription.unsubscribe();
+        const subscriptionDetails = subscriptionsRef.current.get(topic);
+        if (subscriptionDetails) {
+            subscriptionDetails.subscription.unsubscribe();
             subscriptionsRef.current.delete(topic);
         }
     };

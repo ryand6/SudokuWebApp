@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export function CreateLobbyPage() {
 
@@ -34,6 +35,8 @@ export function CreateLobbyPage() {
             const response = await processLobbySetup(lobbyName, isPublic);
             navigate(`/lobby/${response.id}`, { replace: true });
         } catch (err: any) {
+            // Display toast error message when the user is already part of an active lobby
+            if (err.status === 401) toast.error(err.message);
             // Handle backend form validation errors
             if (err.status === 400) setError(err.message);
             else setError("Something went wrong whilst processing this request");

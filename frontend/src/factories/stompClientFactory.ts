@@ -12,8 +12,8 @@ export function stompClientFactory(
     return new Client({
         // Tells STOMP to use our SockJS instance
         webSocketFactory: () => socket,
-        // Auto-reconnect after 5 seconds if connection drops
-        reconnectDelay: 5000,
+        // Auto-reconnect after 1 second if connection drops
+        reconnectDelay: 1000,
         connectHeaders: {
             [csrfTokenData.headerName]: csrfTokenData.token
         },

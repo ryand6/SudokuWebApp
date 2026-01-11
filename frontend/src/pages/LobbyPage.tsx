@@ -4,18 +4,18 @@ import { LobbySettingsPanel } from "@/components/lobby/LobbySettingsPanel";
 import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { TimerCountdown } from "@/components/ui/custom/TimerCountdown";
-import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useCheckIfUserInGame } from "@/hooks/game/useCheckIfUserInGame";
 import { useGetLobby } from "@/hooks/lobby/useGetLobby";
 import { useHandleGetLobbyError } from "@/hooks/lobby/useHandleGetLobbyError";
+import { useHandleLobbyWsSubscription } from "@/hooks/lobby/useHandleLobbyWsSubscription";
 import { useLeaveLobby } from "@/hooks/lobby/useLeaveLobby";
+import { useNavigateUserWhenInGame } from "@/hooks/lobby/useNavigateUserWhenInGame";
 import { useValidateLobbyId } from "@/hooks/lobby/useValidateLobbyId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
-import { handleLobbyWebSocketMessages } from "@/services/websocket/handleLobbyWebSocketMessages";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export function LobbyPage() {
@@ -23,18 +23,15 @@ export function LobbyPage() {
 
     const [activePanel, setActivePanel] = useState<"players" | "settings" | "chat">("players");
 
-    const id = lobbyId ? Number(lobbyId) : NaN;
+    const lobbyIdNum = lobbyId ? Number(lobbyId) : NaN;
 
-    useValidateLobbyId(id);
+    useValidateLobbyId(lobbyIdNum);
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
-
-    const { subscribe, unsubscribe } = useWebSocketContext();
     
-    const {data: lobby, isLoading: isLobbyLoading, isError: isLobbyError, error: lobbyError} = useGetLobby(id);
+    const {data: lobby, isLoading: isLobbyLoading, isError: isLobbyError, error: lobbyError} = useGetLobby(lobbyIdNum);
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
-    const hasSubscribedRef = useRef(false);
 
     const leaveLobbyHandler = useLeaveLobby();
 
@@ -42,33 +39,17 @@ export function LobbyPage() {
 
     useValidateLobbyUser(lobby, currentUser, leaveLobbyHandler.isLeaving);
 
-    // Subscribe user to lobby websocket topic - ensures when page is refreshed or new session starts, user continues to receive lobby updates 
-    useEffect(() => {
-        if (!lobbyId || hasSubscribedRef.current) return;
-        hasSubscribedRef.current = true;
-        const lobbyIdNum = parseInt(lobbyId);
-        const topic = `/topic/lobby/${lobbyId}`;
-        const subscription = subscribe(topic, (body: any) => handleLobbyWebSocketMessages(body, queryClient, lobbyIdNum, navigate));
+    // Handle subscribing/unsubscribing to Lobby topic on mount/unmount
+    useHandleLobbyWsSubscription(lobbyId, queryClient, navigate);
 
-        return () => {
-            if (subscription) unsubscribe(topic);
-            hasSubscribedRef.current = false;
-        };
-    }, [lobbyId]);
-
+    // check if user is a player in the current game
     const gameQuery = useCheckIfUserInGame(
         lobby?.currentGameId ?? -1, // fallback to dummy id if lobby or game id not available
         currentUser?.id ?? -1    // fallback to dummy id if user not ready
     );
 
-    // Handle navigation only when confirmed if user is part of current game
-    useEffect(() => {
-        if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId) return;
-
-        if (gameQuery.data) {
-            navigate(`/game/${gameQuery.data.id}`);
-        }
-    }, [lobby, currentUser, gameQuery.data, navigate]);
+    // Navigates user to game page when they are in an active game
+    useNavigateUserWhenInGame(lobby, currentUser, gameQuery, navigate);
 
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 
