@@ -10,6 +10,7 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
 
     const currentLobbyPlayer: LobbyPlayerDto | undefined = lobby.lobbyPlayers.find((lp) => lp.id.userId === currentUser.id);
 
+    // Custom hook used to update lobby player status in backend and frontend cache
     const updateLobbyPlayerStatus = useUpdateLobbyPlayerStatus();
 
     // Create an array of undefined values the size of the number of player slots left to fill - used to indicate in UI how many player slots are left

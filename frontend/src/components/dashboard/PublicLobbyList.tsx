@@ -8,6 +8,7 @@ import { useJoinPublicLobby } from "@/hooks/lobby/useJoinPublicLobby";
 import { Button } from "../ui/button";
 import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
 import { toast } from "react-toastify";
+import { useHandleFetchNextLobbyListPage } from "@/hooks/lobby/useHandleFetchNextLobbyListPage";
 
 export function PublicLobbyList() {
 
@@ -20,11 +21,8 @@ export function PublicLobbyList() {
         threshold: 0,
     });
 
-    useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-        }
-    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage])
+    // custom hook used to handle fetching next lobby list page
+    useHandleFetchNextLobbyListPage(inView, hasNextPage, isFetchingNextPage, fetchNextPage);
 
     if (isLobbiesError || isUserError) {
         if (isLobbiesError) console.log(lobbyError);

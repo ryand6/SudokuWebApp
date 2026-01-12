@@ -3,7 +3,7 @@ import type { UserDto } from "@/types/dto/entity/UserDto";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
 import { Button } from "../ui/button";
@@ -14,6 +14,7 @@ import { useGetActiveUserTokens } from "@/hooks/lobby/useGetActiveUserTokens";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUpdateLobbyDifficulty } from "@/hooks/lobby/useUpdateLobbyDifficulty";
 import { useUpdateLobbyTimeLimit } from "@/hooks/lobby/useUpdateLobbyTimeLimit";
+import { useRefreshActiveTokensList } from "@/hooks/lobby/useRefreshActiveTokensList";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
@@ -28,14 +29,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
     const updateLimitLimit = useUpdateLobbyTimeLimit();
 
     // Interval to refresh active tokens display every minute
-    useEffect(() => {
-        const interval = setInterval(() => {
-            queryClient.invalidateQueries({
-                queryKey: ["user", currentUser.id, "tokens"]}
-            );
-        }, 60 * 1000);
-        return () => clearInterval(interval);
-    }, [currentUser.id, queryClient]);
+    useRefreshActiveTokensList(queryClient, currentUser);
 
     const handleClick = () => {
         if (activeTokens.length === 0) {

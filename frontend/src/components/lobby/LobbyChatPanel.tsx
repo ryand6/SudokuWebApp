@@ -9,7 +9,9 @@ import { ChevronDown } from "lucide-react";
 import { getLocalTime } from "@/utils/time/getLocalTime";
 import { sendLobbyChatMessage } from "@/api/ws/lobby/sendLobbyChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
-import { input } from "@testing-library/user-event/dist/cjs/event/input.js";
+import { useHandleFetchNextLobbyMessagePage } from "@/hooks/lobby/useHandleFetchNextLobbyMessagePage";
+import { useHandleScrollOnMessagePageLoad } from "@/hooks/lobby/useHandleScrollOnMessagePageLoad";
+import { useHandleNewChatMessages } from "@/hooks/lobby/useHandleNewChatMessages";
 
 export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
@@ -30,19 +32,22 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
         threshold: 0,
     });
 
-    useEffect(() => {
-        // To prevent more pages being loaded on mount, isAtBottom is set to true to begin with
-        if (!isAtBottom && inView && hasNextPage && !isFetchingNextPage && !isLoadingNextPage) {
-            fetchNextPage();
-            setIsLoadingNextPage(true);
-        }
-    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
+    // custom hook used to handle fetching next page of lobby messages
+    useHandleFetchNextLobbyMessagePage(isAtBottom, inView, hasNextPage, isFetchingNextPage, isLoadingNextPage, fetchNextPage, setIsLoadingNextPage);
 
     const messages = useMemo(() => {
         // pages hold newest-first order - to render oldest->newest flatten reversed pages
         if (!chatMessages) return [];
         return chatMessages.pages.flat().reverse();
     }, [chatMessages]);
+
+    // Button handler for scrolling to bottom, used for when new message icon is clicked
+    const scrollToBottom = () => {
+        const chatElement = chatRef.current;
+        if (!chatElement) return;
+        chatElement.scrollTo({ top: chatElement.scrollHeight, behavior: "smooth" })   
+        setIsAtBottom(true);
+    };
 
     // Ensures the chat shows persisted messages on refresh
     useEffect(() => {
@@ -54,32 +59,11 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
         scrollToBottom();
     }, []);
 
-    useEffect(() => {
-        const chatElement = chatRef.current;
-        if (!chatElement) return;
-        // Store previous scroll height whilst next page of messages is being fetched 
-        if (isFetchingNextPage) {
-            scrollHeightRef.current = chatElement.scrollHeight;
-        } else { 
-            // Once next page of messages has been fetched, anchor the chat window position by setting the distance scrolled to the difference between the current and old previous scrollHeight 
-            chatElement.scrollTop = chatElement.scrollHeight - scrollHeightRef.current;
-            // Remove flag so that next page of messages can be loaded once the window is scrolled to the top again
-            setIsLoadingNextPage(false);
-        }
-    }, [isFetchingNextPage])
+    // custom hook used to track and position scroll heights when pages are fetched to create a seamless scroll when new pages load - prevents scroll height jumping when pages are fetched
+    useHandleScrollOnMessagePageLoad(chatRef.current, isFetchingNextPage, scrollHeightRef, setIsLoadingNextPage);
 
-    // Run when messages change
-    useEffect(() => {
-        const chatElement = chatRef.current;
-        if (!chatElement) return;
-        // If the user is not at bottom of chat window and new messages have been received, set flag
-        if (!isAtBottom){
-            setHasNewMessages(true);
-        } else {
-            // If near bottom, always scroll to bottom when a new message is received to keep updates real time
-            scrollToBottom();
-        }
-    }, [messages])
+    // custom hook to either jump to bottom of chat window when near it and new messages are received, or display icon that indicates new messages are received
+    useHandleNewChatMessages(chatRef.current, isAtBottom, setHasNewMessages, scrollToBottom, messages);
 
     // Scroll handler to detect if user is near bottom of chat window
     const handleScroll = () => {
@@ -89,15 +73,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
         const isNearBottom = (chatElement.clientHeight + chatElement.scrollTop >= chatElement.scrollHeight - 10);
         setIsAtBottom(isNearBottom);
         if (isNearBottom) setHasNewMessages(false);
-    }
-
-    // Button handler for scrolling to bottom, used for when new message icon is clicked
-    const scrollToBottom = () => {
-        const chatElement = chatRef.current;
-        if (!chatElement) return;
-        chatElement.scrollTo({ top: chatElement.scrollHeight, behavior: "smooth" })   
-        setIsAtBottom(true);
-    }
+    };
 
     const handleClick = () => {
         if (!inputMessage.trim()) return;
@@ -105,7 +81,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
         // Clear text area 
         setInputMessage("");
         scrollToBottom();
-    }
+    };
 
     return (
         <div id="lobby-chat-panel" className="flex flex-col lobby-card flex-1 min-h-0">
