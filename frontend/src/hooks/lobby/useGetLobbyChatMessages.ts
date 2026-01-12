@@ -2,7 +2,7 @@ import { getLobbyChatMessages } from "@/api/rest/lobby/getLobbyChatMessages";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-export const PAGE_SIZE = 20;
+export const PAGE_SIZE = 100;
 
 export function useGetLobbyChatMessages(lobbyId: number) { 
     return useInfiniteQuery<LobbyChatMessageDto[], Error>({ 

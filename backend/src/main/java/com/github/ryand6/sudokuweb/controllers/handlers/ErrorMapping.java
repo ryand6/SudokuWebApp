@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers.handlers;
 
 import com.github.ryand6.sudokuweb.exceptions.*;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 
 import java.util.Map;
@@ -30,7 +31,8 @@ public class ErrorMapping {
             Map.entry(LobbyPlayerNotFoundException.class, "LOBBY_ERROR"),
             Map.entry(LobbyFullException.class, "LOBBY_ERROR"),
             Map.entry(LobbyInactiveException.class, "LOBBY_ERROR"),
-            Map.entry(InvalidLobbyPublicStatusParameterException.class, "LOBBY_ERROR")
+            Map.entry(InvalidLobbyPublicStatusParameterException.class, "LOBBY_ERROR"),
+            Map.entry(ConstraintViolationException.class, "GENERAL_ERROR")
     );
 
 }

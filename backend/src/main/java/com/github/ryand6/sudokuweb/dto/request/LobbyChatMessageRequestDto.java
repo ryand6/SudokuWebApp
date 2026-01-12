@@ -14,7 +14,7 @@ public class LobbyChatMessageRequestDto {
     private Long userId;
 
     @NotBlank
-    @Size(min=3, max=250)
+    @Size(min=3, max=100)
     private String message;
 
 }

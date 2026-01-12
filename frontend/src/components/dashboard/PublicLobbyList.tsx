@@ -1,5 +1,4 @@
 import { useGetTenPublicLobbies } from "@/hooks/lobby/useGetTenPublicLobbies";
-import { useEffect } from "react";
 import { SpinnerButton } from "../ui/custom/SpinnerButton";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { useInView } from "react-intersection-observer";
