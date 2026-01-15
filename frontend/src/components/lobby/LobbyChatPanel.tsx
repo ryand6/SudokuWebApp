@@ -97,7 +97,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                                     <div id="lobby-message-user" className="w-[25%]">
                                         {msg.username}
                                     </div>
-                                    <div id="lobby-message-content" className="w-[65%]">
+                                    <div id="lobby-message-content" className="w-[65%] whitespace-pre-line">
                                         {msg.message}
                                     </div>
                                     <div id="lobby-message-timestamp" className="W-[10%]">
@@ -110,7 +110,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                                 <div id="lobby-info-message-container" className="flex flex-row m-1 text-sm" key={index}>
                                     <div id="lobby-info-message-content" className="w-[90%]">
                                         <span>{msg.username} </span>
-                                        <span>{msg.message}</span>
+                                        <span className="whitespace-pre-line">{msg.message}</span>
                                     </div>
                                     <div id="lobby-info-message-timestamp" className="W-[10%]">
                                         {getLocalTime(msg.createdAt)}

@@ -19,7 +19,6 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
         // Updates session storage if message is received in lobby chat
         case "LOBBY_CHAT_MESSAGE":
             const newMessage: {chatMessage: LobbyChatMessageDto} = {chatMessage: message.chatMessage};
-
             queryClient.setQueryData<LobbyChatMessageDto[]>(["lobbyChat", lobbyId], (existingData: any) => {
                 // If no data exists, add first message
                 if (!existingData || !existingData.pages[0]) {
