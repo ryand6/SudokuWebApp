@@ -61,8 +61,8 @@ public class ProfanityValidator implements ConstraintValidator<NoProfanity, Stri
                     context.buildConstraintViolationWithTemplate(
                                     "Text contains prohibited content")
                             .addConstraintViolation();
-                    return false;
                 }
+                return false;
             }
         }
 
