@@ -34,13 +34,25 @@ public class WebSocketSecurityConfig {
     @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         messages
-                // Ensure CONNECT and DISCONNECT frames are authenticated
-                .simpTypeMatchers(SimpMessageType.CONNECT, SimpMessageType.DISCONNECT).authenticated()
+                // Ensures the WS connection is authenticated when handling this message types
+                .simpTypeMatchers(
+                        SimpMessageType.CONNECT,
+                        SimpMessageType.DISCONNECT,
+                        SimpMessageType.SUBSCRIBE,
+                        SimpMessageType.MESSAGE,
+                        SimpMessageType.UNSUBSCRIBE
+                )
+                    .authenticated()
+                // Always allow heartbeat messages to keep the connection alive
+                .simpTypeMatchers(
+                        SimpMessageType.HEARTBEAT
+                )
+                    .permitAll()
                 // Ensure that users can only send messages to lobbies that they are a member of
-                .simpDestMatchers("/app/lobby/{lobbyId}/**")
+                .simpMessageDestMatchers("/app/lobby/{lobbyId}/**")
                     .access(this::checkLobbyMembership)
-                // Ensure that users can only send messages to games that they are a member of
-                .simpDestMatchers("/app/game/{gameId}/**")
+                // Ensure that users can only send spring messages to games that they are a member of
+                .simpMessageDestMatchers("/app/game/{gameId}/**")
                     .access(this::checkGameMembership)
                 // Spring automatically maps messages to the correct user using the Principal - additional validation to ensure user is authenticated
                 .simpSubscribeDestMatchers("/user/queue/updates", "/user/queue/errors")

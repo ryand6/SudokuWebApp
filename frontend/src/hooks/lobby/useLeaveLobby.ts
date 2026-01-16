@@ -14,7 +14,9 @@ export function useLeaveLobby() {
 
     const mutation = useMutation<LobbyDto | null, Error, LeaveLobbyRequestDto>({
         mutationFn: ({lobbyId}) => leaveLobby(lobbyId),
-        onMutate: () => setIsLeaving(true),
+        onMutate: () => {
+            setIsLeaving(true)
+        },
         onSuccess: (updatedLobby, variables) => {
             unsubscribe(`/topic/lobby/${variables.lobbyId}`);
             // handles when a lobby is closed
@@ -24,10 +26,11 @@ export function useLeaveLobby() {
                 queryClient.resetQueries({ queryKey: ["publicLobbiesList"], exact: true });
                 navigate("/dashboard", { replace: true });
                 return;
+            } else {
+                const lobbyId = variables.lobbyId;
+                queryClient.setQueryData(["lobby", lobbyId], updatedLobby);
+                navigate("/dashboard", { replace: true });
             }
-            const lobbyId = variables.lobbyId;
-            queryClient.setQueryData(["lobby", lobbyId], updatedLobby);
-            navigate("/dashboard", { replace: true });
         },
         onError: (err: any) => {
             // Handle any error for display in UI

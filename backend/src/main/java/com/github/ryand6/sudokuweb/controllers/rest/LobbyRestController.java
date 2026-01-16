@@ -137,6 +137,7 @@ public class LobbyRestController {
                                OAuth2AuthenticationToken authToken,
                                @Valid @RequestBody LeaveLobbyRequestDto requestDto) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+
         LobbyDto lobbyDto = lobbyService.removeFromLobby(requestDto.getLobbyId(), currentUser.getId());
 
         if (lobbyDto == null) {
