@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest;
 
+import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.dto.request.CheckUserInGameRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.GamePlayerNotFoundException;
@@ -24,11 +25,12 @@ public class GameRestController {
     }
 
     @GetMapping("/check-user-in-game")
-    public ResponseEntity<?> isUserInGame(@RequestBody CheckUserInGameRequestDto requestDto) {
-        if (!membershipCheckService.isUserInGame(requestDto.getCurrentGameId(), requestDto.getUserId())) {
-            throw new GamePlayerNotFoundException("User with ID + " + requestDto.getUserId() + " is not part of the game with ID " + requestDto.getCurrentGameId());
+    public ResponseEntity<?> isUserInGame(@RequestParam Long gameId, @RequestParam Long userId) {
+        if (!membershipCheckService.isUserInGame(gameId, userId)) {
+            throw new GamePlayerNotFoundException("User with ID + " + userId + " is not part of the game with ID " + gameId);
         } else {
-            return ResponseEntity.ok(gameService.getGameById(requestDto.getCurrentGameId()));
+            GameDto gameDto = gameService.getGameById(gameId);
+            return ResponseEntity.ok(gameDto);
         }
     }
 

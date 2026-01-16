@@ -34,7 +34,7 @@ public class WebSocketSecurityConfig {
     @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         messages
-                // Ensures the WS connection is authenticated when handling this message types
+                // Ensures the WS connection session is authenticated using the principal when handling this message types
                 .simpTypeMatchers(
                         SimpMessageType.CONNECT,
                         SimpMessageType.DISCONNECT,

@@ -1,11 +1,10 @@
 import type { GameDto } from "@/types/dto/entity/GameDto";
 
 export async function checkIfUserInGame(gameId: number, userId: number): Promise<GameDto> {
-    const response = await fetch("/api/game/check-user-in-game", {
+    const response = await fetch(`/api/game/check-user-in-game?gameId=${gameId}&userId=${userId}`, {
         method: "GET",
         credentials: "include",
         headers: { "Accept" : "application/json" },
-        body: JSON.stringify({gameId, userId}),
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);

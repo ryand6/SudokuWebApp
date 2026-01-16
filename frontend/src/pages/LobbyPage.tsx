@@ -43,13 +43,14 @@ export function LobbyPage() {
     useHandleLobbyWsSubscription(lobbyId, queryClient, navigate);
 
     // check if user is a player in the current game
-    const gameQuery = useCheckIfUserInGame(
-        lobby?.currentGameId ?? -1, // fallback to dummy id if lobby or game id not available
-        currentUser?.id ?? -1    // fallback to dummy id if user not ready
+    const { data: gameQueryData, isLoading: isLoadingGame } = useCheckIfUserInGame(
+        // Provide -1 default values if required parameters not available - will result in query not running until proper values are provided
+        lobby?.currentGameId ?? -1,
+        currentUser?.id ?? -1
     );
 
     // Navigates user to game page when they are in an active game
-    useNavigateUserWhenInGame(lobby, currentUser, gameQuery, navigate);
+    useNavigateUserWhenInGame(lobby, currentUser, gameQueryData, isLoadingGame, navigate);
 
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 
