@@ -27,8 +27,10 @@ public class ProfanityValidator implements ConstraintValidator<NoProfanity, Stri
 
         // Make sure string is ASCII chars only
         if (!StringUtils.isAsciiString(s)) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Text contains non-ASCII characters").addConstraintViolation();
+            if (context != null) {
+                context.disableDefaultConstraintViolation();
+                context.buildConstraintViolationWithTemplate("Text contains non-ASCII characters").addConstraintViolation();
+            }
             return false;
         }
 

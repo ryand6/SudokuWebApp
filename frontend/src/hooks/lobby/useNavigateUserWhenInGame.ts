@@ -8,7 +8,7 @@ export function useNavigateUserWhenInGame(
     lobby: LobbyDto | null | undefined,
     currentUser: UserDto | null | undefined,
     gameQueryData: GameDto | undefined,
-    isLoading: boolean,
+    isLoadingGameData: boolean,
     navigate: NavigateFunction
 ) {
     // Handle navigation only when confirmed if user is part of current game
@@ -18,5 +18,5 @@ export function useNavigateUserWhenInGame(
         if (gameQueryData) {
             navigate(`/game/${gameQueryData.id}`);
         }
-    }, [lobby, currentUser, gameQueryData, isLoading, navigate]);
+    }, [lobby, currentUser, gameQueryData, isLoadingGameData, navigate]);
 }

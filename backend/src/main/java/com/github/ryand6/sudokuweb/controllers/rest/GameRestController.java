@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest;
 
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
-import com.github.ryand6.sudokuweb.dto.request.CheckUserInGameRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.GameService;
