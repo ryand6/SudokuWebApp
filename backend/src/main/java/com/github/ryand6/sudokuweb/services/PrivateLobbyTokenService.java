@@ -5,13 +5,11 @@ import com.github.ryand6.sudokuweb.dto.response.UserActiveTokensDto;
 import com.github.ryand6.sudokuweb.exceptions.InvalidTokenException;
 import com.github.ryand6.sudokuweb.exceptions.MaxActiveTokenException;
 import com.github.ryand6.sudokuweb.exceptions.TokenNotFoundException;
-import com.github.ryand6.sudokuweb.util.SecureInvitationsUtil;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -20,11 +18,14 @@ import java.util.concurrent.TimeUnit;
 public class PrivateLobbyTokenService {
 
     private final RedisTemplate<String, String> redisTemplate;
+    private final SecureInvitationsService secureInvitationsService;
 
     private final int MAX_TOKENS = 3;
 
-    public PrivateLobbyTokenService(RedisTemplate<String, String> redisTemplate) {
+    public PrivateLobbyTokenService(RedisTemplate<String, String> redisTemplate,
+                                    SecureInvitationsService secureInvitationsService) {
         this.redisTemplate = redisTemplate;
+        this.secureInvitationsService = secureInvitationsService;
     }
 
     // Create a new token and store in Redis DB against the user creating the token if they haven't reached their max active tokens created - track newly created token
@@ -36,7 +37,7 @@ public class PrivateLobbyTokenService {
         if (countActiveTokens != null && countActiveTokens >= MAX_TOKENS) {
             throw new MaxActiveTokenException(String.format("Maximum number of active private tokens reached (%d)", MAX_TOKENS));
         }
-        String token = SecureInvitationsUtil.createInvitationToken(lobbyId, userId);
+        String token = secureInvitationsService.createInvitationToken(lobbyId, userId);
         // Set the value of the key value pair to be the lobby ID so that tokens are associated with a lobby in Redis
         String value = "lobby-" + lobbyId.toString();
         // Add token to Redis DB with an expiry of 10 minutes
@@ -50,7 +51,7 @@ public class PrivateLobbyTokenService {
         String tokenLobby = redisTemplate.opsForValue().getAndDelete(token);
         if (tokenLobby != null) {
             // Additional validation check to ensure token is valid by checking token's signature matches HMAC hash
-            TokenIdentifiers tokenIdentifiers = SecureInvitationsUtil.validateInvitationToken(token);
+            TokenIdentifiers tokenIdentifiers = secureInvitationsService.validateInvitationToken(token);
             if (tokenIdentifiers == null) {
                 throw new InvalidTokenException("Invalid token provided");
             }

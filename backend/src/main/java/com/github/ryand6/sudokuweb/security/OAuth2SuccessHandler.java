@@ -21,11 +21,16 @@ public class OAuth2SuccessHandler extends SavedRequestAwareAuthenticationSuccess
         this.csrfTokenRepository = csrfTokenRepository;
     }
 
+    /**
+     * Generates CSRF token when a login has been authenticated - provides user with access to token immediately in order to make POST requests
+     * @param request The HTTP request
+     * @param response The HTTP response
+     * @param authentication The token for an authenticated principal
+     */
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
-        // Generate the CSRF Token when a login has been authenticated, so that the user has access to the token immediately in order to make POST requests
         CsrfToken csrfToken = csrfTokenRepository.generateToken((request));
         csrfTokenRepository.saveToken(csrfToken, request, response);
         response.sendRedirect(spaBaseUrl + "/");

@@ -1,8 +1,8 @@
-package com.github.ryand6.sudokuweb.util;
+package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.dto.TokenIdentifiers;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -10,30 +10,35 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Clock;
 import java.time.Instant;
 import java.util.Base64;
 
-@Component
-public class SecureInvitationsUtil {
+@Service
+public class SecureInvitationsService {
 
-        private static byte[] SECRET_KEY;
         private static final String HMAC_ALGORITHM = "HmacSHA256";
         // Token available for 10 minutes
         private static final long INVITATION_VALIDITY_MINUTES = 10;
         private static final SecureRandom SECURE_RANDOM = new SecureRandom();
+        private final byte[] SECRET_KEY;
+        // Injectable clock, which allows testing to be carried out on time thresholds
+        private final Clock clock;
 
-        public SecureInvitationsUtil(@Value("${hmac.secret-key}") String hmacSecretKey) {
+        public SecureInvitationsService(@Value("${hmac.secret-key}") String hmacSecretKey,
+                                        Clock clock) {
             SECRET_KEY = hmacSecretKey.getBytes(StandardCharsets.UTF_8);
+            this.clock = clock;
         }
 
         /**
-         * Creates a secure invitation token that expires after 24 hours
+         * Creates a secure invitation token that expires after 10 minutes
          * @param lobbyId The lobby ID
          * @param userId The user ID creating the invitation
          * @return A secure, time-limited invitation token
          */
-        public static String createInvitationToken(Long lobbyId, Long userId) {
-            long expiryTime = Instant.now().plusSeconds(INVITATION_VALIDITY_MINUTES * 60).getEpochSecond();
+        public String createInvitationToken(Long lobbyId, Long userId) {
+            long expiryTime = Instant.now(clock).plusSeconds(INVITATION_VALIDITY_MINUTES * 60).getEpochSecond();
             String nonce = generateNonce();
             String payload = lobbyId + ":" + userId + ":" + expiryTime + ":" + nonce;
             String signature = generateSignature(payload);
@@ -48,7 +53,7 @@ public class SecureInvitationsUtil {
          * @param token The invitation token
          * @return The TokenIdentifiers DTO (containing lobby ID and user ID) if valid, null if invalid or expired
          */
-        public static TokenIdentifiers validateInvitationToken(String token) {
+        public TokenIdentifiers validateInvitationToken(String token) {
             try {
                 String decoded = new String(Base64.getUrlDecoder().decode(token), StandardCharsets.UTF_8);
                 String[] parts = decoded.split(":");
@@ -64,7 +69,7 @@ public class SecureInvitationsUtil {
                 String signature = parts[4];
 
                 // Check if expired - additional preventative measure, also handled in Redis
-                if (Instant.now().getEpochSecond() > expiryTime) {
+                if (Instant.now(clock).getEpochSecond() > expiryTime) {
                     return null;
                 }
 
@@ -88,7 +93,7 @@ public class SecureInvitationsUtil {
          * @param payload The message to hash
          * @return The hashed value of the message
          */
-        private static String generateSignature(String payload) {
+        private String generateSignature(String payload) {
             try {
                 Mac mac = Mac.getInstance(HMAC_ALGORITHM);
                 // Create key spec to initialise mac object - key spec associating the secret key with the relevant cryptography algorithm to be applied
@@ -104,7 +109,7 @@ public class SecureInvitationsUtil {
         }
 
         // Create string of randomised bytes for use in payload to prevent predictability
-        private static String generateNonce() {
+        private String generateNonce() {
             // Take a byte array and fill it with randomised bytes
             byte[] nonce = new byte[16];
             SECURE_RANDOM.nextBytes(nonce);

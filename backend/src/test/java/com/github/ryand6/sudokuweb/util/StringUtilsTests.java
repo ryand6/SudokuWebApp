@@ -44,6 +44,11 @@ public class StringUtilsTests {
         assertEquals("aib", StringUtils.normaliseString("a!b"));
     }
 
+    @Test
+    void testNormaliseStringNullInput() {
+        assertThrows(NullPointerException.class, () -> StringUtils.normaliseString(null));
+    }
+
     // -----------------------------
     // removeNonAlphabeticChars() tests
     // -----------------------------
@@ -67,6 +72,11 @@ public class StringUtilsTests {
         assertEquals("", StringUtils.removeNonAlphabeticChars("123456!@#"));
     }
 
+    @Test
+    void testRemoveNonAlphabeticCharsNullInput() {
+        assertThrows(NullPointerException.class, () -> StringUtils.removeNonAlphabeticChars(null));
+    }
+
     // -----------------------------
     // isAsciiString() tests
     // -----------------------------
@@ -83,20 +93,6 @@ public class StringUtilsTests {
         assertFalse(StringUtils.isAsciiString("café")); // 'é' > 127
         assertFalse(StringUtils.isAsciiString("こんにちは")); // Japanese chars
         assertFalse(StringUtils.isAsciiString("a\u20ACb")); // contains € symbol
-    }
-
-    // -----------------------------
-    // Null tests
-    // -----------------------------
-
-    @Test
-    void testNormaliseStringNullInput() {
-        assertThrows(NullPointerException.class, () -> StringUtils.normaliseString(null));
-    }
-
-    @Test
-    void testRemoveNonAlphabeticCharsNullInput() {
-        assertThrows(NullPointerException.class, () -> StringUtils.removeNonAlphabeticChars(null));
     }
 
     @Test
