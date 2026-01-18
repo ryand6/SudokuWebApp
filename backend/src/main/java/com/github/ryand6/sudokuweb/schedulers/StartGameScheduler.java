@@ -6,6 +6,7 @@ import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.GameService;
 import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,8 @@ import java.time.Instant;
 import java.util.List;
 
 @Component
+// By default, have the scheduler switched on unless specified otherwise in property file / property param - used to disable scheduler on certain tests to prevent conflicts
+@ConditionalOnProperty(name = "scheduler.enabled", havingValue = "true", matchIfMissing = true)
 public class StartGameScheduler {
 
     private final LobbyRepository lobbyRepository;

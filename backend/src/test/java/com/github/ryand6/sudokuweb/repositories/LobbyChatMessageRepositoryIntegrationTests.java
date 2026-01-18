@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.LobbyChatMessageEntity;
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.enums.MessageType;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,6 +59,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("Hello, world!")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         underTest.save(message);
@@ -78,6 +80,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("First message")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         underTest.save(msg1);
@@ -87,6 +90,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("Second message")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         underTest.save(msg2);
@@ -96,6 +100,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("Third message")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         underTest.save(msg3);
@@ -119,6 +124,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("Original message")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         underTest.save(message);
@@ -137,6 +143,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("This will be deleted")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         underTest.save(message);
@@ -152,12 +159,14 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("Msg A")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         LobbyChatMessageEntity msgB = LobbyChatMessageEntity.builder()
                 .lobbyEntity(testLobby)
                 .userEntity(testUser)
                 .message("Msg B")
+                .messageType(MessageType.MESSAGE)
                 .build();
 
         underTest.save(msgA);

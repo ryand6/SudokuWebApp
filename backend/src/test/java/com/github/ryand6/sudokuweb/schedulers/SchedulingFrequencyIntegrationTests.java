@@ -1,13 +1,13 @@
 package com.github.ryand6.sudokuweb.schedulers;
 
-import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
+import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTestWithScheduler;
 import org.awaitility.Durations;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.testcontainers.shaded.org.awaitility.Awaitility;
 
-public class SchedulingFrequencyIntegrationTests extends AbstractIntegrationTest {
+public class SchedulingFrequencyIntegrationTests extends AbstractIntegrationTestWithScheduler {
 
     @SpyBean
     private StartGameScheduler startGameScheduler;
