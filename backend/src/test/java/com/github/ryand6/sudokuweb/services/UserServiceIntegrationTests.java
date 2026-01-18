@@ -5,15 +5,11 @@ import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
@@ -22,9 +18,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.doReturn;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@Testcontainers
 class UserServiceIntegrationTests extends AbstractIntegrationTest {
 
     private final UserService userService;

@@ -2,32 +2,14 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.*;
-import com.github.ryand6.sudokuweb.dto.entity.GameDto;
-import com.github.ryand6.sudokuweb.dto.entity.GameStateDto;
-import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.repositories.*;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.List;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@Testcontainers
 /*
 Integration tests for BoardStateService
 */

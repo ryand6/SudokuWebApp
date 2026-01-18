@@ -11,9 +11,11 @@ import com.github.ryand6.sudokuweb.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -34,6 +36,7 @@ Not using @SpringBootTest because these are unit tests only testing service meth
 Was finding that @SpringBootTest was injecting real beans that were getting used instead of the mocked beans, no need to
 simulate proper app environment for tests
  */
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTests {
 
     @Mock
@@ -44,11 +47,6 @@ public class UserServiceTests {
 
     @InjectMocks
     private UserService userService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void getCurrentUserByOAuth_testFoundUser() {
@@ -114,8 +112,6 @@ public class UserServiceTests {
         scoreDto.setTotalScore(0);
         scoreDto.setGamesPlayed(0);
         mockDto.setScore(scoreDto);
-
-        when(userEntityDtoMapper.mapToDto(any(UserEntity.class))).thenReturn(mockDto);
 
         UserNotFoundException ex = assertThrows(
                 UserNotFoundException.class,
