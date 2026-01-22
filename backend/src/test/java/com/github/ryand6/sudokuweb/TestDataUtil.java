@@ -4,6 +4,8 @@ import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 
+import java.util.Set;
+
 public final class TestDataUtil {
 
     private TestDataUtil() {
@@ -82,36 +84,36 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static LobbyEntity createTestLobbyA(UserEntity userEntity) {
+    public static LobbyEntity createTestLobbyA(final UserEntity userEntity, Set<LobbyPlayerEntity> players) {
         return LobbyEntity.builder().
                 lobbyName("Guru Lobby").
                 isActive(true).
                 isPublic(true).
+                lobbyPlayers(players).
                 host(userEntity).
                 build();
     }
-//
-//    public static LobbyEntity createTestLobbyB(UserEntity userEntity) {
-//        return LobbyEntity.builder().
-//                lobbyName("SudokuSquad").
-//                isActive(true).
-//                isPublic(false).
-//                inGame(false).
-//                joinCode("aey3g-yagy3i3-u3ygu34").
-//                host(userEntity).
-//                build();
-//    }
-//
-//    public static LobbyEntity createTestLobbyC(UserEntity userEntity) {
-//        return LobbyEntity.builder().
-//                lobbyName("Active").
-//                isActive(false).
-//                isPublic(false).
-//                inGame(true).
-//                joinCode("eipioje-stretg4-2et44t").
-//                host(userEntity).
-//                build();
-//    }
+
+    public static LobbyEntity createTestLobbyB(final UserEntity userEntity, Set<LobbyPlayerEntity> players) {
+        return LobbyEntity.builder().
+                lobbyName("SudokuSquad").
+                isActive(true).
+                isPublic(false).
+                lobbyPlayers(players).
+                host(userEntity).
+                build();
+    }
+
+    public static LobbyEntity createTestLobbyC(final UserEntity userEntity, Set<LobbyPlayerEntity> players) {
+        return LobbyEntity.builder().
+                lobbyName("In Game Lobby").
+                isActive(true).
+                isPublic(true).
+                inGame(true).
+                lobbyPlayers(players).
+                host(userEntity).
+                build();
+    }
 
     public static GameStateEntity createTestGameStateA(final GameEntity gameEntity, final UserEntity userEntity) {
         return GameStateEntity.builder().

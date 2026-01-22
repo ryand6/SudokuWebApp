@@ -61,8 +61,6 @@ public class LobbyService {
             newLobby.setIsPublic(true);
         } else if (Boolean.FALSE.equals(isPublic)) {
             newLobby.setIsPublic(false);
-        } else {
-            throw new InvalidLobbyPublicStatusParameterException("Either Public or Private lobby must be checked");
         }
         UserEntity requester = userService.findUserById(requesterId);
         newLobby.setLobbyName(lobbyName);

@@ -48,7 +48,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
         testUser = TestDataUtil.createTestUserA(scoreEntity);
         userRepository.save(testUser);
 
-        testLobby = TestDataUtil.createTestLobbyA(testUser);
+        testLobby = TestDataUtil.createTestLobbyA(testUser, null);
         lobbyRepository.save(testLobby);
     }
 

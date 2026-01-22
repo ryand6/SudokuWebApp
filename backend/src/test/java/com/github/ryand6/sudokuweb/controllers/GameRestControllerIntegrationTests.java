@@ -57,7 +57,7 @@ public class GameRestControllerIntegrationTests extends AbstractControllerIntegr
         score = TestDataUtil.createTestScoreA();
         user = TestDataUtil.createTestUserA(score);
         userRepository.save(user);
-        lobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(user));
+        lobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(user, null));
     }
 
 //    @Test

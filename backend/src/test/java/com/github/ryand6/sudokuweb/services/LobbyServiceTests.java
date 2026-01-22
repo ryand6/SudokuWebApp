@@ -1,23 +1,31 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
+import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.junit.jupiter.Testcontainers;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@Testcontainers
-public class LobbyServiceTests extends AbstractIntegrationTest {
+@ExtendWith(MockitoExtension.class)
+public class LobbyServiceTests {
 
     @Mock
     private LobbyRepository lobbyRepository;
@@ -34,63 +42,48 @@ public class LobbyServiceTests extends AbstractIntegrationTest {
     @InjectMocks
     private LobbyService lobbyService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+//    @BeforeEach
+//    void setUp() {
+//        MockitoAnnotations.openMocks(this);
+//    }
 
-//    @Test
-//    public void createNewLobby_invalidIsPublicAndIsPrivateParameters() {
-//        String lobbyName = "Test Lobby";
-//        boolean isPublic = false;
-//        boolean isPrivate = false;
-//        String joinCode = null;
-//        Long requesterId = 1L;
-//        InvalidLobbyPublicStatusParametersException ex = assertThrows(
-//                InvalidLobbyPublicStatusParametersException.class,
-//                () -> lobbyService.createNewLobby(lobbyName, isPublic, isPrivate, joinCode, requesterId)
-//        );
-//        assertThat(ex.getMessage()).isEqualTo("Either Public or Private lobby must be checked");
-//    }
-//
-//    @Test
-//    public void createNewLobby_successfulCreation() {
-//        UserEntity user = new UserEntity();
-//        user.setId(1L);
-//        user.setUsername("Test User");
-//        when(userService.findUserById(anyLong())).thenReturn(user);
-//
-//        LobbyEntity lobby = new LobbyEntity();
-//        lobby.setId(1L);
-//        lobby.setLobbyName("Test Lobby");
-//        when(lobbyRepository.save(any(LobbyEntity.class))).thenReturn(lobby);
-//
-//        LobbyPlayerEntity lobbyPlayerEntity = new LobbyPlayerEntity();
-//        lobbyPlayerEntity.setLobby(lobby);
-//        lobbyPlayerEntity.setUser(user);
-//        when(lobbyPlayerRepository.save(any(LobbyPlayerEntity.class))).thenReturn(lobbyPlayerEntity);
-//
-//        LobbyPlayerDto lobbyPlayerDto = new LobbyPlayerDto();
-//        lobbyPlayerDto.setId(new LobbyPlayerId(lobby.getId(), user.getId()));
-//
-//        LobbyDto lobbyDto = new LobbyDto();
-//        lobbyDto.setId(1L);
-//        lobbyDto.setLobbyName("Test Lobby");
-//        lobbyDto.setIsPublic(true);
-//        lobbyDto.setLobbyPlayers(Set.of(lobbyPlayerDto));
-//        when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(lobbyDto);
-//
-//        String lobbyName = "Test Lobby";
-//        boolean isPublic = true;
-//        boolean isPrivate = false;
-//        String joinCode = null;
-//        Long requesterId = 1L;
-//        LobbyDto lobbyDtoTest = lobbyService.createNewLobby(lobbyName, isPublic, isPrivate, joinCode, requesterId);
-//        assertThat(lobbyDtoTest.getId()).isEqualTo(1L);
-//        assertThat(lobbyDtoTest.getLobbyName()).isEqualTo("Test Lobby");
-//        assertThat(lobbyDtoTest.getIsPublic()).isEqualTo(true);
-//        assertThat(lobbyDtoTest.getLobbyPlayers()).hasSize(1);
-//    }
+    @Test
+    public void createNewLobby_successfulCreation() {
+
+        when(lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(anyLong())).thenReturn(Optional.empty());
+
+        UserEntity user = new UserEntity();
+        user.setId(1L);
+        user.setUsername("Test User");
+        when(userService.findUserById(anyLong())).thenReturn(user);
+
+        LobbyEntity lobby = new LobbyEntity();
+        lobby.setId(1L);
+        lobby.setLobbyName("Test Lobby");
+
+        LobbyPlayerEntity lobbyPlayerEntity = new LobbyPlayerEntity();
+        lobbyPlayerEntity.setLobby(lobby);
+        lobbyPlayerEntity.setUser(user);
+
+        LobbyPlayerDto lobbyPlayerDto = new LobbyPlayerDto();
+        lobbyPlayerDto.setId(new LobbyPlayerId(lobby.getId(), user.getId()));
+
+        LobbyDto lobbyDto = new LobbyDto();
+        lobbyDto.setId(1L);
+        lobbyDto.setLobbyName("Test Lobby");
+        lobbyDto.setIsPublic(true);
+        lobbyDto.setLobbyPlayers(Set.of(lobbyPlayerDto));
+        when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(lobbyDto);
+
+        String lobbyName = "Test Lobby";
+        boolean isPublic = true;
+        Long requesterId = 1L;
+        LobbyDto lobbyDtoTest = lobbyService.createNewLobby(lobbyName, isPublic, requesterId);
+        assertThat(lobbyDtoTest.getId()).isEqualTo(1L);
+        assertThat(lobbyDtoTest.getLobbyName()).isEqualTo("Test Lobby");
+        assertThat(lobbyDtoTest.getIsPublic()).isEqualTo(true);
+        assertThat(lobbyDtoTest.getLobbyPlayers()).hasSize(1);
+    }
 //
 //    @Test
 //    public void getPublicLobbies_testExpectedReturnList() {
