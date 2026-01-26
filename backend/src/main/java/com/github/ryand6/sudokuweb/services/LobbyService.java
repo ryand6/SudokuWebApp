@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.github.ryand6.sudokuweb.domain.LobbyEntity.LOBBY_SIZE;
+
 @Service
 public class LobbyService {
 
@@ -141,7 +143,7 @@ public class LobbyService {
         if (!lobby.getIsActive()) {
             throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active");
         }
-        if (lobby.getLobbyPlayers().size() >= 4) {
+        if (lobby.getLobbyPlayers().size() >= LOBBY_SIZE) {
             throw new LobbyFullException("Lobby with ID " + lobbyId + " is currently full");
         }
     }
@@ -192,17 +194,13 @@ public class LobbyService {
         // Retrieve LobbyPlayer
         LobbyPlayerEntity lobbyPlayer = findLobbyPlayer(lobby, userId);
         UserEntity requesterEntity = userService.findUserById(userId);
+
         // If host has left, update the host to the player that joined first after the host
         if (requesterEntity.equals(lobby.getHost())) {
-            Optional<UserEntity> newHostOptional = getNewHost(lobby);
-            // Current host was the only active player in lobby - close down lobby
-            if (newHostOptional.isEmpty()) {
-                closeLobby(lobby);
+            applyHostChangeOrCloseLobby(lobby);
+            // If lobby has been closed
+            if (!lobby.getIsActive()) {
                 return null;
-            } else {
-                UserEntity newHost = newHostOptional.get();
-                // Update the lobby host
-                lobby.setHost(newHost);
             }
         }
 
@@ -218,7 +216,16 @@ public class LobbyService {
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
-    private LobbyPlayerEntity findLobbyPlayer(LobbyEntity lobby, Long userId) {
+    private void applyHostChangeOrCloseLobby(LobbyEntity lobby) {
+        Optional<UserEntity> newHost = lobby.determineNextHost();
+        if (newHost.isEmpty()) {
+            closeLobby(lobby);
+        } else {
+            lobby.setHost(newHost.get());
+        }
+    }
+
+    LobbyPlayerEntity findLobbyPlayer(LobbyEntity lobby, Long userId) {
         return lobby.getLobbyPlayers().stream()
                 .filter(lp -> lp.getUser().getId().equals(userId))
                 .findFirst()
@@ -228,19 +235,19 @@ public class LobbyService {
     }
 
     // Return the entity record of the new host based on the order in which players joined
-    private Optional<UserEntity> getNewHost(LobbyEntity lobby) {
-        UserEntity currentHost = lobby.getHost();
-        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
-        return activePlayers.stream()
-                // Remove current host from the stream
-                .filter(lp -> !lp.getUser().equals(currentHost))
-                // Order by join date/time from first to last
-                .sorted(Comparator.comparing(LobbyPlayerEntity::getJoinedAt))
-                // Transform to list of User entities
-                .map(LobbyPlayerEntity::getUser)
-                // Return the player who joined first to be the new host
-                .findFirst();
-    }
+//    private Optional<UserEntity> getNewHost(LobbyEntity lobby) {
+//        UserEntity currentHost = lobby.getHost();
+//        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
+//        return activePlayers.stream()
+//                // Remove current host from the stream
+//                .filter(lp -> !lp.getUser().equals(currentHost))
+//                // Order by join date/time from first to last
+//                .sorted(Comparator.comparing(LobbyPlayerEntity::getJoinedAt))
+//                // Transform to list of User entities
+//                .map(LobbyPlayerEntity::getUser)
+//                // Return the player who joined first to be the new host
+//                .findFirst();
+//    }
 
     @Transactional
     // Register the Lobby inactive

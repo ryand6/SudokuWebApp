@@ -24,6 +24,8 @@ import java.util.Set;
 @Table(name = "lobbies")
 public class LobbyEntity {
 
+    public static final int LOBBY_SIZE = 4;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lobby_id_seq")
     private Long id;
@@ -109,6 +111,21 @@ public class LobbyEntity {
         return countdownActive != null && countdownActive && countdownEndsAt != null && countdownEndsAt.isAfter(Instant.now());
     }
 
+    // Return the entity record of the new host based on the order in which players joined
+    public Optional<UserEntity> determineNextHost() {
+        UserEntity currentHost = getHost();
+        Set<LobbyPlayerEntity> activePlayers = getLobbyPlayers();
+        return activePlayers.stream()
+                // Remove current host from the stream
+                .filter(lp -> !lp.getUser().equals(currentHost))
+                // Order by join date/time from first to last
+                .sorted(Comparator.comparing(LobbyPlayerEntity::getJoinedAt))
+                // Transform to list of User entities
+                .map(LobbyPlayerEntity::getUser)
+                // Return the player who joined first to be the new host
+                .findFirst();
+    }
+
     // Method used to determine if and when the countdown should be initiated
     // Returns the ID of the new initiator if exists
     public Optional<Long> evaluateCountdownState() {
@@ -131,7 +148,7 @@ public class LobbyEntity {
         boolean hostReady = hostPlayer.getLobbyStatus() == LobbyStatus.READY;
 
         // Second countdown initiating condition - majority of players ready in lobby sizes of 3 or more
-        boolean majorityReady = playerCount >= 3 && (readyCount >= playerCount - 1);
+        boolean majorityReady = playerCount > 2 && (readyCount >= playerCount - 1);
 
         boolean shouldCountdownBeActive = hostReady || majorityReady;
 
