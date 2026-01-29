@@ -234,21 +234,6 @@ public class LobbyService {
                 ));
     }
 
-    // Return the entity record of the new host based on the order in which players joined
-//    private Optional<UserEntity> getNewHost(LobbyEntity lobby) {
-//        UserEntity currentHost = lobby.getHost();
-//        Set<LobbyPlayerEntity> activePlayers = lobby.getLobbyPlayers();
-//        return activePlayers.stream()
-//                // Remove current host from the stream
-//                .filter(lp -> !lp.getUser().equals(currentHost))
-//                // Order by join date/time from first to last
-//                .sorted(Comparator.comparing(LobbyPlayerEntity::getJoinedAt))
-//                // Transform to list of User entities
-//                .map(LobbyPlayerEntity::getUser)
-//                // Return the player who joined first to be the new host
-//                .findFirst();
-//    }
-
     @Transactional
     // Register the Lobby inactive
     public void closeLobby(LobbyEntity lobby) {
