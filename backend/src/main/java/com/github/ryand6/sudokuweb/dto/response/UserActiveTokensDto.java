@@ -11,6 +11,8 @@ import java.util.List;
 @Builder
 public class UserActiveTokensDto {
 
+    @Getter
+    @Setter
     public static class TokenWithExpiry {
         public String token;
         public Long expiresAt;

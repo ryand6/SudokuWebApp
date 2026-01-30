@@ -100,7 +100,7 @@ public class PrivateLobbyTokenService {
     }
 
     // Ensure the number of active tokens for a user is accurate
-    private void cleanUpUserTokens(String userKey) {
+    void cleanUpUserTokens(String userKey) {
         Set<String> tokens = redisTemplate.opsForSet().members(userKey);
         if (tokens == null) return;
 

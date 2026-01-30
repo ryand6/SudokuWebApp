@@ -2,8 +2,6 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.repositories.GameStateRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
