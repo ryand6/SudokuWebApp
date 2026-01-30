@@ -33,34 +33,4 @@ public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEn
                 .build();
     }
 
-//    public LobbyPlayerEntity mapFromDto(LobbyPlayerDto lobbyPlayerDto) {
-//        UserEntity userEntity = resolveDtoUser(lobbyPlayerDto.getId().getUserId());
-//        LobbyEntity lobbyEntity = resolveDtoLobby(lobbyPlayerDto.getId().getLobbyId());
-//
-//        return LobbyPlayerEntity.builder()
-//                .id(lobbyPlayerDto.getId())
-//                .lobby(lobbyEntity)
-//                .user(userEntity)
-//                .joinedAt(lobbyPlayerDto.getJoinedAt())
-//                .lobbyStatus(lobbyPlayerDto.getLobbyStatus())
-//                .readyAt(lobbyPlayerDto.getReadyAt())
-//                .difficultyPreference(lobbyPlayerDto.getDifficultyPreference())
-//                .difficultyVoteTimestamp(lobbyPlayerDto.getDifficultyVoteTimestamp())
-//                .durationPreference(lobbyPlayerDto.getDurationPreference())
-//                .durationVoteTimestamp(lobbyPlayerDto.getDurationVoteTimestamp())
-//                .build();
-//    }
-//
-//    // Get UserEntity from DTO composite key ID
-//    private UserEntity resolveDtoUser(Long userId) {
-//        return userRepository.findById(userId)
-//                .orElseThrow(() -> new EntityNotFoundException("User id not found: " + userId));
-//    }
-//
-//    // Get LobbyEntity from DTO composite key ID
-//    private LobbyEntity resolveDtoLobby(Long lobbyId) {
-//        return lobbyRepository.findById(lobbyId)
-//                .orElseThrow(() -> new EntityNotFoundException("Lobby id not found: " + lobbyId));
-//    }
-
 }

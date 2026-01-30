@@ -48,43 +48,4 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
                 .build();
     }
 
-//    public GameEntity mapFromDto(GameDto gameDto) {
-//        LobbyEntity lobbyEntity = resolveDtoLobby(gameDto.getLobby().getId());
-//        SudokuPuzzleEntity sudokuPuzzleEntity = resolveDtoPuzzle(gameDto.getSudokuPuzzle().getId());
-//
-//        GameEntity.GameEntityBuilder gameEntityBuilder = GameEntity.builder()
-//                .lobbyEntity(lobbyEntity)
-//                .sudokuPuzzleEntity(sudokuPuzzleEntity)
-//                .gameStateEntities(
-//                        gameDto.getGameStates().stream()
-//                                .map(gameStateDto -> resolveDtoGameState(gameStateDto.getId()))
-//                                .collect(Collectors.toSet())
-//                );
-//
-//        // Don't assign id field if non-existent, DB will create
-//        if (gameDto.getId() != null) {
-//            gameEntityBuilder.id(gameDto.getId());
-//        }
-//
-//        return gameEntityBuilder.build();
-//
-//    }
-//
-//    // Get LobbyEntity through DTO LobbyId
-//    private LobbyEntity resolveDtoLobby(Long lobbyId) {
-//        return lobbyRepository.findById(lobbyId)
-//                .orElseThrow(() -> new EntityNotFoundException("Lobby not found with id " + lobbyId));
-//    }
-//
-//    // Get SudokuPuzzleEntity through DTO PuzzleId
-//    private SudokuPuzzleEntity resolveDtoPuzzle(Long puzzleId) {
-//        return sudokuPuzzleRepository.findById(puzzleId)
-//                .orElseThrow(() -> new EntityNotFoundException("Puzzle not found with id " + puzzleId));
-//    }
-//
-//    private GameStateEntity resolveDtoGameState(Long gameStateId) {
-//        return gameStateRepository.findById(gameStateId)
-//                .orElseThrow(() -> new EntityNotFoundException("Game state not found with id " + gameStateId));
-//    }
-
 }

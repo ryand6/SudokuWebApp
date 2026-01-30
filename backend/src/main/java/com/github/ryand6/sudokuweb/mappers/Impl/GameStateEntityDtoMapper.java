@@ -36,35 +36,4 @@ public class GameStateEntityDtoMapper implements EntityDtoMapper<GameStateEntity
                 .build();
     }
 
-//    public GameStateEntity mapFromDto(GameStateDto gameStateDto) {
-//        GameEntity gameEntity = resolveDtoGame(gameStateDto.getGameId());
-//        UserEntity userEntity = resolveDtoUser(gameStateDto.getUser().getId());
-//
-//        GameStateEntity.GameStateEntityBuilder gameStateEntityBuilder = GameStateEntity.builder()
-//                .gameEntity(gameEntity)
-//                .userEntity(userEntity)
-//                .currentBoardState(gameStateDto.getCurrentBoardState())
-//                .score(gameStateDto.getScore())
-//                .playerColour(gameStateDto.getPlayerColour());
-//
-//        // Don't assign id field if non-existent, DB will create
-//        if (gameStateDto.getId() != null) {
-//            gameStateEntityBuilder.id(gameStateDto.getId());
-//        }
-//
-//        return gameStateEntityBuilder.build();
-//    }
-//
-//    // Get GameEntity through DTO gameId
-//    private GameEntity resolveDtoGame(Long gameId) {
-//        return gameRepository.findById(gameId)
-//                .orElseThrow(() -> new EntityNotFoundException("Game not found with id " + gameId));
-//    }
-//
-//    // Get UserEntity through DTO userId
-//    private UserEntity resolveDtoUser(Long userId) {
-//        return userRepository.findById(userId)
-//                .orElseThrow(() -> new EntityNotFoundException("User not found with id " + userId));
-//    }
-
 }
