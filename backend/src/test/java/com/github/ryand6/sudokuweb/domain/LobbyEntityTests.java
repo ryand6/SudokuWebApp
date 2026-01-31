@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 public class LobbyEntityTests {

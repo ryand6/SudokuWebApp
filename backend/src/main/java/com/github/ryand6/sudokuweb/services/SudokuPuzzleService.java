@@ -3,9 +3,7 @@ package com.github.ryand6.sudokuweb.services;
 import com.github.ryand6.sudokuweb.config.SudokuPuzzleLoader;
 import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.factory.SudokuPuzzleFactory;
-import com.github.ryand6.sudokuweb.dto.entity.SudokuPuzzleDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.mappers.Impl.SudokuPuzzleEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -26,10 +24,9 @@ public class SudokuPuzzleService {
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
     }
 
-    /* Randomly select problem and its solution from a file with the corresponding
-    difficulty type. File name in format: <difficulty>sudoku.tsv, file in format:
-    col1 = string representation of the problem as a nested int array, col2 = string
-    representation of the solution to the problem as a nested int array */
+    /* Randomly select problem and its solution from a file with the corresponding difficulty type.
+    File name in format: <difficulty>sudoku.tsv
+    File in format: col1 = string representation of the problem, col2 = string representation of the solution to the problem */
     @Transactional
     public SudokuPuzzleEntity generatePuzzle(Difficulty difficulty) {
         List<String> listOfPuzzles = getListOfPuzzles(difficulty);
