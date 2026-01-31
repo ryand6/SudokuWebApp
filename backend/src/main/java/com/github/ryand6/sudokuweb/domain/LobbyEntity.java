@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
@@ -25,6 +26,11 @@ import java.util.Set;
 public class LobbyEntity {
 
     public static final int LOBBY_SIZE = 4;
+
+    // Used to allow testing of time related functions
+    @Builder.Default
+    @Transient
+    private Clock clock = Clock.systemUTC();
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lobby_id_seq")
@@ -108,7 +114,7 @@ public class LobbyEntity {
     }
 
     public boolean isCountdownActive() {
-        return countdownActive != null && countdownActive && countdownEndsAt != null && countdownEndsAt.isAfter(Instant.now());
+        return countdownActive != null && countdownActive && countdownEndsAt != null && countdownEndsAt.isAfter(Instant.now(clock));
     }
 
     // Return the entity record of the new host based on the order in which players joined
@@ -188,7 +194,7 @@ public class LobbyEntity {
 
     // Used to initiate or update countdown and set necessary settings - if more players ready up, the countdown is updated
     private void setCountdown(int notReadyCount) {
-        Instant timerEnd = Instant.now();
+        Instant timerEnd = Instant.now(clock);
         // Calculate the number of minutes for the countdown timer
         if (notReadyCount >= 1) {
             // Add a minute for every non-ready user
