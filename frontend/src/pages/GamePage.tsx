@@ -1,3 +1,8 @@
+import { SudokuBoard } from "@/components/game/SudokuBoard";
+import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
+import { useHandleGetGameError } from "@/hooks/game/useHandleGetGameError";
+import { useValidateGameId } from "@/hooks/game/useValidateGameId";
+import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { useEffect, useState } from "react";
@@ -22,6 +27,8 @@ export function GamePage() {
 
     const gameIdNum = gameId ? Number(gameId) : NaN;
 
+    useValidateGameId(gameIdNum);
+
     // Store game state for current player
     const [gameState, setGameState] = useState<PlayerState>();
 
@@ -33,6 +40,12 @@ export function GamePage() {
 
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
 
+    const leaveGameHandler = useLeaveGame();
+
+    useHandleGetGameError(isGameError, gameError);
+
+    useValidateLobbyUser(gameData, currentUser, leaveGameHandler.isLeaving);
+
     useEffect(() => {
         // CREATE FUNCTION - calls setGameState, filling the nested array with the values and notes from the server data for the current player
         storeCurrentUserGameState(gameData);
@@ -40,9 +53,15 @@ export function GamePage() {
         storeRivalUserGameStates(gameData);
     }, [gameData]);
 
+
+    if (isGameLoading || isCurrentUserLoading) return <SpinnerButton />;
+    
+    if (!gameData || !currentUser) return null;
+
     return (
         <div>
             GAME PAGE
+            <SudokuBoard gameState={gameState} />
         </div>
     )
 }
