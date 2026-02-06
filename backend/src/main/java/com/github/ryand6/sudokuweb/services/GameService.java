@@ -13,8 +13,6 @@ import com.github.ryand6.sudokuweb.exceptions.TooManyActivePlayersException;
 import com.github.ryand6.sudokuweb.mappers.Impl.GameEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.GameRepository;
-import com.github.ryand6.sudokuweb.repositories.GameStateRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;

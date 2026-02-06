@@ -8,7 +8,7 @@ export async function checkIfUserInGame(gameId: number, userId: number): Promise
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.errorMessage || "Unable to verify if user is an active game member");
+        throw new Error(errorData?.errorMessage || "Unable to verify if user is an active player in game");
     }
     return await response.json();
 }

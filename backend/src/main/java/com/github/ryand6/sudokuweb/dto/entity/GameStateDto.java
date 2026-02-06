@@ -22,4 +22,6 @@ public class GameStateDto {
 
     private String currentBoardState;
 
+    private byte[] notes;
+
 }

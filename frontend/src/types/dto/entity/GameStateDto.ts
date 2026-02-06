@@ -7,5 +7,6 @@ export type GameStateDto = {
     user: UserDto,
     score: number,
     playerColour: PlayerColour,
-    currentBoardState: string
+    currentBoardState: string,
+    notes: string
 }

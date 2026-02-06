@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest;
 
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.GameService;
@@ -41,10 +40,10 @@ public class GameRestController {
         return ResponseEntity.ok(gameService.createGameIfNoneActive(generateBoardRequestDto.getLobby()));
     }
 
-    // Get lobby DTO using lobbyId
+    // Get Game DTO using gameId
     @GetMapping("/get-game")
     public ResponseEntity<?> getGame(@RequestParam Long gameId) {
-        GameDto gameDto = gameService.getGamebyId(gameId);
+        GameDto gameDto = gameService.getGameById(gameId);
         return ResponseEntity.ok(gameDto);
     }
 

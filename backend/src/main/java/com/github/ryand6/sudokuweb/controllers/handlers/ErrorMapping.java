@@ -12,6 +12,7 @@ public class ErrorMapping {
     public static final Map<Class<? extends Throwable>, HttpStatus> EXCEPTION_HTTP_STATUS_MAP = Map.ofEntries(
             Map.entry(UserNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(GameNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
@@ -26,13 +27,17 @@ public class ErrorMapping {
     );
 
     public static final Map<Class<? extends Throwable>, String> EXCEPTION_WS_ERROR_TYPE_MAP = Map.ofEntries(
+            // Handle lobby chat errors
             Map.entry(MessageProfanityException.class, "CHAT_ERROR"),
             Map.entry(MessageTooSoonException.class, "CHAT_ERROR"),
+            // Handle general lobby errors
             Map.entry(LobbyNotFoundException.class, "LOBBY_ERROR"),
             Map.entry(LobbyPlayerNotFoundException.class, "LOBBY_ERROR"),
             Map.entry(LobbyFullException.class, "LOBBY_ERROR"),
             Map.entry(LobbyInactiveException.class, "LOBBY_ERROR"),
             Map.entry(InvalidLobbyPublicStatusParameterException.class, "LOBBY_ERROR"),
+            // Handle game errors
+            Map.entry(GameNotFoundException.class, "GAME_ERROR"),
             // Handle DTO field validation errors
             Map.entry(MethodArgumentNotValidException.class, "GENERAL_ERROR")
     );

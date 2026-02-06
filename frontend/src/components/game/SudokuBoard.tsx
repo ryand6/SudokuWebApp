@@ -1,6 +1,6 @@
 import type { PlayerState } from "@/pages/GamePage";
 
-export function SudokuBoard({gameState}: {gameState: PlayerState}) {
+export function SudokuBoard({playerGameState}: {playerGameState: PlayerState}) {
     return (
         <div>
             

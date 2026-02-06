@@ -28,6 +28,10 @@ public class GameStateEntity {
     @Column(name = "current_board_state", nullable = false)
     private String currentBoardState;
 
+    // Each pair of bytes in the array is a bitmask acting as a binary representation of the notes active for that cell
+    @Column(name = "notes", nullable = false)
+    private byte[] notes = new byte[81 * 2];
+
     @Column(name = "score", columnDefinition = "INTEGER DEFAULT 0")
     private Integer score;
 

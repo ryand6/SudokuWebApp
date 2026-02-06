@@ -33,6 +33,7 @@ public class GameStateEntityDtoMapper implements EntityDtoMapper<GameStateEntity
                 .score(gameStateEntity.getScore())
                 .playerColour(gameStateEntity.getPlayerColour())
                 .currentBoardState(gameStateEntity.getCurrentBoardState())
+                .notes(gameStateEntity.getNotes())
                 .build();
     }
 
