@@ -1,5 +1,5 @@
 import { PAGE_SIZE } from "@/hooks/lobby/useGetLobbyChatMessages";
-import type { GameDto } from "@/types/dto/entity/GameDto";
+import type { GameDto } from "@/types/dto/entity/GameDtoRaw";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
 import { QueryClient } from "@tanstack/react-query";
 import { type NavigateFunction } from "react-router-dom";

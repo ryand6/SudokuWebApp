@@ -1,7 +1,6 @@
-import type { SudokuPuzzleDto } from './SudokuPuzzleDto.ts';
-import type { GameStateDto } from './GameStateDto.ts';
-import type { LobbyDto } from './LobbyDto.ts';
-
+import type { GameStateDto } from "./GameStateDto"
+import type { LobbyDto } from "./LobbyDto"
+import type { SudokuPuzzleDto } from "./SudokuPuzzleDto"
 
 export type GameDto = {
     id: number,

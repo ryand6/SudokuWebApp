@@ -1,5 +1,5 @@
-import type { UserDto } from './UserDto';
-import type { PlayerColour } from '../../enum/PlayerColour';
+import type { PlayerColour } from "@/types/enum/PlayerColour"
+import type { UserDto } from "./UserDto"
 
 export type GameStateDto = {
     id: number,
@@ -8,5 +8,6 @@ export type GameStateDto = {
     score: number,
     playerColour: PlayerColour,
     currentBoardState: string,
-    notes: string
+    // 16 bit array representing bitmask of each cell's notes
+    notes: Uint16Array
 }
