@@ -1,6 +1,6 @@
 import type { GameStateDto } from "@/types/dto/entity/GameStateDto";
 import type { GameStateDtoRaw } from "@/types/dto/entity/GameStateDtoRaw";
-import { decodeNotes } from "./decodeNotes";
+import { decodeNotes } from "./noteEncoding";
 import { CELL_COUNT } from "./gameConstants";
 
 export function mapGameState(raw: GameStateDtoRaw): GameStateDto {

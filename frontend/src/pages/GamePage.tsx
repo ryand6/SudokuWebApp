@@ -9,10 +9,11 @@ import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { setupPlayerGameStates } from "@/utils/game/setupPlayerGameStates";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { mapBoardToBlocks } from "@/utils/game/blockUtils";
 
 export type CellState = {
-  value: number | null;
-  notes: number;
+    value: string | undefined;
+    notes: number;
 };
 
 export type BoardState = CellState[][];
@@ -52,17 +53,28 @@ export function GamePage() {
     //useValidateLobbyUser(gameData, currentUser, leaveGameHandler.isLeaving);
 
     useEffect(() => {
-        // CREATE FUNCTION - calls setGameState, filling the nested array with the values and notes from the server data for the current player
-        setupPlayerGameStates(gameData, currentUser, setPlayerGameState, setRivalPlayerGameStates);
-
+        // Calls setGameState, filling the nested array with the values and notes from the server data for the current player
+        try {
+            setupPlayerGameStates(gameData, currentUser, setPlayerGameState, setRivalPlayerGameStates);
+        } catch (error) {
+            console.log("Error setting up player game states: ", error);
+        }
     }, [gameData, currentUser, setPlayerGameState, setRivalPlayerGameStates]);
 
 
     if (isGameLoading || isCurrentUserLoading) return <SpinnerButton />;
 
     console.log("GAME DATA: ", gameData);
+
+    console.log("Current Player State: ", playerGameState);
+
+    console.log("Rival Player States: ", rivalPlayerGameStates);
     
     if (!gameData || !currentUser || !playerGameState || !rivalPlayerGameStates) return null;
+
+
+    // Get array of blocks
+    const sudokuBlocks: CellState[][] = mapBoardToBlocks(playerGameState.boardState);
 
     return (
         <div>
