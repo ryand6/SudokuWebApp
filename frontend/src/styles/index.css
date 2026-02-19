@@ -127,14 +127,18 @@
   /*
     Define custom animations
   */ 
-  --animate-fill-cell: fill-cell 400ms ease-in-out 1;
+  --animate-fill-cell: fill-cell 500ms ease-in-out 1;
 
   @keyframes fill-cell {
     50% {
-        transform: scale(2);
+        transform: scale(1.5);
         z-index: 100;
         color: #d4af37;
+        font-size: 20px;
         font-weight: bold;
+        border-style: inset;
+        border-width: 10px;
+        border-color: #d4af37
     }
     100% {
       transform: none;

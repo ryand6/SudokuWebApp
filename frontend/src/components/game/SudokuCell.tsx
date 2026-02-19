@@ -1,13 +1,13 @@
 import React from "react";
 
-const SudokuCell = React.memo(function SudokuCell({row, col, index, value, notes, className}: {row: number, col: number, index: number, value: string | undefined, notes: number, className: string}) {
+const SudokuCell = React.memo(function SudokuCell({row, col, value, notes, className}: {row: number, col: number, value: string | undefined, notes: number, className: string}) {
     return (
         <div 
             className={`w-full h-full flex items-center justify-center 
                         text-xl font-semibold cursor-pointer box-border
-                        animate-fill-cell text-primary-foreground bg-primary-foreground
+                        animate-fill-cell bg-primary-foreground
                         ${className}`}
-            style={{ animationDelay: `${(3 * row + 3 * col) * 100}ms`}}
+            style={{ animationDelay: `${(row + col) * 400}ms`}}
         >
             <span>
                 {value ? value : null}

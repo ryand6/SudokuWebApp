@@ -18,7 +18,6 @@ export function SudokuBoard({playerGameState}: {playerGameState: PlayerState}) {
                         return (
                             <SudokuCell 
                                 key={`${r}-${c}`}
-                                index={(r * 8) + c}
                                 row={r} 
                                 col={c} 
                                 value={cell.value}
