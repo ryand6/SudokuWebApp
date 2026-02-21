@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.controllers.rest;
 
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
-import com.github.ryand6.sudokuweb.exceptions.GamePlayerNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.GameService;
 import com.github.ryand6.sudokuweb.services.MembershipCheckService;
 import jakarta.validation.Valid;

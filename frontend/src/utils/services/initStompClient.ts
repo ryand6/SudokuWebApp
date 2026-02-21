@@ -6,7 +6,9 @@ import { resetWebSocketConnection } from "@/services/websocket/resetWebSocketCon
 export async function initStompClient(
     socket: WebSocket,
     clientRef: React.RefObject<Client | null>,
-    handleConnect: () => void
+    handleConnect: () => void,
+    handleDisconnect: () => void,
+    handleWebSocketClose: () => void,
 ): Promise<void> {
     
     // Get Xor encoded csrf token from the backend - xor encoded token is required for Spring Security websocket connections
@@ -14,6 +16,7 @@ export async function initStompClient(
     if (csrfTokenData === null) {
         console.warn("Missing CSRF token, cannot initialize STOMP client.");
         alert("We couldn’t establish a secure connection. Please refresh the page.");
+        return;
     }
 
     const handleStompError = (frame: IFrame) => {
@@ -24,10 +27,7 @@ export async function initStompClient(
     
     try {
         // Create a new STOMP client that will use the SockJS socket
-        clientRef.current = stompClientFactory(socket, csrfTokenData, handleStompError, handleConnect);
-
-        // Attempt to reconnect every 1s if connection drops
-        clientRef.current.reconnectDelay = 1000;
+        clientRef.current = stompClientFactory(socket, csrfTokenData, handleStompError, handleConnect, handleDisconnect, handleWebSocketClose);
         
         clientRef.current.onStompError = handleStompError;
 

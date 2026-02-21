@@ -1,31 +1,18 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
-import com.github.ryand6.sudokuweb.exceptions.*;
+import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyFullException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyInactiveException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.token.InvalidTokenException;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.services.LobbyService;
 import com.github.ryand6.sudokuweb.services.UserService;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Stream;
-
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
 
 public class LobbyRestControllerIntegrationTests extends AbstractControllerIntegrationTests {
 

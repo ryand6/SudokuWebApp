@@ -1,16 +1,20 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
 import { initWebSocket } from "../utils/services/initWebSocket";
 import { initStompClient } from "../utils/services/initStompClient";
 import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates";
 import { useQueryClient } from "@tanstack/react-query";
 import { subscribeUserErrors } from "@/services/websocket/subscribeUserErrors";
+import { useHandleUnmount } from "@/hooks/ws/useHandleUnmount";
+import { useHandleLobbyWsSubscription } from "@/hooks/lobby/useHandleLobbyWsSubscription";
+import { useHandleUnload } from "@/hooks/ws/useHandleUnload";
 
 export type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;
     unsubscribe: (topic: string) => void;
     send: (destination: string, body: any) => void;
+    isConnected: boolean
 }
 
 export type StompSubscriptionDetails = {
@@ -29,16 +33,30 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     const subscriptionsRef = useRef<Map<string, StompSubscriptionDetails>>(new Map());
     const pendingQueueRef = useRef<Array<{ topic: string; callback: (body: any) => void }>>([]);
 
+    const [isConnected, setIsConnected] = useState(false);
+
     const queryClient = useQueryClient();
+
+    const handleDisconnect = () => {
+        setIsConnected(false);
+    }
+
+    const handleWebSocketClose = () => {
+        setIsConnected(false);
+    }
+
+    // Disconnect if component unmounts
+    useHandleUnmount(clientRef);
+
+    // Disconnects if browser/tab is closed
+    useHandleUnload(clientRef);
 
     // Effect handles socket lifecycle - exists whilst there is an authenticated session
     useEffect(() => {
         if (!currentUser) {
-            // don't create websocket connection until user is authenticated
             return;
         }
 
-        // Only want to set up socket and stomp client if stomp client doesn't already exist
         if (clientRef.current) return;
         const socket = initWebSocket();
 
@@ -47,7 +65,9 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         // - subscriptionsRef contains ONLY dynamic subscriptions that must survive reconnects
         const handleConnect = () => {
 
-            // System level subscriptions that are resubscribed every reconnect
+            setIsConnected(true);
+
+            // System level subscriptions resubscribed every reconnect
             subscribeUserUpdates(queryClient, clientRef);
             subscribeUserErrors(clientRef);
 
@@ -67,7 +87,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
             pendingQueueRef.current = [];
         }
 
-        initStompClient(socket, clientRef, handleConnect);
+        initStompClient(socket, clientRef, handleConnect, handleDisconnect, handleWebSocketClose);
 
         // Cleanup if user logs out
         return () => {
@@ -103,7 +123,6 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     };
 
     const unsubscribe = (topic: string) => {
-        // If the topic has been subscribed to by the user, unsubscribe and remove from the tracking Maps
         const subscriptionDetails = subscriptionsRef.current.get(topic);
         if (subscriptionDetails) {
             subscriptionDetails.subscription.unsubscribe();
@@ -119,8 +138,8 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     };
 
     return (
-        // Provide the subscribe, unsubscribe, and send methods as context to the rest of app via useContext
-        <WebSocketContext.Provider value={{ subscribe, unsubscribe, send }}>
+        // Provide the subscribe, unsubscribe, and send methods to the rest of app via useContext
+        <WebSocketContext.Provider value={{ subscribe, unsubscribe, send, isConnected }}>
             {children}
         </WebSocketContext.Provider>
     );

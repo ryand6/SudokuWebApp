@@ -1,7 +1,15 @@
 package com.github.ryand6.sudokuweb.controllers.handlers;
 
-import com.github.ryand6.sudokuweb.exceptions.*;
-import jakarta.validation.ConstraintViolationException;
+import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
+import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.*;
+import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.token.InvalidTokenException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.token.TokenNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 

@@ -4,7 +4,7 @@ import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.dto.response.TopFivePlayersDto;
 import com.github.ryand6.sudokuweb.dto.response.UserRankDto;
-import com.github.ryand6.sudokuweb.exceptions.OAuth2LoginRequiredException;
+import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.services.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import jakarta.validation.Valid;

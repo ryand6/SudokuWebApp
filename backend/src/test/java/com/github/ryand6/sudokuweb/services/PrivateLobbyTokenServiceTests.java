@@ -2,9 +2,9 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.dto.TokenIdentifiers;
 import com.github.ryand6.sudokuweb.dto.response.UserActiveTokensDto;
-import com.github.ryand6.sudokuweb.exceptions.InvalidTokenException;
-import com.github.ryand6.sudokuweb.exceptions.MaxActiveTokenException;
-import com.github.ryand6.sudokuweb.exceptions.TokenNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.token.InvalidTokenException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.token.MaxActiveTokenException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.token.TokenNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

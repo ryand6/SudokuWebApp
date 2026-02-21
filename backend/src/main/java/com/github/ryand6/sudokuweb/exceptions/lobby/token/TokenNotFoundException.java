@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.exceptions;
+package com.github.ryand6.sudokuweb.exceptions.lobby.token;
 
 public class TokenNotFoundException extends RuntimeException {
     public TokenNotFoundException(String message) {

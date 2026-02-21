@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.exceptions;
+package com.github.ryand6.sudokuweb.exceptions.game;
 
 public class TooManyActivePlayersException extends RuntimeException {
 

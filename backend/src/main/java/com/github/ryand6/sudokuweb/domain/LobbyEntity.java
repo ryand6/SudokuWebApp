@@ -3,7 +3,7 @@ package com.github.ryand6.sudokuweb.domain;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
-import com.github.ryand6.sudokuweb.exceptions.LobbyHostNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyHostNotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

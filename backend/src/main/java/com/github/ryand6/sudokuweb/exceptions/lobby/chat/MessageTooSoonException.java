@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.exceptions;
+package com.github.ryand6.sudokuweb.exceptions.lobby.chat;
 
 public class MessageTooSoonException extends RuntimeException {
     private final Long secondsRemaining;
