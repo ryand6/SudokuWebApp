@@ -7,7 +7,6 @@ import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates"
 import { useQueryClient } from "@tanstack/react-query";
 import { subscribeUserErrors } from "@/services/websocket/subscribeUserErrors";
 import { useHandleUnmount } from "@/hooks/ws/useHandleUnmount";
-import { useHandleLobbyWsSubscription } from "@/hooks/lobby/useHandleLobbyWsSubscription";
 import { useHandleUnload } from "@/hooks/ws/useHandleUnload";
 
 export type WebSocketContextType = {
@@ -45,10 +44,8 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         setIsConnected(false);
     }
 
-    // Disconnect if component unmounts
     useHandleUnmount(clientRef);
 
-    // Disconnects if browser/tab is closed
     useHandleUnload(clientRef);
 
     // Effect handles socket lifecycle - exists whilst there is an authenticated session

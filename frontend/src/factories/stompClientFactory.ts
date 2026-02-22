@@ -1,4 +1,4 @@
-import { Client, type IFrame } from "@stomp/stompjs";
+import { Client, ReconnectionTimeMode, type IFrame } from "@stomp/stompjs";
 import type { CsrfResponseData } from "../types/dto/auth/CsrfResponseData";
 
 
@@ -14,9 +14,12 @@ export function stompClientFactory(
     return new Client({
         // Tells STOMP to use our SockJS instance
         webSocketFactory: () => socket,
-        // Auto-reconnect after 1 second if connection drops
-        reconnectDelay: 1000,
-        // Send heartbeat to backend every 10secs to confirm connection is alive
+        // Auto-reconnect starts at 500ms (plus jitter to hedge against thundering herd problem)
+        reconnectDelay: 500 + (Math.random() * 500),
+        // Each time reconnect occurs without successful connection, double the reconnectDelay
+        reconnectTimeMode: ReconnectionTimeMode.EXPONENTIAL,
+        maxReconnectDelay: 10000,
+        // Send heartbeat to backend every 10 secs to confirm connection is alive
         heartbeatOutgoing: 10000,
         // Expect to receive heartbeat from backend every 10 secs
         heartbeatIncoming: 10000,

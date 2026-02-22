@@ -17,10 +17,6 @@ public class RestExceptionHandler {
     // catches all Controller thrown exceptions
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorDto> handleAllExceptions(Exception ex) {
-        if (ex.getClass().isInstance(ObjectOptimisticLockingFailureException.class)) {
-            HttpStatus status = HttpStatus.CONFLICT;
-            ApiErrorDto error = new ApiErrorDto("")
-        }
         HttpStatus status = ErrorMapping.EXCEPTION_HTTP_STATUS_MAP.getOrDefault(ex.getClass(), HttpStatus.BAD_REQUEST);
         ApiErrorDto error = new ApiErrorDto(ex.getMessage());
         return ResponseEntity.status(status).body(error);

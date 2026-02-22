@@ -1,8 +1,8 @@
 import type { Client } from "@stomp/stompjs";
 import { useEffect, type RefObject } from "react";
 
+// Disconnects if browser/tab is closed
 export function useHandleUnload(clientRef: RefObject<Client | null>) {
-    // Disconnects if browser/tab is closed
     useEffect(() => {
         const handleUnload = () => {
             clientRef.current?.deactivate;
