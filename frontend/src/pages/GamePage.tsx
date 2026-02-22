@@ -5,10 +5,11 @@ import { useValidateGameId } from "@/hooks/game/useValidateGameId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetGame } from "@/api/rest/game/query/useGetGame";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
-import { setupPlayerGameStates } from "@/utils/game/setupPlayerGameStates";
+import { setupPlayerGameStates } from "@/utils/game/normaliseGameState";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { mapBoardToBlocks } from "@/utils/game/blockUtils";
+import type { CellState } from "@/types/game/GameTypes";
 
 export function GamePage() {
 
@@ -28,7 +29,7 @@ export function GamePage() {
 
 
     // CREATE FUNCTION - gets game data from server, includes game state data for each player
-    const {data: gameData, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
+    const {data: gameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
 
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
 
@@ -40,34 +41,20 @@ export function GamePage() {
     // IMPLEMENT leaveGameHandler
     //useValidateLobbyUser(gameData, currentUser, leaveGameHandler.isLeaving);
 
-    useEffect(() => {
-        // Calls setGameState, filling the nested array with the values and notes from the server data for the current player
-        try {
-            setupPlayerGameStates(gameData, currentUser, setPlayerGameState, setRivalPlayerGameStates);
-        } catch (error) {
-            console.log("Error setting up player game states: ", error);
-        }
-    }, [gameData, currentUser, setPlayerGameState, setRivalPlayerGameStates]);
-
-
     if (isGameLoading || isCurrentUserLoading) return <SpinnerButton />;
 
-    console.log("GAME DATA: ", gameData);
-
-    console.log("Current Player State: ", playerGameState);
-
-    console.log("Rival Player States: ", rivalPlayerGameStates);
+    console.log("GAME DATA: ", gameState);
     
-    if (!gameData || !currentUser || !playerGameState || !rivalPlayerGameStates) return null;
+    if (!gameState || !currentUser) return null;
 
 
     // Get array of blocks
-    const sudokuBlocks: CellState[][] = mapBoardToBlocks(playerGameState.boardState);
+    const sudokuBlocks: CellState[][] = mapBoardToBlocks(gameState.gameStates[currentUser.id]);
 
     return (
         <div>
             GAME PAGE
-            <SudokuBoard playerGameState={playerGameState} />
+            <SudokuBoard playerGameState={gameState.gameStates[currentUser.id]} />
         </div>
     )
 }
