@@ -1,4 +1,4 @@
-import { useGetLobbyChatMessages } from "@/hooks/lobby/useGetLobbyChatMessages"
+import { useGetLobbyChatMessages } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages"
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";

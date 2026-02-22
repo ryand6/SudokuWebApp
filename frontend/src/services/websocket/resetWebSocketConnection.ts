@@ -1,4 +1,4 @@
-import { getCsrfToken } from "@/api/rest/csrf/getCsrfToken";
+import { getCsrfToken } from "@/api/rest/csrf/query/getCsrfToken";
 import { stompClientFactory } from "@/factories/stompClientFactory";
 import { initWebSocket } from "@/utils/services/initWebSocket";
 import type { Client, Frame } from "@stomp/stompjs";

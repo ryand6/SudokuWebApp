@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
-import { useGetUserRank } from "../hooks/users/useGetUserRank";
-import { useGetTopFivePlayers } from "../hooks/users/useGetTopFivePlayers";
+import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
+import { useGetUserRank } from "../api/rest/users/query/useGetUserRank";
+import { useGetTopFivePlayers } from "../api/rest/users/query/useGetTopFivePlayers";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/custom/Modal";

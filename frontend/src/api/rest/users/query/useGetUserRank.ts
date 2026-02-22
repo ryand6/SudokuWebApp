@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getUserRank } from "../../api/rest/users/getUserRank";
-import type { UserRankDto } from "../../types/dto/response/UserRankDto";
+import { getUserRank } from "./getUserRank";
+import type { UserRankDto } from "../../../../types/dto/response/UserRankDto";
 
 export function useGetUserRank() {
     return useQuery<UserRankDto, Error>({

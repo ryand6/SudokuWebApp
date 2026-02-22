@@ -1,4 +1,4 @@
-import { getGame } from "@/api/rest/game/getGame";
+import { getGame } from "@/api/rest/game/query/getGame";
 import type { GameDto } from "@/types/dto/entity/GameDto";
 import { useQuery } from "@tanstack/react-query";
 

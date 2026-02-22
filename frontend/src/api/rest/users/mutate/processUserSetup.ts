@@ -1,10 +1,10 @@
-import { backendValidationErrors } from "../../../utils/error/backendValidationErrors";
-import { getCsrfTokenFromCookie } from "../../../utils/auth/csrf";
+import { backendValidationErrors } from "../../../../utils/error/backendValidationErrors";
+import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
-export async function processUserAmend(username: string): Promise<void> {
+export async function processUserSetup(username: string): Promise<void> {
     try {
-        const response = await fetch("/api/users/process-user-amend", {
+        const response = await fetch("/api/users/process-user-setup", {
             method: "POST",
             credentials: "include",
             headers: { 

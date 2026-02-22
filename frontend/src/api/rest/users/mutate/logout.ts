@@ -1,6 +1,6 @@
-import { getCsrfTokenFromCookie } from "../../../utils/auth/csrf";
+import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 
-export async function userLogout() {
+export async function logout() {
     const response = await fetch("/logout", {
         method: "POST",
         credentials: "include",

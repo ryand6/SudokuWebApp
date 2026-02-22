@@ -1,4 +1,4 @@
-import { getTenPublicLobbies } from "@/api/rest/lobby/getTenPublicLobbies";
+import { getTenPublicLobbies } from "@/api/rest/lobby/query/getTenPublicLobbies";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 const PAGE_SIZE = 10;

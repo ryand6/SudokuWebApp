@@ -1,6 +1,6 @@
 import { Client, type IFrame } from "@stomp/stompjs";
 import { stompClientFactory } from "../../factories/stompClientFactory";
-import { getCsrfToken } from "../../api/rest/csrf/getCsrfToken";
+import { getCsrfToken } from "../../api/rest/csrf/query/getCsrfToken";
 import { resetWebSocketConnection } from "@/services/websocket/resetWebSocketConnection";
 
 export async function initStompClient(

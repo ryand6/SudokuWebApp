@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { handleUserFetchError } from "../errors/handleUserFetchError";
-import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
+import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
 import { useEffect } from "react";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 

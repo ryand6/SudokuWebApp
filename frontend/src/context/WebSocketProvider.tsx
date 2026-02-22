@@ -1,6 +1,6 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
+import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
 import { initWebSocket } from "../utils/services/initWebSocket";
 import { initStompClient } from "../utils/services/initStompClient";
 import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates";

@@ -1,4 +1,4 @@
-import { PAGE_SIZE } from "@/hooks/lobby/useGetLobbyChatMessages";
+import { PAGE_SIZE } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages";
 import type { GameDto } from "@/types/dto/entity/GameDtoRaw";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
 import { QueryClient } from "@tanstack/react-query";

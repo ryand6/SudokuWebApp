@@ -1,4 +1,4 @@
-import { getLobby } from "@/api/rest/lobby/getLobby";
+import { getLobby } from "@/api/rest/lobby/query/getLobby";
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { useQuery } from "@tanstack/react-query";
 

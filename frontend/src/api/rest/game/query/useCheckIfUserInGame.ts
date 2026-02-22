@@ -1,4 +1,4 @@
-import { checkIfUserInGame } from "@/api/rest/game/checkIfUserInGame";
+import { checkIfUserInGame } from "@/api/rest/game/query/checkIfUserInGame";
 import type { GameDto } from "@/types/dto/entity/GameDto";
 import { useQuery } from "@tanstack/react-query";
 

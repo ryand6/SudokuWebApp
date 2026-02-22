@@ -3,27 +3,12 @@ import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { useHandleGetGameError } from "@/hooks/game/useHandleGetGameError";
 import { useValidateGameId } from "@/hooks/game/useValidateGameId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
-import { useGetGame } from "@/hooks/game/useGetGame";
-import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
-import type { PlayerColour } from "@/types/enum/PlayerColour";
+import { useGetGame } from "@/api/rest/game/query/useGetGame";
+import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { setupPlayerGameStates } from "@/utils/game/setupPlayerGameStates";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { mapBoardToBlocks } from "@/utils/game/blockUtils";
-
-export type CellState = {
-    value: string | undefined;
-    notes: number;
-};
-
-export type BoardState = CellState[][];
-
-export type PlayerState = {
-    id: number,
-    name: string,
-    colour: PlayerColour,
-    boardState: BoardState
-};
 
 export function GamePage() {
 
@@ -33,11 +18,14 @@ export function GamePage() {
 
     useValidateGameId(gameIdNum);
 
-    // Store game state for current player
-    const [playerGameState, setPlayerGameState] = useState<PlayerState>();
 
-    // Store game state for all rival players
-    const [rivalPlayerGameStates, setRivalPlayerGameStates] = useState<PlayerState[]>();
+    // REMOVE!
+    // // Store game state for current player
+    // const [playerGameState, setPlayerGameState] = useState<PlayerState>();
+    // // Store game state for all rival players
+    // const [rivalPlayerGameStates, setRivalPlayerGameStates] = useState<PlayerState[]>();
+
+
 
     // CREATE FUNCTION - gets game data from server, includes game state data for each player
     const {data: gameData, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type UpdateLobbyPlayerStatusDto } from "@/types/dto/request/UpdateLobbyPlayerStatusDto";
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
-import { updateLobbyPlayerStatus } from "@/api/rest/lobby/updateLobbyPlayerStatus";
+import { updateLobbyPlayerStatus } from "@/api/rest/lobby/mutate/updateLobbyPlayerStatus";
 import { toast } from "react-toastify";
 
 export function useUpdateLobbyPlayerStatus() {

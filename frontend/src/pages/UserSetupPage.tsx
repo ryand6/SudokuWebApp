@@ -1,5 +1,5 @@
 import { type JSX } from "react";
-import { processUserSetup } from "../api/rest/users/processUserSetup";
+import { processUserSetup } from "../api/rest/users/mutate/processUserSetup";
 import { useNavigate } from "react-router-dom";
 import { UserForm } from "../components/users/UserForm";
 

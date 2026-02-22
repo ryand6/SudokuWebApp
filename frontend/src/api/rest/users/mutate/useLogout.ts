@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { userLogout } from "../api/rest/users/userLogout";
+import { logout } from "./logout";
 import { useNavigate } from "react-router-dom";
 
 export function useLogout() {
@@ -7,7 +7,7 @@ export function useLogout() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: userLogout,
+    mutationFn: logout,
     onSuccess: () => {
       // Invalidate the "currentUser" query so the cache is cleared
       queryClient.setQueryData(["currentUser"], null);

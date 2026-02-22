@@ -1,4 +1,4 @@
-import { requestJoinCode } from "@/api/rest/lobby/requestJoinCode";
+import { requestJoinCode } from "@/api/rest/lobbytoken/mutate/requestJoinCode";
 import type { RequestLobbyTokenDto } from "@/types/dto/request/RequestLobbyTokenDto";
 import type { UserActiveTokensDto } from "@/types/dto/response/UserActiveTokensDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
-import { useJoinPrivateLobby } from "@/hooks/lobby/useJoinPrivateLobby";
+import { useJoinPrivateLobby } from "@/api/rest/lobby/mutate/useJoinPrivateLobby";
 import { useValidatePrivateLobbyToken } from "@/hooks/lobby/useValidatePrivateLobbyToken";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";

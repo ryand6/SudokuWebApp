@@ -1,14 +1,14 @@
-import { updateLobbyTimeLimit } from "@/api/rest/lobby/updateLobbyLimitLimit";
+import { updateLobbyDifficulty } from "@/api/rest/lobby/mutate/updateLobbyDifficulty";
+import type { UpdateLobbyDifficultyDto } from "@/types/dto/request/UpdateLobbyDifficultyDto"
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
-import type { UpdateLobbyTimeLimitDto } from "@/types/dto/request/UpdateLobbyTimeLimitDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-export function useUpdateLobbyTimeLimit() {
+export function useUpdateLobbyDifficulty() {
     const queryClient = useQueryClient();
 
-    return useMutation<LobbyDto, Error, UpdateLobbyTimeLimitDto>({
-        mutationFn: ({lobbyId, userId, timeLimit}) => updateLobbyTimeLimit(lobbyId, userId, timeLimit),
+    return useMutation<LobbyDto, Error, UpdateLobbyDifficultyDto>({
+        mutationFn: ({lobbyId, userId, difficulty}) => updateLobbyDifficulty(lobbyId, userId, difficulty),
         onSuccess: (updatedLobby, variables) => {
             const lobbyId = variables.lobbyId;
             queryClient.setQueryData(["lobby", lobbyId], updatedLobby);

@@ -6,7 +6,7 @@ import { renderWithRouterAndContext } from "../../setupTests";
 import { QueryClient, type UseQueryResult } from "@tanstack/react-query";
 import type { ScoreDto } from "../../types/dto/entity/ScoreDto";
 import type { UserDto } from "../../types/dto/entity/UserDto";
-import * as currentUserHook from '../../hooks/users/useGetCurrentUser';
+import * as currentUserHook from '../../api/rest/users/query/useGetCurrentUser';
 import * as wsUtils from '../../utils/services/initWebSocket';
 import * as stompUtils from '../../utils/services/initStompClient';
 

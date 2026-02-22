@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { useJoinPrivateLobby } from "@/hooks/lobby/useJoinPrivateLobby";
+import { useJoinPrivateLobby } from "@/api/rest/lobby/mutate/useJoinPrivateLobby";
 
 export function PrivateLobbyJoinModalPane() {
 

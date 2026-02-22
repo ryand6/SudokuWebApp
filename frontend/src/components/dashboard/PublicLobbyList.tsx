@@ -1,11 +1,11 @@
-import { useGetTenPublicLobbies } from "@/hooks/lobby/useGetTenPublicLobbies";
+import { useGetTenPublicLobbies } from "@/api/rest/lobby/query/useGetTenPublicLobbies";
 import { SpinnerButton } from "../ui/custom/SpinnerButton";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { useInView } from "react-intersection-observer";
 import { LobbyResultRow } from "../lobby/LobbyResultRow";
-import { useJoinPublicLobby } from "@/hooks/lobby/useJoinPublicLobby";
+import { useJoinPublicLobby } from "@/api/rest/lobby/mutate/useJoinPublicLobby";
 import { Button } from "../ui/button";
-import { useGetCurrentUser } from "@/hooks/users/useGetCurrentUser";
+import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { toast } from "react-toastify";
 import { useHandleFetchNextLobbyListPage } from "@/hooks/lobby/useHandleFetchNextLobbyListPage";
 

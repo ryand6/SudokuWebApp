@@ -1,4 +1,4 @@
-import type { UserDto } from "../../../types/dto/entity/UserDto";
+import type { UserDto } from "../../../../types/dto/entity/UserDto";
 
 
 export async function getCurrentUser(): Promise<UserDto> {

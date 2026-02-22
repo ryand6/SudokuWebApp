@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useGetCurrentUser } from "../hooks/users/useGetCurrentUser";
+import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
 import { handleUserFetchError } from "../errors/handleUserFetchError";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 
