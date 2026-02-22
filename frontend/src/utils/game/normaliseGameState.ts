@@ -21,6 +21,8 @@ export function normaliseGameState(
         gameStates[gs.user.id] = fillBoardState(gs);
     });
 
+    playerIds.sort();
+
     const gameState: GameState = {
         gameId: gameData.id,
         playerIds: playerIds,

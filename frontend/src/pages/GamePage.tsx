@@ -5,8 +5,6 @@ import { useValidateGameId } from "@/hooks/game/useValidateGameId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetGame } from "@/api/rest/game/query/useGetGame";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
-import { setupPlayerGameStates } from "@/utils/game/normaliseGameState";
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { mapBoardToBlocks } from "@/utils/game/blockUtils";
 import type { CellState } from "@/types/game/GameTypes";
@@ -18,15 +16,6 @@ export function GamePage() {
     const gameIdNum = gameId ? Number(gameId) : NaN;
 
     useValidateGameId(gameIdNum);
-
-
-    // REMOVE!
-    // // Store game state for current player
-    // const [playerGameState, setPlayerGameState] = useState<PlayerState>();
-    // // Store game state for all rival players
-    // const [rivalPlayerGameStates, setRivalPlayerGameStates] = useState<PlayerState[]>();
-
-
 
     // CREATE FUNCTION - gets game data from server, includes game state data for each player
     const {data: gameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
@@ -48,7 +37,7 @@ export function GamePage() {
     if (!gameState || !currentUser) return null;
 
 
-    // Get array of blocks
+    // map board to sudoku blocks 
     const sudokuBlocks: CellState[][] = mapBoardToBlocks(gameState.gameStates[currentUser.id]);
 
     return (
