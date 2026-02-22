@@ -428,7 +428,7 @@ public class LobbyServiceTests {
         when(lobbyRepository.findById(any(Long.class))).thenReturn(Optional.of(lobby));
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(null);
 
-        LobbyDto result = lobbyService.getLobbyById(1L);
+        LobbyDto result = lobbyService.getLobbyDtoById(1L);
 
         assertThat(result).isEqualTo(null);
     }
@@ -443,7 +443,7 @@ public class LobbyServiceTests {
 
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(lobbyDto);
 
-        LobbyDto result = lobbyService.getLobbyById(1L);
+        LobbyDto result = lobbyService.getLobbyDtoById(1L);
 
         assertThat(result).isEqualTo(lobbyDto);
     }
@@ -455,7 +455,7 @@ public class LobbyServiceTests {
         when(lobbyRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         LobbyNotFoundException ex = assertThrows(LobbyNotFoundException.class, () -> {
-            lobbyService.getLobbyById(1L);
+            lobbyService.getLobbyDtoById(1L);
         });
 
         Assertions.assertEquals("Lobby with ID 1 does not exist", ex.getMessage());

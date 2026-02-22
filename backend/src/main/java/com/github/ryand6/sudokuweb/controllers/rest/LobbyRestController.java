@@ -73,7 +73,7 @@ public class LobbyRestController {
     // Get lobby DTO using lobbyId
     @GetMapping("/get-lobby")
     public ResponseEntity<?> getLobby(@RequestParam Long lobbyId) {
-        LobbyDto lobbyDto = lobbyService.getLobbyById(lobbyId);
+        LobbyDto lobbyDto = lobbyService.getLobbyDtoById(lobbyId);
         return ResponseEntity.ok(lobbyDto);
     }
 

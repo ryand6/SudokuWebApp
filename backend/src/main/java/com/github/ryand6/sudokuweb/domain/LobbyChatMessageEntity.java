@@ -46,6 +46,7 @@ public class LobbyChatMessageEntity {
     private String message;
 
     @Column(name = "message_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private MessageType messageType;
 
 }

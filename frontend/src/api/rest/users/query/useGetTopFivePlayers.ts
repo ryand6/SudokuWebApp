@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTopFivePlayers } from "../../api/rest/users/getTopFivePlayers";
 import type { TopFivePlayersDto } from "../../../../types/dto/response/TopFivePlayersDto";
+import { getTopFivePlayers } from "./getTopFivePlayers";
 
 export function useGetTopFivePlayers() {
     return useQuery<TopFivePlayersDto, Error>({

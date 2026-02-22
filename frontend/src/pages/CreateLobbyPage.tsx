@@ -1,4 +1,4 @@
-import { processLobbySetup } from "@/api/rest/lobby/processLobbySetup";
+import { processLobbySetup } from "@/api/rest/lobby/mutate/processLobbySetup";
 import { Button } from "@/components/ui/button";
 import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";

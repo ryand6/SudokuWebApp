@@ -6,6 +6,8 @@ import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.settings.InvalidLobbyPublicStatusParameterException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.token.InvalidTokenException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.token.TokenNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
@@ -24,6 +26,7 @@ public class ErrorMapping {
             Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
+            Map.entry(LobbySettingsLockedException.class, HttpStatus.CONFLICT),
             Map.entry(UsernameTakenException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyInactiveException.class, HttpStatus.GONE),
             Map.entry(OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED),
@@ -43,6 +46,7 @@ public class ErrorMapping {
             Map.entry(LobbyPlayerNotFoundException.class, "LOBBY_ERROR"),
             Map.entry(LobbyFullException.class, "LOBBY_ERROR"),
             Map.entry(LobbyInactiveException.class, "LOBBY_ERROR"),
+            Map.entry(LobbySettingsLockedException.class, "LOBBY_ERROR"),
             Map.entry(InvalidLobbyPublicStatusParameterException.class, "LOBBY_ERROR"),
             // Handle game errors
             Map.entry(GameNotFoundException.class, "GAME_ERROR"),

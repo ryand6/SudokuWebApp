@@ -1,8 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
@@ -14,8 +12,11 @@ import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyInactiveException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.UserExistsInActiveLobbyException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
+import com.github.ryand6.sudokuweb.repositories.LobbyCountdownRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import com.github.ryand6.sudokuweb.repositories.LobbySettingsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -61,18 +62,23 @@ public class LobbyService {
         if (isUserInActiveLobby.isPresent()) {
             throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
         }
+
         LobbyEntity newLobby = new LobbyEntity();
-        // One of these must be true or there is an error with the parameters
-        if (Boolean.TRUE.equals(isPublic)) {
-            newLobby.setIsPublic(true);
-        } else if (Boolean.FALSE.equals(isPublic)) {
-            newLobby.setIsPublic(false);
-        }
         UserEntity requester = userService.findUserById(requesterId);
         newLobby.setLobbyName(lobbyName);
         // requester of lobby creation becomes the host
         newLobby.setHost(requester);
-        newLobby.setIsActive(true);
+
+        LobbySettingsEntity lobbySettings = new LobbySettingsEntity();
+        lobbySettings.setPublic(isPublic);
+        newLobby.setLobbySettingsEntity(lobbySettings);
+        lobbySettings.setLobbyEntity(newLobby);
+
+        LobbyCountdownEntity lobbyCountdown = new LobbyCountdownEntity();
+        newLobby.setLobbyCountdownEntity(lobbyCountdown);
+        lobbyCountdown.setLobbyEntity(newLobby);
+
+        newLobby.setActive(true);
         // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
         lobbyRepository.saveAndFlush(newLobby);
         addPlayerToLobby(newLobby, requester);
@@ -99,8 +105,8 @@ public class LobbyService {
         if (isUserInActiveLobby.isPresent()) {
             throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
         }
-        // Retrieve lobby
-        LobbyEntity lobby = findAndLockLobby(publicLobbyId);
+        // ADD RETRY LOGIC
+        LobbyEntity lobby = getLobbyById(publicLobbyId);
         // Validate lobby state
         validateLobbyForJoining(lobby, publicLobbyId);
         // Add user to lobby
@@ -122,7 +128,8 @@ public class LobbyService {
         }
         // Determine lobby ID and retrieve lobby
         Long lobbyId = resolvePrivateLobbyId(token);
-        LobbyEntity lobby = findAndLockLobby(lobbyId);
+        // ADD RETRY LOGIC
+        LobbyEntity lobby = getLobbyById(lobbyId);
         // Validate lobby state
         validateLobbyForJoining(lobby, lobbyId);
         // Add user to lobby
@@ -136,15 +143,15 @@ public class LobbyService {
         return privateLobbyTokenService.joinPrivateLobbyWithToken(token);
     }
 
-    // Get lobby and lock it from concurrent editing
-    public LobbyEntity findAndLockLobby(Long lobbyId) {
-        return lobbyRepository.findByIdForUpdate(lobbyId)
-                .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist"));
-    }
+//    // Get lobby and lock it from concurrent editing
+//    public LobbyEntity findAndLockLobby(Long lobbyId) {
+//        return lobbyRepository.findByIdForUpdate(lobbyId)
+//                .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist"));
+//    }
 
     // Ensure when attempting to join lobby that it is active and not full
     private void validateLobbyForJoining(LobbyEntity lobby, Long lobbyId) {
-        if (!lobby.getIsActive()) {
+        if (!lobby.isActive()) {
             throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active");
         }
         if (lobby.getLobbyPlayers().size() >= LOBBY_SIZE) {
@@ -160,29 +167,34 @@ public class LobbyService {
 
     @Transactional
     public LobbyDto updateLobbyDifficulty(Long lobbyId, Difficulty difficulty) {
-        // Retrieve lobby
-        LobbyEntity lobby = findAndLockLobby(lobbyId);
-        lobby.setDifficulty(difficulty);
+        LobbyCountdownEntity lobbyCountdownEntity = lobbyC
+        if (lobby.getLobbyCountdownEntity().isCountdownActive()) {
+            throw new LobbySettingsLockedException("Cannot update settings whilst the countdown is active.");
+        }
+        LobbySettingsEntity lobbySettings = lobby.getLobbySettingsEntity();
+        lobbySettings.setDifficulty(difficulty);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
     @Transactional
     public LobbyDto updateLobbyTimeLimit(Long lobbyId, TimeLimitPreset timeLimit) {
-        // Retrieve lobby
-        LobbyEntity lobby = findAndLockLobby(lobbyId);
-        lobby.setTimeLimit(timeLimit);
+        LobbyEntity lobby = getLobbyById(lobbyId);
+        if (lobby.getLobbyCountdownEntity().isCountdownActive()) {
+            throw new LobbySettingsLockedException("Cannot update settings whilst the countdown is active.");
+        }
+        LobbySettingsEntity lobbySettings = lobby.getLobbySettingsEntity();
+        lobbySettings.setTimeLimit(timeLimit);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
     @Transactional
     public LobbyDto updateLobbyPlayerStatus(Long lobbyId, Long userId, LobbyStatus lobbyStatus) {
-        // Retrieve lobby
-        LobbyEntity lobby = findAndLockLobby(lobbyId);
+        LobbyEntity lobby = getLobbyById(lobbyId);
         LobbyPlayerEntity lobbyPlayer = findLobbyPlayer(lobby, userId);
         // Lobby Player managed by JPA therefore update will apply
         lobbyPlayer.setStatus(lobbyStatus);
         // Handle any countdown updates that may be required
-        Optional<Long> newInitiator = lobby.evaluateCountdownState();
+        Optional<Long> newInitiator = lobby.getLobbyCountdownEntity().evaluateCountdownState();
         newInitiator.ifPresent(id -> {
             LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, id, "started the new game countdown.");
             lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
@@ -193,8 +205,8 @@ public class LobbyService {
     @Transactional
     // Removes a player from the lobby either due to disconnecting or manual leave, re-orders host if the host left
     public LobbyDto removeFromLobby(Long lobbyId, Long userId) {
-        // Retrieve lobby
-        LobbyEntity lobby = findAndLockLobby(lobbyId);
+        // ADD RETRY LOGIC
+        LobbyEntity lobby = getLobbyById(lobbyId);
         // Retrieve LobbyPlayer
         LobbyPlayerEntity lobbyPlayer = findLobbyPlayer(lobby, userId);
         UserEntity requesterEntity = userService.findUserById(userId);
@@ -203,7 +215,7 @@ public class LobbyService {
         if (requesterEntity.equals(lobby.getHost())) {
             applyHostChangeOrCloseLobby(lobby);
             // If lobby has been closed
-            if (!lobby.getIsActive()) {
+            if (!lobby.isActive()) {
                 return null;
             }
         }
@@ -216,7 +228,7 @@ public class LobbyService {
         lobby.getLobbyPlayers().remove(lobbyPlayer);
 
         // Stop the timer if the player count goes below 2
-        lobby.evaluateCountdownState();
+        lobby.getLobbyCountdownEntity().evaluateCountdownState();
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
@@ -241,19 +253,25 @@ public class LobbyService {
     @Transactional
     // Register the Lobby inactive
     public void closeLobby(LobbyEntity lobby) {
-        lobby.setIsActive(false);
+        lobby.setActive(false);
         // Delete the lobby from the DB, removing all associated lobby messages, games, game states
         lobbyRepository.deleteById(lobby.getId());
     }
 
-    // Return the requested lobby DTO
-    public LobbyDto getLobbyById(Long lobbyId) {
+    public LobbyEntity getLobbyById(Long lobbyId) {
         Optional<LobbyEntity> lobby = lobbyRepository.findById(lobbyId);
         if (lobby.isPresent()) {
-            return lobby.map(lobbyEntityDtoMapper::mapToDto).orElse(null);
+            return lobby.get();
         } else {
             throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
         }
+    }
+
+    @Transactional
+    // Return the requested lobby DTO
+    public LobbyDto getLobbyDtoById(Long lobbyId) {
+        LobbyEntity lobby = getLobbyById(lobbyId);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
 }

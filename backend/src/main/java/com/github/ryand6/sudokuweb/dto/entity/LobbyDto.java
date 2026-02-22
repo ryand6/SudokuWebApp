@@ -27,21 +27,21 @@ public class LobbyDto {
 
     private TimeLimitPreset timeLimit;
 
-    private Boolean isActive;
+    private boolean isActive;
 
-    private Boolean isPublic;
+    private boolean isPublic;
 
-    private Boolean inGame;
+    private boolean inGame;
 
     private Long currentGameId;
 
-    private Boolean countdownActive;
+    private boolean countdownActive;
 
     private Instant countdownEndsAt;
 
     private Long countdownInitiatedBy;
 
-    private Boolean settingsLocked;
+    private boolean settingsLocked;
 
     private Set<LobbyPlayerDto> lobbyPlayers;
 

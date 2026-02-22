@@ -20,6 +20,9 @@ import java.util.Map;
         name = "game_events",
         indexes = {
                 @Index(name = "idx_game_id_sequence_number", columnList = "game_id, sequence_number")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"game_id", "sequence_number"})
         }
 )
 public class GameEventEntity {
@@ -32,22 +35,23 @@ public class GameEventEntity {
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     private GameEntity gameEntity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity userEntity;
 
     @Column(name = "event_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private GameEventType eventType;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "payload", columnDefinition = "jsonb", nullable = false)
     private Map<String, Object> payload;
 
-    @Column(name = "sequence_number", nullable = false, unique = true)
-    private Long sequenceNumber;
+    @Column(name = "sequence_number", nullable = false)
+    private long sequenceNumber;
 
 }

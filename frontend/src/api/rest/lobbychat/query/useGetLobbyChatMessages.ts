@@ -1,4 +1,4 @@
-import { getLobbyChatMessages } from "@/api/rest/lobby/getLobbyChatMessages";
+import { getLobbyChatMessages } from "@/api/rest/lobbychat/query/getLobbyChatMessages";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
