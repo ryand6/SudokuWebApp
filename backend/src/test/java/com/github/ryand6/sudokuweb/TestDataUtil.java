@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb;
 import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 
 import java.util.Set;
 
@@ -84,35 +85,68 @@ public final class TestDataUtil {
                 build();
     }
 
+    public static LobbySettingsEntity createLobbySettingsA(LobbyEntity lobby) {
+        return LobbySettingsEntity.builder()
+                .difficulty(Difficulty.EASY)
+                .timeLimit(TimeLimitPreset.QUICK)
+                .isPublic(true)
+                .lobbyEntity(lobby)
+                .build();
+    }
+
+    public static LobbySettingsEntity createLobbySettingsB(LobbyEntity lobby) {
+        return LobbySettingsEntity.builder()
+                .difficulty(Difficulty.EASY)
+                .timeLimit(TimeLimitPreset.QUICK)
+                .isPublic(false)
+                .lobbyEntity(lobby)
+                .build();
+    }
+
+    private static LobbyCountdownEntity createLobbyCountdownA(LobbyEntity lobby) {
+        return LobbyCountdownEntity.builder()
+                .countdownActive(false)
+                .lobbyEntity(lobby)
+                .build();
+    }
+
     public static LobbyEntity createTestLobbyA(final UserEntity userEntity, Set<LobbyPlayerEntity> players) {
-        return LobbyEntity.builder().
+        LobbyEntity lobby = LobbyEntity.builder().
                 lobbyName("Guru Lobby").
                 isActive(true).
-                isPublic(true).
                 lobbyPlayers(players).
-                host(userEntity).
-                build();
+                host(userEntity).build();
+
+        lobby.setLobbySettingsEntity(createLobbySettingsA(lobby));
+        lobby.setLobbyCountdownEntity(createLobbyCountdownA(lobby));
+        return lobby;
     }
 
     public static LobbyEntity createTestLobbyB(final UserEntity userEntity, Set<LobbyPlayerEntity> players) {
-        return LobbyEntity.builder().
+        LobbyEntity lobby =  LobbyEntity.builder().
                 lobbyName("SudokuSquad").
                 isActive(true).
-                isPublic(false).
                 lobbyPlayers(players).
                 host(userEntity).
                 build();
+
+        lobby.setLobbySettingsEntity(createLobbySettingsB(lobby));
+        lobby.setLobbyCountdownEntity(createLobbyCountdownA(lobby));
+        return lobby;
     }
 
     public static LobbyEntity createTestLobbyC(final UserEntity userEntity, Set<LobbyPlayerEntity> players) {
-        return LobbyEntity.builder().
+        LobbyEntity lobby = LobbyEntity.builder().
                 lobbyName("In Game Lobby").
                 isActive(true).
-                isPublic(true).
                 inGame(true).
                 lobbyPlayers(players).
                 host(userEntity).
                 build();
+
+        lobby.setLobbySettingsEntity(createLobbySettingsA(lobby));
+        lobby.setLobbyCountdownEntity(createLobbyCountdownA(lobby));
+        return lobby;
     }
 
     public static GameStateEntity createTestGameStateA(final GameEntity gameEntity, final UserEntity userEntity) {

@@ -48,18 +48,18 @@ public class GameService {
 
     @Transactional
     public GameDto createGameIfNoneActive(LobbyDto lobby) {
-        LobbyEntity lockedLobby = lobbyService.findAndLockLobby(lobby.getId());
+        LobbyEntity lobbyEntity = lobbyService.getLobbyById(lobby.getId());
 
-        if (lockedLobby.getInGame()) {
+        if (lobbyEntity.isInGame()) {
             return null;
         }
-        GameDto game = createGame(lockedLobby);
-        lockedLobby.setInGame(true);
-        lockedLobby.setCurrentGameId(game.getId());
-        lockedLobby.resetCountdownIfActive();
+        GameDto game = createGame(lobbyEntity);
+        lobbyEntity.setInGame(true);
+        lobbyEntity.setCurrentGameId(game.getId());
+        lobbyEntity.getLobbyCountdownEntity().resetCountdownIfActive();
 
         // Emit notification of lobby update
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lockedLobby), messagingTemplate);
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lobbyEntity), messagingTemplate);
 
         System.out.println("\n\n\n" + game.toString() + "\n\n\n");
 
@@ -72,7 +72,7 @@ public class GameService {
     @Transactional
     private GameDto createGame(LobbyEntity lobby) {
 
-        Difficulty difficulty = lobby.getDifficulty();
+        Difficulty difficulty = lobby.getLobbySettingsEntity().getDifficulty();
 
         // Retrieve all active users in the game
         Set<LobbyPlayerEntity> activeLobbyPlayers = lobby.getLobbyPlayers();

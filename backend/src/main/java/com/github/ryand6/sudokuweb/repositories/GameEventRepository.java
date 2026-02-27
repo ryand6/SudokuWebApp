@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface GameEventRepository extends JpaRepository<GameEventEntity, Long> {
 
     @Query(value = """
-            SELECT COALESCE(MAX(ge.sequence_number), 0)
+            SELECT COALESCE(MAX(ge.sequenceNumber), 0)
             FROM GameEventEntity ge
             WHERE ge.gameEntity.id = :gameId
             """)

@@ -153,7 +153,7 @@ public class LobbyRepositoryIntegrationTests extends AbstractIntegrationTest {
 //        underTest.save(lobbyEntityC);
 //        // Want to return the last two created Lobbies
 //        Pageable pageable = PageRequest.of(0, 2, Sort.by("createdAt").descending());
-//        assertThat(underTest.findByIsPublicTrueAndIsActiveTrue(pageable)).containsExactly(lobbyEntityC, lobbyEntityB);
+//        assertThat(underTest.findByIsActiveTrueAndLobbySettingsEntity_IsPublicTrue(pageable)).containsExactly(lobbyEntityC, lobbyEntityB);
 //    }
 //
 //    @Test

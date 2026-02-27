@@ -42,6 +42,7 @@ public class GameServiceIntegrationTests extends AbstractIntegrationTest {
     private SudokuPuzzleService sudokuPuzzleService;
 
     private LobbyEntity testLobby;
+    private LobbySettingsEntity lobbySettings;
     private UserEntity user1;
     private UserEntity user2;
     private ScoreEntity score1;
@@ -64,7 +65,9 @@ public class GameServiceIntegrationTests extends AbstractIntegrationTest {
         testLobby = new LobbyEntity();
         testLobby.setLobbyName("TestLobby");
         testLobby.setHost(user1);
-        testLobby.setDifficulty(Difficulty.EASY);
+
+        lobbySettings = new LobbySettingsEntity();
+        lobbySettings.setDifficulty(Difficulty.EASY);
 
         lobbyRepository.save(testLobby);
 

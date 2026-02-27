@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LobbySettingsRepository extends JpaRepository<LobbySettingsEntity, Long> {
 
-     LobbySettingsEntity findByLobbyId(Long lobbyId);
-
 }

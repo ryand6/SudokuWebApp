@@ -14,9 +14,7 @@ import com.github.ryand6.sudokuweb.exceptions.lobby.UserExistsInActiveLobbyExcep
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.LobbyCountdownRepository;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbySettingsRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -88,7 +86,7 @@ public class LobbyService {
     // Retrieves a page of lobbies based on the specified page number and size. Page results are ordered by createdAt (newest first)
     public List<LobbyDto> getPublicLobbies(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return lobbyRepository.findByIsPublicTrueAndIsActiveTrue(pageable)
+        return lobbyRepository.findByIsActiveTrueAndLobbySettingsEntity_IsPublicTrue(pageable)
                 .stream()
                 .map(lobbyEntityDtoMapper::mapToDto)
                 .collect(Collectors.toList());
@@ -167,7 +165,7 @@ public class LobbyService {
 
     @Transactional
     public LobbyDto updateLobbyDifficulty(Long lobbyId, Difficulty difficulty) {
-        LobbyCountdownEntity lobbyCountdownEntity = lobbyC
+        LobbyEntity lobby = getLobbyById(lobbyId);
         if (lobby.getLobbyCountdownEntity().isCountdownActive()) {
             throw new LobbySettingsLockedException("Cannot update settings whilst the countdown is active.");
         }

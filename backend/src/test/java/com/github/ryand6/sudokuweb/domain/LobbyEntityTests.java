@@ -69,8 +69,6 @@ public class LobbyEntityTests {
         HashSet<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
         LobbyEntity lobby = TestDataUtil.createTestLobbyA(hostUser, lobbyPlayers);
         lobby.setId(1L);
-        lobby.setCountdownActive(false);
-        lobby.setSettingsLocked(false);
 
         // Set up lobby player
         LobbyPlayerEntity hostPlayer = TestDataUtil.createTestLobbyPlayer(lobby, hostUser);
@@ -79,12 +77,11 @@ public class LobbyEntityTests {
         lobbyPlayers.add(hostPlayer);
         lobby.setLobbyPlayers(lobbyPlayers);
 
-        Optional<Long> initiatorId = lobby.evaluateCountdownState();
+        Optional<Long> initiatorId = lobby.getLobbyCountdownEntity().evaluateCountdownState();
 
         Assertions.assertFalse(initiatorId.isPresent());
-        Assertions.assertFalse(lobby.getCountdownActive());
-        Assertions.assertFalse(lobby.getSettingsLocked());
-        Assertions.assertNull(lobby.getCountdownInitiatedBy());
+        Assertions.assertFalse(lobby.getLobbyCountdownEntity().isCountdownActive());
+        Assertions.assertNull(lobby.getLobbyCountdownEntity().getCountdownInitiatedBy());
     }
 
     @Test
@@ -101,8 +98,6 @@ public class LobbyEntityTests {
         HashSet<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
         LobbyEntity lobby = TestDataUtil.createTestLobbyA(hostUser, lobbyPlayers);
         lobby.setId(1L);
-        lobby.setCountdownActive(false);
-        lobby.setSettingsLocked(false);
 
         // Set up lobby players
         LobbyPlayerEntity hostPlayer = TestDataUtil.createTestLobbyPlayer(lobby, hostUser);
@@ -117,12 +112,11 @@ public class LobbyEntityTests {
         lobbyPlayers.add(lastJoinedPlayer);
         lobby.setLobbyPlayers(lobbyPlayers);
 
-        Optional<Long> initiatorId = lobby.evaluateCountdownState();
+        Optional<Long> initiatorId = lobby.getLobbyCountdownEntity().evaluateCountdownState();
 
         Assertions.assertFalse(initiatorId.isPresent());
-        Assertions.assertFalse(lobby.getCountdownActive());
-        Assertions.assertFalse(lobby.getSettingsLocked());
-        Assertions.assertNull(lobby.getCountdownInitiatedBy());
+        Assertions.assertFalse(lobby.getLobbyCountdownEntity().isCountdownActive());
+        Assertions.assertNull(lobby.getLobbyCountdownEntity().getCountdownInitiatedBy());
     }
 
     @Test
@@ -139,8 +133,6 @@ public class LobbyEntityTests {
         HashSet<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
         LobbyEntity lobby = TestDataUtil.createTestLobbyA(hostUser, lobbyPlayers);
         lobby.setId(1L);
-        lobby.setCountdownActive(false);
-        lobby.setSettingsLocked(false);
 
         // Set up lobby players
         LobbyPlayerEntity hostPlayer = TestDataUtil.createTestLobbyPlayer(lobby, hostUser);
@@ -160,13 +152,12 @@ public class LobbyEntityTests {
         lobbyPlayers.add(lastJoinedPlayer);
         lobby.setLobbyPlayers(lobbyPlayers);
 
-        Optional<Long> initiatorId = lobby.evaluateCountdownState();
+        Optional<Long> initiatorId = lobby.getLobbyCountdownEntity().evaluateCountdownState();
 
         Assertions.assertTrue(initiatorId.isPresent());
         Assertions.assertEquals(initiatorId.get(), lastJoinedPlayer.getUser().getId());
-        Assertions.assertEquals(lobby.getCountdownInitiatedBy(), lastJoinedPlayer.getUser().getId());
-        Assertions.assertTrue(lobby.getCountdownActive());
-        Assertions.assertTrue(lobby.getSettingsLocked());
+        Assertions.assertEquals(lobby.getLobbyCountdownEntity().getCountdownInitiatedBy(), lastJoinedPlayer.getUser().getId());
+        Assertions.assertTrue(lobby.getLobbyCountdownEntity().isCountdownActive());
     }
 
     @Test
@@ -183,8 +174,6 @@ public class LobbyEntityTests {
         HashSet<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
         LobbyEntity lobby = TestDataUtil.createTestLobbyA(hostUser, lobbyPlayers);
         lobby.setId(1L);
-        lobby.setCountdownActive(false);
-        lobby.setSettingsLocked(false);
 
         // Set up lobby players
         LobbyPlayerEntity hostPlayer = TestDataUtil.createTestLobbyPlayer(lobby, hostUser);
@@ -199,13 +188,12 @@ public class LobbyEntityTests {
         lobbyPlayers.add(lastJoinedPlayer);
         lobby.setLobbyPlayers(lobbyPlayers);
 
-        Optional<Long> initiatorId = lobby.evaluateCountdownState();
+        Optional<Long> initiatorId = lobby.getLobbyCountdownEntity().evaluateCountdownState();
 
         Assertions.assertTrue(initiatorId.isPresent());
         Assertions.assertEquals(initiatorId.get(), hostPlayer.getUser().getId());
-        Assertions.assertEquals(lobby.getCountdownInitiatedBy(), hostPlayer.getUser().getId());
-        Assertions.assertTrue(lobby.getCountdownActive());
-        Assertions.assertTrue(lobby.getSettingsLocked());
+        Assertions.assertEquals(lobby.getLobbyCountdownEntity().getCountdownInitiatedBy(), hostPlayer.getUser().getId());
+        Assertions.assertTrue(lobby.getLobbyCountdownEntity().isCountdownActive());
     }
 
     @Test
@@ -222,7 +210,10 @@ public class LobbyEntityTests {
         HashSet<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
         LobbyEntity lobby = TestDataUtil.createTestLobbyA(hostUser, lobbyPlayers);
         lobby.setId(1L);
-        lobby.setClock(fixedClock);
+
+        LobbyCountdownEntity lobbyCountdown = lobby.getLobbyCountdownEntity();
+        lobbyCountdown.setClock(fixedClock);
+        lobby.setLobbyCountdownEntity(lobbyCountdown);
 
         // Set up Players
         LobbyPlayerEntity hostPlayer = TestDataUtil.createTestLobbyPlayer(lobby, hostUser);
@@ -237,13 +228,13 @@ public class LobbyEntityTests {
         lobbyPlayers.add(player3);
         lobby.setLobbyPlayers(lobbyPlayers);
 
-        lobby.evaluateCountdownState();
+        lobby.getLobbyCountdownEntity().evaluateCountdownState();
 
         // 2 players not ready therefore +2 minutes
         Instant expectedEnd =
                 fixedClock.instant().plus(Duration.ofMinutes(2));
 
-        assertThat(lobby.getCountdownEndsAt()).isEqualTo(expectedEnd);
+        assertThat(lobby.getLobbyCountdownEntity().getCountdownEndsAt()).isEqualTo(expectedEnd);
     }
 
 }

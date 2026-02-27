@@ -1,9 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
-import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.domain.*;
 import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
@@ -91,7 +88,7 @@ public class LobbyServiceTests {
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
         lobbyDto.setLobbyName("Test Lobby");
-        lobbyDto.setIsPublic(true);
+        lobbyDto.setPublic(true);
         lobbyDto.setLobbyPlayers(Set.of(lobbyPlayerDto));
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(lobbyDto);
 
@@ -101,7 +98,7 @@ public class LobbyServiceTests {
         LobbyDto lobbyDtoTest = lobbyService.createNewLobby(lobbyName, isPublic, requesterId);
         assertThat(lobbyDtoTest.getId()).isEqualTo(1L);
         assertThat(lobbyDtoTest.getLobbyName()).isEqualTo("Test Lobby");
-        assertThat(lobbyDtoTest.getIsPublic()).isEqualTo(true);
+        assertThat(lobbyDtoTest.isPublic()).isEqualTo(true);
         assertThat(lobbyDtoTest.getLobbyPlayers()).hasSize(1);
     }
 
@@ -117,7 +114,7 @@ public class LobbyServiceTests {
 
         Page<LobbyEntity> lobbyPage = new PageImpl<>(List.of(lobby1, lobby2));
 
-        when(lobbyRepository.findByIsPublicTrueAndIsActiveTrue(PageRequest.of(page, size, Sort.by("createdAt").descending())))
+        when(lobbyRepository.findByIsActiveTrueAndLobbySettingsEntity_IsPublicTrue(PageRequest.of(page, size, Sort.by("createdAt").descending())))
                 .thenReturn(lobbyPage);
 
         LobbyDto dto1 = new LobbyDto();
@@ -167,7 +164,7 @@ public class LobbyServiceTests {
         Long userId = 1L;
 
         LobbyEntity lobby = mock(LobbyEntity.class);
-        when(lobby.getIsActive()).thenReturn(true);
+        when(lobby.isActive()).thenReturn(true);
 
         Set<LobbyPlayerEntity> players = new HashSet<>();
         for (int i = 0; i < 3; i++) {
@@ -175,7 +172,7 @@ public class LobbyServiceTests {
         }
         when(lobby.getLobbyPlayers()).thenReturn(players);
 
-        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
 
         UserEntity requester = mock(UserEntity.class);
         when(userService.findUserById(any())).thenReturn(requester);
@@ -205,8 +202,8 @@ public class LobbyServiceTests {
         when(privateLobbyTokenService.joinPrivateLobbyWithToken(token)).thenReturn(lobbyId);
 
         LobbyEntity lobby = mock(LobbyEntity.class);
-        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
-        when(lobby.getIsActive()).thenReturn(true);
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobby.isActive()).thenReturn(true);
 
         Set<LobbyPlayerEntity> players = new HashSet<>();
         for (int i = 0; i < 2; i++) players.add(mock(LobbyPlayerEntity.class));
@@ -234,7 +231,7 @@ public class LobbyServiceTests {
         Long lobbyId = 1L;
         Long userId = 1L;
 
-        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.empty());
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.empty());
 
         LobbyNotFoundException ex = assertThrows(LobbyNotFoundException.class, () -> {
             lobbyService.removeFromLobby(lobbyId, userId);
@@ -293,13 +290,13 @@ public class LobbyServiceTests {
 
         when(lobby.getHost()).thenReturn(playerLeaving);
 
-        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
         when(userService.findUserById(userId)).thenReturn(playerLeaving);
         when(lobby.determineNextHost()).thenReturn(Optional.empty());
 
         doAnswer(invocation -> {
             LobbyEntity lobbyInvocation = invocation.getArgument(0);
-            lobbyInvocation.setIsActive(false);
+            lobbyInvocation.setActive(false);
             return null;
         }).when(lobbyService).closeLobby(any(LobbyEntity.class));
 
@@ -315,6 +312,8 @@ public class LobbyServiceTests {
         Long hostId = 2L;
 
         LobbyEntity lobby = mock(LobbyEntity.class);
+
+        LobbyCountdownEntity lobbyCountdown = mock(LobbyCountdownEntity.class);
 
         UserEntity userLeaving = new UserEntity();
         userLeaving.setId(playerLeavingId);
@@ -332,9 +331,13 @@ public class LobbyServiceTests {
         currentPlayers.add(playerLeaving);
         currentPlayers.add(hostPlayer);
 
-        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
 
         when(lobby.getLobbyPlayers()).thenReturn(currentPlayers);
+
+        when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
+
+        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(Optional.empty());
 
         when(userService.findUserById(playerLeavingId)).thenReturn(userLeaving);
 
@@ -360,6 +363,8 @@ public class LobbyServiceTests {
 
         LobbyEntity lobby = mock(LobbyEntity.class);
 
+        LobbyCountdownEntity lobbyCountdown = mock(LobbyCountdownEntity.class);
+
         UserEntity userLeaving = new UserEntity();
         userLeaving.setId(playerLeavingId);
 
@@ -376,9 +381,13 @@ public class LobbyServiceTests {
         currentPlayers.add(playerLeaving);
         currentPlayers.add(hostPlayer);
 
-        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
+        when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
 
         when(lobby.getLobbyPlayers()).thenReturn(currentPlayers);
+
+        when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
+
+        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(Optional.empty());
 
         when(userService.findUserById(playerLeavingId)).thenReturn(userLeaving);
 
@@ -404,7 +413,7 @@ public class LobbyServiceTests {
 
         lobbyService.closeLobby(lobby);
 
-        verify(lobby).setIsActive(false);
+        verify(lobby).setActive(false);
         verify(lobbyRepository).deleteById(1L);
     }
 
@@ -414,11 +423,11 @@ public class LobbyServiceTests {
 
         LobbyEntity lobby = new LobbyEntity();
         lobby.setId(1L);
-        lobby.setIsActive(true);
+        lobby.setActive(true);
 
         lobbyService.closeLobby(lobby);
 
-        Assertions.assertFalse(lobby.getIsActive());
+        Assertions.assertFalse(lobby.isActive());
     }
 
     @Test

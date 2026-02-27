@@ -1,11 +1,9 @@
 package com.github.ryand6.sudokuweb.repositories;
 
 import com.github.ryand6.sudokuweb.domain.LobbyEntity;
-import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -18,7 +16,7 @@ import java.util.Optional;
 public interface LobbyRepository extends JpaRepository<LobbyEntity, Long> {
 
     // Returns page containing list of active public lobbies within the pageable size range
-    Page<LobbyEntity> findByIsPublicTrueAndIsActiveTrue(Pageable pageable);
+    Page<LobbyEntity> findByIsActiveTrueAndLobbySettingsEntity_IsPublicTrue(Pageable pageable);
 
 //    // Lock the lobby record to prevent race conditions, so that the lobby can be updated if required, e.g. adding a new player
 //    @Lock(LockModeType.PESSIMISTIC_WRITE)
@@ -35,8 +33,8 @@ public interface LobbyRepository extends JpaRepository<LobbyEntity, Long> {
             value = """
             SELECT lobby
             FROM LobbyEntity lobby
-            WHERE lobby.countdownActive = true
-            AND lobby.countdownEndsAt <= :now
+            WHERE lobby.lobbyCountdownEntity.countdownActive = true
+            AND lobby.lobbyCountdownEntity.countdownEndsAt <= :now
             AND lobby.inGame = false
         """)
     List<LobbyEntity> findAllLobbiesWithExpiredCountdowns(@Param("now") Instant now);

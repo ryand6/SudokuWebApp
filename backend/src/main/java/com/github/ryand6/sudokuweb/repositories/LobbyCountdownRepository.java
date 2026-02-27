@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LobbyCountdownRepository extends JpaRepository<LobbyCountdownEntity, Long> {
 
-    LobbyCountdownEntity findByLobbyId(Long lobbyId);
-
 }
