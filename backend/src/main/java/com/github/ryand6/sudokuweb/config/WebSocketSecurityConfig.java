@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.config;
 
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
-import com.github.ryand6.sudokuweb.services.MembershipCheckService;
+import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.simp.SimpMessageType;
@@ -23,12 +23,12 @@ import java.util.function.Supplier;
 public class WebSocketSecurityConfig {
 
     private final UserService userService;
-    private final MembershipCheckService membershipCheckService;
+    private final MembershipService membershipService;
 
     public WebSocketSecurityConfig(UserService userService,
-                                   MembershipCheckService membershipCheckService) {
+                                   MembershipService membershipService) {
         this.userService = userService;
-        this.membershipCheckService = membershipCheckService;
+        this.membershipService = membershipService;
     }
 
     @Bean
@@ -74,14 +74,14 @@ public class WebSocketSecurityConfig {
     private AuthorizationDecision checkLobbyMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
         UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
         Long lobbyId = Long.valueOf(context.getVariables().get("lobbyId"));
-        return new AuthorizationDecision(membershipCheckService.isUserInLobby(user.getId(), lobbyId));
+        return new AuthorizationDecision(membershipService.isUserInLobby(user.getId(), lobbyId));
     }
 
     // Uses Authentication context to find user in DB and confirm if they're a member of the game
     private AuthorizationDecision checkGameMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
         UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
         Long gameId = Long.valueOf(context.getVariables().get("gameId"));
-        return new AuthorizationDecision(membershipCheckService.isUserInGame(user.getId(), gameId));
+        return new AuthorizationDecision(membershipService.isUserInGame(user.getId(), gameId));
     }
 
     // Get UserDto using Authentication object

@@ -37,6 +37,7 @@ public class LobbyService {
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final PrivateLobbyTokenService privateLobbyTokenService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final MembershipService membershipService;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
@@ -44,7 +45,8 @@ public class LobbyService {
                         LobbyWebSocketsService lobbyWebSocketsService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
                         PrivateLobbyTokenService privateLobbyTokenService,
-                        SimpMessagingTemplate simpMessagingTemplate) {
+                        SimpMessagingTemplate simpMessagingTemplate,
+                        MembershipService membershipService) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
         this.lobbyChatService = lobbyChatService;
@@ -52,6 +54,7 @@ public class LobbyService {
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.privateLobbyTokenService = privateLobbyTokenService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.membershipService = membershipService;
     }
 
     @Transactional
@@ -225,6 +228,9 @@ public class LobbyService {
         // Remove the lobby player from the lobby - hibernate will clean up by removing the lobby player from the DB due to orphan removal
         lobby.getLobbyPlayers().remove(lobbyPlayer);
 
+        // Update cache
+        membershipService.removeLobbyPlayer(lobbyId, userId);
+
         // Stop the timer if the player count goes below 2
         lobby.getLobbyCountdownEntity().evaluateCountdownState();
         return lobbyEntityDtoMapper.mapToDto(lobby);
@@ -254,6 +260,8 @@ public class LobbyService {
         lobby.setActive(false);
         // Delete the lobby from the DB, removing all associated lobby messages, games, game states
         lobbyRepository.deleteById(lobby.getId());
+        // Update cache
+        membershipService.removeLobby(lobby.getId());
     }
 
     public LobbyEntity getLobbyById(Long lobbyId) {

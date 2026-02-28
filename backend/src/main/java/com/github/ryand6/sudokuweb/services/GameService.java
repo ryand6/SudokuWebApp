@@ -29,6 +29,8 @@ public class GameService {
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final SimpMessagingTemplate messagingTemplate;
+    private final MembershipService membershipService;
+    private final GameInMemoryStateService gameInMemoryStateService;
 
     public GameService(GameRepository gameRepository,
                        SudokuPuzzleService sudokuPuzzleService,
@@ -36,7 +38,9 @@ public class GameService {
                        LobbyService lobbyService,
                        LobbyWebSocketsService lobbyWebSocketsService,
                        LobbyEntityDtoMapper lobbyEntityDtoMapper,
-                       SimpMessagingTemplate messagingTemplate) {
+                       SimpMessagingTemplate messagingTemplate,
+                       MembershipService membershipService,
+                       GameInMemoryStateService gameInMemoryStateService) {
         this.gameRepository = gameRepository;
         this.sudokuPuzzleService = sudokuPuzzleService;
         this.gameEntityDtoMapper = gameEntityDtoMapper;
@@ -44,6 +48,8 @@ public class GameService {
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.messagingTemplate = messagingTemplate;
+        this.membershipService = membershipService;
+        this.gameInMemoryStateService = gameInMemoryStateService;
     }
 
     @Transactional
@@ -94,6 +100,28 @@ public class GameService {
     public GameDto getGameById(Long gameId) {
         GameEntity gameEntity = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
         return gameEntityDtoMapper.mapToDto(gameEntity);
+    }
+
+    public GameDto removeGamePlayer(Long gameId, Long userId) {
+        // IMPLEMENT LOGIC
+
+        // update caches
+        membershipService.removeGamePlayer(gameId, userId);
+        gameInMemoryStateService.removeGamePlayer(gameId, userId);
+
+        // CHANGE
+        return new GameDto();
+    }
+
+    public GameDto endGame(Long gameId) {
+        // IMPLEMENT LOGIC
+
+        // update cache
+        membershipService.removeGame(gameId);
+        gameInMemoryStateService.removeGame(gameId);
+
+        // CHANGE
+        return new GameDto();
     }
 
 }

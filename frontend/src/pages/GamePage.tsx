@@ -28,7 +28,9 @@ export function GamePage() {
     useHandleGetGameError(isGameError, gameError);
 
     // IMPLEMENT leaveGameHandler
-    //useValidateLobbyUser(gameData, currentUser, leaveGameHandler.isLeaving);
+    //useValidateGamePlayeer(gameData, currentUser, leaveGameHandler.isLeaving);
+
+    // IMPLEMENT useHandleGameWsSubscription
 
     if (isGameLoading || isCurrentUserLoading) return <SpinnerButton />;
 

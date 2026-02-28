@@ -2,6 +2,8 @@ package com.github.ryand6.sudokuweb.controllers.handlers;
 
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.game.InvalidCellCoordinatesException;
+import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
@@ -23,6 +25,7 @@ public class ErrorMapping {
             Map.entry(UserNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(GameNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(GamePlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
@@ -50,6 +53,8 @@ public class ErrorMapping {
             Map.entry(InvalidLobbyPublicStatusParameterException.class, "LOBBY_ERROR"),
             // Handle game errors
             Map.entry(GameNotFoundException.class, "GAME_ERROR"),
+            Map.entry(GamePlayerNotFoundException.class, "GAME_ERROR"),
+            Map.entry(InvalidCellCoordinatesException.class, "GAME_ERROR"),
             // Handle DTO field validation errors
             Map.entry(MethodArgumentNotValidException.class, "GENERAL_ERROR")
     );

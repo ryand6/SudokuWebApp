@@ -1,13 +1,10 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
-import { initWebSocket } from "../utils/services/initWebSocket";
-import { initStompClient } from "../utils/services/initStompClient";
-import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates";
 import { useQueryClient } from "@tanstack/react-query";
-import { subscribeUserErrors } from "@/services/websocket/subscribeUserErrors";
 import { useHandleUnmount } from "@/hooks/ws/useHandleUnmount";
 import { useHandleUnload } from "@/hooks/ws/useHandleUnload";
+import { useInitClient } from "@/hooks/ws/useInitClient";
 
 export type WebSocketContextType = {
     subscribe: (topic: string, onMessage: (body: any) => void) => StompSubscription | null;
@@ -48,55 +45,10 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
 
     useHandleUnload(clientRef);
 
-    // Effect handles socket lifecycle - exists whilst there is an authenticated session
-    useEffect(() => {
-        if (!currentUser) {
-            return;
-        }
-
-        if (clientRef.current) return;
-        const socket = initWebSocket();
-
-        // NOTE:
-        // - System subscriptions are recreated on every connect
-        // - subscriptionsRef contains ONLY dynamic subscriptions that must survive reconnects
-        const handleConnect = () => {
-
-            setIsConnected(true);
-
-            // System level subscriptions resubscribed every reconnect
-            subscribeUserUpdates(queryClient, clientRef);
-            subscribeUserErrors(clientRef);
-
-            // Handle dynamic subscriptions - these should re-subscribe to any existing subscriptions that were terminated due to a disconnect rather than an unsubscribe event e.g. lobby and games topics
-            subscriptionsRef.current.forEach((subscriptionDetails: StompSubscriptionDetails, topic: string) => {
-                const newSubscription = clientRef.current!.subscribe(topic, (msg: IMessage) => subscriptionDetails.subscriptionCallback(JSON.parse(msg.body)));
-                const newSubscriptionDetails: StompSubscriptionDetails = {subscription: newSubscription, subscriptionCallback: subscriptionDetails.subscriptionCallback};
-                subscriptionsRef.current.set(topic, newSubscriptionDetails);
-            })
-
-            /// Subscribe to pending subscriptions that could not be completed before whilst client was not connected
-            pendingQueueRef.current.forEach(({ topic, callback }) => {
-                const subscription = clientRef.current!.subscribe(topic, (msg: IMessage) => callback(JSON.parse(msg.body)));
-                const subscriptionDetails: StompSubscriptionDetails = {subscription: subscription, subscriptionCallback: callback};
-                subscriptionsRef.current.set(topic, subscriptionDetails);
-            });
-            pendingQueueRef.current = [];
-        }
-
-        initStompClient(socket, clientRef, handleConnect, handleDisconnect, handleWebSocketClose);
-
-        // Cleanup if user logs out
-        return () => {
-            clientRef.current?.deactivate();
-            clientRef.current = null;
-            subscriptionsRef.current.clear();
-            pendingQueueRef.current = [];
-        }
-    }, [currentUser]);
+    useInitClient(currentUser, clientRef, setIsConnected, queryClient, subscriptionsRef, pendingQueueRef, handleDisconnect, handleWebSocketClose);
 
     const subscribe = (topic: string, onMessage: (body: any) => void) => {
-        // If the user is already subscribed, return that subscription - exclamation mark used to confirm the return type will never be undefined
+        // If the user is already subscribed, return that subscription 
         if (subscriptionsRef.current.has(topic)) return subscriptionsRef.current.get(topic)?.subscription!;
 
         const client = clientRef.current;

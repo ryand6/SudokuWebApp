@@ -4,7 +4,7 @@ import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.dto.request.GenerateBoardRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.GameService;
-import com.github.ryand6.sudokuweb.services.MembershipCheckService;
+import com.github.ryand6.sudokuweb.services.MembershipService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.*;
 public class GameRestController {
 
     private final GameService gameService;
-    private final MembershipCheckService membershipCheckService;
+    private final MembershipService membershipService;
 
     public GameRestController(GameService gameService,
-                              MembershipCheckService membershipCheckService) {
+                              MembershipService membershipService) {
         this.gameService = gameService;
-        this.membershipCheckService = membershipCheckService;
+        this.membershipService = membershipService;
     }
 
     @GetMapping("/check-user-in-game")
     public ResponseEntity<?> isUserInGame(@RequestParam Long gameId, @RequestParam Long userId) {
-        if (!membershipCheckService.isUserInGame(gameId, userId)) {
+        if (!membershipService.isUserInGame(gameId, userId)) {
             throw new GamePlayerNotFoundException("User with ID + " + userId + " is not part of the game with ID " + gameId);
         } else {
             GameDto gameDto = gameService.getGameById(gameId);
