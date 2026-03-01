@@ -1,4 +1,4 @@
-import { updateLobbyDifficulty } from "@/api/rest/lobby/mutate/updateLobbyDifficulty";
+import { updateLobbyDifficulty } from "@/api/rest/lobbysettings/mutate/updateLobbyDifficulty";
 import type { UpdateLobbyDifficultyDto } from "@/types/dto/request/UpdateLobbyDifficultyDto"
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

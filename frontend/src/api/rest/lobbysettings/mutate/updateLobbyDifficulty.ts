@@ -3,7 +3,7 @@ import type { Difficulty } from "@/types/enum/Difficulty";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function updateLobbyDifficulty(lobbyId: number, userId: number, difficulty: Difficulty): Promise<LobbyDto> {
-    const response = await fetch("/api/lobby/update-difficulty", {
+    const response = await fetch("/api/lobby/settings/update-difficulty", {
         method: "POST",
         credentials: "include",
         headers: { 

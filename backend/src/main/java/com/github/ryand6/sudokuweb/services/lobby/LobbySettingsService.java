@@ -8,6 +8,10 @@ import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +25,12 @@ public class LobbySettingsService {
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
     }
 
+
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50, multiplier = 2)
+    )
     @Transactional
     public LobbyDto updateLobbyDifficulty(Long lobbyId, Difficulty difficulty) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
@@ -32,6 +42,17 @@ public class LobbySettingsService {
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
+    // Fallback if retries fail for updateLobbyDifficulty
+    @Recover
+    public LobbyDto updateLobbyDifficultyRecover(ObjectOptimisticLockingFailureException ex, Long lobbyId, Difficulty difficulty) {
+        throw new LobbySettingsLockedException("Cannot update settings currently due to a conflict. Please try again shortly.");
+    }
+
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50, multiplier = 2)
+    )
     @Transactional
     public LobbyDto updateLobbyTimeLimit(Long lobbyId, TimeLimitPreset timeLimit) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
@@ -41,6 +62,12 @@ public class LobbySettingsService {
         LobbySettingsEntity lobbySettings = lobby.getLobbySettingsEntity();
         lobbySettings.setTimeLimit(timeLimit);
         return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    // Fallback if retries fail for updateLobbyTimeLimit
+    @Recover
+    public LobbyDto updateLobbyTimeLimitRecover(ObjectOptimisticLockingFailureException ex, Long lobbyId, TimeLimitPreset timeLimit) {
+        throw new LobbySettingsLockedException("Cannot update settings currently due to a conflict. Please try again shortly.");
     }
 
 }

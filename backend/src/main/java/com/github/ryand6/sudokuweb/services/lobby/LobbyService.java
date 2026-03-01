@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
@@ -103,7 +104,7 @@ public class LobbyService {
 
     // Overloaded method, used to join public lobby when lobby ID is provided
     @Retryable(
-            retryFor = LobbyOptimisticLockException.class,
+            retryFor = ObjectOptimisticLockingFailureException.class,
             maxAttempts = 3,
             backoff = @Backoff(delay = 50, multiplier = 2)
     )
@@ -129,13 +130,13 @@ public class LobbyService {
 
     // Fallback if retries fail for join lobby
     @Recover
-    public LobbyDto joinLobbyRecover(LobbyOptimisticLockException ex, Long userId, Long publicLobbyId) {
+    public LobbyDto joinLobbyRecover(ObjectOptimisticLockingFailureException ex, Long userId, Long publicLobbyId) {
         throw new LobbyOptimisticLockException("Unable to join lobby with due to a conflict. Please try again shortly.");
     }
 
     // Overloaded method, used to join private lobby when token is provided
     @Retryable(
-            retryFor = LobbyOptimisticLockException.class,
+            retryFor = ObjectOptimisticLockingFailureException.class,
             maxAttempts = 3,
             backoff = @Backoff(delay = 50, multiplier = 2)
     )
@@ -163,7 +164,7 @@ public class LobbyService {
 
     // Fallback if retries fail for join lobby
     @Recover
-    public LobbyDto joinLobbyRecover(LobbyOptimisticLockException ex, Long userId, String token) {
+    public LobbyDto joinLobbyRecover(ObjectOptimisticLockingFailureException ex, Long userId, String token) {
         throw new LobbyOptimisticLockException("Unable to join lobby due to a conflict. Please try again shortly.");
     }
 
@@ -195,7 +196,7 @@ public class LobbyService {
     }
 
     @Retryable(
-            retryFor = LobbyOptimisticLockException.class,
+            retryFor = ObjectOptimisticLockingFailureException.class,
             maxAttempts = 3,
             backoff = @Backoff(delay = 50, multiplier = 2)
     )
@@ -235,7 +236,7 @@ public class LobbyService {
 
     // Fallback if retries fail for leaving lobby
     @Recover
-    public LobbyDto removeFromLobbyRecover(LobbyOptimisticLockException ex, Long lobbyId, Long userId) {
+    public LobbyDto removeFromLobbyRecover(ObjectOptimisticLockingFailureException ex, Long lobbyId, Long userId) {
         throw new LobbyOptimisticLockException("Unable to leave lobby due to a conflict. Please try again shortly.");
     }
 
