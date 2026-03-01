@@ -1,10 +1,12 @@
-import type { GameDto } from "@/types/dto/entity/GameDto";
 import type { GameStateDto } from "@/types/dto/entity/GameStateDto";
 import { CELL_COUNT, GRID_SIZE } from "./gameConstants";
 import type { BoardStates, CellState, GameState, PlayerStates } from "@/types/game/GameTypes";
+import type { GameDtoRaw } from "@/types/dto/entity/GameDtoRaw";
+import type { GameStateDtoRaw } from "@/types/dto/entity/GameStateDtoRaw";
+import { mapGameState } from "./mapGameState";
 
 export function normaliseGameState(
-    gameData: GameDto
+    gameData: GameDtoRaw
 ): GameState {
     const playerIds: number[] = [];
     const players: PlayerStates = {};
@@ -34,11 +36,13 @@ export function normaliseGameState(
 }
 
 
-export function fillBoardState(gameState: GameStateDto): CellState[][] {
+export function fillBoardState(gameState: GameStateDtoRaw): CellState[][] {
 
     if (gameState.currentBoardState.length != CELL_COUNT) {
         throw new Error(`Expected board state string to be ${CELL_COUNT} characters long. Instead got ${gameState.currentBoardState.length} characters.`)
     }
+
+    const normalisedGameState: GameStateDto = mapGameState(gameState);
 
     const boardState = [];
 
@@ -46,11 +50,11 @@ export function fillBoardState(gameState: GameStateDto): CellState[][] {
         let boardRow: CellState[] = [];
         for (let x = 0; x < GRID_SIZE; x++) {
             // Map 2D co-ords to 1D array positions
-            let value = gameState.currentBoardState.at((y * 9) + x);
+            let value = normalisedGameState.currentBoardState.at((y * 9) + x);
             if (value === "0") {
                 value = undefined;
             }
-            let notes = gameState.notes[(y * 9) + x];
+            let notes = normalisedGameState.notes[(y * 9) + x];
             boardRow[x] = {value: value, notes: notes};
         }
         boardState.push(boardRow);

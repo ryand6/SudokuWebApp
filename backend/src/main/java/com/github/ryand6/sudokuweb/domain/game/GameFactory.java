@@ -1,10 +1,11 @@
 package com.github.ryand6.sudokuweb.domain.game;
 
+import com.github.ryand6.sudokuweb.domain.game.state.GameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import jakarta.transaction.Transactional;
 
 import java.util.HashSet;

@@ -1,7 +1,11 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.game.LobbyPlayerFactory;
+import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
+import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
@@ -15,7 +19,7 @@ import com.github.ryand6.sudokuweb.exceptions.lobby.UserExistsInActiveLobbyExcep
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -204,9 +208,8 @@ public class LobbyService {
             LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, countdownEvaluationResult.getNewInitiator(), "started the new game countdown.");
             lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
         }
-        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
-        handleCountdownEvaluationResult(lobbyDto, countdownEvaluationResult);
-        return lobbyDto;
+        handleCountdownEvaluationResult(lobby, countdownEvaluationResult);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
     @Transactional
@@ -240,9 +243,8 @@ public class LobbyService {
         // Stop the timer if the player count goes below 2
         CountdownEvaluationResult countdownEvaluationResult = lobby.getLobbyCountdownEntity().evaluateCountdownState();
 
-        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
-        handleCountdownEvaluationResult(lobbyDto, countdownEvaluationResult);
-        return lobbyDto;
+        handleCountdownEvaluationResult(lobby, countdownEvaluationResult);
+        return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
     private void applyHostChangeOrCloseLobby(LobbyEntity lobby) {
@@ -289,7 +291,7 @@ public class LobbyService {
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
-    private void handleCountdownEvaluationResult(LobbyDto lobby, CountdownEvaluationResult countdownEvaluationResult) {
+    private void handleCountdownEvaluationResult(LobbyEntity lobby, CountdownEvaluationResult countdownEvaluationResult) {
         if (countdownEvaluationResult.shouldCountdownUpdate()) {
             taskSchedulerService.scheduleGameCreationTask(lobby, countdownEvaluationResult.getCountdownEndsAt());
         } else if (countdownEvaluationResult.shouldCountdownCancel()) {

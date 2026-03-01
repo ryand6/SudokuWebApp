@@ -2,18 +2,17 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.game.GameFactory;
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
 import com.github.ryand6.sudokuweb.mappers.Impl.GameEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.GameRepository;
+import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,6 @@ public class GameService {
     private final GameRepository gameRepository;
     private final SudokuPuzzleService sudokuPuzzleService;
     private final GameEntityDtoMapper gameEntityDtoMapper;
-    private final LobbyService lobbyService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final SimpMessagingTemplate messagingTemplate;
@@ -36,7 +34,6 @@ public class GameService {
     public GameService(GameRepository gameRepository,
                        SudokuPuzzleService sudokuPuzzleService,
                        GameEntityDtoMapper gameEntityDtoMapper,
-                       LobbyService lobbyService,
                        LobbyWebSocketsService lobbyWebSocketsService,
                        LobbyEntityDtoMapper lobbyEntityDtoMapper,
                        SimpMessagingTemplate messagingTemplate,
@@ -45,7 +42,6 @@ public class GameService {
         this.gameRepository = gameRepository;
         this.sudokuPuzzleService = sudokuPuzzleService;
         this.gameEntityDtoMapper = gameEntityDtoMapper;
-        this.lobbyService = lobbyService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.messagingTemplate = messagingTemplate;
@@ -54,25 +50,23 @@ public class GameService {
     }
 
     @Transactional
-    public GameDto createGameIfNoneActive(LobbyDto lobby) {
+    public GameDto createGameIfNoneActive(LobbyEntity lobby) {
 
         // Exit task if scheduler cancels it
         if (Thread.currentThread().isInterrupted()) {
             throw new GameCreationInterruptedException("Game creation task for Lobby with ID " + lobby.getId() + " interrupted before starting DB operation");
         }
 
-        LobbyEntity lobbyEntity = lobbyService.getLobbyById(lobby.getId());
-
-        if (lobbyEntity.isInGame()) {
+        if (lobby.isInGame()) {
             return null;
         }
-        GameDto game = createGame(lobbyEntity);
-        lobbyEntity.setInGame(true);
-        lobbyEntity.setCurrentGameId(game.getId());
-        lobbyEntity.getLobbyCountdownEntity().resetCountdownIfActive();
+        GameDto game = createGame(lobby);
+        lobby.setInGame(true);
+        lobby.setCurrentGameId(game.getId());
+        lobby.getLobbyCountdownEntity().resetCountdownIfActive();
 
         // Emit notification of lobby update
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lobbyEntity), messagingTemplate);
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lobby), messagingTemplate);
 
         return game;
     }

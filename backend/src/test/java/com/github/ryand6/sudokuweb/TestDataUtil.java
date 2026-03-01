@@ -1,8 +1,12 @@
 package com.github.ryand6.sudokuweb;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
-import com.github.ryand6.sudokuweb.domain.game.GameStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.state.GameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
+import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;

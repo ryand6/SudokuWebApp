@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.repositories.GameStateRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
+import com.github.ryand6.sudokuweb.domain.game.state.GameStateRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

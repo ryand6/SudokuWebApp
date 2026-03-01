@@ -1,13 +1,13 @@
-import type { GameDto } from "@/types/dto/entity/GameDto";
 import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
 import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { GameState } from "@/types/game/GameTypes";
 import { useEffect } from "react";
 import type { NavigateFunction } from "react-router-dom";
 
 export function useNavigateUserWhenInGame(
     lobby: LobbyDto | null | undefined,
     currentUser: UserDto | null | undefined,
-    gameQueryData: GameDto | undefined,
+    gameQueryData: GameState | undefined,
     isLoadingGameData: boolean,
     navigate: NavigateFunction
 ) {
@@ -16,7 +16,7 @@ export function useNavigateUserWhenInGame(
         if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId) return;
 
         if (gameQueryData) {
-            navigate(`/game/${gameQueryData.id}`);
+            navigate(`/game/${gameQueryData.gameId}`);
         }
     }, [lobby, currentUser, gameQueryData, isLoadingGameData, navigate]);
 }

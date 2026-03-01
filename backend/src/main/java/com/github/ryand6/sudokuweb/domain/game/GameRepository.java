@@ -1,0 +1,10 @@
+package com.github.ryand6.sudokuweb.domain.game;
+
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface GameRepository extends JpaRepository<GameEntity, Long> {
+
+}

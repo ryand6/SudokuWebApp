@@ -1,5 +1,8 @@
 package com.github.ryand6.sudokuweb.domain.lobby;
 
+import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyHostNotFoundException;
@@ -87,6 +90,10 @@ public class LobbyEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
 
     // Return the entity record of the new host based on the order in which players joined
     public Optional<UserEntity> determineNextHost() {

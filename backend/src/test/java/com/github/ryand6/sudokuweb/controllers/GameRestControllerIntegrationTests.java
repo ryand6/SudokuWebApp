@@ -6,8 +6,8 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
-import com.github.ryand6.sudokuweb.repositories.UserRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
+import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 

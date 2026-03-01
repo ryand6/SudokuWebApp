@@ -1,9 +1,8 @@
 package com.github.ryand6.sudokuweb.controllers.handlers;
 
-import com.github.ryand6.sudokuweb.dto.ApiErrorDto;
+import com.github.ryand6.sudokuweb.dto.response.ApiErrorDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;

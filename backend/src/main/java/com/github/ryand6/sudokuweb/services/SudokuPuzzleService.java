@@ -4,7 +4,7 @@ import com.github.ryand6.sudokuweb.config.SudokuPuzzleLoader;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleFactory;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

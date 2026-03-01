@@ -1,12 +1,12 @@
-import type { GameDto } from "@/types/dto/entity/GameDto";
 import type { UserDto } from "@/types/dto/entity/UserDto";
-import { isCurrentUserInGame } from "@/utils/error/isCurrentUserInGame";
+import type { GameState } from "@/types/game/GameTypes";
+import { isCurrentUserInGame } from "@/utils/game/isCurrentUserInGame";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export function useValidateGamePlayer(
-    game?: GameDto,
+    game?: GameState,
     currentUser?: UserDto,
     isLeaving?: boolean
 ) {

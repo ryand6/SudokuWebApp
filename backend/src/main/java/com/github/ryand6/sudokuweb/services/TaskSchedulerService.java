@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import org.slf4j.Logger;
@@ -30,14 +31,15 @@ public class TaskSchedulerService {
 
     public TaskSchedulerService(TaskScheduler taskScheduler,
                                 GameService gameService,
-                                LobbyWebSocketsService lobbyWebSocketsService, SimpMessagingTemplate messagingTemplate) {
+                                LobbyWebSocketsService lobbyWebSocketsService,
+                                SimpMessagingTemplate messagingTemplate) {
         this.taskScheduler = taskScheduler;
         this.gameService = gameService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void scheduleGameCreationTask(LobbyDto lobby, Instant countdownEndsAt) {
+    public void scheduleGameCreationTask(LobbyEntity lobby, Instant countdownEndsAt) {
         String taskId = GAME_CREATION_TASK_NAME + lobby.getId();
 
         cancelGameCreationTask(lobby);
@@ -53,7 +55,7 @@ public class TaskSchedulerService {
         scheduledTasks.put(taskId, future);
     }
 
-    public void cancelGameCreationTask(LobbyDto lobby) {
+    public void cancelGameCreationTask(LobbyEntity lobby) {
         String taskId = GAME_CREATION_TASK_NAME + lobby.getId();
         ScheduledFuture<?> oldFuture = scheduledTasks.get(taskId);
 
@@ -64,7 +66,7 @@ public class TaskSchedulerService {
         scheduledTasks.remove(taskId);
     }
 
-    private void createGame(LobbyDto lobby) {
+    private void createGame(LobbyEntity lobby) {
         try {
             GameDto gameDto = gameService.createGameIfNoneActive(lobby);
             if (gameDto != null) {

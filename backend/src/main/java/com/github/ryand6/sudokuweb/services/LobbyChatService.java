@@ -1,16 +1,16 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyChatMessageEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.chat.LobbyChatMessageEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.enums.MessageType;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyChatMessageEntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.LobbyChatMessageRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.chat.LobbyChatMessageRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.validation.ProfanityValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;

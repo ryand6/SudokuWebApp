@@ -4,8 +4,8 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.repositories.UserRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
+import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;

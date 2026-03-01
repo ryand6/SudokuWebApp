@@ -28,7 +28,7 @@ export function GamePage() {
     useHandleGetGameError(isGameError, gameError);
 
     // IMPLEMENT leaveGameHandler
-    //useValidateGamePlayeer(gameData, currentUser, leaveGameHandler.isLeaving);
+    //useValidateGamePlayer(gameState, currentUser, leaveGameHandler.isLeaving);
 
     // IMPLEMENT useHandleGameWsSubscription
 
@@ -40,12 +40,12 @@ export function GamePage() {
 
 
     // map board to sudoku blocks 
-    const sudokuBlocks: CellState[][] = mapBoardToBlocks(gameState.gameStates[currentUser.id]);
+    //const sudokuBlocks: CellState[][] = mapBoardToBlocks(gameState.gameStates[currentUser.id]);
 
     return (
         <div>
             GAME PAGE
-            <SudokuBoard playerGameState={gameState.gameStates[currentUser.id]} />
+            <SudokuBoard boardState={gameState.gameStates[currentUser.id]} playerState={gameState.players[currentUser.id]} />
         </div>
     )
 }

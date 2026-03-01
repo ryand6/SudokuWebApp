@@ -1,13 +1,13 @@
-import type { PlayerState } from "@/pages/GamePage";
 import SudokuCell from "./SudokuCell";
+import type { BoardState, PlayerState } from "@/types/game/GameTypes";
 
 
-export function SudokuBoard({playerGameState}: {playerGameState: PlayerState}) {
+export function SudokuBoard({boardState, playerState}: {boardState: BoardState, playerState: PlayerState}) {
 
     return (
         <div className="">
             <div className="grid grid-cols-9 grid-rows-9 w-200 h-200">
-                {playerGameState.boardState.map((row, r) =>
+                {boardState.map((row, r) =>
                     row.map((cell, c) => {
                         // Tailwind border logic
                         const borderTop = r % 3 === 0 ? "border-t-4 border-black" : "border-t-1 border-black";

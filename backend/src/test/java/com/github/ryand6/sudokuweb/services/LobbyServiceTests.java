@@ -1,10 +1,11 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.game.LobbyPlayerFactory;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyCountdownEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerFactory;
+import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerId;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
@@ -13,8 +14,8 @@ import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.UserExistsInActiveLobbyException;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -341,7 +342,7 @@ public class LobbyServiceTests {
 
         when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
 
-        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(Optional.empty());
+        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(new CountdownEvaluationResult());
 
         when(userService.findUserById(playerLeavingId)).thenReturn(userLeaving);
 
@@ -391,7 +392,7 @@ public class LobbyServiceTests {
 
         when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
 
-        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(Optional.empty());
+        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(new CountdownEvaluationResult());
 
         when(userService.findUserById(playerLeavingId)).thenReturn(userLeaving);
 

@@ -9,10 +9,10 @@ import com.github.ryand6.sudokuweb.mappers.Impl.GameEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.GameStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.SudokuPuzzleEntityDtoMapper;
-import com.github.ryand6.sudokuweb.repositories.GameRepository;
-import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
-import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
-import com.github.ryand6.sudokuweb.repositories.UserRepository;
+import com.github.ryand6.sudokuweb.domain.game.GameRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
+import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.assertThat;

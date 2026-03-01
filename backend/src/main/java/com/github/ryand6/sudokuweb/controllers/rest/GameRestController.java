@@ -33,13 +33,6 @@ public class GameRestController {
         }
     }
 
-    /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
-    active user in the lobby for the new sudokuPuzzleEntity */
-    @PostMapping("/create-game")
-    public ResponseEntity<?> generateSudokuBoard(@Valid @RequestBody GenerateBoardRequestDto generateBoardRequestDto) {
-        return ResponseEntity.ok(gameService.createGameIfNoneActive(generateBoardRequestDto.getLobby()));
-    }
-
     // Get Game DTO using gameId
     @GetMapping("/get-game")
     public ResponseEntity<?> getGame(@RequestParam Long gameId) {
