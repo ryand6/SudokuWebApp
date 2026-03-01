@@ -1,8 +1,8 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.config.SudokuPuzzleLoader;
-import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.domain.factory.SudokuPuzzleFactory;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleFactory;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.repositories.SudokuPuzzleRepository;
 import jakarta.transaction.Transactional;

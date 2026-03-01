@@ -1,6 +1,5 @@
-package com.github.ryand6.sudokuweb.domain.factory;
+package com.github.ryand6.sudokuweb.domain.puzzle;
 
-import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 
 public class SudokuPuzzleFactory {

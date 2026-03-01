@@ -1,6 +1,11 @@
 package com.github.ryand6.sudokuweb;
 
-import com.github.ryand6.sudokuweb.domain.*;
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameStateEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.*;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;

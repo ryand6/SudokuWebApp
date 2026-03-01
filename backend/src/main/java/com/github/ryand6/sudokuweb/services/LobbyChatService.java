@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.LobbyChatMessageEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyChatMessageEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.enums.MessageType;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;

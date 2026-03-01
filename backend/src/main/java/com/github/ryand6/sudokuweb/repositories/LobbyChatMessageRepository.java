@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-import com.github.ryand6.sudokuweb.domain.LobbyChatMessageEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyChatMessageEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;

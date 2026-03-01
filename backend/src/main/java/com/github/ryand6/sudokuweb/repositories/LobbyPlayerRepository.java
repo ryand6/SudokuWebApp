@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-import com.github.ryand6.sudokuweb.domain.LobbyCountdownEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyCountdownEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

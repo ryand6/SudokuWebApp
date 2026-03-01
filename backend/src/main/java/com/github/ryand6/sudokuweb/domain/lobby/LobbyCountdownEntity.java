@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.domain;
+package com.github.ryand6.sudokuweb.domain.lobby;
 
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import jakarta.persistence.*;
@@ -8,6 +8,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
 
 @Getter
@@ -52,13 +53,18 @@ public class LobbyCountdownEntity {
     }
 
     // Method used to determine if and when the countdown should be initiated
-    // Returns the ID of the new initiator if exists
-    public Optional<Long> evaluateCountdownState() {
+    // Returns results of the evaluation, including who initiated
+    public CountdownEvaluationResult evaluateCountdownState() {
+
+        Long newInitiator = null;
+        boolean wasActive = isCountdownActive();
+        Instant oldEnd = countdownEndsAt;
+
         int playerCount = lobbyEntity.getLobbyPlayers().size();
         // Must be at least two players in a lobby to start countdown
         if (playerCount < 2) {
             resetCountdownIfActive();
-            return Optional.empty();
+            return new CountdownEvaluationResult(false, wasActive, countdownEndsAt, null);
         }
 
         // Track number of players that are ready - determines the length of the countdown timer
@@ -80,7 +86,7 @@ public class LobbyCountdownEntity {
         // Reset any active countdown if neither of the required conditions are met
         if (!shouldCountdownBeActive) {
             resetCountdownIfActive();
-            return Optional.empty();
+            return new CountdownEvaluationResult(false, wasActive, countdownEndsAt, null);
         }
 
         int notReadyCount = playerCount - (int) readyCount;
@@ -88,17 +94,18 @@ public class LobbyCountdownEntity {
         // Countdown already started, only update the countdown
         if (countdownInitiatedBy != null) {
             setCountdown(notReadyCount);
-            return Optional.empty();
+            return new CountdownEvaluationResult(!Objects.equals(countdownEndsAt, oldEnd), false, countdownEndsAt, null);
         }
 
-        Optional<Long> newInitiator = determineCountdownInitiator(hostReady, hostPlayer);
+        Optional<Long> newInitiatorOptional = determineCountdownInitiator(hostReady, hostPlayer);
 
-        newInitiator.ifPresent(id -> {
-            countdownInitiatedBy = id;
+        if (newInitiatorOptional.isPresent()) {
+            newInitiator = newInitiatorOptional.get();
+            countdownInitiatedBy = newInitiator;
             setCountdown(notReadyCount);
-        });
+        }
 
-        return newInitiator;
+        return new CountdownEvaluationResult(!Objects.equals(countdownEndsAt, oldEnd), false, countdownEndsAt, newInitiator);
     }
 
     // Used to initiate or update countdown and set necessary settings - if more players ready up, the countdown is updated

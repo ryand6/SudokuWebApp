@@ -1,13 +1,14 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.GameEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.domain.factory.GameFactory;
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameFactory;
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
 import com.github.ryand6.sudokuweb.mappers.Impl.GameEntityDtoMapper;
@@ -54,6 +55,12 @@ public class GameService {
 
     @Transactional
     public GameDto createGameIfNoneActive(LobbyDto lobby) {
+
+        // Exit task if scheduler cancels it
+        if (Thread.currentThread().isInterrupted()) {
+            throw new GameCreationInterruptedException("Game creation task for Lobby with ID " + lobby.getId() + " interrupted before starting DB operation");
+        }
+
         LobbyEntity lobbyEntity = lobbyService.getLobbyById(lobby.getId());
 
         if (lobbyEntity.isInGame()) {
@@ -66,8 +73,6 @@ public class GameService {
 
         // Emit notification of lobby update
         lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lobbyEntity), messagingTemplate);
-
-        System.out.println("\n\n\n" + game.toString() + "\n\n\n");
 
         return game;
     }

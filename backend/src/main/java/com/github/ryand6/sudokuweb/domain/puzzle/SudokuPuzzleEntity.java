@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.domain;
+package com.github.ryand6.sudokuweb.domain.puzzle;
 
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import jakarta.persistence.*;

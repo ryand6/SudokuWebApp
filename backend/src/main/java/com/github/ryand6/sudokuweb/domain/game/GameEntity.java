@@ -1,5 +1,7 @@
-package com.github.ryand6.sudokuweb.domain;
+package com.github.ryand6.sudokuweb.domain.game;
 
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

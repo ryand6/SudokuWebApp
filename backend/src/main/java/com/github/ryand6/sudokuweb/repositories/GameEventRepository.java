@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-import com.github.ryand6.sudokuweb.domain.GameEventEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameEventEntity;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

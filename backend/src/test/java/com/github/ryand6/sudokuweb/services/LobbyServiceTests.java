@@ -1,7 +1,11 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.*;
-import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
+import com.github.ryand6.sudokuweb.domain.game.LobbyPlayerFactory;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyCountdownEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;

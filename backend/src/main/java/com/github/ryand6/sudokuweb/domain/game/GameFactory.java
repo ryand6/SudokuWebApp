@@ -1,7 +1,8 @@
-package com.github.ryand6.sudokuweb.domain.factory;
+package com.github.ryand6.sudokuweb.domain.game;
 
-import com.github.ryand6.sudokuweb.domain.*;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.repositories.LobbyRepository;
 import jakarta.transaction.Transactional;

@@ -1,7 +1,8 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.*;
-import com.github.ryand6.sudokuweb.domain.factory.LobbyPlayerFactory;
+import com.github.ryand6.sudokuweb.domain.game.LobbyPlayerFactory;
+import com.github.ryand6.sudokuweb.domain.lobby.*;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
@@ -25,7 +26,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.github.ryand6.sudokuweb.domain.LobbyEntity.LOBBY_SIZE;
+import static com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity.LOBBY_SIZE;
 
 @Service
 public class LobbyService {
@@ -38,6 +39,7 @@ public class LobbyService {
     private final PrivateLobbyTokenService privateLobbyTokenService;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final MembershipService membershipService;
+    private final TaskSchedulerService taskSchedulerService;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
@@ -46,7 +48,8 @@ public class LobbyService {
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
                         PrivateLobbyTokenService privateLobbyTokenService,
                         SimpMessagingTemplate simpMessagingTemplate,
-                        MembershipService membershipService) {
+                        MembershipService membershipService,
+                        TaskSchedulerService taskSchedulerService) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
         this.lobbyChatService = lobbyChatService;
@@ -55,6 +58,7 @@ public class LobbyService {
         this.privateLobbyTokenService = privateLobbyTokenService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.membershipService = membershipService;
+        this.taskSchedulerService = taskSchedulerService;
     }
 
     @Transactional
@@ -195,12 +199,14 @@ public class LobbyService {
         // Lobby Player managed by JPA therefore update will apply
         lobbyPlayer.setStatus(lobbyStatus);
         // Handle any countdown updates that may be required
-        Optional<Long> newInitiator = lobby.getLobbyCountdownEntity().evaluateCountdownState();
-        newInitiator.ifPresent(id -> {
-            LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, id, "started the new game countdown.");
+        CountdownEvaluationResult countdownEvaluationResult = lobby.getLobbyCountdownEntity().evaluateCountdownState();
+        if (countdownEvaluationResult.getNewInitiator() != null) {
+            LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, countdownEvaluationResult.getNewInitiator(), "started the new game countdown.");
             lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
-        });
-        return lobbyEntityDtoMapper.mapToDto(lobby);
+        }
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+        handleCountdownEvaluationResult(lobbyDto, countdownEvaluationResult);
+        return lobbyDto;
     }
 
     @Transactional
@@ -232,8 +238,11 @@ public class LobbyService {
         membershipService.removeLobbyPlayer(lobbyId, userId);
 
         // Stop the timer if the player count goes below 2
-        lobby.getLobbyCountdownEntity().evaluateCountdownState();
-        return lobbyEntityDtoMapper.mapToDto(lobby);
+        CountdownEvaluationResult countdownEvaluationResult = lobby.getLobbyCountdownEntity().evaluateCountdownState();
+
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+        handleCountdownEvaluationResult(lobbyDto, countdownEvaluationResult);
+        return lobbyDto;
     }
 
     private void applyHostChangeOrCloseLobby(LobbyEntity lobby) {
@@ -278,6 +287,14 @@ public class LobbyService {
     public LobbyDto getLobbyDtoById(Long lobbyId) {
         LobbyEntity lobby = getLobbyById(lobbyId);
         return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    private void handleCountdownEvaluationResult(LobbyDto lobby, CountdownEvaluationResult countdownEvaluationResult) {
+        if (countdownEvaluationResult.shouldCountdownUpdate()) {
+            taskSchedulerService.scheduleGameCreationTask(lobby, countdownEvaluationResult.getCountdownEndsAt());
+        } else if (countdownEvaluationResult.shouldCountdownCancel()) {
+            taskSchedulerService.cancelGameCreationTask(lobby);
+        }
     }
 
 }

@@ -1,6 +1,11 @@
 package com.github.ryand6.sudokuweb.domain;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyCountdownEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

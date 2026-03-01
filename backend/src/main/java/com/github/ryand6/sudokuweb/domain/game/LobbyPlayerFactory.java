@@ -1,9 +1,9 @@
-package com.github.ryand6.sudokuweb.domain.factory;
+package com.github.ryand6.sudokuweb.domain.game;
 
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
-import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 
 public class LobbyPlayerFactory {
 

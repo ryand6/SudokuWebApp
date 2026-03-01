@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.entity;
 
-import com.github.ryand6.sudokuweb.domain.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyPlayerId;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import lombok.*;
 

@@ -1,8 +1,7 @@
-package com.github.ryand6.sudokuweb.domain;
+package com.github.ryand6.sudokuweb.domain.lobby;
 
-import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.enums.LobbyStatus;
-import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyHostNotFoundException;
 import jakarta.persistence.*;
 import lombok.*;

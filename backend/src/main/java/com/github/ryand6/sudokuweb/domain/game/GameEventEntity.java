@@ -1,5 +1,6 @@
-package com.github.ryand6.sudokuweb.domain;
+package com.github.ryand6.sudokuweb.domain.game;
 
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.GameEventType;
 import jakarta.persistence.*;
 import lombok.*;

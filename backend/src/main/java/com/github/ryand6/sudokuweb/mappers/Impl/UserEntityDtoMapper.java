@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers.Impl;
 
-import com.github.ryand6.sudokuweb.domain.UserEntity;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers.Impl;
 
-import com.github.ryand6.sudokuweb.domain.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
 import com.github.ryand6.sudokuweb.repositories.GameStateRepository;

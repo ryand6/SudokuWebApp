@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.repositories;
 
-import com.github.ryand6.sudokuweb.domain.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

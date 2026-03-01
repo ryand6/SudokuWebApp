@@ -1,10 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
-import com.github.ryand6.sudokuweb.domain.ScoreEntity;
-import com.github.ryand6.sudokuweb.dto.entity.ScoreDto;
 import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
-import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers.Impl;
 
-import com.github.ryand6.sudokuweb.domain.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
 import com.github.ryand6.sudokuweb.dto.entity.ScoreDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
 import org.springframework.stereotype.Component;

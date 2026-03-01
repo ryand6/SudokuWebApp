@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.domain;
+package com.github.ryand6.sudokuweb.domain.score;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,5 +1,6 @@
-package com.github.ryand6.sudokuweb.domain;
+package com.github.ryand6.sudokuweb.domain.user;
 
+import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
