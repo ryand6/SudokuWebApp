@@ -2,8 +2,8 @@ package com.github.ryand6.sudokuweb.controllers.ws;
 
 import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.request.LobbyChatMessageRequestDto;
-import com.github.ryand6.sudokuweb.services.LobbyChatService;
-import com.github.ryand6.sudokuweb.services.LobbyWebSocketsService;
+import com.github.ryand6.sudokuweb.services.lobby.LobbyChatService;
+import com.github.ryand6.sudokuweb.services.lobby.LobbyWebSocketsService;
 import jakarta.validation.Valid;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;

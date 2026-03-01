@@ -100,6 +100,11 @@
 			<version>4.3.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- Used for retry capabilities -->
+		<dependency>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

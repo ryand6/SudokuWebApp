@@ -30,6 +30,7 @@ public class ErrorMapping {
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
             Map.entry(LobbySettingsLockedException.class, HttpStatus.CONFLICT),
+            Map.entry(LobbyOptimisticLockException.class, HttpStatus.CONFLICT),
             Map.entry(UsernameTakenException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyInactiveException.class, HttpStatus.GONE),
             Map.entry(OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED),

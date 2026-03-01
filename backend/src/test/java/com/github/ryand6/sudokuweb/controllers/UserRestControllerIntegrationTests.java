@@ -4,20 +4,14 @@ import com.github.ryand6.sudokuweb.TestOAuthUtil;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
-import com.github.ryand6.sudokuweb.services.UserService;
+import com.github.ryand6.sudokuweb.services.user.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -26,9 +20,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 
 class UserRestControllerIntegrationTests extends AbstractControllerIntegrationTests {
