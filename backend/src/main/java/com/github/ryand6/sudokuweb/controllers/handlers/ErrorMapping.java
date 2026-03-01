@@ -7,6 +7,7 @@ import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundExce
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerAlreadyExistsException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.InvalidLobbyPublicStatusParameterException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
@@ -38,6 +39,7 @@ public class ErrorMapping {
             Map.entry(UserExistsInActiveLobbyException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(InvalidLobbyPublicStatusParameterException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageProfanityException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(LobbyPlayerAlreadyExistsException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS)
     );
 

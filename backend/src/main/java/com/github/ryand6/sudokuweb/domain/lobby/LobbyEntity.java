@@ -5,7 +5,10 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyFullException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyHostNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyInactiveException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerAlreadyExistsException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -94,6 +97,19 @@ public class LobbyEntity {
     //#######################//
     // Domain Business Logic //
     //#######################//
+
+    // Domain invariant
+    public void validateIfPlayerCanJoin(Long userId) {
+        if (!isActive) {
+            throw new LobbyInactiveException("Lobby with ID " + id + " is no longer active");
+        }
+        if (lobbyPlayers.size() >= LOBBY_SIZE) {
+            throw new LobbyFullException("Lobby with ID " + id + " is currently full");
+        }
+        if (lobbyPlayers.stream().anyMatch((lp) -> lp.getUser().getId().equals(userId))) {
+            throw new LobbyPlayerAlreadyExistsException("You are already a player in the lobby");
+        }
+    }
 
     // Return the entity record of the new host based on the order in which players joined
     public Optional<UserEntity> determineNextHost() {

@@ -66,12 +66,14 @@ public class LobbyService {
 
     @Transactional
     public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Long requesterId) {
-        Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(requesterId);
-        if (isUserInActiveLobby.isPresent()) {
-            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
+        Set<LobbyEntity> activeLobbies = lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(requesterId);
+        if (!activeLobbies.isEmpty()) {
+            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby called " + activeLobbies.iterator().next().getLobbyName() + ". Players can only be in one active lobby at a time.");
         }
 
         LobbyEntity newLobby = new LobbyEntity();
+        newLobby.setActive(true);
+
         UserEntity requester = userService.findUserById(requesterId);
         newLobby.setLobbyName(lobbyName);
         // requester of lobby creation becomes the host
@@ -86,7 +88,6 @@ public class LobbyService {
         newLobby.setLobbyCountdownEntity(lobbyCountdown);
         lobbyCountdown.setLobbyEntity(newLobby);
 
-        newLobby.setActive(true);
         // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
         lobbyRepository.saveAndFlush(newLobby);
         addPlayerToLobby(newLobby, requester);
@@ -114,14 +115,12 @@ public class LobbyService {
         if (publicLobbyId == null || userId == null) {
             throw new IllegalArgumentException("Public lobby ID and requester user ID must be provided");
         }
-        Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(userId);
-        if (isUserInActiveLobby.isPresent()) {
-            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
+        Set<LobbyEntity> activeLobbies = lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(userId);
+        if (!activeLobbies.isEmpty()) {
+            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby called " + activeLobbies.iterator().next().getLobbyName() + ". Players can only be in one active lobby at a time.");
         }
-
         LobbyEntity lobby = getLobbyById(publicLobbyId);
-        // Validate lobby state
-        validateLobbyForJoining(lobby, publicLobbyId);
+        lobby.validateIfPlayerCanJoin(userId);
         // Add user to lobby
         UserEntity user = userService.findUserById(userId);
         addPlayerToLobby(lobby, user);
@@ -146,16 +145,14 @@ public class LobbyService {
         if (token == null || userId == null) {
             throw new IllegalArgumentException("Private lobby token and requester user ID must be provided");
         }
-        Optional<LobbyEntity> isUserInActiveLobby = lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(userId);
-        if (isUserInActiveLobby.isPresent()) {
-            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby with ID " + isUserInActiveLobby.get().getId() + ". Players can only be in one active lobby at a time.");
+        Set<LobbyEntity> activeLobbies = lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(userId);
+        if (!activeLobbies.isEmpty()) {
+            throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby called " + activeLobbies.iterator().next().getLobbyName() + ". Players can only be in one active lobby at a time.");
         }
         // Determine lobby ID and retrieve lobby
         Long lobbyId = resolvePrivateLobbyId(token);
-        // ADD RETRY LOGIC
         LobbyEntity lobby = getLobbyById(lobbyId);
-        // Validate lobby state
-        validateLobbyForJoining(lobby, lobbyId);
+        lobby.validateIfPlayerCanJoin(userId);
         // Add user to lobby
         UserEntity user = userService.findUserById(userId);
         addPlayerToLobby(lobby, user);
@@ -171,22 +168,6 @@ public class LobbyService {
     // Using private lobby token, retrieve the ID of the associated private lobby
     private Long resolvePrivateLobbyId(String token) {
         return privateLobbyTokenService.joinPrivateLobbyWithToken(token);
-    }
-
-//    // Get lobby and lock it from concurrent editing
-//    public LobbyEntity findAndLockLobby(Long lobbyId) {
-//        return lobbyRepository.findByIdForUpdate(lobbyId)
-//                .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist"));
-//    }
-
-    // Ensure when attempting to join lobby that it is active and not full
-    private void validateLobbyForJoining(LobbyEntity lobby, Long lobbyId) {
-        if (!lobby.isActive()) {
-            throw new LobbyInactiveException("Lobby with ID " + lobbyId + " is no longer active");
-        }
-        if (lobby.getLobbyPlayers().size() >= LOBBY_SIZE) {
-            throw new LobbyFullException("Lobby with ID " + lobbyId + " is currently full");
-        }
     }
 
     // Create a LobbyPlayer entity instance and add them to the lobby when joining
@@ -262,8 +243,10 @@ public class LobbyService {
     // Register the Lobby inactive
     public void closeLobby(LobbyEntity lobby) {
         lobby.setActive(false);
-        // Delete the lobby from the DB, removing all associated lobby messages, games, game states
-        lobbyRepository.deleteById(lobby.getId());
+
+        // CONSIDER WHETHER TO DELETE OR SOFT DELETE - want to keep game history
+        //lobbyRepository.deleteById(lobby.getId());
+
         // Update cache
         membershipService.removeLobby(lobby.getId());
     }
