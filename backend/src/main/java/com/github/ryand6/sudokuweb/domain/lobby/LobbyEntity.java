@@ -5,6 +5,8 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.ExistingActiveGameException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyFullException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyHostNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyInactiveException;
@@ -98,7 +100,6 @@ public class LobbyEntity {
     // Domain Business Logic //
     //#######################//
 
-    // Domain invariant
     public void validateIfPlayerCanJoin(Long userId) {
         if (!isActive) {
             throw new LobbyInactiveException("Lobby with ID " + id + " is no longer active");
@@ -108,6 +109,18 @@ public class LobbyEntity {
         }
         if (lobbyPlayers.stream().anyMatch((lp) -> lp.getUser().getId().equals(userId))) {
             throw new LobbyPlayerAlreadyExistsException("You are already a player in the lobby");
+        }
+    }
+
+    public void validateGameCreation() {
+        if (!isActive) {
+            throw new LobbyInactiveException("Lobby with ID " + id + " is no longer active");
+        }
+        if (inGame) {
+            throw new ExistingActiveGameException("Cannot create game due to existing active game in lobby with id " + id);
+        }
+        if (lobbyPlayers.size() > 4) {
+            throw new TooManyActivePlayersException("Cannot create game: Lobby with id " + id + " has more than 4 active players.");
         }
     }
 

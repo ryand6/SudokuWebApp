@@ -3,7 +3,7 @@ package com.github.ryand6.sudokuweb.mappers.Impl;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.dto.entity.GameDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
-import com.github.ryand6.sudokuweb.domain.game.state.GameStateRepository;
+import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
 import org.springframework.stereotype.Component;
@@ -15,20 +15,20 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
 
     private final LobbyRepository lobbyRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
-    private final GameStateRepository gameStateRepository;
+    private final GamePlayerStateRepository gamePlayerStateRepository;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final SudokuPuzzleEntityDtoMapper sudokuPuzzleEntityDtoMapper;
     private final GameStateEntityDtoMapper gameStateEntityDtoMapper;
 
     public GameEntityDtoMapper(LobbyRepository lobbyRepository,
                                SudokuPuzzleRepository sudokuPuzzleRepository,
-                               GameStateRepository gameStateRepository,
+                               GamePlayerStateRepository gamePlayerStateRepository,
                                LobbyEntityDtoMapper lobbyEntityDtoMapper,
                                SudokuPuzzleEntityDtoMapper sudokuPuzzleEntityDtoMapper,
                                GameStateEntityDtoMapper gameStateEntityDtoMapper) {
         this.lobbyRepository = lobbyRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
-        this.gameStateRepository = gameStateRepository;
+        this.gamePlayerStateRepository = gamePlayerStateRepository;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.sudokuPuzzleEntityDtoMapper = sudokuPuzzleEntityDtoMapper;
         this.gameStateEntityDtoMapper = gameStateEntityDtoMapper;

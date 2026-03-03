@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.domain.lobby.player;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
+import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerStatusUpdatesLockedException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -66,6 +67,16 @@ public class LobbyPlayerEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    public void validateStatusChange() {
+        if (lobby.isInGame()) {
+            throw new LobbyPlayerStatusUpdatesLockedException("Lobby player status updates are locked whilst their is an active game");
+        }
     }
 
     // Sets the player's lobby status and either sets the ready time if the status = READY, or removes it

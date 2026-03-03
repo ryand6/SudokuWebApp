@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.domain.game.state;
 
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
-import com.github.ryand6.sudokuweb.domain.game.state.GameStateRepository;
+import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GameStateRepositoryIntegrationTests extends AbstractIntegrationTest {
 
-    private final GameStateRepository underTest;
+    private final GamePlayerStateRepository underTest;
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final LobbyRepository lobbyRepository;
@@ -20,7 +20,7 @@ public class GameStateRepositoryIntegrationTests extends AbstractIntegrationTest
 
     @Autowired
     public GameStateRepositoryIntegrationTests(
-            GameStateRepository underTest,
+            GamePlayerStateRepository underTest,
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
             LobbyRepository lobbyRepository,

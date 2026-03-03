@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.domain.lobby.settings;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
+import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,5 +40,15 @@ public class LobbySettingsEntity {
 
     @Version
     private Long version;
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    public void validateSettingsUpdates() {
+        if (lobbyEntity.getLobbyCountdownEntity().isCountdownActive()) {
+            throw new LobbySettingsLockedException("Cannot update settings whilst the countdown is active.");
+        }
+    }
 
 }

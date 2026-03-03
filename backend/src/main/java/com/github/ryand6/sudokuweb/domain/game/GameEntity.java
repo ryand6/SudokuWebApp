@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.game;
 
-import com.github.ryand6.sudokuweb.domain.game.state.GameStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import jakarta.persistence.*;
@@ -38,7 +38,7 @@ public class GameEntity {
     // No more players can join once the game has started, therefore fixed amount of
     // game states per game
     @OneToMany(mappedBy = "gameEntity", cascade = CascadeType.ALL)
-    private Set<GameStateEntity> gameStateEntities;
+    private Set<GamePlayerStateEntity> gameStateEntities;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities
     @Override

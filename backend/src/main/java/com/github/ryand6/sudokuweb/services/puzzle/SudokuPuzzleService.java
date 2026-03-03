@@ -50,7 +50,6 @@ public class SudokuPuzzleService {
     // Get list of existing puzzles based on difficulty
     private List<String> getListOfPuzzles(Difficulty difficulty) {
         String difficultyString = difficulty.getProperCase();
-        List<String> puzzleDetails = new ArrayList<>();
         List<String> listOfPuzzles = new ArrayList<>();
         switch (difficultyString) {
             case "Easy":

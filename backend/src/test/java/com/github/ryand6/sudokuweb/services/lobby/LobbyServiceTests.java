@@ -77,7 +77,7 @@ public class LobbyServiceTests {
     @Test
     public void createNewLobby_successfulCreation() {
 
-        when(lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(anyLong())).thenReturn(Optional.empty());
+        when(lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(anyLong())).thenReturn(Set.of());
 
         UserEntity user = new UserEntity();
         user.setId(1L);
@@ -160,7 +160,7 @@ public class LobbyServiceTests {
         LobbyEntity lobby = new LobbyEntity();
         lobby.setId(1L);
 
-        when(lobbyRepository.findFirstByIsActiveTrueAndLobbyPlayers_User_Id(userId)).thenReturn(Optional.of(lobby));
+        when(lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(anyLong())).thenReturn(Set.of(lobby));
 
         UserExistsInActiveLobbyException ex = assertThrows(UserExistsInActiveLobbyException.class, () -> {
             lobbyService.joinLobby(userId, lobbyId);

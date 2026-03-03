@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
-import com.github.ryand6.sudokuweb.domain.game.state.GameStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
@@ -158,8 +158,8 @@ public final class TestDataUtil {
         return lobby;
     }
 
-    public static GameStateEntity createTestGameStateA(final GameEntity gameEntity, final UserEntity userEntity) {
-        return GameStateEntity.builder().
+    public static GamePlayerStateEntity createTestGameStateA(final GameEntity gameEntity, final UserEntity userEntity) {
+        return GamePlayerStateEntity.builder().
                 gameEntity(gameEntity).
                 userEntity(userEntity).
                 currentBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
@@ -168,8 +168,8 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static GameStateEntity createTestGameStateB(final GameEntity gameEntity, final UserEntity userEntity) {
-        return GameStateEntity.builder().
+    public static GamePlayerStateEntity createTestGameStateB(final GameEntity gameEntity, final UserEntity userEntity) {
+        return GamePlayerStateEntity.builder().
                 gameEntity(gameEntity).
                 userEntity(userEntity).
                 currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020").
@@ -178,8 +178,8 @@ public final class TestDataUtil {
                 build();
     }
 
-    public static GameStateEntity createTestGameStateC(final GameEntity gameEntity, final UserEntity userEntity) {
-        return GameStateEntity.builder().
+    public static GamePlayerStateEntity createTestGameStateC(final GameEntity gameEntity, final UserEntity userEntity) {
+        return GamePlayerStateEntity.builder().
                 gameEntity(gameEntity).
                 userEntity(userEntity).
                 currentBoardState("750000021630020800020937005000095000902704603000260000200853040005040086840000030").

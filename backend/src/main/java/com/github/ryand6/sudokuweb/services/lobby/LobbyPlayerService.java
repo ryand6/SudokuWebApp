@@ -39,6 +39,7 @@ public class LobbyPlayerService {
     public LobbyDto updateLobbyPlayerStatus(Long lobbyId, Long userId, LobbyStatus lobbyStatus) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
         LobbyPlayerEntity lobbyPlayer = lobbyService.findLobbyPlayer(lobby, userId);
+        lobbyPlayer.validateStatusChange();
         // Lobby Player managed by JPA therefore update will apply
         lobbyPlayer.setStatus(lobbyStatus);
         // Handle any countdown updates that may be required

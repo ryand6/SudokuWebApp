@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.domain.game.state;
+package com.github.ryand6.sudokuweb.domain.game.player.state;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
@@ -13,7 +13,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "game_state")
-public class GameStateEntity {
+public class GamePlayerStateEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_id_seq")
@@ -46,8 +46,8 @@ public class GameStateEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GameStateEntity gameStateEntity = (GameStateEntity) o;
-        return id != null && id.equals(gameStateEntity.id);
+        GamePlayerStateEntity gamePlayerStateEntity = (GamePlayerStateEntity) o;
+        return id != null && id.equals(gamePlayerStateEntity.id);
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users

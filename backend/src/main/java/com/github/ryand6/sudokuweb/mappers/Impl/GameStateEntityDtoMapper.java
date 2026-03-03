@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers.Impl;
 
-import com.github.ryand6.sudokuweb.domain.game.state.GameStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.GameStateDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
@@ -9,7 +9,7 @@ import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GameStateEntityDtoMapper implements EntityDtoMapper<GameStateEntity, GameStateDto> {
+public class GameStateEntityDtoMapper implements EntityDtoMapper<GamePlayerStateEntity, GameStateDto> {
 
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
@@ -24,16 +24,16 @@ public class GameStateEntityDtoMapper implements EntityDtoMapper<GameStateEntity
     }
 
     @Override
-    public GameStateDto mapToDto(GameStateEntity gameStateEntity) {
-        UserEntity user = gameStateEntity.getUserEntity();
+    public GameStateDto mapToDto(GamePlayerStateEntity gamePlayerStateEntity) {
+        UserEntity user = gamePlayerStateEntity.getUserEntity();
         return GameStateDto.builder()
-                .id(gameStateEntity.getId())
-                .gameId(gameStateEntity.getGameEntity().getId())
+                .id(gamePlayerStateEntity.getId())
+                .gameId(gamePlayerStateEntity.getGameEntity().getId())
                 .user(userEntityDtoMapper.mapToDto(user))
-                .score(gameStateEntity.getScore())
-                .playerColour(gameStateEntity.getPlayerColour())
-                .currentBoardState(gameStateEntity.getCurrentBoardState())
-                .notes(gameStateEntity.getNotes())
+                .score(gamePlayerStateEntity.getScore())
+                .playerColour(gamePlayerStateEntity.getPlayerColour())
+                .currentBoardState(gamePlayerStateEntity.getCurrentBoardState())
+                .notes(gamePlayerStateEntity.getNotes())
                 .build();
     }
 

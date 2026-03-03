@@ -34,10 +34,8 @@ public class LobbySettingsService {
     @Transactional
     public LobbyDto updateLobbyDifficulty(Long lobbyId, Difficulty difficulty) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
-        if (lobby.getLobbyCountdownEntity().isCountdownActive()) {
-            throw new LobbySettingsLockedException("Cannot update settings whilst the countdown is active.");
-        }
         LobbySettingsEntity lobbySettings = lobby.getLobbySettingsEntity();
+        lobbySettings.validateSettingsUpdates();
         lobbySettings.setDifficulty(difficulty);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
@@ -56,10 +54,8 @@ public class LobbySettingsService {
     @Transactional
     public LobbyDto updateLobbyTimeLimit(Long lobbyId, TimeLimitPreset timeLimit) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
-        if (lobby.getLobbyCountdownEntity().isCountdownActive()) {
-            throw new LobbySettingsLockedException("Cannot update settings whilst the countdown is active.");
-        }
         LobbySettingsEntity lobbySettings = lobby.getLobbySettingsEntity();
+        lobbySettings.validateSettingsUpdates();
         lobbySettings.setTimeLimit(timeLimit);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }

@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.game;
 
-import com.github.ryand6.sudokuweb.domain.game.state.GameStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
@@ -33,9 +33,9 @@ public class GameFactory {
         Set<LobbyPlayerEntity> activeLobbyPlayers = lobbyEntity.getLobbyPlayers();
 
         // Create GameState objects for each active user in the game
-        Set<GameStateEntity> gameStateEntities = new HashSet<>();
+        Set<GamePlayerStateEntity> gameStateEntities = new HashSet<>();
         for (LobbyPlayerEntity lobbyPlayerEntity : activeLobbyPlayers) {
-            GameStateEntity state = new GameStateEntity();
+            GamePlayerStateEntity state = new GamePlayerStateEntity();
             state.setUserEntity(lobbyPlayerEntity.getUser());
             state.setGameEntity(newGame);
             // Board state starts with the initial sudokuPuzzleEntity

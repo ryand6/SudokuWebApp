@@ -3,6 +3,8 @@ package com.github.ryand6.sudokuweb.domain.lobby.chat;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.MessageType;
+import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -50,5 +52,25 @@ public class LobbyChatMessageEntity {
     @Column(name = "message_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private MessageType messageType;
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    // Validate if user can send another message in the lobby chat yet (5 second cool down period)
+    public void validateMessageTime(Instant lastMessageTime) {
+        if (lastMessageTime == null) {
+            return;
+        }
+        // User must wait 5 seconds before another message can be sent
+        Long timeSinceMessage = Instant.now().getEpochSecond() - lastMessageTime.getEpochSecond();
+        if (timeSinceMessage < 5) {
+            Long remainingSeconds = 5 - timeSinceMessage;
+            throw new MessageTooSoonException(
+                    "Please wait " + remainingSeconds + " more seconds before sending another message",
+                    remainingSeconds
+            );
+        }
+    }
 
 }

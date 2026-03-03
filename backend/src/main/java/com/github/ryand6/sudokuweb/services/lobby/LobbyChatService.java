@@ -27,21 +27,15 @@ import java.util.stream.Collectors;
 @Service
 public class LobbyChatService {
 
-    private final UserService userService;
-    private final LobbyRepository lobbyRepository;
     private final LobbyPlayerRepository lobbyPlayerRepository;
     private final LobbyChatMessageRepository lobbyChatMessageRepository;
     private final LobbyChatMessageEntityDtoMapper lobbyChatMessageEntityDtoMapper;
     private final ProfanityValidator profanityValidator;
 
-    public LobbyChatService(UserService userService,
-                            LobbyRepository lobbyRepository,
-                            LobbyPlayerRepository lobbyPlayerRepository,
+    public LobbyChatService(LobbyPlayerRepository lobbyPlayerRepository,
                             LobbyChatMessageRepository lobbyChatMessageRepository,
                             LobbyChatMessageEntityDtoMapper lobbyChatMessageEntityDtoMapper,
                             ProfanityValidator profanityValidator) {
-        this.userService = userService;
-        this.lobbyRepository = lobbyRepository;
         this.lobbyPlayerRepository = lobbyPlayerRepository;
         this.lobbyChatMessageRepository = lobbyChatMessageRepository;
         this.lobbyChatMessageEntityDtoMapper = lobbyChatMessageEntityDtoMapper;
@@ -68,13 +62,11 @@ public class LobbyChatService {
             throw new LobbyPlayerNotFoundException("Lobby Player with Lobby ID " + lobbyId + " and User ID " + userId + " does not exist");
         }
         LobbyPlayerEntity lobbyPlayerRequester = lobbyPlayerRequesterOptional.get();
+        LobbyChatMessageEntity lobbyChatMessage = new LobbyChatMessageEntity();
         Instant lastMessageTime = lobbyPlayerRequester.getLobbyMessageTimestamp();
-        if (lastMessageTime != null) {
-            validateMessageTime(lastMessageTime);
-        }
+        lobbyChatMessage.validateMessageTime(lastMessageTime);
         LobbyPlayerEntity updatedLobbyPlayerRequester = updateLobbyMessageTime(lobbyPlayerRequester);
         lobbyPlayerRepository.save(updatedLobbyPlayerRequester);
-        LobbyChatMessageEntity lobbyChatMessage = new LobbyChatMessageEntity();
         lobbyChatMessage.setLobbyEntity(updatedLobbyPlayerRequester.getLobby());
         lobbyChatMessage.setUserEntity(updatedLobbyPlayerRequester.getUser());
         lobbyChatMessage.setMessage(message);
@@ -108,19 +100,6 @@ public class LobbyChatService {
         Instant now = Instant.now();
         lobbyPlayer.setLobbyMessageTimestamp(now);
         return lobbyPlayer;
-    }
-
-    // Validate if user can send another message in the lobby chat yet (5 second cool down period)
-    private void validateMessageTime(Instant lastMessageTime) {
-        // User must wait 5 seconds before another message can be sent
-        Long timeSinceMessage = Instant.now().getEpochSecond() - lastMessageTime.getEpochSecond();
-        if (timeSinceMessage < 5) {
-            Long remainingSeconds = 5 - timeSinceMessage;
-            throw new MessageTooSoonException(
-                    "Please wait " + remainingSeconds + " more seconds before sending another message",
-                    remainingSeconds
-            );
-        }
     }
 
     // Check for profanity in message contents

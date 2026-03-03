@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
-import com.github.ryand6.sudokuweb.domain.game.state.GameStateRepository;
+import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
@@ -13,7 +13,6 @@ import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
-import com.github.ryand6.sudokuweb.services.game.GameService;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class GameServiceIntegrationTests extends AbstractIntegrationTest {
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final GameRepository gameRepository;
-    private final GameStateRepository gameStateRepository;
+    private final GamePlayerStateRepository gamePlayerStateRepository;
 
     @Autowired
     public GameServiceIntegrationTests(
@@ -39,13 +38,13 @@ public class GameServiceIntegrationTests extends AbstractIntegrationTest {
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
             GameRepository gameRepository,
-            GameStateRepository gameStateRepository) {
+            GamePlayerStateRepository gamePlayerStateRepository) {
         this.gameService = gameService;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
         this.gameRepository = gameRepository;
-        this.gameStateRepository = gameStateRepository;
+        this.gamePlayerStateRepository = gamePlayerStateRepository;
     }
 
     @MockBean

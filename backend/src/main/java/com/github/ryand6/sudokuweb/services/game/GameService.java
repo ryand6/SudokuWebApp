@@ -85,9 +85,7 @@ public class GameService {
         // Retrieve all active users in the game
         Set<LobbyPlayerEntity> activeLobbyPlayers = lobby.getLobbyPlayers();
 
-        if (activeLobbyPlayers.size() > 4) {
-            throw new TooManyActivePlayersException("Cannot create game: Lobby with id " + lobby.getId() + " has more than 4 active players.");
-        }
+        lobby.validateGameCreation();
 
         // Call static method to generate sudokuPuzzleEntity, retrieving both the sudokuPuzzleEntity and solution as a string
         // interpretation of a nested int array
