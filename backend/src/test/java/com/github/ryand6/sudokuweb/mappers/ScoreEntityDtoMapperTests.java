@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.UserStatsEntityDtoMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,7 @@ Unit tests for ScoreEntityDtoMapper
 */
 public class ScoreEntityDtoMapperTests {
 
-    private final ScoreEntityDtoMapper scoreEntityDtoMapper = new ScoreEntityDtoMapper();
+    private final UserStatsEntityDtoMapper userStatsEntityDtoMapper = new UserStatsEntityDtoMapper();
 
 //    @Test
 //    void mapToDto_shouldReturnValidScoreDto() {

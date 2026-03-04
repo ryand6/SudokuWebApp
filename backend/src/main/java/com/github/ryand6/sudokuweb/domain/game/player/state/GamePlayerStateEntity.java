@@ -6,6 +6,7 @@ import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 
@@ -41,6 +42,10 @@ public class GamePlayerStateEntity {
 
     @Column(name = "multiplier_ends_at")
     private Instant multiplierEndsAt = null;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @Override
     public boolean equals(Object o) {

@@ -4,7 +4,7 @@ import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
-import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.UserStatsEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,18 +20,18 @@ Integration tests for UserEntityDtoMapper
 public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest {
 
     private final UserStatsRepository userStatsRepository;
-    private final ScoreEntityDtoMapper scoreEntityDtoMapper;
+    private final UserStatsEntityDtoMapper userStatsEntityDtoMapper;
     private final UserEntityDtoMapper mapper;
 
     // Autowired handles mapper dependency injection - required for integration tests
     @Autowired
     public UserEntityDtoMapperIntegrationTests(
             UserStatsRepository userStatsRepository,
-            ScoreEntityDtoMapper scoreEntityDtoMapper,
+            UserStatsEntityDtoMapper userStatsEntityDtoMapper,
             UserEntityDtoMapper mapper
     ) {
         this.userStatsRepository = userStatsRepository;
-        this.scoreEntityDtoMapper = scoreEntityDtoMapper;
+        this.userStatsEntityDtoMapper = userStatsEntityDtoMapper;
         this.mapper = mapper;
     }
 
@@ -63,7 +63,7 @@ public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
         assertThat(dto.getId()).isEqualTo(123L);
         assertThat(dto.getUsername()).isEqualTo("testuser");
         assertThat(dto.getIsOnline()).isTrue();
-        assertThat(dto.getScore().getId()).isEqualTo(scoreEntityDtoMapper.mapToDto(savedScore).getId());
+        assertThat(dto.getScore().getId()).isEqualTo(userStatsEntityDtoMapper.mapToDto(savedScore).getId());
     }
 
 //    @Test

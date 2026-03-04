@@ -5,9 +5,12 @@ import com.github.ryand6.sudokuweb.domain.game.player.settings.GamePlayerSetting
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.GameResult;
+import com.github.ryand6.sudokuweb.enums.GameStatus;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -44,6 +47,12 @@ public class GamePlayerEntity {
     @Column(name = "score")
     private int score = 0;
 
+    @Column(name = "game_loaded")
+    private boolean gameLoaded = false;
+
+    @Column(name = "game_loaded_timestamp")
+    private Instant gameLoadedTimestamp = null;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "game_result", nullable = false)
     private GameResult gameResult = GameResult.PENDING;
@@ -63,6 +72,24 @@ public class GamePlayerEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    public boolean canGameResultBeUpdated() {
+        if (gameEntity.getGameStatus() == GameStatus.IN_PROGRESS) {
+            return false;
+        }
+        return true;
+    }
+
+    public void markGameLoaded() {
+        if (!gameLoaded && gameLoadedTimestamp == null) {
+            gameLoaded = true;
+            gameLoadedTimestamp = Instant.now();
+        }
     }
 
 }

@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.services.user;
 
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
-import com.github.ryand6.sudokuweb.dto.entity.ScoreDto;
+import com.github.ryand6.sudokuweb.dto.entity.UserStatsDto;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
@@ -69,10 +69,10 @@ public class UserServiceTests {
         UserDto mockDto = new UserDto();
         mockDto.setUsername("username");
         mockDto.setIsOnline(true);
-        ScoreDto scoreDto = new ScoreDto();
-        scoreDto.setTotalScore(0);
-        scoreDto.setGamesPlayed(0);
-        mockDto.setScore(scoreDto);
+        UserStatsDto userStatsDto = new UserStatsDto();
+        userStatsDto.setTotalScore(0);
+        userStatsDto.setGamesPlayed(0);
+        mockDto.setScore(userStatsDto);
 
         when(userEntityDtoMapper.mapToDto(any(UserEntity.class))).thenReturn(mockDto);
 
@@ -106,10 +106,10 @@ public class UserServiceTests {
         UserDto mockDto = new UserDto();
         mockDto.setUsername("username");
         mockDto.setIsOnline(true);
-        ScoreDto scoreDto = new ScoreDto();
-        scoreDto.setTotalScore(0);
-        scoreDto.setGamesPlayed(0);
-        mockDto.setScore(scoreDto);
+        UserStatsDto userStatsDto = new UserStatsDto();
+        userStatsDto.setTotalScore(0);
+        userStatsDto.setGamesPlayed(0);
+        mockDto.setScore(userStatsDto);
 
         UserNotFoundException ex = assertThrows(
                 UserNotFoundException.class,

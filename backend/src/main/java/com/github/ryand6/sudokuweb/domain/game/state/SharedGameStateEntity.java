@@ -3,6 +3,9 @@ package com.github.ryand6.sudokuweb.domain.game.state;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -23,6 +26,10 @@ public class SharedGameStateEntity {
 
     @Column(name = "current_board_state", nullable = false)
     private String currentBoardState;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @Version
     private Long version;
