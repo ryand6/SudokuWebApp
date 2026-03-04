@@ -8,7 +8,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerId;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
@@ -22,49 +22,49 @@ public final class TestDataUtil {
 
     }
 
-    public static UserEntity createTestUserA(final ScoreEntity scoreEntity) {
+    public static UserEntity createTestUserA(final UserStatsEntity userStatsEntity) {
         return UserEntity.builder().
-                scoreEntity(scoreEntity).
+                userStatsEntity(userStatsEntity).
                 username("Henry").
                 provider("google").
                 providerId("a4ceE42GHa").
                 build();
     }
 
-    public static UserEntity createTestUserB(final ScoreEntity scoreEntity) {
+    public static UserEntity createTestUserB(final UserStatsEntity userStatsEntity) {
         return UserEntity.builder().
-                scoreEntity(scoreEntity).
+                userStatsEntity(userStatsEntity).
                 username("dk0ng").
                 provider("github").
                 providerId("34hEA3cbe").
                 build();
     }
 
-    public static UserEntity createTestUserC(final ScoreEntity scoreEntity) {
+    public static UserEntity createTestUserC(final UserStatsEntity userStatsEntity) {
         return UserEntity.builder().
-                scoreEntity(scoreEntity).
+                userStatsEntity(userStatsEntity).
                 username("parf").
                 provider("facebook").
                 providerId("dA5cfB12c").
                 build();
     }
 
-    public static ScoreEntity createTestScoreA() {
-        return ScoreEntity.builder().
+    public static UserStatsEntity createTestScoreA() {
+        return UserStatsEntity.builder().
                 totalScore(150).
                 gamesPlayed(1).
                 build();
     }
 
-    public static ScoreEntity createTestScoreB() {
-        return ScoreEntity.builder().
+    public static UserStatsEntity createTestScoreB() {
+        return UserStatsEntity.builder().
                 totalScore(450).
                 gamesPlayed(5).
                 build();
     }
 
-    public static ScoreEntity createTestScoreC() {
-        return ScoreEntity.builder().
+    public static UserStatsEntity createTestScoreC() {
+        return UserStatsEntity.builder().
                 totalScore(50).
                 gamesPlayed(2).
                 build();

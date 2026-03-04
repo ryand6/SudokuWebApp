@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.services.user;
 
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
@@ -64,17 +65,17 @@ public class UserService {
             throw new UsernameTakenException("Username provided is taken, please choose another");
         }
 
-        // Create score entity first so that it can be persisted when User entity is persisted
-        ScoreEntity score = new ScoreEntity();
-        score.setTotalScore(0);
-        score.setGamesPlayed(0);
+        // Create user stats and user settings entities first, so they can be persisted when User entity is persisted
+        UserStatsEntity userStats = new UserStatsEntity();
+        UserSettingsEntity userSettings = new UserSettingsEntity();
         // Persist the user entity to DB
         UserEntity newUser = new UserEntity();
         newUser.setUsername(username);
         newUser.setProvider(provider);
         newUser.setProviderId(providerId);
-        newUser.setIsOnline(true);
-        newUser.setScoreEntity(score);
+        newUser.setOnline(true);
+        newUser.setUserStatsEntity(userStats);
+        newUser.setUserSettingsEntity(userSettings);
         userRepository.save(newUser);
     }
 

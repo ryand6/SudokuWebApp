@@ -14,8 +14,6 @@ public class UserDto {
 
     private String username;
 
-    private Boolean isOnline;
-
-    private ScoreDto score;
+    private boolean isOnline;
 
 }

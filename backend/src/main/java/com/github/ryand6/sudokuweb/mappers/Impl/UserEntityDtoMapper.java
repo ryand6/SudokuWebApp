@@ -8,20 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserEntityDtoMapper implements EntityDtoMapper<UserEntity, UserDto> {
 
-    private final ScoreEntityDtoMapper scoreEntityDtoMapper;
-
-    public UserEntityDtoMapper(ScoreEntityDtoMapper scoreEntityDtoMapper) {
-        this.scoreEntityDtoMapper = scoreEntityDtoMapper;
-    }
-
-
     @Override
     public UserDto mapToDto(UserEntity userEntity) {
         return UserDto.builder()
                 .id(userEntity.getId())
                 .username(userEntity.getUsername())
-                .isOnline(userEntity.getIsOnline())
-                .score(scoreEntityDtoMapper.mapToDto(userEntity.getScoreEntity()))
+                .isOnline(userEntity.isOnline())
                 .build();
     }
 

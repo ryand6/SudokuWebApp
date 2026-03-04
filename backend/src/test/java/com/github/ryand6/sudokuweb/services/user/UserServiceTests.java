@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.services.user;
 
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.ScoreDto;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
@@ -8,7 +8,6 @@ import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
-import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,7 +53,7 @@ public class UserServiceTests {
         when(authToken.getAuthorizedClientRegistrationId()).thenReturn("google");
         when(principal.getName()).thenReturn("google-123");
 
-        ScoreEntity score = new ScoreEntity();
+        UserStatsEntity score = new UserStatsEntity();
         score.setTotalScore(0);
         score.setGamesPlayed(0);
         // Persist the user entity to DB
@@ -63,7 +62,7 @@ public class UserServiceTests {
         user.setProvider("google");
         user.setProviderId("google-123");
         user.setIsOnline(true);
-        user.setScoreEntity(score);
+        user.setUserStatsEntity(score);
 
         when(userRepository.findByProviderAndProviderId(any(String.class), any(String.class))).thenReturn(Optional.of(user));
 
@@ -91,7 +90,7 @@ public class UserServiceTests {
         when(authToken.getAuthorizedClientRegistrationId()).thenReturn("google");
         when(principal.getName()).thenReturn("google-123");
 
-        ScoreEntity score = new ScoreEntity();
+        UserStatsEntity score = new UserStatsEntity();
         score.setTotalScore(0);
         score.setGamesPlayed(0);
         // Persist the user entity to DB
@@ -100,7 +99,7 @@ public class UserServiceTests {
         user.setProvider("google");
         user.setProviderId("google-123");
         user.setIsOnline(true);
-        user.setScoreEntity(score);
+        user.setUserStatsEntity(score);
 
         when(userRepository.findByProviderAndProviderId(any(String.class), any(String.class))).thenReturn(Optional.empty());
 

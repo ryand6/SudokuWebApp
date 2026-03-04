@@ -3,9 +3,8 @@ package com.github.ryand6.sudokuweb.domain.lobby;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import org.junit.jupiter.api.Assertions;
@@ -30,11 +29,11 @@ public class LobbyEntityTests {
     @Test
     void determineNextHost_returnsNextHostBasedOnJoinedAtField() {
         // Set up users
-        UserEntity hostUser = TestDataUtil.createTestUserA(new ScoreEntity());
+        UserEntity hostUser = TestDataUtil.createTestUserA(new UserStatsEntity());
         hostUser.setId(1L);
-        UserEntity nextHostUser = TestDataUtil.createTestUserB(new ScoreEntity());
+        UserEntity nextHostUser = TestDataUtil.createTestUserB(new UserStatsEntity());
         nextHostUser.setId(2L);
-        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new ScoreEntity());
+        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new UserStatsEntity());
         lastJoinedUser.setId(3L);
 
         // Set up lobby
@@ -68,7 +67,7 @@ public class LobbyEntityTests {
     @Test
     void evaluateCountdownState_returnsEmptyOptionalWhenPlayerCountLessThanTwo() {
         // Set up user
-        UserEntity hostUser = TestDataUtil.createTestUserA(new ScoreEntity());
+        UserEntity hostUser = TestDataUtil.createTestUserA(new UserStatsEntity());
         hostUser.setId(1L);
 
         // Set up lobby
@@ -93,11 +92,11 @@ public class LobbyEntityTests {
     @Test
     void evaluateCountdownState_returnsEmptyOptionalWhenNeitherHostNorMajorityAreReady() {
         // Set up users
-        UserEntity hostUser = TestDataUtil.createTestUserA(new ScoreEntity());
+        UserEntity hostUser = TestDataUtil.createTestUserA(new UserStatsEntity());
         hostUser.setId(1L);
-        UserEntity nextHostUser = TestDataUtil.createTestUserB(new ScoreEntity());
+        UserEntity nextHostUser = TestDataUtil.createTestUserB(new UserStatsEntity());
         nextHostUser.setId(2L);
-        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new ScoreEntity());
+        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new UserStatsEntity());
         lastJoinedUser.setId(3L);
 
         // Set up lobby
@@ -128,11 +127,11 @@ public class LobbyEntityTests {
     @Test
     void evaluateCountdownState_returnsIdOfLastUserToReady_whenMajorityReadyExceptForHost() {
         // Set up users
-        UserEntity hostUser = TestDataUtil.createTestUserA(new ScoreEntity());
+        UserEntity hostUser = TestDataUtil.createTestUserA(new UserStatsEntity());
         hostUser.setId(1L);
-        UserEntity nextHostUser = TestDataUtil.createTestUserB(new ScoreEntity());
+        UserEntity nextHostUser = TestDataUtil.createTestUserB(new UserStatsEntity());
         nextHostUser.setId(2L);
-        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new ScoreEntity());
+        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new UserStatsEntity());
         lastJoinedUser.setId(3L);
 
         // Set up lobby
@@ -169,11 +168,11 @@ public class LobbyEntityTests {
     @Test
     void evaluateCountdownState_returnsHostIdWhenOnly() {
         // Set up users
-        UserEntity hostUser = TestDataUtil.createTestUserA(new ScoreEntity());
+        UserEntity hostUser = TestDataUtil.createTestUserA(new UserStatsEntity());
         hostUser.setId(1L);
-        UserEntity nextHostUser = TestDataUtil.createTestUserB(new ScoreEntity());
+        UserEntity nextHostUser = TestDataUtil.createTestUserB(new UserStatsEntity());
         nextHostUser.setId(2L);
-        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new ScoreEntity());
+        UserEntity lastJoinedUser = TestDataUtil.createTestUserC(new UserStatsEntity());
         lastJoinedUser.setId(3L);
 
         // Set up lobby
@@ -205,11 +204,11 @@ public class LobbyEntityTests {
     @Test
     void evaluateCountdownState_setsCountdownEndsAtBasedOnNonReadyPlayerCount() {
         // Set up Users
-        UserEntity hostUser = TestDataUtil.createTestUserA(new ScoreEntity());
+        UserEntity hostUser = TestDataUtil.createTestUserA(new UserStatsEntity());
         hostUser.setId(1L);
-        UserEntity user2 = TestDataUtil.createTestUserB(new ScoreEntity());
+        UserEntity user2 = TestDataUtil.createTestUserB(new UserStatsEntity());
         user2.setId(2L);
-        UserEntity user3 = TestDataUtil.createTestUserC(new ScoreEntity());
+        UserEntity user3 = TestDataUtil.createTestUserC(new UserStatsEntity());
         user3.setId(3L);
 
         // Set up Lobby

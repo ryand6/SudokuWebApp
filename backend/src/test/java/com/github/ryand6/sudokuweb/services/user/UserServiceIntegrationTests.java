@@ -3,7 +3,6 @@ package com.github.ryand6.sudokuweb.services.user;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
-import com.github.ryand6.sudokuweb.services.user.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -61,8 +60,8 @@ class UserServiceIntegrationTests extends AbstractIntegrationTest {
         UserEntity created = after.get();
         assertThat(created.getUsername()).isEqualTo(username);
         assertThat(created.getIsOnline()).isTrue();
-        assertThat(created.getScoreEntity().getTotalScore()).isEqualTo(0);
-        assertThat(created.getScoreEntity().getGamesPlayed()).isEqualTo(0);
+        assertThat(created.getUserStatsEntity().getTotalScore()).isEqualTo(0);
+        assertThat(created.getUserStatsEntity().getGamesPlayed()).isEqualTo(0);
     }
 
     @Test

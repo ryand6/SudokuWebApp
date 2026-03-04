@@ -8,7 +8,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
@@ -54,8 +54,8 @@ public class GameServiceIntegrationTests extends AbstractIntegrationTest {
     private LobbySettingsEntity lobbySettings;
     private UserEntity user1;
     private UserEntity user2;
-    private ScoreEntity score1;
-    private ScoreEntity score2;
+    private UserStatsEntity score1;
+    private UserStatsEntity score2;
     private Set<UserEntity> users;
 
     @BeforeEach

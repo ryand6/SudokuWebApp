@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.domain.lobby.settings;
 
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import jakarta.persistence.*;
@@ -37,6 +38,11 @@ public class LobbySettingsEntity {
     @Column(name = "time_limit")
     @Enumerated(EnumType.STRING)
     private TimeLimitPreset timeLimit = TimeLimitPreset.STANDARD;
+
+    // Also present in GameEntity
+    @Column(name = "mode")
+    @Enumerated(EnumType.STRING)
+    private GameMode gameMode = GameMode.CLASSIC;
 
     @Version
     private Long version;

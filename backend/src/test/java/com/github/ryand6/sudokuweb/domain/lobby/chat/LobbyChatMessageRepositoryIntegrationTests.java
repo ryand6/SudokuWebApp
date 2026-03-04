@@ -2,11 +2,9 @@ package com.github.ryand6.sudokuweb.domain.lobby.chat;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
-import com.github.ryand6.sudokuweb.domain.lobby.chat.LobbyChatMessageEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.chat.LobbyChatMessageRepository;
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
-import com.github.ryand6.sudokuweb.domain.score.ScoreRepository;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsRepository;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.enums.MessageType;
@@ -39,7 +37,7 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
     private LobbyRepository lobbyRepository;
 
     @Autowired
-    private ScoreRepository scoreRepository;
+    private UserStatsRepository userStatsRepository;
 
     private UserEntity testUser;
     private LobbyEntity testLobby;
@@ -47,9 +45,9 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
     @BeforeEach
     public void setUp() {
         // Create and persist base entities for message relations
-        ScoreEntity scoreEntity = TestDataUtil.createTestScoreA();
+        UserStatsEntity userStatsEntity = TestDataUtil.createTestScoreA();
 
-        testUser = TestDataUtil.createTestUserA(scoreEntity);
+        testUser = TestDataUtil.createTestUserA(userStatsEntity);
         userRepository.save(testUser);
 
         testLobby = TestDataUtil.createTestLobbyA(testUser, null);

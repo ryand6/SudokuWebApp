@@ -3,7 +3,7 @@ package com.github.ryand6.sudokuweb.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
@@ -29,7 +29,7 @@ public class GameRestControllerIntegrationTests extends AbstractControllerIntegr
         this.lobbyRepository = lobbyRepository;
     }
 
-    private ScoreEntity score;
+    private UserStatsEntity score;
     private UserEntity user;
     private LobbyEntity lobby;
 

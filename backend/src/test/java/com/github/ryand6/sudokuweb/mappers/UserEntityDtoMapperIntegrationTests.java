@@ -1,12 +1,12 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.UserDto;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.mappers.Impl.ScoreEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
-import com.github.ryand6.sudokuweb.domain.score.ScoreRepository;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,32 +19,32 @@ Integration tests for UserEntityDtoMapper
 */
 public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest {
 
-    private final ScoreRepository scoreRepository;
+    private final UserStatsRepository userStatsRepository;
     private final ScoreEntityDtoMapper scoreEntityDtoMapper;
     private final UserEntityDtoMapper mapper;
 
     // Autowired handles mapper dependency injection - required for integration tests
     @Autowired
     public UserEntityDtoMapperIntegrationTests(
-            ScoreRepository scoreRepository,
+            UserStatsRepository userStatsRepository,
             ScoreEntityDtoMapper scoreEntityDtoMapper,
             UserEntityDtoMapper mapper
     ) {
-        this.scoreRepository = scoreRepository;
+        this.userStatsRepository = userStatsRepository;
         this.scoreEntityDtoMapper = scoreEntityDtoMapper;
         this.mapper = mapper;
     }
 
-    private ScoreEntity savedScore;
+    private UserStatsEntity savedScore;
 
     @BeforeEach
     public void setUp() {
         // Setup test score data in the test DB
-        savedScore = ScoreEntity.builder()
+        savedScore = UserStatsEntity.builder()
                 .totalScore(100)
                 .gamesPlayed(5)
                 .build();
-        scoreRepository.save(savedScore);
+        userStatsRepository.save(savedScore);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
                 .id(123L)
                 .username("testuser")
                 .isOnline(true)
-                .scoreEntity(savedScore)
+                .userStatsEntity(savedScore)
                 .providerId("iiugh3")
                 .build();
 

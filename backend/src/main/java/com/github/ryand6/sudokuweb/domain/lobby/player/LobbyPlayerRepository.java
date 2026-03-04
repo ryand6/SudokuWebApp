@@ -1,7 +1,5 @@
 package com.github.ryand6.sudokuweb.domain.lobby.player;
 
-import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +13,7 @@ public interface LobbyPlayerRepository extends JpaRepository<LobbyPlayerEntity, 
     @Query(value = "SELECT * FROM lobby_players WHERE lobby_id = :lobbyId AND user_id = :userId", nativeQuery = true)
     Optional<LobbyPlayerEntity> findByCompositeId(@Param("lobbyId") Long lobbyId, @Param("userId") Long userId);
 
-    // Check is a user is an active member in a lobby
+    // Check if a user is an active member in a lobby
     boolean existsByUser_IdAndLobby_Id(Long userId, Long lobbyId);
 
 }

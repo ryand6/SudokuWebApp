@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
-import com.github.ryand6.sudokuweb.domain.score.ScoreEntity;
+import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
+import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,10 +41,14 @@ public class UserEntity {
     private Instant createdAt;
 
     @Column(name = "is_online")
-    private Boolean isOnline;
+    private boolean isOnline;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "score_id", nullable = false, unique = true)
-    private ScoreEntity scoreEntity;
+    @JoinColumn(name = "user_stats_id", nullable = false, unique = true)
+    private UserStatsEntity userStatsEntity;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_settings_id", nullable = false, unique = true)
+    private UserSettingsEntity userSettingsEntity;
 
 }

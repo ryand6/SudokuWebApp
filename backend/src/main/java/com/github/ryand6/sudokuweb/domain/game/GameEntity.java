@@ -1,8 +1,12 @@
 package com.github.ryand6.sudokuweb.domain.game;
 
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.enums.GameMode;
+import com.github.ryand6.sudokuweb.enums.GameStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -35,10 +39,19 @@ public class GameEntity {
     @JoinColumn(name = "puzzle_id", nullable = false)
     private SudokuPuzzleEntity sudokuPuzzleEntity;
 
-    // No more players can join once the game has started, therefore fixed amount of
-    // game states per game
-    @OneToMany(mappedBy = "gameEntity", cascade = CascadeType.ALL)
-    private Set<GamePlayerStateEntity> gameStateEntities;
+    @OneToMany(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<GamePlayerEntity> gamePlayerEntities;
+
+    @OneToOne(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private SharedGameStateEntity sharedGameStateEntity;
+
+    @Column(name = "mode")
+    @Enumerated(EnumType.STRING)
+    private GameMode gameMode = GameMode.CLASSIC;
+
+    @Column(name = "game_status")
+    @Enumerated(EnumType.STRING)
+    private GameStatus gameStatus = GameStatus.IN_PROGRESS;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities
     @Override

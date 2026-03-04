@@ -1,10 +1,13 @@
 package com.github.ryand6.sudokuweb.domain.game.player.state;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -16,16 +19,12 @@ import lombok.*;
 public class GamePlayerStateEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_player_state_id_seq")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "game_id", nullable = false)
-    private GameEntity gameEntity;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity userEntity;
+    @OneToOne
+    @JoinColumn(name = "game_player_id", nullable = false, unique = true)
+    private GamePlayerEntity gamePlayerEntity;
 
     @Column(name = "current_board_state", nullable = false)
     private String currentBoardState;
@@ -34,14 +33,15 @@ public class GamePlayerStateEntity {
     @Column(name = "notes", nullable = false)
     private byte[] notes = new byte[81 * 2];
 
-    @Column(name = "score", columnDefinition = "INTEGER DEFAULT 0")
-    private Integer score;
+    @Column(name = "current_streak", nullable = false)
+    private int currentStreak = 0;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "player_colour", nullable = false)
-    private PlayerColour playerColour;
+    @Column(name = "active_multiplier", nullable = false)
+    private double activeMultiplier = 0;
 
-    // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users
+    @Column(name = "multiplier_ends_at")
+    private Instant multiplierEndsAt = null;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -50,10 +50,9 @@ public class GamePlayerStateEntity {
         return id != null && id.equals(gamePlayerStateEntity.id);
     }
 
-    // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities e.g. Lobby Users
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return id != null ? id.hashCode() : 0;
     }
 
 }
