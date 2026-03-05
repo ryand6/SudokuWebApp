@@ -1,9 +1,9 @@
 import { useGetLobbyChatMessages } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages"
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { useInView } from "react-intersection-observer";
 import { ChevronDown } from "lucide-react";
 import { getLocalTime } from "@/utils/time/getLocalTime";

@@ -1,5 +1,5 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { isCurrentUserInLobby } from "@/utils/lobby/isCurrentUserInLobby";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";

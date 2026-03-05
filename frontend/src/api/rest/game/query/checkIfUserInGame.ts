@@ -1,6 +1,6 @@
-import type { GameDtoRaw } from "@/types/dto/entity/GameDtoRaw";
+import type { GameDto } from "@/types/dto/entity/game/GameDto";
 
-export async function checkIfUserInGame(gameId: number, userId: number): Promise<GameDtoRaw> {
+export async function checkIfUserInGame(gameId: number, userId: number): Promise<GameDto> {
     const response = await fetch(`/api/game/check-user-in-game?gameId=${gameId}&userId=${userId}`, {
         method: "GET",
         credentials: "include",

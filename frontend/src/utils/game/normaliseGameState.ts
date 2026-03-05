@@ -1,12 +1,12 @@
-import type { GameStateDto } from "@/types/dto/entity/GameStateDto";
+import type { GamePlayerStateDto } from "@/types/dto/entity/game/GamePlayerStateDto";
 import { CELL_COUNT, GRID_SIZE } from "./gameConstants";
 import type { BoardStates, CellState, GameState, PlayerStates } from "@/types/game/GameTypes";
-import type { GameDtoRaw } from "@/types/dto/entity/GameDtoRaw";
-import type { GameStateDtoRaw } from "@/types/dto/entity/GameStateDtoRaw";
+import type { GameDto } from "@/types/dto/entity/game/GameDto";
+import type { GamePlayerStateDtoRaw } from "@/types/dto/entity/game/GamePlayerStateDtoRaw";
 import { mapGameState } from "./mapGameState";
 
 export function normaliseGameState(
-    gameData: GameDtoRaw
+    gameData: GameDto
 ): GameState {
     const playerIds: number[] = [];
     const players: PlayerStates = {};
@@ -36,13 +36,13 @@ export function normaliseGameState(
 }
 
 
-export function fillBoardState(gameState: GameStateDtoRaw): CellState[][] {
+export function fillBoardState(gameState: GamePlayerStateDtoRaw): CellState[][] {
 
     if (gameState.currentBoardState.length != CELL_COUNT) {
         throw new Error(`Expected board state string to be ${CELL_COUNT} characters long. Instead got ${gameState.currentBoardState.length} characters.`)
     }
 
-    const normalisedGameState: GameStateDto = mapGameState(gameState);
+    const normalisedGameState: GamePlayerStateDto = mapGameState(gameState);
 
     const boardState = [];
 

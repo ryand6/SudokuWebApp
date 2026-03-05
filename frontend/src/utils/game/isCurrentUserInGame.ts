@@ -1,4 +1,4 @@
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import type { GameState } from "@/types/game/GameTypes";
 
 export function isCurrentUserInGame(

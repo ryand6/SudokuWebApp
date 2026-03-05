@@ -1,4 +1,4 @@
-import type { Difficulty } from '../../enum/Difficulty';
+import type { Difficulty } from "@/types/enum/Difficulty"
 
 export type SudokuPuzzleDto = {
     id: number, 

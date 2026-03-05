@@ -1,6 +1,6 @@
-import type { GameDtoRaw } from "@/types/dto/entity/GameDtoRaw";
+import type { GameDto } from "@/types/dto/entity/game/GameDto";
 
-export async function getGame(gameId: number): Promise<GameDtoRaw> {
+export async function getGame(gameId: number): Promise<GameDto> {
     const response = await fetch(`/api/game/get-game?gameId=${gameId}`, {
         method: "GET",
         credentials: "include",

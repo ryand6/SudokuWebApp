@@ -1,4 +1,4 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import type { FetchNextPageOptions, InfiniteData, InfiniteQueryObserverResult } from "@tanstack/react-query";
 import { useEffect } from "react";
 

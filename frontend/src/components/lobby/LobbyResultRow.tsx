@@ -1,8 +1,8 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { isCurrentUserInLobby } from "@/utils/lobby/isCurrentUserInLobby";
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { computeTimeDifferenceMinutes } from "@/utils/time/computeTimeDifferenceMinutes";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 

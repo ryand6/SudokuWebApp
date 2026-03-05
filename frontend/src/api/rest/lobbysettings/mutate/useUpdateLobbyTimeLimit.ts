@@ -1,5 +1,5 @@
 import { updateLobbyTimeLimit } from "@/api/rest/lobbysettings/mutate/updateLobbyLimitLimit";
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import type { UpdateLobbyTimeLimitDto } from "@/types/dto/request/UpdateLobbyTimeLimitDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";

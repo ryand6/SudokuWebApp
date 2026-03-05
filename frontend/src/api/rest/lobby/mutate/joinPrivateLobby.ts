@@ -1,4 +1,4 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function joinPrivateLobby(token: string): Promise<LobbyDto> {

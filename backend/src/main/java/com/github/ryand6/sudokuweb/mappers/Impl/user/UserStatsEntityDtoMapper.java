@@ -11,7 +11,6 @@ public class UserStatsEntityDtoMapper implements EntityDtoMapper<UserStatsEntity
     @Override
     public UserStatsDto mapToDto(UserStatsEntity userStatsEntity) {
         return UserStatsDto.builder()
-                .id(userStatsEntity.getId())
                 .totalScore(userStatsEntity.getTotalScore())
                 .gamesPlayed(userStatsEntity.getGamesPlayed())
                 .wins(userStatsEntity.getWins())

@@ -1,9 +1,9 @@
-import type { GameStateDto } from "@/types/dto/entity/GameStateDto";
-import type { GameStateDtoRaw } from "@/types/dto/entity/GameStateDtoRaw";
+import type { GamePlayerStateDto } from "@/types/dto/entity/game/GamePlayerStateDto";
+import type { GamePlayerStateDtoRaw } from "@/types/dto/entity/game/GamePlayerStateDtoRaw";
 import { decodeNotes } from "./noteEncoding";
 import { CELL_COUNT } from "./gameConstants";
 
-export function mapGameState(raw: GameStateDtoRaw): GameStateDto {
+export function mapGameState(raw: GamePlayerStateDtoRaw): GamePlayerStateDto {
 
   let notes: Uint16Array = new Uint16Array(CELL_COUNT);
 

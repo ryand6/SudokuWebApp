@@ -1,6 +1,6 @@
 import { leaveLobby } from "@/api/rest/lobby/mutate/leaveLobby";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import type { LeaveLobbyRequestDto } from "@/types/dto/request/LeaveLobbyRequestDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";

@@ -1,4 +1,4 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { backendValidationErrors } from "@/utils/error/backendValidationErrors";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";

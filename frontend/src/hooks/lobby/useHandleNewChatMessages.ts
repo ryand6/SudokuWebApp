@@ -1,4 +1,4 @@
-import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
+import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
 import { useEffect, type SetStateAction } from "react";
 
 export function useHandleNewChatMessages(

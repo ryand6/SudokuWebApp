@@ -1,0 +1,1 @@
+export type GameStatus = "LOADING" | "COUNTDOWN" | "IN_PROGRESS" | "FINISHED";

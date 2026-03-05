@@ -9,8 +9,6 @@ import lombok.*;
 @Builder
 public class UserStatsDto {
 
-    private Long id;
-
     private int totalScore;
 
     private int gamesPlayed;

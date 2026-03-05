@@ -1,6 +1,6 @@
 import { PAGE_SIZE } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages";
-import type { GameDtoRaw } from "@/types/dto/entity/GameDtoRaw";
-import type { LobbyChatMessageDto } from "@/types/dto/entity/LobbyChatMessageDto";
+import type { GameDto } from "@/types/dto/entity/game/GameDto";
+import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
 import { QueryClient } from "@tanstack/react-query";
 import { type NavigateFunction } from "react-router-dom";
 
@@ -12,7 +12,7 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
             break;
         // Transport lobby players to game page when game has started
         case "GAME_CREATED":
-            const gameDto: GameDtoRaw = message.payload;
+            const gameDto: GameDto = message.payload;
             queryClient.setQueryData(["game", gameDto.id], gameDto);
             navigate(`/game/${gameDto.id}`);
             break;

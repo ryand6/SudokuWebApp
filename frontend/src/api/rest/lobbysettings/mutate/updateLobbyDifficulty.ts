@@ -1,4 +1,4 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import type { Difficulty } from "@/types/enum/Difficulty";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 

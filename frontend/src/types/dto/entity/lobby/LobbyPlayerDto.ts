@@ -1,6 +1,6 @@
 import type { LobbyPlayerId } from "./LobbyPlayerId"
-import type { UserDto } from "./UserDto"
-import type { LobbyStatus } from "../../enum/LobbyStatus"
+import type { UserDto } from "../user/UserDto"
+import type { LobbyStatus } from "../../../enum/LobbyStatus"
 
 export type LobbyPlayerDto = {
     id: LobbyPlayerId,
@@ -8,5 +8,5 @@ export type LobbyPlayerDto = {
     joinedAt: string,
     lobbyStatus: LobbyStatus,
     readyAt: string | null,
-    lobbyMessageTimestamp: string | null,
+    lastLobbyMessageTimestamp: string | null,
 }

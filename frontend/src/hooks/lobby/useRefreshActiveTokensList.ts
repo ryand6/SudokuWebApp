@@ -1,4 +1,4 @@
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import type { QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 

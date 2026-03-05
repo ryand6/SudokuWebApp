@@ -1,5 +1,5 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
@@ -45,22 +45,22 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
  
     return (
         <div id="lobby-settings-panel" className="flex flex-col flex-1 lobby-card">
-            {!lobby.isPublic && <JoinCodeAlertDialog open={isAlertOpen} handleContinueClick={requestJoinCode} setOpen={setIsAlertOpen} />}
+            {!lobby.lobbySettings.isPublic && <JoinCodeAlertDialog open={isAlertOpen} handleContinueClick={requestJoinCode} setOpen={setIsAlertOpen} />}
             <h2 className="card-header">Game Settings</h2>
             <div>
                 <div>
                     🎯 Difficulty 
-                    <span id="difficulty-value"> {wordToProperCase(lobby.difficulty)}</span>
+                    <span id="difficulty-value"> {wordToProperCase(lobby.lobbySettings.difficulty)}</span>
                 </div>
                 {currentUser.id === lobby.host.id && 
                 <div>
                     <RadioGroup 
-                        defaultValue={wordToProperCase(lobby.difficulty)} 
+                        defaultValue={wordToProperCase(lobby.lobbySettings.difficulty)} 
                         onValueChange={(value) => {
                             let valueEnum = value.toUpperCase() as Difficulty;
                             updateDifficulty.mutate({ lobbyId: lobby.id, userId: currentUser.id, difficulty: valueEnum });
                         }} 
-                        disabled={lobby.settingsLocked} 
+                        disabled={lobby.lobbyCountdown.countdownActive} 
                         className="flex flex-row"
                     >
                         <div>
@@ -86,17 +86,17 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
             <div>
                 <div>
                     ⏱️ Game Duration
-                    <span id="duration-value"> {wordToProperCase(lobby.timeLimit)}</span>
+                    <span id="duration-value"> {wordToProperCase(lobby.lobbySettings.timeLimit)}</span>
                 </div>
                 {currentUser.id === lobby.host.id && 
                 <div>
                     <RadioGroup 
-                        defaultValue={wordToProperCase(lobby.timeLimit)} 
+                        defaultValue={wordToProperCase(lobby.lobbySettings.timeLimit)} 
                         onValueChange={(value) => {
                             let valueEnum = value.toUpperCase() as TimeLimitPreset;
                             updateLimitLimit.mutate({lobbyId: lobby.id, userId: currentUser.id, timeLimit: valueEnum});
                         }} 
-                        disabled={lobby.settingsLocked} 
+                        disabled={lobby.lobbyCountdown.countdownActive} 
                         className="flex flex-row"
                     >
                         <div>
@@ -119,7 +119,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                 </div>
                 }
             </div>
-            {!lobby.isPublic && 
+            {!lobby.lobbySettings.isPublic && 
             <div className="mt-2">
                 <h2>Lobby Join Code</h2>
                 <div className="flex flex-row items-center gap-4 mt-2">

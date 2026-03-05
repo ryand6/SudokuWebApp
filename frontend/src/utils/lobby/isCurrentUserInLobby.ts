@@ -1,5 +1,5 @@
-import type { LobbyDto } from "@/types/dto/entity/LobbyDto";
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 
 export function isCurrentUserInLobby(
     lobby: LobbyDto,

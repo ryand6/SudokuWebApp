@@ -4,18 +4,28 @@ import { describe, expect, vi } from "vitest";
 import { useWebSocketContext } from "../WebSocketProvider";
 import { renderWithRouterAndContext } from "../../setupTests";
 import { QueryClient, type UseQueryResult } from "@tanstack/react-query";
-import type { ScoreDto } from "../../types/dto/entity/ScoreDto";
-import type { UserDto } from "../../types/dto/entity/UserDto";
+import type { UserStatsDto } from "../../types/dto/entity/user/UserStatsDto";
+import type { UserDto } from "../../types/dto/entity/user/UserDto";
 import * as currentUserHook from '../../api/rest/users/query/useGetCurrentUser';
 import * as wsUtils from '../../utils/services/initWebSocket';
 import * as stompUtils from '../../utils/services/initStompClient';
+import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 
 const queryClient = new QueryClient();
 
-const mockScore: ScoreDto = {
-    id: 1, 
+const mockStats: UserStatsDto = {
     totalScore: 0, 
-    gamesPlayed: 0
+    gamesPlayed: 0,
+    wins: 0,
+    losses: 0,
+    draws: 0,
+    currentWinStreak: 0,
+    maxWinStreak: 0
+}
+
+const mockSettings: UserSettingsDto = {
+    isDarkModeActive: false,
+    isSoundActive: true
 }
 
 // stub user object
@@ -23,7 +33,8 @@ const mockUser: UserDto = {
     id: 1,
     username: "testUser",
     isOnline: true,
-    score: mockScore
+    userStats: mockStats,
+    userSettings: mockSettings
 };
 
 // const mockCsrfResponse = {

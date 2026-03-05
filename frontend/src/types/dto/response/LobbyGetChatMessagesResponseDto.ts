@@ -1,4 +1,4 @@
-import type { LobbyChatMessageDto } from "../entity/LobbyChatMessageDto"
+import type { LobbyChatMessageDto } from "../entity/lobby/LobbyChatMessageDto"
 
 export type LobbyGetChatMessagesResponseDto = {
     lobbyChatMessages: LobbyChatMessageDto[]

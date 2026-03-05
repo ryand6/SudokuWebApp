@@ -1,7 +1,7 @@
 import type { StompSubscriptionDetails } from "@/context/WebSocketProvider";
 import { subscribeUserErrors } from "@/services/websocket/subscribeUserErrors";
 import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates";
-import type { UserDto } from "@/types/dto/entity/UserDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { initStompClient } from "@/utils/services/initStompClient";
 import { initWebSocket } from "@/utils/services/initWebSocket";
 import type { Client, IMessage } from "@stomp/stompjs";
