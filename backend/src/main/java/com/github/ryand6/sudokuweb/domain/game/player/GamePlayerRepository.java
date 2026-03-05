@@ -13,4 +13,5 @@ public interface GamePlayerRepository extends JpaRepository<GamePlayerEntity, Ga
     @Query(value = "SELECT * FROM game_players WHERE game_id = :gameId AND user_id = :userId", nativeQuery = true)
     Optional<GamePlayerEntity> findByCompositeId(@Param("gameId") Long gameId, @Param("userId") Long userId);
 
+    boolean existsByUserEntity_IdAndGameEntity_Id(Long userId, Long gameId);
 }

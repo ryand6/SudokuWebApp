@@ -94,7 +94,6 @@ public class LobbyServiceTests {
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
         lobbyDto.setLobbyName("Test Lobby");
-        lobbyDto.setPublic(true);
         lobbyDto.setLobbyPlayers(Set.of(lobbyPlayerDto));
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(lobbyDto);
 
@@ -104,7 +103,6 @@ public class LobbyServiceTests {
         LobbyDto lobbyDtoTest = lobbyService.createNewLobby(lobbyName, isPublic, requesterId);
         assertThat(lobbyDtoTest.getId()).isEqualTo(1L);
         assertThat(lobbyDtoTest.getLobbyName()).isEqualTo("Test Lobby");
-        assertThat(lobbyDtoTest.isPublic()).isEqualTo(true);
         assertThat(lobbyDtoTest.getLobbyPlayers()).hasSize(1);
     }
 

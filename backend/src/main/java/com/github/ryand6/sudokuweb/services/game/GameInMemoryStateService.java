@@ -8,7 +8,6 @@ import com.github.ryand6.sudokuweb.util.GameUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service

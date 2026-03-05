@@ -68,23 +68,9 @@ public class LobbyService {
         if (!activeLobbies.isEmpty()) {
             throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby called " + activeLobbies.iterator().next().getLobbyName() + ". Players can only be in one active lobby at a time.");
         }
-
-        LobbyEntity newLobby = new LobbyEntity();
-        newLobby.setActive(true);
-
         UserEntity requester = userService.findUserById(requesterId);
-        newLobby.setLobbyName(lobbyName);
-        // requester of lobby creation becomes the host
-        newLobby.setHost(requester);
 
-        LobbySettingsEntity lobbySettings = new LobbySettingsEntity();
-        lobbySettings.setPublic(isPublic);
-        newLobby.setLobbySettingsEntity(lobbySettings);
-        lobbySettings.setLobbyEntity(newLobby);
-
-        LobbyCountdownEntity lobbyCountdown = new LobbyCountdownEntity();
-        newLobby.setLobbyCountdownEntity(lobbyCountdown);
-        lobbyCountdown.setLobbyEntity(newLobby);
+        LobbyEntity newLobby = LobbyFactory.createLobby(requester, lobbyName, isPublic);
 
         // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
         lobbyRepository.saveAndFlush(newLobby);

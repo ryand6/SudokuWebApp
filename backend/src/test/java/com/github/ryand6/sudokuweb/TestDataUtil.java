@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
@@ -11,7 +12,6 @@ import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 
 import java.util.Set;
@@ -158,33 +158,24 @@ public final class TestDataUtil {
         return lobby;
     }
 
-    public static GamePlayerStateEntity createTestGameStateA(final GameEntity gameEntity, final UserEntity userEntity) {
+    public static GamePlayerStateEntity createTestGameStateA(final GamePlayerEntity gamePlayer, final UserEntity userEntity) {
         return GamePlayerStateEntity.builder().
-                gameEntity(gameEntity).
-                userEntity(userEntity).
+                gamePlayerEntity(gamePlayer).
                 currentBoardState("092306001007008003043207080035680000080000020000035670070801950200500800500409130").
-                score(0).
-                playerColour(PlayerColour.BLUE).
                 build();
     }
 
-    public static GamePlayerStateEntity createTestGameStateB(final GameEntity gameEntity, final UserEntity userEntity) {
+    public static GamePlayerStateEntity createTestGameStateB(final GamePlayerEntity gamePlayer, final UserEntity userEntity) {
         return GamePlayerStateEntity.builder().
-                gameEntity(gameEntity).
-                userEntity(userEntity).
+                gamePlayerEntity(gamePlayer).
                 currentBoardState("973004000000006900000329000007008010680932075090400600000295000002100000000800020").
-                score(10).
-                playerColour(PlayerColour.GREEN).
                 build();
     }
 
-    public static GamePlayerStateEntity createTestGameStateC(final GameEntity gameEntity, final UserEntity userEntity) {
+    public static GamePlayerStateEntity createTestGameStateC(final GamePlayerEntity gamePlayer, final UserEntity userEntity) {
         return GamePlayerStateEntity.builder().
-                gameEntity(gameEntity).
-                userEntity(userEntity).
+                gamePlayerEntity(gamePlayer).
                 currentBoardState("750000021630020800020937005000095000902704603000260000200853040005040086840000030").
-                score(5).
-                playerColour(PlayerColour.PURPLE).
                 build();
     }
 

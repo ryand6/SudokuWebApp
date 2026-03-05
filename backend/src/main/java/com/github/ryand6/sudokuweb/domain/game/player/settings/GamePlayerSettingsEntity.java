@@ -15,12 +15,15 @@ import lombok.*;
 @Table(name = "game_player_settings")
 public class GamePlayerSettingsEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_player_settings_id_seq")
-    private Long id;
+    @EmbeddedId
+    private GamePlayerId id; // same composite key as GamePlayerEntity
 
+    @MapsId
     @OneToOne
-    @JoinColumn(name = "game_player_id", nullable = false, unique = true)
+    @JoinColumns({
+            @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false, unique = true),
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
+    })
     private GamePlayerEntity gamePlayerEntity;
 
     @Column(name = "show_rival_highlighted_squares")

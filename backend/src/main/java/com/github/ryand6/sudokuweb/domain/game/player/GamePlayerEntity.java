@@ -32,7 +32,7 @@ public class GamePlayerEntity {
     @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id", nullable = false)
-    private UserEntity user;
+    private UserEntity userEntity;
 
     @OneToOne(mappedBy = "gamePlayerEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private GamePlayerStateEntity gamePlayerStateEntity;
@@ -79,10 +79,7 @@ public class GamePlayerEntity {
     //#######################//
 
     public boolean canGameResultBeUpdated() {
-        if (gameEntity.getGameStatus() == GameStatus.IN_PROGRESS) {
-            return false;
-        }
-        return true;
+        return gameEntity.getGameStatus() == GameStatus.FINISHED;
     }
 
     public void markGameLoaded() {

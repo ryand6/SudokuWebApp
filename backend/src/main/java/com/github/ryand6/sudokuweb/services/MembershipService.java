@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,12 +10,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class MembershipService {
-    private final GamePlayerStateRepository gamePlayerStateRepository;
+    private final GamePlayerRepository gamePlayerRepository;
     private final LobbyPlayerRepository lobbyPlayerRepository;
 
-    public MembershipService(GamePlayerStateRepository gamePlayerStateRepository,
+    public MembershipService(GamePlayerRepository gamePlayerRepository,
                              LobbyPlayerRepository lobbyPlayerRepository) {
-        this.gamePlayerStateRepository = gamePlayerStateRepository;
+        this.gamePlayerRepository = gamePlayerRepository;
         this.lobbyPlayerRepository = lobbyPlayerRepository;
     }
 
@@ -31,7 +31,7 @@ public class MembershipService {
         }
 
         // Fallback to DB if player not found in cache
-        if (!gamePlayerStateRepository.existsByUserEntityIdAndGameEntityId(userId, gameId)) {
+        if (!gamePlayerRepository.existsByUserEntity_IdAndGameEntity_Id(userId, gameId)) {
             return false;
         }
 
@@ -64,6 +64,7 @@ public class MembershipService {
             return true;
         }
 
+        // Fallback to DB if player not found in cache
         if (!lobbyPlayerRepository.existsByUser_IdAndLobby_Id(userId, lobbyId)) {
             return false;
         }

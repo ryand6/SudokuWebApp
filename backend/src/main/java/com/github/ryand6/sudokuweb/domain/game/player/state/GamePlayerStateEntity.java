@@ -1,11 +1,7 @@
 package com.github.ryand6.sudokuweb.domain.game.player.state;
 
-import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
-import com.github.ryand6.sudokuweb.domain.user.UserEntity;
-import com.github.ryand6.sudokuweb.enums.GameMode;
-import com.github.ryand6.sudokuweb.enums.PlayerColour;
-import com.github.ryand6.sudokuweb.exceptions.game.state.InvalidSharedGameStateException;
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerId;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,12 +17,15 @@ import java.time.Instant;
 @Table(name = "game_state")
 public class GamePlayerStateEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_player_state_id_seq")
-    private Long id;
+    @EmbeddedId
+    private GamePlayerId id; // same composite key as GamePlayerEntity
 
+    @MapsId
     @OneToOne
-    @JoinColumn(name = "game_player_id", nullable = false, unique = true)
+    @JoinColumns({
+            @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false, unique = true),
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
+    })
     private GamePlayerEntity gamePlayerEntity;
 
     @Column(name = "current_board_state")
@@ -60,17 +59,6 @@ public class GamePlayerStateEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
-    }
-
-    //#######################//
-    // Domain Business Logic //
-    //#######################//
-
-    public void validateBoardState() {
-        GameMode gameMode = gamePlayerEntity.getGameEntity().getGameMode();
-        if (gameMode == GameMode.CLASSIC && currentBoardState == null) {
-            throw new InvalidSharedGameStateException("Game mode " + gameMode.getProperCase() + " must have a shared game state");
-        }
     }
 
 }

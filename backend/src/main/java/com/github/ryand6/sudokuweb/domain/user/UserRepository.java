@@ -1,6 +1,5 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
-import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,7 +20,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     // Returns the top Users ordered be total score descending - number of players to return is
     // defined by Pageable
-    Page<UserEntity> findByOrderByScoreEntity_TotalScoreDesc(Pageable pageable);
+    Page<UserEntity> findByOrderByUserStatsEntity_TotalScoreDesc(Pageable pageable);
 
     // Gets the players rank based on their total_score when compared to all other players
     // Using nativeQuery due to use of window function RANK()

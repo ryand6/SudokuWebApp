@@ -48,10 +48,6 @@ public class GameEntity {
     @OneToOne(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private SharedGameStateEntity sharedGameStateEntity;
 
-    @Column(name = "mode")
-    @Enumerated(EnumType.STRING)
-    private GameMode gameMode = GameMode.CLASSIC;
-
     @Column(name = "game_status")
     @Enumerated(EnumType.STRING)
     private GameStatus gameStatus = GameStatus.LOADING;
@@ -100,6 +96,11 @@ public class GameEntity {
                             .getSeconds()
             );
         }
+    }
+
+    public boolean isGameStateShared() {
+        GameMode gameMode = lobbyEntity.getLobbySettingsEntity().getGameMode();
+        return gameMode == GameMode.DOMINATION || gameMode == GameMode.TIMEATTACK;
     }
 
     public GameLoadEvaluationResult updateGameClocks() {

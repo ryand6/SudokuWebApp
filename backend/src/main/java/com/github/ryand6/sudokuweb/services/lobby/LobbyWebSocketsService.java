@@ -43,7 +43,7 @@ public class LobbyWebSocketsService {
                 "payload", gameDto
         );
 
-        String topic = "/topic/lobby/" + gameDto.getLobby().getId();
+        String topic = "/topic/lobby/" + gameDto.getLobbyId();
 
         messagingTemplate.convertAndSend(topic, messageHeader);
     }

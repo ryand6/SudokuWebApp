@@ -74,7 +74,7 @@ public class TaskSchedulerService {
                 lobbyWebSocketsService.handleLobbyGameStart(gameDto, messagingTemplate);
             }
         } catch (Exception e) {
-            log.error("Game creation task failed: " + e.getMessage());
+            log.error("Game creation task failed: " + e);
         }
     }
 

@@ -115,7 +115,7 @@ public class GameService {
     public GameDto endGame(Long gameId) {
         // IMPLEMENT LOGIC
 
-        // update cache
+        // update caches
         membershipService.removeGame(gameId);
         gameInMemoryStateService.removeGame(gameId);
 

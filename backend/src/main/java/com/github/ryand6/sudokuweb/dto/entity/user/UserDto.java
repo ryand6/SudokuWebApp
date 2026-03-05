@@ -16,4 +16,8 @@ public class UserDto {
 
     private boolean isOnline;
 
+    private UserStatsDto userStats;
+
+    private UserSettingsDto userSettings;
+
 }

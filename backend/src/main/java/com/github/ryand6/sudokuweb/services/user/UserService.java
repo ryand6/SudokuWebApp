@@ -96,7 +96,7 @@ public class UserService {
     public List<UserDto> getTop5PlayersTotalScore() {
         // Return the top 5
         Pageable topFive = PageRequest.of(0, 5);
-        Page<UserEntity> topFivePage = userRepository.findByOrderByScoreEntity_TotalScoreDesc(topFive);
+        Page<UserEntity> topFivePage = userRepository.findByOrderByUserStatsEntity_TotalScoreDesc(topFive);
         return topFivePage.getContent()
                 .stream()
                 .map(userEntityDtoMapper::mapToDto)

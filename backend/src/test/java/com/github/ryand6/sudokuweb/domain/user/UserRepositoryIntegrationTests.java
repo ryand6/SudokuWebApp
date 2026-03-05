@@ -123,7 +123,7 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
         underTest.save(userC);
 
         Pageable pageable = PageRequest.of(0, 2);
-        Page<UserEntity> top2Pages = underTest.findByOrderByScoreEntity_TotalScoreDesc(pageable);
+        Page<UserEntity> top2Pages = underTest.findByOrderByUserStatsEntity_TotalScoreDesc(pageable);
 
         List<UserEntity> top2PagesList = top2Pages.stream().toList();
         assertThat(top2PagesList.get(0).getUsername()).isEqualTo("dk0ng");

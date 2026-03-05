@@ -61,26 +61,23 @@ public class UserServiceTests {
         user.setUsername("username");
         user.setProvider("google");
         user.setProviderId("google-123");
-        user.setIsOnline(true);
+        user.setOnline(true);
         user.setUserStatsEntity(score);
 
         when(userRepository.findByProviderAndProviderId(any(String.class), any(String.class))).thenReturn(Optional.of(user));
 
         UserDto mockDto = new UserDto();
         mockDto.setUsername("username");
-        mockDto.setIsOnline(true);
+        mockDto.setOnline(true);
         UserStatsDto userStatsDto = new UserStatsDto();
         userStatsDto.setTotalScore(0);
         userStatsDto.setGamesPlayed(0);
-        mockDto.setScore(userStatsDto);
 
         when(userEntityDtoMapper.mapToDto(any(UserEntity.class))).thenReturn(mockDto);
 
         UserDto userDto = userService.getCurrentUserByOAuth(principal, authToken);
         assertThat(userDto.getUsername()).isEqualTo("username");
-        assertThat(userDto.getIsOnline()).isEqualTo(true);
-        assertThat(userDto.getScore().getTotalScore()).isEqualTo(0);
-        assertThat(userDto.getScore().getGamesPlayed()).isEqualTo(0);
+        assertThat(userDto.isOnline()).isEqualTo(true);
     }
 
     @Test
@@ -98,18 +95,17 @@ public class UserServiceTests {
         user.setUsername("username");
         user.setProvider("google");
         user.setProviderId("google-123");
-        user.setIsOnline(true);
+        user.setOnline(true);
         user.setUserStatsEntity(score);
 
         when(userRepository.findByProviderAndProviderId(any(String.class), any(String.class))).thenReturn(Optional.empty());
 
         UserDto mockDto = new UserDto();
         mockDto.setUsername("username");
-        mockDto.setIsOnline(true);
+        mockDto.setOnline(true);
         UserStatsDto userStatsDto = new UserStatsDto();
         userStatsDto.setTotalScore(0);
         userStatsDto.setGamesPlayed(0);
-        mockDto.setScore(userStatsDto);
 
         UserNotFoundException ex = assertThrows(
                 UserNotFoundException.class,
@@ -162,14 +158,14 @@ public class UserServiceTests {
         List<UserEntity> users = List.of(user1, user2);
         Page<UserEntity> page = new PageImpl<>(users);
 
-        when(userRepository.findByOrderByScoreEntity_TotalScoreDesc(any(Pageable.class))).thenReturn(page);
+        when(userRepository.findByOrderByUserStatsEntity_TotalScoreDesc(any(Pageable.class))).thenReturn(page);
         when(userEntityDtoMapper.mapToDto(any())).thenReturn(new UserDto());
 
         List<UserDto> result = userService.getTop5PlayersTotalScore();
 
         assertEquals(2, result.size());
         // Logic to confirm the number of times methods were called is as expected during the test
-        verify(userRepository).findByOrderByScoreEntity_TotalScoreDesc(any(Pageable.class));
+        verify(userRepository).findByOrderByUserStatsEntity_TotalScoreDesc(any(Pageable.class));
         verify(userEntityDtoMapper, times(2)).mapToDto(any());
     }
 

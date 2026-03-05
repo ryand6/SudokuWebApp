@@ -1,15 +1,17 @@
 package com.github.ryand6.sudokuweb.domain.game;
 
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerFactory;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateFactory;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
-import jakarta.transaction.Transactional;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class GameFactory {
 
@@ -19,40 +21,45 @@ public class GameFactory {
         this.lobbyRepository = lobbyRepository;
     }
 
-    @Transactional
     public static GameEntity createGame(LobbyEntity lobbyEntity, SudokuPuzzleEntity sudokuPuzzleEntity) {
 
         GameEntity newGame = new GameEntity();
         newGame.setLobbyEntity(lobbyEntity);
         newGame.setSudokuPuzzleEntity(sudokuPuzzleEntity);
 
-        // Get list of player colour enums
-        PlayerColour[] playerColours = PlayerColour.values();
-        int i = 0;
+        String initialBoardState = sudokuPuzzleEntity.getInitialBoardState();
 
-        Set<LobbyPlayerEntity> activeLobbyPlayers = lobbyEntity.getLobbyPlayers();
-
-        // Create GameState objects for each active user in the game
-        Set<GamePlayerStateEntity> gameStateEntities = new HashSet<>();
-        for (LobbyPlayerEntity lobbyPlayerEntity : activeLobbyPlayers) {
-            GamePlayerStateEntity state = new GamePlayerStateEntity();
-            state.setUserEntity(lobbyPlayerEntity.getUser());
-            state.setGameEntity(newGame);
-            // Board state starts with the initial sudokuPuzzleEntity
-            state.setCurrentBoardState(sudokuPuzzleEntity.getInitialBoardState());
-            // Initial score for each user is 0
-            state.setScore(0);
-            // Set the player colour and increment the counter so the next player colour is unique
-            state.setPlayerColour(playerColours[i]);
-            i++;
-            gameStateEntities.add(state);
+        boolean isGameStateShared = newGame.isGameStateShared();
+        if (isGameStateShared) {
+            SharedGameStateEntity sharedGameState = SharedGameStateFactory.createSharedGameState(newGame, initialBoardState);
+            newGame.setSharedGameStateEntity(sharedGameState);
         }
 
-        // Will save gameState entities to DB also due to cascade rules
-        newGame.setGameStateEntities(gameStateEntities);
+        // Get list of player colour enums
+        PlayerColour[] playerColours = PlayerColour.values();
+        List<PlayerColour> colourList = Arrays.asList(playerColours);
+        // Randomise order
+        Collections.shuffle(colourList);
+        playerColours = colourList.toArray(new PlayerColour[LobbyEntity.LOBBY_SIZE]);
+
+        int i = 0;
+
+        Set<LobbyPlayerEntity> lobbyPlayers = lobbyEntity.getLobbyPlayers();
+
+        // Create GameState objects for each active user in the game
+        Set<GamePlayerEntity> gamePlayers = new HashSet<>();
+
+        for (LobbyPlayerEntity lobbyPlayerEntity : lobbyPlayers) {
+            PlayerColour playerColour = playerColours[i];
+            GamePlayerEntity gamePlayer = GamePlayerFactory.createGamePlayer(newGame, lobbyPlayerEntity.getUser(), playerColour, isGameStateShared, initialBoardState);
+            gamePlayers.add(gamePlayer);
+            i++;
+        }
+
+        // Will save GamePlayer entities to DB also due to cascade rules
+        newGame.setGamePlayerEntities(gamePlayers);
 
         return newGame;
-
     }
 
 }

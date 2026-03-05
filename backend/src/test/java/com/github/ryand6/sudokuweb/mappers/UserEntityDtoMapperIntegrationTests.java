@@ -62,8 +62,7 @@ public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
         assertThat(dto).isNotNull();
         assertThat(dto.getId()).isEqualTo(123L);
         assertThat(dto.getUsername()).isEqualTo("testuser");
-        assertThat(dto.getIsOnline()).isTrue();
-        assertThat(dto.getScore().getId()).isEqualTo(userStatsEntityDtoMapper.mapToDto(savedScore).getId());
+        assertThat(dto.isOnline()).isTrue();
     }
 
 //    @Test

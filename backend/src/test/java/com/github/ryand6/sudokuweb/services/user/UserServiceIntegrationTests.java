@@ -59,7 +59,7 @@ class UserServiceIntegrationTests extends AbstractIntegrationTest {
 
         UserEntity created = after.get();
         assertThat(created.getUsername()).isEqualTo(username);
-        assertThat(created.getIsOnline()).isTrue();
+        assertThat(created.isOnline()).isTrue();
         assertThat(created.getUserStatsEntity().getTotalScore()).isEqualTo(0);
         assertThat(created.getUserStatsEntity().getGamesPlayed()).isEqualTo(0);
     }
