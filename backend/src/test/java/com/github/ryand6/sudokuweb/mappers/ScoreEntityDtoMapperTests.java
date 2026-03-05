@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.mappers.Impl.UserStatsEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserStatsEntityDtoMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

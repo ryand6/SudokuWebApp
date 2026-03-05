@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.response;
 
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import lombok.*;
 
 import java.util.List;

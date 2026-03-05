@@ -2,16 +2,13 @@ package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.chat.LobbyChatMessageEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.enums.MessageType;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
-import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
-import com.github.ryand6.sudokuweb.mappers.Impl.LobbyChatMessageEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyChatMessageEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.chat.LobbyChatMessageRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
-import com.github.ryand6.sudokuweb.services.user.UserService;
 import com.github.ryand6.sudokuweb.validation.ProfanityValidator;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
@@ -63,7 +60,7 @@ public class LobbyChatService {
         }
         LobbyPlayerEntity lobbyPlayerRequester = lobbyPlayerRequesterOptional.get();
         LobbyChatMessageEntity lobbyChatMessage = new LobbyChatMessageEntity();
-        Instant lastMessageTime = lobbyPlayerRequester.getLobbyMessageTimestamp();
+        Instant lastMessageTime = lobbyPlayerRequester.getLastLobbyMessageTimestamp();
         lobbyChatMessage.validateMessageTime(lastMessageTime);
         LobbyPlayerEntity updatedLobbyPlayerRequester = updateLobbyMessageTime(lobbyPlayerRequester);
         lobbyPlayerRepository.save(updatedLobbyPlayerRequester);
@@ -98,7 +95,7 @@ public class LobbyChatService {
 
     private LobbyPlayerEntity updateLobbyMessageTime(LobbyPlayerEntity lobbyPlayer) {
         Instant now = Instant.now();
-        lobbyPlayer.setLobbyMessageTimestamp(now);
+        lobbyPlayer.setLastLobbyMessageTimestamp(now);
         return lobbyPlayer;
     }
 

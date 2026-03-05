@@ -1,11 +1,10 @@
-package com.github.ryand6.sudokuweb.mappers.Impl;
+package com.github.ryand6.sudokuweb.mappers.Impl.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
-import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.domain.user.UserRepository;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -15,19 +14,19 @@ import java.util.stream.Collectors;
 @Component
 public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyDto> {
 
-    private final UserRepository userRepository;
     private final LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
     private final UserEntityDtoMapper userEntityDtoMapper;
-    private final LobbyPlayerRepository lobbyPlayerRepository;
+    private final LobbySettingsEntityDtoMapper lobbySettingsEntityDtoMapper;
+    private final LobbyCountdownEntityDtoMapper lobbyCountdownEntityDtoMapper;
 
-    public LobbyEntityDtoMapper(UserRepository userRepository,
-                                LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper,
+    public LobbyEntityDtoMapper(LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper,
                                 UserEntityDtoMapper userEntityDtoMapper,
-                                LobbyPlayerRepository lobbyPlayerRepository) {
-        this.userRepository = userRepository;
+                                LobbySettingsEntityDtoMapper lobbySettingsEntityDtoMapper,
+                                LobbyCountdownEntityDtoMapper lobbyCountdownEntityDtoMapper) {
         this.lobbyPlayerEntityDtoMapper = lobbyPlayerEntityDtoMapper;
         this.userEntityDtoMapper = userEntityDtoMapper;
-        this.lobbyPlayerRepository = lobbyPlayerRepository;
+        this.lobbySettingsEntityDtoMapper = lobbySettingsEntityDtoMapper;
+        this.lobbyCountdownEntityDtoMapper = lobbyCountdownEntityDtoMapper;
     }
 
     @Override
@@ -44,15 +43,11 @@ public class LobbyEntityDtoMapper implements EntityDtoMapper<LobbyEntity, LobbyD
                 .id(lobbyEntity.getId())
                 .lobbyName(lobbyEntity.getLobbyName())
                 .createdAt(lobbyEntity.getCreatedAt())
-                .difficulty(lobbyEntity.getLobbySettingsEntity().getDifficulty())
-                .timeLimit(lobbyEntity.getLobbySettingsEntity().getTimeLimit())
                 .isActive(lobbyEntity.isActive())
-                .isPublic(lobbyEntity.getLobbySettingsEntity().isPublic())
                 .inGame(lobbyEntity.isInGame())
                 .currentGameId(lobbyEntity.getCurrentGameId())
-                .countdownActive(lobbyEntity.getLobbyCountdownEntity().isCountdownActive())
-                .countdownEndsAt(lobbyEntity.getLobbyCountdownEntity().getCountdownEndsAt())
-                .countdownInitiatedBy(lobbyEntity.getLobbyCountdownEntity().getCountdownInitiatedBy())
+                .lobbySettings(lobbySettingsEntityDtoMapper.mapToDto(lobbyEntity.getLobbySettingsEntity()))
+                .lobbyCountdown(lobbyCountdownEntityDtoMapper.mapToDto(lobbyEntity.getLobbyCountdownEntity()))
                 .lobbyPlayers(lobbyPlayerDtos)
                 .host(userEntityDtoMapper.mapToDto(lobbyEntity.getHost()))
                 .build();

@@ -6,8 +6,8 @@ import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
-import com.github.ryand6.sudokuweb.mappers.Impl.GameStateEntityDtoMapper;
-import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.game.SharedGameStateEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
@@ -25,7 +25,7 @@ public class GameStateEntityDtoMapperIntegrationTests extends AbstractIntegratio
     private final LobbyRepository lobbyRepository;
     private final UserRepository userRepository;
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
-    private final GameStateEntityDtoMapper gameStateEntityDtoMapper;
+    private final SharedGameStateEntityDtoMapper sharedGameStateEntityDtoMapper;
     private final UserEntityDtoMapper userEntityDtoMapper;
     private final GameRepository gameRepository;
 
@@ -34,13 +34,13 @@ public class GameStateEntityDtoMapperIntegrationTests extends AbstractIntegratio
             LobbyRepository lobbyRepository,
             UserRepository userRepository,
             SudokuPuzzleRepository sudokuPuzzleRepository,
-            GameStateEntityDtoMapper gameStateEntityDtoMapper,
+            SharedGameStateEntityDtoMapper sharedGameStateEntityDtoMapper,
             UserEntityDtoMapper userEntityDtoMapper,
             GameRepository gameRepository) {
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
-        this.gameStateEntityDtoMapper = gameStateEntityDtoMapper;
+        this.sharedGameStateEntityDtoMapper = sharedGameStateEntityDtoMapper;
         this.userEntityDtoMapper = userEntityDtoMapper;
         this.gameRepository = gameRepository;
     }

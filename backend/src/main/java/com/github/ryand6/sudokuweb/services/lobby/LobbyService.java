@@ -7,11 +7,11 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
-import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.services.user.UserService;
@@ -28,8 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity.LOBBY_SIZE;
 
 @Service
 public class LobbyService {

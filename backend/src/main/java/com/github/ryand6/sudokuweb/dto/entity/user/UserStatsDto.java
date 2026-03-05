@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dto.entity;
+package com.github.ryand6.sudokuweb.dto.entity.user;
 
 import lombok.*;
 

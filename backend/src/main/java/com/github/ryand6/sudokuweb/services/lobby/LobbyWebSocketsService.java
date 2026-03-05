@@ -1,8 +1,8 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
-import com.github.ryand6.sudokuweb.dto.entity.GameDto;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 

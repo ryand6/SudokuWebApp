@@ -1,9 +1,9 @@
 package com.github.ryand6.sudokuweb.controllers.rest.lobby;
 
-import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.request.*;
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.PublicLobbiesListDto;
 import com.github.ryand6.sudokuweb.services.lobby.LobbyChatService;
 import com.github.ryand6.sudokuweb.services.lobby.LobbyService;

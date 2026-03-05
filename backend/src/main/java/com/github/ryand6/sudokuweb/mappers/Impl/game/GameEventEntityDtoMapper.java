@@ -1,7 +1,7 @@
-package com.github.ryand6.sudokuweb.mappers.Impl;
+package com.github.ryand6.sudokuweb.mappers.Impl.game;
 
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventEntity;
-import com.github.ryand6.sudokuweb.dto.entity.GameEventDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
 
 public class GameEventEntityDtoMapper implements EntityDtoMapper<GameEventEntity, GameEventDto> {

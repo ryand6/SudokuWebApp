@@ -2,10 +2,10 @@ package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
-import com.github.ryand6.sudokuweb.mappers.Impl.UserStatsEntityDtoMapper;
-import com.github.ryand6.sudokuweb.mappers.Impl.UserEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserStatsEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.response;
 
-import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import lombok.*;
 
 import java.util.List;

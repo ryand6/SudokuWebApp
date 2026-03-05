@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dto.entity;
+package com.github.ryand6.sudokuweb.dto.entity.lobby;
 
 import com.github.ryand6.sudokuweb.enums.MessageType;
 import lombok.*;

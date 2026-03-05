@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.TestOAuthUtil;
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.services.user.UserService;

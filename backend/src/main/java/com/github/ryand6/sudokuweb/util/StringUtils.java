@@ -55,4 +55,10 @@ public final class StringUtils {
         return s.chars().allMatch(c -> c < 128);
     }
 
+    // Converts string to proper case
+    public static String getProperCase(String s) {
+        String lowerCase = s.toLowerCase();
+        return Character.toUpperCase(lowerCase.charAt(0)) + lowerCase.substring(1);
+    }
+
 }

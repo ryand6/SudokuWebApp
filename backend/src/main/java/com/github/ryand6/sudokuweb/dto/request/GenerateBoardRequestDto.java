@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.request;
 
-import com.github.ryand6.sudokuweb.dto.entity.LobbyDto;
-import jakarta.validation.constraints.NotBlank;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import lombok.*;
 import jakarta.validation.constraints.NotNull;
 

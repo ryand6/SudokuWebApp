@@ -1,7 +1,7 @@
-package com.github.ryand6.sudokuweb.mappers.Impl;
+package com.github.ryand6.sudokuweb.mappers.Impl.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.chat.LobbyChatMessageEntity;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
 import org.springframework.stereotype.Component;
 

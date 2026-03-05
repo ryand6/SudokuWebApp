@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest.game;
 
-import com.github.ryand6.sudokuweb.dto.entity.GameDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.game.GameService;
 import com.github.ryand6.sudokuweb.services.MembershipService;

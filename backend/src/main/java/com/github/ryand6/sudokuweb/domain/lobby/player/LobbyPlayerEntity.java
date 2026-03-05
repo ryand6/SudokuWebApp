@@ -44,7 +44,7 @@ public class LobbyPlayerEntity {
 
     // Stored the UTC timestamp of the last submitted chat message by the player - used to prevent message spamming
     @Column(name = "lobby_message_timestamp")
-    private Instant lobbyMessageTimestamp = null;
+    private Instant lastLobbyMessageTimestamp = null;
 
     // set the join time before persisting the entity to the DB for the first time - no manual setting required
     @PrePersist

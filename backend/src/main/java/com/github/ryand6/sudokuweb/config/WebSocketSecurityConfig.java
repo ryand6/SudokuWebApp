@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.config;
 
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import org.springframework.context.annotation.Bean;

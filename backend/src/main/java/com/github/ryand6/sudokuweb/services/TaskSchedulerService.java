@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.dto.entity.GameDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.services.game.GameService;
 import com.github.ryand6.sudokuweb.services.lobby.LobbyWebSocketsService;
 import org.slf4j.Logger;

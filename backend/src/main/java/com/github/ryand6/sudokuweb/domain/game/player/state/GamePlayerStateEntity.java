@@ -3,7 +3,9 @@ package com.github.ryand6.sudokuweb.domain.game.player.state;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.exceptions.game.state.InvalidSharedGameStateException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,8 +29,8 @@ public class GamePlayerStateEntity {
     @JoinColumn(name = "game_player_id", nullable = false, unique = true)
     private GamePlayerEntity gamePlayerEntity;
 
-    @Column(name = "current_board_state", nullable = false)
-    private String currentBoardState;
+    @Column(name = "current_board_state")
+    private String currentBoardState = null;
 
     // Each pair of bytes in the array is a bitmask acting as a binary representation of the notes active for that cell
     @Column(name = "notes", nullable = false)
@@ -58,6 +60,17 @@ public class GamePlayerStateEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    public void validateBoardState() {
+        GameMode gameMode = gamePlayerEntity.getGameEntity().getGameMode();
+        if (gameMode == GameMode.CLASSIC && currentBoardState == null) {
+            throw new InvalidSharedGameStateException("Game mode " + gameMode.getProperCase() + " must have a shared game state");
+        }
     }
 
 }

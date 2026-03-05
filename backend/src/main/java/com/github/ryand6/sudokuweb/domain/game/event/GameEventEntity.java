@@ -53,7 +53,7 @@ public class GameEventEntity {
     @Column(name = "payload", columnDefinition = "jsonb", nullable = false)
     private Map<String, Object> payload;
 
-    @Column(name = "sequence_number", nullable = false)
+    @Column(name = "sequence_number", nullable = false, unique = true)
     private long sequenceNumber;
 
 }

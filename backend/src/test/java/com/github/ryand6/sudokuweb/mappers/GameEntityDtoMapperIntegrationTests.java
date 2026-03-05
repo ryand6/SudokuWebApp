@@ -5,10 +5,10 @@ import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
-import com.github.ryand6.sudokuweb.mappers.Impl.GameEntityDtoMapper;
-import com.github.ryand6.sudokuweb.mappers.Impl.GameStateEntityDtoMapper;
-import com.github.ryand6.sudokuweb.mappers.Impl.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.mappers.Impl.SudokuPuzzleEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.game.SharedGameStateEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.puzzle.SudokuPuzzleEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
@@ -28,7 +28,7 @@ public class GameEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
     private final SudokuPuzzleRepository sudokuPuzzleRepository;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final SudokuPuzzleEntityDtoMapper sudokuPuzzleEntityDtoMapper;
-    private final GameStateEntityDtoMapper gameStateEntityDtoMapper;
+    private final SharedGameStateEntityDtoMapper sharedGameStateEntityDtoMapper;
     private final GameEntityDtoMapper gameEntityDtoMapper;
     private final GameRepository gameRepository;
 
@@ -39,7 +39,7 @@ public class GameEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
             SudokuPuzzleRepository sudokuPuzzleRepository,
             LobbyEntityDtoMapper lobbyEntityDtoMapper,
             SudokuPuzzleEntityDtoMapper sudokuPuzzleEntityDtoMapper,
-            GameStateEntityDtoMapper gameStateEntityDtoMapper,
+            SharedGameStateEntityDtoMapper sharedGameStateEntityDtoMapper,
             GameEntityDtoMapper gameEntityDtoMapper,
             GameRepository gameRepository) {
         this.lobbyRepository = lobbyRepository;
@@ -47,7 +47,7 @@ public class GameEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
         this.sudokuPuzzleRepository = sudokuPuzzleRepository;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.sudokuPuzzleEntityDtoMapper = sudokuPuzzleEntityDtoMapper;
-        this.gameStateEntityDtoMapper = gameStateEntityDtoMapper;
+        this.sharedGameStateEntityDtoMapper = sharedGameStateEntityDtoMapper;
         this.gameEntityDtoMapper = gameEntityDtoMapper;
         this.gameRepository = gameRepository;
     }

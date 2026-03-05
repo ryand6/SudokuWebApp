@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import org.junit.jupiter.api.Test;

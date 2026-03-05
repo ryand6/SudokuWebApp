@@ -1,6 +1,7 @@
-package com.github.ryand6.sudokuweb.dto.entity;
+package com.github.ryand6.sudokuweb.dto.entity.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerId;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import lombok.*;
 
@@ -26,6 +27,6 @@ public class LobbyPlayerDto {
 
     private Instant readyAt;
 
-    private Instant lobbyMessageTimestamp;
+    private Instant lastLobbyMessageTimestamp;
 
 }

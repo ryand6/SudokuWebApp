@@ -1,7 +1,6 @@
-package com.github.ryand6.sudokuweb.dto.entity;
+package com.github.ryand6.sudokuweb.dto.entity.lobby;
 
-import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import lombok.*;
 
 import java.time.Instant;
@@ -23,25 +22,15 @@ public class LobbyDto {
 
     private Instant createdAt;
 
-    private Difficulty difficulty;
-
-    private TimeLimitPreset timeLimit;
-
     private boolean isActive;
-
-    private boolean isPublic;
 
     private boolean inGame;
 
     private Long currentGameId;
 
-    private boolean countdownActive;
+    private LobbySettingsDto lobbySettings;
 
-    private Instant countdownEndsAt;
-
-    private Long countdownInitiatedBy;
-
-    private boolean settingsLocked;
+    private LobbyCountdownDto lobbyCountdown;
 
     private Set<LobbyPlayerDto> lobbyPlayers;
 

@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dto.entity;
+package com.github.ryand6.sudokuweb.dto.entity.puzzle;
 
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import lombok.*;

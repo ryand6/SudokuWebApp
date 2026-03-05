@@ -2,9 +2,9 @@ package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.dto.entity.SudokuPuzzleDto;
+import com.github.ryand6.sudokuweb.dto.entity.puzzle.SudokuPuzzleDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.mappers.Impl.SudokuPuzzleEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.puzzle.SudokuPuzzleEntityDtoMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

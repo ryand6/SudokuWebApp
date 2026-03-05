@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest.user;
 
-import com.github.ryand6.sudokuweb.dto.entity.UserDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.dto.response.TopFivePlayersDto;
 import com.github.ryand6.sudokuweb.dto.response.UserRankDto;

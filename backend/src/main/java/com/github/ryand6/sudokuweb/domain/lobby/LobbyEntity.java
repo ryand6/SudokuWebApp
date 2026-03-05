@@ -66,9 +66,6 @@ public class LobbyEntity {
     @OneToOne(mappedBy = "lobbyEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private LobbyCountdownEntity lobbyCountdownEntity;
 
-    @Version
-    private Long version;
-
     @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
 
@@ -80,6 +77,9 @@ public class LobbyEntity {
 
     @OneToMany(mappedBy = "lobbyEntity", cascade = CascadeType.REMOVE)
     private Set<GameEntity> gameEntities;
+
+    @Version
+    private Long version;
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users
     @Override

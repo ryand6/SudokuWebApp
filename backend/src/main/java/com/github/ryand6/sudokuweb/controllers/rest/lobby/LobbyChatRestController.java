@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest.lobby;
 
-import com.github.ryand6.sudokuweb.dto.entity.LobbyChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.response.LobbyGetChatMessagesResponseDto;
 import com.github.ryand6.sudokuweb.services.lobby.LobbyChatService;
 import org.springframework.http.ResponseEntity;

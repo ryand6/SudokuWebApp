@@ -24,6 +24,6 @@ public class GamePlayerSettingsEntity {
     private GamePlayerEntity gamePlayerEntity;
 
     @Column(name = "show_rival_highlighted_squares")
-    private boolean showRivalHighlightedSquares = true;
+    private boolean showOtherPlayerHighlightedSquares = true;
 
 }

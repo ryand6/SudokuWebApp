@@ -1,23 +1,17 @@
-package com.github.ryand6.sudokuweb.mappers.Impl;
+package com.github.ryand6.sudokuweb.mappers.Impl.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
-import com.github.ryand6.sudokuweb.dto.entity.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.mappers.EntityDtoMapper;
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
-import com.github.ryand6.sudokuweb.domain.user.UserRepository;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEntity, LobbyPlayerDto> {
 
-    private final UserRepository userRepository;
-    private final LobbyRepository lobbyRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
 
-    public LobbyPlayerEntityDtoMapper(UserRepository userRepository,
-                                      LobbyRepository lobbyRepository, UserEntityDtoMapper userEntityDtoMapper) {
-        this.userRepository = userRepository;
-        this.lobbyRepository = lobbyRepository;
+    public LobbyPlayerEntityDtoMapper(UserEntityDtoMapper userEntityDtoMapper) {
         this.userEntityDtoMapper = userEntityDtoMapper;
     }
 
@@ -29,7 +23,7 @@ public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEn
                 .joinedAt(lobbyPlayerEntity.getJoinedAt())
                 .lobbyStatus(lobbyPlayerEntity.getLobbyStatus())
                 .readyAt(lobbyPlayerEntity.getReadyAt())
-                .lobbyMessageTimestamp(lobbyPlayerEntity.getLobbyMessageTimestamp())
+                .lastLobbyMessageTimestamp(lobbyPlayerEntity.getLastLobbyMessageTimestamp())
                 .build();
     }
 
