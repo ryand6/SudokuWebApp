@@ -45,8 +45,7 @@ export function LobbyPage() {
     // check if user is a player in the current game
     const { data: gameQueryData, isLoading: isLoadingGame } = useCheckIfUserInGame(
         // Provide -1 default values if required parameters not available - will result in query not running until proper values are provided
-        lobby?.currentGameId ?? -1,
-        currentUser?.id ?? -1
+        lobby?.currentGameId
     );
 
     // Navigates user to game page when they are in an active game
@@ -65,8 +64,8 @@ export function LobbyPage() {
             <div id="lobby-header" className="flex flex-row justify-between">
                 <h1 className="text-secondary font-bold text-shadow m-3">{lobby?.lobbyName}</h1>
                 {/* Show countdown timer to game start if it's running */}
-                {lobby.countdownActive && lobby.countdownEndsAt && (
-                    <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.countdownEndsAt)} />
+                {lobby.lobbyCountdown.countdownActive && lobby.lobbyCountdown.countdownEndsAt && (
+                    <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.lobbyCountdown.countdownEndsAt)} />
                 )}
                 <Button className="m-2 cursor-pointer" onClick={handleClick}>Leave Lobby</Button>
             </div>

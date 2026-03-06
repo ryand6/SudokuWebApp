@@ -9,7 +9,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class GamePlayerStateDto {
+public class PrivateGamePlayerStateDto {
 
     private String currentBoardState;
 
@@ -20,5 +20,7 @@ public class GamePlayerStateDto {
     private double activeMultiplier;
 
     private Instant multiplierEndsAt;
+
+    private GamePlayerSettingsDto gamePlayerSettings;
 
 }

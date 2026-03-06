@@ -1,8 +1,8 @@
 import SudokuCell from "./SudokuCell";
-import type { BoardState, PlayerState } from "@/types/game/GameTypes";
+import type { BoardState, GamePlayer } from "@/types/game/GameTypes";
 
 
-export function SudokuBoard({boardState, playerState}: {boardState: BoardState, playerState: PlayerState}) {
+export function SudokuBoard({boardState, playerState}: {boardState: BoardState, playerState: GamePlayer}) {
 
     return (
         <div className="">

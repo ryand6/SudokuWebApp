@@ -4,6 +4,7 @@ import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.InvalidCellCoordinatesException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
@@ -27,6 +28,7 @@ public class ErrorMapping {
             Map.entry(LobbyNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(GameNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(GamePlayerNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(GamePlayerStateNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),

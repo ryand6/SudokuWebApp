@@ -1,8 +1,8 @@
 import type { UserDto } from "@/types/dto/entity/user/UserDto";
-import type { GameState } from "@/types/game/GameTypes";
+import type { PublicGameState } from "@/types/game/GameTypes";
 
 export function isCurrentUserInGame(
-    game: GameState,
+    game: PublicGameState,
     currentUser: UserDto
 ): boolean {
     return game.playerIds.some((id) => id === currentUser.id);

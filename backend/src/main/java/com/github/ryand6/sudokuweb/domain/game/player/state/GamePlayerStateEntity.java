@@ -14,7 +14,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "game_state")
+@Table(name = "game_player_states")
 public class GamePlayerStateEntity {
 
     @EmbeddedId

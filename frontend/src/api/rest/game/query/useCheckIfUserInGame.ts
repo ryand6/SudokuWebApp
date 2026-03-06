@@ -1,18 +1,17 @@
 import { checkIfUserInGame } from "@/api/rest/game/query/checkIfUserInGame";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
-import type { GameState } from "@/types/game/GameTypes";
-import { normaliseGameState } from "@/utils/game/normaliseGameState";
+import type { PublicGameState } from "@/types/game/GameTypes";
+import { normalisePublicGameData } from "@/utils/game/normaliseGameState";
 import { useQuery } from "@tanstack/react-query";
 
-export function useCheckIfUserInGame(gameId: number, userId: number) {
-    return useQuery<GameState>({
+export function useCheckIfUserInGame(gameId: number) {
+    return useQuery<PublicGameState>({
         queryKey: ["game", gameId],
         queryFn: async () => {
-            const gameData: GameDto = await checkIfUserInGame(gameId, userId);
-            return normaliseGameState(gameData);
+            const gameData: GameDto = await checkIfUserInGame(gameId);
+            return normalisePublicGameData(gameData);
         },
         staleTime: 0,
-        // does not run if default values are given (-1)
-        enabled: gameId > 0 && userId > 0
+        enabled: !!gameId
     })
 }

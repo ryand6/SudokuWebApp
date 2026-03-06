@@ -1,13 +1,13 @@
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import type { UserDto } from "@/types/dto/entity/user/UserDto";
-import type { GameState } from "@/types/game/GameTypes";
+import type { PublicGameState } from "@/types/game/GameTypes";
 import { useEffect } from "react";
 import type { NavigateFunction } from "react-router-dom";
 
 export function useNavigateUserWhenInGame(
     lobby: LobbyDto | null | undefined,
     currentUser: UserDto | null | undefined,
-    gameQueryData: GameState | undefined,
+    gameQueryData: PublicGameState | undefined,
     isLoadingGameData: boolean,
     navigate: NavigateFunction
 ) {

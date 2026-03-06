@@ -15,7 +15,7 @@ export function useLeaveLobby() {
     const mutation = useMutation<LobbyDto | null, Error, LeaveLobbyRequestDto>({
         mutationFn: ({lobbyId}) => leaveLobby(lobbyId),
         onMutate: () => {
-            setIsLeaving(true)
+            setIsLeaving(true);
         },
         onSuccess: (updatedLobby, variables) => {
             unsubscribe(`/topic/lobby/${variables.lobbyId}`);

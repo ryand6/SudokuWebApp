@@ -14,11 +14,9 @@ public class GamePlayerDto {
 
     private UserDto user;
 
-    private GamePlayerStateDto gamePlayerState;
-
-    private GamePlayerSettingsDto gamePlayerSettings;
-
     private PlayerColour playerColour;
+
+    private boolean[] boardProgress;
 
     private int score;
 

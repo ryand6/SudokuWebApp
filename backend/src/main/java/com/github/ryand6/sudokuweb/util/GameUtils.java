@@ -10,4 +10,13 @@ public class GameUtils {
         }
     }
 
+    public static boolean[] convertBoardStateIntoProgressState(String boardState) {
+        int boardStateLength = boardState.length();
+        boolean[] progressState = new boolean[boardStateLength];
+        for (int i = 0; i < boardStateLength; i++) {
+            progressState[i] = boardState.charAt(i) != '.';
+        }
+        return progressState;
+    }
+
 }

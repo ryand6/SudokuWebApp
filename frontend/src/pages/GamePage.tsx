@@ -8,6 +8,7 @@ import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { useParams } from "react-router-dom";
 import { mapBoardToBlocks } from "@/utils/game/blockUtils";
 import type { CellState } from "@/types/game/GameTypes";
+import { useGetGamePlayerState } from "@/api/rest/game/query/useGetGamePlayerState";
 
 export function GamePage() {
 
@@ -17,10 +18,12 @@ export function GamePage() {
 
     useValidateGameId(gameIdNum);
 
-    // CREATE FUNCTION - gets game data from server, includes game state data for each player
-    const {data: gameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
-
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
+
+    // CREATE FUNCTION - gets game data from server, includes game state data for each player
+    const {data: publicGameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
+
+    const {data: privateGameState, isLoading: isGameStateLoading, isError: isGameStateError, error: gameStateError} = useGetGamePlayerState(gameIdNum, currentUser?.id);
 
     // IMPLEMENT
     //const leaveGameHandler = useLeaveGame();
@@ -34,9 +37,9 @@ export function GamePage() {
 
     if (isGameLoading || isCurrentUserLoading) return <SpinnerButton />;
 
-    console.log("GAME DATA: ", gameState);
+    console.log("GAME DATA: ", publicGameState);
     
-    if (!gameState || !currentUser) return null;
+    if (!publicGameState || !currentUser || !privateGameState) return null;
 
 
     // map board to sudoku blocks 
@@ -45,7 +48,7 @@ export function GamePage() {
     return (
         <div>
             GAME PAGE
-            <SudokuBoard boardState={gameState.gameStates[currentUser.id]} playerState={gameState.players[currentUser.id]} />
+            <SudokuBoard boardState={privateGameState.boardState} playerState={publicGameState.players[currentUser.id]} />
         </div>
     )
 }

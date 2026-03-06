@@ -42,7 +42,6 @@ public class UserRestController {
         if (principal == null || authToken == null) {
             throw new OAuth2LoginRequiredException("OAuth2 login required to carry out this action");
         }
-        // null if user not returned
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
         return ResponseEntity.ok(user);
     }

@@ -1,5 +1,5 @@
-import type { GamePlayerStateDto } from "@/types/dto/entity/game/GamePlayerStateDto";
-import type { GamePlayerStateDtoRaw } from "@/types/dto/entity/game/GamePlayerStateDtoRaw";
+import type { GamePlayerStateDto } from "@/types/dto/entity/game/PrivateGamePlayerStateDto";
+import type { GamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
 import { decodeNotes } from "./noteEncoding";
 import { CELL_COUNT } from "./gameConstants";
 

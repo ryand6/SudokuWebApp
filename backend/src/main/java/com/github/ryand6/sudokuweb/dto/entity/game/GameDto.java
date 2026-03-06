@@ -22,6 +22,8 @@ public class GameDto {
 
     private Set<GamePlayerDto> gamePlayers;
 
+    private String initialBoardState;
+
     private SharedGameStateDto sharedGameState;
 
     private GameMode gameMode;

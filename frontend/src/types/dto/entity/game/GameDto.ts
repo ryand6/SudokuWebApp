@@ -10,6 +10,7 @@ export type GameDto = {
     lobbyId: number,
     gamePlayers: GamePlayerDto[],
     sharedGameState: SharedGameStateDto | null,
+    initialBoardState: string,
     gameMode: GameMode,
     difficulty: Difficulty,
     timeLimit: TimeLimitPreset,

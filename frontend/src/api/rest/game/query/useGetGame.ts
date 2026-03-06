@@ -1,15 +1,15 @@
 import { getGame } from "@/api/rest/game/query/getGame";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
-import type { GameState } from "@/types/game/GameTypes";
-import { normaliseGameState } from "@/utils/game/normaliseGameState";
+import type { PublicGameState } from "@/types/game/GameTypes";
+import { normalisePublicGameData } from "@/utils/game/normaliseGameState";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGetGame(gameId: number) {
-    return useQuery<GameState>({
+    return useQuery<PublicGameState>({
         queryKey: ["game", gameId],
         queryFn: async () => {
             const gameData: GameDto = await getGame(gameId);
-            return normaliseGameState(gameData);
+            return normalisePublicGameData(gameData);
         },
         // Only run if gameId has a value
         enabled: !!gameId,

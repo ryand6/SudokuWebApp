@@ -1,64 +1,77 @@
-import type { GamePlayerStateDto } from "@/types/dto/entity/game/GamePlayerStateDto";
 import { CELL_COUNT, GRID_SIZE } from "./gameConstants";
-import type { BoardStates, CellState, GameState, PlayerStates } from "@/types/game/GameTypes";
+import type { CellState, PublicGameState, GamePlayers, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
-import type { GamePlayerStateDtoRaw } from "@/types/dto/entity/game/GamePlayerStateDtoRaw";
+import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
 import { mapGameState } from "./mapGameState";
+import type { PrivateGamePlayerStateDto } from "@/types/dto/entity/game/PrivateGamePlayerStateDto";
 
-export function normaliseGameState(
+export function normalisePublicGameData(
     gameData: GameDto
-): GameState {
+): PublicGameState {
     const playerIds: number[] = [];
-    const players: PlayerStates = {};
-    const gameStates: BoardStates = {};
+    const players: GamePlayers = {};
 
-    gameData.gameStates.forEach((gs) => {
-        playerIds.push(gs.user.id);
-
-        players[gs.user.id] = {
-            name: gs.user.username,
-            colour: gs.playerColour
+    gameData.gamePlayers.forEach((gp) => {
+        playerIds.push(gp.user.id);
+        players[gp.user.id] = {
+            name: gp.user.username,
+            colour: gp.playerColour,
+            boardProgress: gp.boardProgress,
+            score: gp.score,
+            gameLoaded: gp.gameLoaded,
+            gameResult: gp.gameResult
         };
-
-        gameStates[gs.user.id] = fillBoardState(gs);
     });
-
     playerIds.sort();
-
-    const gameState: GameState = {
+    const gameState: PublicGameState = {
         gameId: gameData.id,
         playerIds: playerIds,
         players: players,
-        gameStates: gameStates
+        sharedGameState: gameData.sharedGameState
     };
 
     return gameState;
 }
 
-
-export function fillBoardState(gameState: GamePlayerStateDtoRaw): CellState[][] {
-
+// Handles client's private game state data (not visible to opponents)
+export function normalisePrivateGameStateData(
+    gameState: PrivateGamePlayerStateDtoRaw
+): PrivateGamePlayerState {
     if (gameState.currentBoardState.length != CELL_COUNT) {
         throw new Error(`Expected board state string to be ${CELL_COUNT} characters long. Instead got ${gameState.currentBoardState.length} characters.`)
     }
+    const normalisedGameDtoState: PrivateGamePlayerStateDto = mapGameState(gameState);
+    return {
+        boardState: fillBoardState(normalisedGameDtoState),
+        currentStreak: normalisedGameDtoState.currentStreak,
+        activeMultiplier: normalisedGameDtoState.activeMultiplier,
+        multiplierEndsAt: normalisedGameDtoState.multiplierEndsAt,
+        settings: normalisedGameDtoState.gamePlayerSettings
+    }
+}
 
-    const normalisedGameState: GamePlayerStateDto = mapGameState(gameState);
-
+function fillBoardState(gameDtoState: PrivateGamePlayerStateDto): CellState[][] {
     const boardState = [];
-
     for (let y = 0; y < GRID_SIZE; y++) {
         let boardRow: CellState[] = [];
         for (let x = 0; x < GRID_SIZE; x++) {
-            // Map 2D co-ords to 1D array positions
-            let value = normalisedGameState.currentBoardState.at((y * 9) + x);
-            if (value === "0") {
-                value = undefined;
-            }
-            let notes = normalisedGameState.notes[(y * 9) + x];
+            const value = getCellValue(gameDtoState.currentBoardState, y, x);
+            const notes = gameDtoState.notes[(y * 9) + x];
             boardRow[x] = {value: value, notes: notes};
         }
         boardState.push(boardRow);
     }
-
     return boardState;
+}
+
+function getCellValue(boardState: string | null, y: number, x: number): string | undefined {
+    if (boardState === null) {
+        return undefined;
+    }
+    // Map 2D co-ords to 1D array positions
+    let value = boardState.at((y * 9) + x);
+    if (value === ".") {
+        value = undefined;
+    }
+    return value;
 }
