@@ -35,12 +35,11 @@ export function GamePage() {
 
     // IMPLEMENT useHandleGameWsSubscription
 
-    if (isGameLoading || isCurrentUserLoading) return <SpinnerButton />;
+    if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
 
     console.log("GAME DATA: ", publicGameState);
     
     if (!publicGameState || !currentUser || !privateGameState) return null;
-
 
     // map board to sudoku blocks 
     //const sudokuBlocks: CellState[][] = mapBoardToBlocks(gameState.gameStates[currentUser.id]);

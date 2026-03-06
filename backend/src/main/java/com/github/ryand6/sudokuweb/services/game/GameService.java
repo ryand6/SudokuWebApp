@@ -63,28 +63,29 @@ public class GameService {
     }
 
     @Transactional
-    public void createGameIfNoneActive(LobbyEntity lobby) {
+    public GameDto createGameIfNoneActive(LobbyEntity lobby) {
         // Exit task if scheduler cancels it
         if (Thread.currentThread().isInterrupted()) {
             throw new GameCreationInterruptedException("Game creation task for Lobby with ID " + lobby.getId() + " interrupted before starting DB operation");
         }
         if (lobby.isInGame()) {
-            return;
+            return null;
         }
-        Long gameId = createGame(lobby);
+        GameDto game = createGame(lobby);
         lobby.setInGame(true);
-        lobby.setCurrentGameId(gameId);
+        lobby.setCurrentGameId(game.getId());
         lobby.getLobbyCountdownEntity().resetCountdownIfActive();
 
         // Emit notification of lobby update
         lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lobby), messagingTemplate);
+        return game;
     }
 
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
     active user in the lobby for the new sudokuPuzzleEntity - Transactional applied as multiple entities are
     saved to DB */
     @Transactional
-    private Long createGame(LobbyEntity lobby) {
+    private GameDto createGame(LobbyEntity lobby) {
 
         Difficulty difficulty = lobby.getLobbySettingsEntity().getDifficulty();
 
@@ -100,7 +101,7 @@ public class GameService {
         GameEntity newGame = GameFactory.createGame(lobby, sudokuPuzzle);
         gameRepository.save(newGame);
 
-        return newGame.getId();
+        return gameEntityDtoMapper.mapToDto(newGame);
     }
 
     public GameDto getGameById(Long gameId) {
