@@ -4,7 +4,7 @@ import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 import { toast } from "react-toastify";
 import type { LobbyStatus } from "@/types/enum/LobbyStatus";
-import { useUpdateLobbyPlayerStatus } from "@/api/rest/lobby/mutate/useUpdateLobbyPlayerStatus";
+import { useUpdateLobbyPlayerStatus } from "@/api/rest/lobbyplayer/mutate/useUpdateLobbyPlayerStatus";
 
 export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
@@ -40,7 +40,7 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
                     </div>
                 )
             })}
-            {!lobby.settingsLocked && playerSlotsRemaining.map((_, index) => {
+            {!lobby.lobbyCountdown.countdownActive && playerSlotsRemaining.map((_, index) => {
                 return (
                     <div id="empty-player-row" key={index}>
                         <span>Waiting for player...</span>

@@ -1,4 +1,5 @@
-import type { CellState } from "@/pages/GamePage";
+
+import type { CellState } from "@/types/game/GameTypes";
 import { GRID_SIZE } from "./gameConstants";
 
 /**

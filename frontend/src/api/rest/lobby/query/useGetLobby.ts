@@ -17,7 +17,7 @@ export function useGetLobby(lobbyId: number) {
             const data = query.state.data;
             if (!data) return 10000; // lobby unknown or loading
             if (data.inGame) return false; // terminal state
-            if (data.countdownActive) return 2000; // poll every 2 seconds to ensure any potential changes to countdown are accounted for
+            if (data.lobbyCountdown.countdownActive) return 2000; // poll every 2 seconds to ensure any potential changes to countdown are accounted for
             return 10000; // idle
         }
     })

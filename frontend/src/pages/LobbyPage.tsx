@@ -45,7 +45,7 @@ export function LobbyPage() {
     // check if user is a player in the current game
     const { data: gameQueryData, isLoading: isLoadingGame } = useCheckIfUserInGame(
         // Provide -1 default values if required parameters not available - will result in query not running until proper values are provided
-        lobby?.currentGameId
+        lobby?.currentGameId ?? -1
     );
 
     // Navigates user to game page when they are in an active game

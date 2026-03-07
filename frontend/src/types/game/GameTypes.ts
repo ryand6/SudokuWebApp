@@ -36,5 +36,5 @@ export type PrivateGamePlayerState = {
     currentStreak: number,
     activeMultiplier: number,
     multiplierEndsAt: string | null,
-    mySettings: GamePlayerSettingsDto
+    settings: GamePlayerSettingsDto
 }

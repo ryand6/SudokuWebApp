@@ -22,7 +22,7 @@ export async function initStompClient(
     const handleStompError = (frame: IFrame) => {
         console.error('STOMP Error', frame.headers['message'], frame.body);
         // force reset to ensure reconnect is consistent and clean
-        resetWebSocketConnection(clientRef, handleConnect, handleStompError);
+        resetWebSocketConnection(clientRef, handleConnect, handleStompError, handleDisconnect, handleWebSocketClose);
     }
     
     try {

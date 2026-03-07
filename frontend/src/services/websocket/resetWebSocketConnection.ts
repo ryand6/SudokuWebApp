@@ -6,7 +6,9 @@ import type { Client, Frame } from "@stomp/stompjs";
 export async function resetWebSocketConnection(
     clientRef: React.RefObject<Client | null>,
     handleConnect: () => void,
-    handleStompError: (frame: Frame) => void
+    handleStompError: (frame: Frame) => void,
+    handleDisconnect: () => void,
+    handleWebSocketClose: () => void,
 ) {
     // Get a fresh WebSocket
     const newSocket = initWebSocket();
@@ -19,7 +21,7 @@ export async function resetWebSocketConnection(
     clientRef.current?.deactivate();
 
     // Create new client
-    clientRef.current = stompClientFactory(newSocket, csrfTokenData, handleStompError, handleConnect);
+    clientRef.current = stompClientFactory(newSocket, csrfTokenData, handleStompError, handleConnect, handleDisconnect, handleWebSocketClose);
     clientRef.current.reconnectDelay = 1000;
     // will trigger handleConnect
     clientRef.current.activate(); 

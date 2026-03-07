@@ -19,7 +19,7 @@ export function DashboardPage() {
         <div className="flex flex-col h-screen">
             <header className="bg-[#333] text-white py-[10px] px-[20px] flex justify-between items-center">
                 <div>
-                    Welcome, <span>{currentUser?.username ?? "User"}</span> | Score: <span>{currentUser?.score.totalScore ?? 0}</span> | Rank: <span>#{userRankDto?.userRank ?? "0"}</span>
+                    Welcome, <span>{currentUser?.username ?? "User"}</span> | Score: <span>{currentUser?.userStats.totalScore ?? 0}</span> | Rank: <span>#{userRankDto?.userRank ?? "0"}</span>
                 </div>
             </header>
             <div id="dashboard-content" className="flex flex-1">
@@ -32,7 +32,7 @@ export function DashboardPage() {
                     <h3>Top 5 Players</h3>
                     <ol>
                         {topFivePlayersDto?.topFivePlayers.map((player, index) => 
-                            <li key={index}><span>{player.username}</span> | Score: <span>{player.score.totalScore}</span> | Rank: #<span>{userRankDto?.userRank}</span></li>
+                            <li key={index}><span>{player.username}</span> | Score: <span>{player.userStats.totalScore}</span> | Rank: #<span>{userRankDto?.userRank}</span></li>
                         )}
                     </ol>
                 </div>
