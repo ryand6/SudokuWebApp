@@ -20,28 +20,25 @@ public class LobbyPlayerRestController {
     private final LobbyPlayerService lobbyPlayerService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyChatService lobbyChatService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     public LobbyPlayerRestController(LobbyPlayerService lobbyPlayerService,
                                      LobbyWebSocketsService lobbyWebSocketsService,
-                                     LobbyChatService lobbyChatService,
-                                     SimpMessagingTemplate messagingTemplate) {
+                                     LobbyChatService lobbyChatService) {
         this.lobbyPlayerService = lobbyPlayerService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyChatService = lobbyChatService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     // Update a lobby player's status
     @PostMapping("/update-player-status")
     public ResponseEntity<?> updateLobbyPlayerStatus(@RequestBody LobbyPlayerStatusUpdateRequestDto requestDto) {
         LobbyDto lobbyDto = lobbyPlayerService.updateLobbyPlayerStatus(requestDto.getLobbyId(), requestDto.getUserId(), requestDto.getLobbyStatus());
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto);
 
         // Send an info update to the lobby chat
         String message = "updated their status to " + requestDto.getLobbyStatus().toString().toLowerCase() + ".";
         LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), requestDto.getUserId(), message);
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
 
         return ResponseEntity.ok(lobbyDto);
     }

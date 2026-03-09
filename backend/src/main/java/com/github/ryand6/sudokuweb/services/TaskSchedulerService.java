@@ -28,16 +28,13 @@ public class TaskSchedulerService {
 
     private final GameService gameService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     public TaskSchedulerService(TaskScheduler taskScheduler,
                                 GameService gameService,
-                                LobbyWebSocketsService lobbyWebSocketsService,
-                                SimpMessagingTemplate messagingTemplate) {
+                                LobbyWebSocketsService lobbyWebSocketsService) {
         this.taskScheduler = taskScheduler;
         this.gameService = gameService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     public void scheduleGameCreationTask(Long lobbyId, Instant countdownEndsAt) {
@@ -73,7 +70,7 @@ public class TaskSchedulerService {
             GameDto gameDto = gameService.createGameIfNoneActive(lobbyId);
 
             if (gameDto != null) {
-                lobbyWebSocketsService.handleLobbyGameStart(gameDto, messagingTemplate);
+                lobbyWebSocketsService.handleLobbyGameStart(gameDto);
             }
         } catch (Exception e) {
             log.error("Game creation task failed: " + e);

@@ -15,14 +15,11 @@ public class LobbyChatWsController {
 
     private final LobbyChatService lobbyChatService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     public LobbyChatWsController(LobbyChatService lobbyChatService,
-                                   LobbyWebSocketsService lobbyWebSocketsService,
-                                   SimpMessagingTemplate messagingTemplate) {
+                                   LobbyWebSocketsService lobbyWebSocketsService) {
         this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
-        this.messagingTemplate = messagingTemplate;
     }
 
 
@@ -31,7 +28,7 @@ public class LobbyChatWsController {
             @DestinationVariable Long lobbyId,
             @Valid LobbyChatMessageRequestDto requestDto) {
         LobbyChatMessageDto lobbyChatMessageDto = lobbyChatService.submitMessage(lobbyId, requestDto.getUserId(), requestDto.getMessage());
-        lobbyWebSocketsService.handleLobbyChatMessage(lobbyChatMessageDto, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(lobbyChatMessageDto);
     }
 
 }

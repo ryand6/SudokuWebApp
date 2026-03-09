@@ -14,8 +14,6 @@ export function GamePage() {
 
     const { gameId } = useParams();
 
-    console.log("GAME ID: ", gameId);
-
     const gameIdNum = gameId ? Number(gameId) : NaN;
 
     useValidateGameId(gameIdNum);
@@ -41,11 +39,7 @@ export function GamePage() {
 
     console.log("GAME DATA: ", publicGameState);
 
-    console.log("GAME ERROR: ", gameError?.message);
-
     console.log("GAME STATE DATA: ", privateGameState);
-
-    console.log("GAME STATE ERROR: ", gameStateError?.message);
     
     if (!publicGameState || !currentUser || !privateGameState) return null;
 

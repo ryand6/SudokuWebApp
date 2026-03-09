@@ -15,9 +15,6 @@ export function useNavigateUserWhenInGame(
     useEffect(() => {
         // Ensure game is active, created and normalised before redirect
         if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId || isLoadingGameData || !gameQueryData || !gameQueryData.gameId) return;
-
-        console.log("NAVIGATE WHEN USER IN GAME - GAME DATA: ", gameQueryData);
-
         navigate(`/game/${gameQueryData.gameId}`);
     }, [lobby, currentUser, gameQueryData, isLoadingGameData, navigate]);
 }

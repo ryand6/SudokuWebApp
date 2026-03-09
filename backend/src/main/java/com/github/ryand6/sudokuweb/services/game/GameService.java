@@ -14,29 +14,26 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.events.LobbyUpdateEvent;
+import com.github.ryand6.sudokuweb.events.PlayerRemovedEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.PrivateGamePlayerStateEntityDtoMapper;
-import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.services.lobby.LobbyCountdownMutationService;
+import com.github.ryand6.sudokuweb.services.lobby.LobbyService;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
-import com.github.ryand6.sudokuweb.services.lobby.LobbyWebSocketsService;
 import com.github.ryand6.sudokuweb.util.TransactionUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.ResourceHolderSynchronization;
-import org.springframework.transaction.support.TransactionSynchronization;
-import org.springframework.transaction.support.TransactionSynchronizationAdapter;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -46,40 +43,37 @@ public class GameService {
     private final GameRepository gameRepository;
     private final SudokuPuzzleService sudokuPuzzleService;
     private final GameEntityDtoMapper gameEntityDtoMapper;
-    private final LobbyWebSocketsService lobbyWebSocketsService;
-    private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
-    private final SimpMessagingTemplate messagingTemplate;
     private final MembershipService membershipService;
     private final GameInMemoryStateService gameInMemoryStateService;
     private final GamePlayerStateRepository gamePlayerStateRepository;
     private final PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper;
     private final LobbyRepository lobbyRepository;
     private final LobbyCountdownMutationService lobbyCountdownMutationService;
+    private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public GameService(GameRepository gameRepository,
                        SudokuPuzzleService sudokuPuzzleService,
                        GameEntityDtoMapper gameEntityDtoMapper,
-                       LobbyWebSocketsService lobbyWebSocketsService,
-                       LobbyEntityDtoMapper lobbyEntityDtoMapper,
-                       SimpMessagingTemplate messagingTemplate,
                        MembershipService membershipService,
                        GameInMemoryStateService gameInMemoryStateService,
                        GamePlayerStateRepository gamePlayerStateRepository,
                        PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper,
                        LobbyRepository lobbyRepository,
-                       LobbyCountdownMutationService lobbyCountdownMutationService) {
+                       LobbyCountdownMutationService lobbyCountdownMutationService,
+                       LobbyEntityDtoMapper lobbyEntityDtoMapper,
+                       ApplicationEventPublisher applicationEventPublisher) {
         this.gameRepository = gameRepository;
         this.sudokuPuzzleService = sudokuPuzzleService;
         this.gameEntityDtoMapper = gameEntityDtoMapper;
-        this.lobbyWebSocketsService = lobbyWebSocketsService;
-        this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
-        this.messagingTemplate = messagingTemplate;
         this.membershipService = membershipService;
         this.gameInMemoryStateService = gameInMemoryStateService;
         this.gamePlayerStateRepository = gamePlayerStateRepository;
         this.privateGamePlayerStateEntityDtoMapper = privateGamePlayerStateEntityDtoMapper;
         this.lobbyRepository = lobbyRepository;
         this.lobbyCountdownMutationService = lobbyCountdownMutationService;
+        this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
@@ -103,13 +97,14 @@ public class GameService {
         lobbyCountdownMutationService.safeCountdownReset(lobby.getLobbyCountdownEntity());
 
         // Emit notification of lobby update after transaction committed
-        TransactionUtils.run(() -> {
-            lobbyWebSocketsService.handleLobbyUpdate(lobbyEntityDtoMapper.mapToDto(lobby), messagingTemplate);
-        });
-
+        applicationEventPublisher.publishEvent(
+                new LobbyUpdateEvent(lobbyEntityDtoMapper.mapToDto(lobby))
+        );
 
         return game;
     }
+
+
 
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
     active user in the lobby for the new sudokuPuzzleEntity - Transactional applied as multiple entities are
@@ -146,9 +141,13 @@ public class GameService {
         return gameEntityDtoMapper.mapToDto(newGame);
     }
 
-    public GameDto getGameById(Long gameId) {
+    public GameDto getGameDtoById(Long gameId) {
         GameEntity gameEntity = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
         return gameEntityDtoMapper.mapToDto(gameEntity);
+    }
+
+    public GameEntity getGameById(Long gameId) {
+        return gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
     }
 
     public PrivateGamePlayerStateDto getGamePlayerState(Long gameId, Long userId) {
@@ -159,8 +158,16 @@ public class GameService {
         return privateGamePlayerStateEntityDtoMapper.mapToDto(gamePlayerState);
     }
 
+    @Transactional
     public GameDto removeGamePlayer(Long gameId, Long userId) {
+        GameEntity game = getGameById(gameId);
+
         // IMPLEMENT LOGIC
+
+        // Send event to remove player from lobby
+        applicationEventPublisher.publishEvent(
+                new PlayerRemovedEvent(game.getLobbyEntity().getId(), userId)
+        );
 
         // update caches
         membershipService.removeGamePlayer(gameId, userId);
@@ -170,6 +177,7 @@ public class GameService {
         return new GameDto();
     }
 
+    @Transactional
     public GameDto endGame(Long gameId) {
         // IMPLEMENT LOGIC
 

@@ -11,8 +11,6 @@ export function normalisePublicGameData(
     const playerIds: number[] = [];
     const players: GamePlayers = {};
 
-    console.log("GAME DATA BEFORE NORMALISING: ", gameData);
-
     gameData.gamePlayers.forEach((gp) => {
         playerIds.push(gp.user.id);
         players[gp.user.id] = {

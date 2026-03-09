@@ -10,12 +10,14 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
         case "LOBBY_UPDATED":
             queryClient.setQueryData(["lobby", lobbyId], message.payload);
             break;
+
         // Transport lobby players to game page when game has started
         case "GAME_CREATED":
             const gameDto: GameDto = message.payload;
-            queryClient.setQueryData(["game", gameDto.id], gameDto);
-            navigate(`/game/${gameDto.id}`);
+            queryClient.setQueryData(["game", gameDto.gameId], gameDto);
+            navigate(`/game/${gameDto.gameId}`);
             break;
+            
         // Updates session storage if message is received in lobby chat
         case "LOBBY_CHAT_MESSAGE":
             const newMessage: {chatMessage: LobbyChatMessageDto} = {chatMessage: message.chatMessage};

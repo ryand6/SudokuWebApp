@@ -30,18 +30,15 @@ public class LobbyRestController {
     private final UserService userService;
     private final LobbyChatService lobbyChatService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     public LobbyRestController(LobbyService lobbyService,
                                UserService userService,
                                LobbyChatService lobbyChatService,
-                               LobbyWebSocketsService lobbyWebSocketsService,
-                               SimpMessagingTemplate messagingTemplate) {
+                               LobbyWebSocketsService lobbyWebSocketsService) {
         this.lobbyService = lobbyService;
         this.userService = userService;
         this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     // Post form details to create Lobby in DB
@@ -93,11 +90,11 @@ public class LobbyRestController {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), lobbyId);
 
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto);
 
         // Send an info update to the lobby chat
         LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "joined the lobby.");
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
 
         return ResponseEntity.ok(lobbyDto);
     }
@@ -111,11 +108,11 @@ public class LobbyRestController {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
 
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto);
 
         // Send an info update to the lobby chat
         LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "joined the lobby.");
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
 
         return ResponseEntity.ok(lobbyDto);
     }
@@ -143,8 +140,6 @@ public class LobbyRestController {
         if (lobbyDto == null) {
             return ResponseEntity.noContent().build();
         }
-
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
 
         return ResponseEntity.ok(lobbyDto);
     }

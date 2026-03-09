@@ -18,7 +18,6 @@ public class LobbyPlayerService {
     private final LobbyChatService lobbyChatService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
-    private final SimpMessagingTemplate simpMessagingTemplate;
     private final LobbyCountdownSchedulerService lobbyCountdownSchedulerService;
     private final LobbyCountdownMutationService lobbyCountdownMutationService;
 
@@ -26,14 +25,12 @@ public class LobbyPlayerService {
                               LobbyChatService lobbyChatService,
                               LobbyWebSocketsService lobbyWebSocketsService,
                               LobbyEntityDtoMapper lobbyEntityDtoMapper,
-                              SimpMessagingTemplate simpMessagingTemplate,
                               LobbyCountdownSchedulerService lobbyCountdownSchedulerService,
                               LobbyCountdownMutationService lobbyCountdownMutationService) {
         this.lobbyService = lobbyService;
         this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
-        this.simpMessagingTemplate = simpMessagingTemplate;
         this.lobbyCountdownSchedulerService = lobbyCountdownSchedulerService;
         this.lobbyCountdownMutationService = lobbyCountdownMutationService;
     }
@@ -49,7 +46,7 @@ public class LobbyPlayerService {
         CountdownEvaluationResult countdownEvaluationResult = lobbyCountdownMutationService.safeEvaluateCountdown(lobby.getLobbyCountdownEntity());
         if (countdownEvaluationResult.getNewInitiator() != null) {
             LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, countdownEvaluationResult.getNewInitiator(), "started the new game countdown.");
-            lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
+            lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
         }
         lobbyCountdownSchedulerService.handleCountdownEvaluationResult(lobbyId, countdownEvaluationResult);
         return lobbyEntityDtoMapper.mapToDto(lobby);

@@ -3,12 +3,17 @@ package com.github.ryand6.sudokuweb.controllers.rest.game;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.dto.request.LeaveGameRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.game.GameService;
 import com.github.ryand6.sudokuweb.services.MembershipService;
+import com.github.ryand6.sudokuweb.services.lobby.LobbyService;
+import com.github.ryand6.sudokuweb.services.lobby.LobbyWebSocketsService;
 import com.github.ryand6.sudokuweb.services.user.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -22,13 +27,16 @@ public class GameRestController {
     private final GameService gameService;
     private final MembershipService membershipService;
     private final UserService userService;
+    private final SimpMessagingTemplate messagingTemplate;
 
     public GameRestController(GameService gameService,
                               MembershipService membershipService,
-                              UserService userService) {
+                              UserService userService,
+                              SimpMessagingTemplate messagingTemplate) {
         this.gameService = gameService;
         this.membershipService = membershipService;
         this.userService = userService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/check-user-in-game")
@@ -45,7 +53,7 @@ public class GameRestController {
         if (!membershipService.isUserInGame(user.getId(), gameId)) {
             throw new GamePlayerNotFoundException("User with ID " + user.getId() + " is not part of the game with ID " + gameId);
         } else {
-            GameDto gameDto = gameService.getGameById(gameId);
+            GameDto gameDto = gameService.getGameDtoById(gameId);
             return ResponseEntity.ok(gameDto);
         }
     }
@@ -53,7 +61,7 @@ public class GameRestController {
     // Get Game DTO using gameId
     @GetMapping("/get-game")
     public ResponseEntity<?> getGame(@RequestParam Long gameId) {
-        GameDto gameDto = gameService.getGameById(gameId);
+        GameDto gameDto = gameService.getGameDtoById(gameId);
         return ResponseEntity.ok(gameDto);
     }
 
@@ -70,5 +78,20 @@ public class GameRestController {
         PrivateGamePlayerStateDto privateGamePlayerState = gameService.getGamePlayerState(gameId, user.getId());
         return ResponseEntity.ok(privateGamePlayerState);
     }
+
+    @PostMapping("/leave")
+    public ResponseEntity<?> leaveGame(@AuthenticationPrincipal OAuth2User principal,
+                                       OAuth2AuthenticationToken authToken,
+                                       @Valid @RequestBody LeaveGameRequestDto requestDto) {
+        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+
+        GameDto gameDto = gameService.removeGamePlayer(requestDto.getGameId(), currentUser.getId());
+
+        if (gameDto == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(gameDto);
+    }
+
 
 }

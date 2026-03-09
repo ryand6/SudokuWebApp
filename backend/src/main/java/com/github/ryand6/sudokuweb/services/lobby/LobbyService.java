@@ -7,6 +7,8 @@ import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
+import com.github.ryand6.sudokuweb.events.LobbyUpdateEvent;
+import com.github.ryand6.sudokuweb.events.PlayerRemovedEvent;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
@@ -14,6 +16,8 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -36,10 +40,10 @@ public class LobbyService {
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final PrivateLobbyTokenService privateLobbyTokenService;
-    private final SimpMessagingTemplate simpMessagingTemplate;
     private final MembershipService membershipService;
     private final LobbyCountdownSchedulerService lobbyCountdownSchedulerService;
     private final LobbyCountdownMutationService lobbyCountdownMutationService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
@@ -47,20 +51,20 @@ public class LobbyService {
                         LobbyWebSocketsService lobbyWebSocketsService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
                         PrivateLobbyTokenService privateLobbyTokenService,
-                        SimpMessagingTemplate simpMessagingTemplate,
                         MembershipService membershipService,
                         LobbyCountdownSchedulerService lobbyCountdownSchedulerService,
-                        LobbyCountdownMutationService lobbyCountdownMutationService) {
+                        LobbyCountdownMutationService lobbyCountdownMutationService,
+                        ApplicationEventPublisher applicationEventPublisher) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
         this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.privateLobbyTokenService = privateLobbyTokenService;
-        this.simpMessagingTemplate = simpMessagingTemplate;
         this.membershipService = membershipService;
         this.lobbyCountdownSchedulerService = lobbyCountdownSchedulerService;
         this.lobbyCountdownMutationService = lobbyCountdownMutationService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Transactional
@@ -185,7 +189,7 @@ public class LobbyService {
 
         // Send an info update to the lobby chat - must be sent before the transaction is committed, otherwise it will fail WebSocketSecurity checks that ensure messages come from active lobby members
         LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, userId, "left the lobby.");
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
 
         // Remove the lobby player from the lobby - hibernate will clean up by removing the lobby player from the DB due to orphan removal
         lobby.getLobbyPlayers().remove(lobbyPlayer);
@@ -197,6 +201,12 @@ public class LobbyService {
         CountdownEvaluationResult countdownEvaluationResult = lobbyCountdownMutationService.safeEvaluateCountdown(lobby.getLobbyCountdownEntity());
 
         lobbyCountdownSchedulerService.handleCountdownEvaluationResult(lobbyId, countdownEvaluationResult);
+
+        // Emit notification of lobby update after transaction committed
+        applicationEventPublisher.publishEvent(
+                new LobbyUpdateEvent(lobbyEntityDtoMapper.mapToDto(lobby))
+        );
+
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
@@ -250,6 +260,11 @@ public class LobbyService {
     public LobbyDto getLobbyDtoById(Long lobbyId) {
         LobbyEntity lobby = getLobbyById(lobbyId);
         return lobbyEntityDtoMapper.mapToDto(lobby);
+    }
+
+    @EventListener
+    public void handleGamePlayerRemoved(PlayerRemovedEvent e) {
+        removeFromLobby(e.getLobbyId(), e.getUserId());
     }
 
 }

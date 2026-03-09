@@ -61,9 +61,6 @@ public class LobbyServiceTests {
     private LobbyWebSocketsService lobbyWebSocketsService;
 
     @Mock
-    private SimpMessagingTemplate simpMessagingTemplate;
-
-    @Mock
     private LobbyPlayerRepository lobbyPlayerRepository;
 
     @Spy
@@ -349,7 +346,7 @@ public class LobbyServiceTests {
 
         when(lobbyChatService.submitInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
 
-        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessage(any(LobbyChatMessageDto.class), any(SimpMessagingTemplate.class));
+        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessage(any(LobbyChatMessageDto.class));
 
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(new LobbyDto());
 
@@ -399,7 +396,7 @@ public class LobbyServiceTests {
 
         when(lobbyChatService.submitInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
 
-        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessage(any(LobbyChatMessageDto.class), any(SimpMessagingTemplate.class));
+        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessage(any(LobbyChatMessageDto.class));
 
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(new LobbyDto());
 

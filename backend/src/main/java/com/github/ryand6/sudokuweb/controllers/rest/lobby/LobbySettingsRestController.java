@@ -21,28 +21,25 @@ public class LobbySettingsRestController {
     private final LobbySettingsService lobbySettingsService;
     private final LobbyChatService lobbyChatService;
     private final LobbyWebSocketsService lobbyWebSocketsService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     public LobbySettingsRestController(LobbySettingsService lobbySettingsService,
                                        LobbyChatService lobbyChatService,
-                                       LobbyWebSocketsService lobbyWebSocketsService,
-                                       SimpMessagingTemplate messagingTemplate) {
+                                       LobbyWebSocketsService lobbyWebSocketsService) {
         this.lobbySettingsService = lobbySettingsService;
         this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     // Update difficulty to be applied to lobby games
     @PostMapping("/update-difficulty")
     public ResponseEntity<?> updateLobbyDifficulty(@RequestBody LobbyDifficultyUpdateRequestDto requestDto) {
         LobbyDto lobbyDto = lobbySettingsService.updateLobbyDifficulty(requestDto.getLobbyId(), requestDto.getDifficulty());
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto);
 
         // Send an info update to the lobby chat
         String message = "updated the difficulty to " + requestDto.getDifficulty().toString().toLowerCase() + ".";
         LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), requestDto.getUserId(), message);
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
 
         return ResponseEntity.ok(lobbyDto);
     }
@@ -51,12 +48,12 @@ public class LobbySettingsRestController {
     @PostMapping("/update-time-limit")
     public ResponseEntity<?> updateLobbyTimeLimit(@RequestBody LobbyTimeLimitUpdateRequestDto requestDto) {
         LobbyDto lobbyDto = lobbySettingsService.updateLobbyTimeLimit(requestDto.getLobbyId(), requestDto.getTimeLimit());
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto);
 
         // Send an info update to the lobby chat
         String message = "updated the time limit to " + requestDto.getTimeLimit().toString().toLowerCase() + ".";
         LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), requestDto.getUserId(), message);
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, messagingTemplate);
+        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
 
         return ResponseEntity.ok(lobbyDto);
     }
