@@ -6,7 +6,7 @@ import type { SharedGameStateDto } from './SharedGameStateDto';
 import type { GamePlayerDto } from './GamePlayerDto';
 
 export type GameDto = {
-    id: number,
+    gameId: number,
     lobbyId: number,
     gamePlayers: GamePlayerDto[],
     sharedGameState: SharedGameStateDto | null,

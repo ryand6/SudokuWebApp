@@ -41,8 +41,9 @@ public class GameRestController {
         }
         // cached
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
-        if (!membershipService.isUserInGame(gameId, user.getId())) {
-            throw new GamePlayerNotFoundException("User with ID + " + user.getId() + " is not part of the game with ID " + gameId);
+
+        if (!membershipService.isUserInGame(user.getId(), gameId)) {
+            throw new GamePlayerNotFoundException("User with ID " + user.getId() + " is not part of the game with ID " + gameId);
         } else {
             GameDto gameDto = gameService.getGameById(gameId);
             return ResponseEntity.ok(gameDto);

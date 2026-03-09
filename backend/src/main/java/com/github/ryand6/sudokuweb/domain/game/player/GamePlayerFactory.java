@@ -9,9 +9,12 @@ import com.github.ryand6.sudokuweb.enums.PlayerColour;
 public class GamePlayerFactory {
 
     public static GamePlayerEntity createGamePlayer(GameEntity game, UserEntity user, PlayerColour playerColour, boolean isGameStateShared, String initialBoardState) {
-        GamePlayerId gamePlayerId = new GamePlayerId(game.getId(), user.getId());
         GamePlayerEntity gamePlayer = new GamePlayerEntity();
-        gamePlayer.setId(gamePlayerId);
+        gamePlayer.setId(new GamePlayerId(game.getId(), user.getId()));
+        gamePlayer.setGameEntity(game);
+        gamePlayer.setUserEntity(user);
+
+        gamePlayer.setPlayerColour(playerColour);
 
         // Setup player state
         GamePlayerStateEntity gamePlayerState = new GamePlayerStateEntity();
@@ -28,8 +31,6 @@ public class GamePlayerFactory {
         // Attach children to parent
         gamePlayer.setGamePlayerStateEntity(gamePlayerState);
         gamePlayer.setGamePlayerSettingsEntity(gamePlayerSettings);
-
-        gamePlayer.setPlayerColour(playerColour);
 
         return gamePlayer;
     }

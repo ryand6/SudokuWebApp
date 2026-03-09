@@ -25,7 +25,6 @@ public class LobbySettingsService {
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
     }
 
-
     @Retryable(
             retryFor = ObjectOptimisticLockingFailureException.class,
             maxAttempts = 3,

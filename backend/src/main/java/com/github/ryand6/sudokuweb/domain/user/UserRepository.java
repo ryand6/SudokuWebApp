@@ -27,10 +27,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query(
         value = """
             SELECT user_rank FROM (
-                SELECT u.id as user_id,
+                SELECT u.id AS user_id,
                        RANK() OVER (ORDER BY s.total_score DESC) AS user_rank
                 FROM users u
-                JOIN scores s ON u.score_id = s.id
+                JOIN user_stats s ON u.id = s.user_id
             ) ranked
             WHERE user_id = :userId
         """, nativeQuery = true)

@@ -51,4 +51,15 @@ public class UserStatsEntity {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    public void recordWin() {
+        wins++;
+        gamesPlayed++;
+        currentWinStreak++;
+        maxWinStreak = Math.max(maxWinStreak, currentWinStreak);
+    }
+
 }

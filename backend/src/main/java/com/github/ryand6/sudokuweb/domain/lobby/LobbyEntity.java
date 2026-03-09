@@ -76,7 +76,7 @@ public class LobbyEntity {
     private UserEntity host;
 
     @OneToMany(mappedBy = "lobbyEntity", cascade = CascadeType.REMOVE)
-    private Set<GameEntity> gameEntities;
+    private Set<GameEntity> gameEntities = new HashSet<>();
 
     @Version
     private Long version;

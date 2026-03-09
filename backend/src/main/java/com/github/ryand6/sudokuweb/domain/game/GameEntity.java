@@ -6,14 +6,13 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameStatus;
+import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.exceptions.game.IllegalGameStatusChangeException;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
-import java.util.Comparator;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -43,7 +42,7 @@ public class GameEntity {
     private SudokuPuzzleEntity sudokuPuzzleEntity;
 
     @OneToMany(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<GamePlayerEntity> gamePlayerEntities;
+    private Set<GamePlayerEntity> gamePlayerEntities = new HashSet<>();
 
     @OneToOne(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private SharedGameStateEntity sharedGameStateEntity;
@@ -131,6 +130,16 @@ public class GameEntity {
 
     private boolean checkAllPlayersLoaded() {
         return gamePlayerEntities.stream().allMatch(GamePlayerEntity::isGameLoaded);
+    }
+
+    public List<PlayerColour> getShuffledPlayerColours() {
+        // Get list of player colour enums
+        PlayerColour[] playerColours = PlayerColour.values();
+        int playerColoursCount = playerColours.length;
+        List<PlayerColour> colourList = Arrays.asList(playerColours);
+        // Randomise order
+        Collections.shuffle(colourList);
+        return colourList;
     }
 
 }

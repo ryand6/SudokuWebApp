@@ -19,20 +19,23 @@ public class LobbyPlayerService {
     private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
-    private final LobbyCountdownService lobbyCountdownService;
+    private final LobbyCountdownSchedulerService lobbyCountdownSchedulerService;
+    private final LobbyCountdownMutationService lobbyCountdownMutationService;
 
     public LobbyPlayerService(LobbyService lobbyService,
                               LobbyChatService lobbyChatService,
                               LobbyWebSocketsService lobbyWebSocketsService,
                               LobbyEntityDtoMapper lobbyEntityDtoMapper,
                               SimpMessagingTemplate simpMessagingTemplate,
-                              LobbyCountdownService lobbyCountdownService) {
+                              LobbyCountdownSchedulerService lobbyCountdownSchedulerService,
+                              LobbyCountdownMutationService lobbyCountdownMutationService) {
         this.lobbyService = lobbyService;
         this.lobbyChatService = lobbyChatService;
         this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.simpMessagingTemplate = simpMessagingTemplate;
-        this.lobbyCountdownService = lobbyCountdownService;
+        this.lobbyCountdownSchedulerService = lobbyCountdownSchedulerService;
+        this.lobbyCountdownMutationService = lobbyCountdownMutationService;
     }
 
     @Transactional
@@ -43,12 +46,12 @@ public class LobbyPlayerService {
         // Lobby Player managed by JPA therefore update will apply
         lobbyPlayer.setStatus(lobbyStatus);
         // Handle any countdown updates that may be required
-        CountdownEvaluationResult countdownEvaluationResult = lobby.getLobbyCountdownEntity().evaluateCountdownState();
+        CountdownEvaluationResult countdownEvaluationResult = lobbyCountdownMutationService.safeEvaluateCountdown(lobby.getLobbyCountdownEntity());
         if (countdownEvaluationResult.getNewInitiator() != null) {
             LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, countdownEvaluationResult.getNewInitiator(), "started the new game countdown.");
             lobbyWebSocketsService.handleLobbyChatMessage(infoMessage, simpMessagingTemplate);
         }
-        lobbyCountdownService.handleCountdownEvaluationResult(lobby, countdownEvaluationResult);
+        lobbyCountdownSchedulerService.handleCountdownEvaluationResult(lobbyId, countdownEvaluationResult);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 

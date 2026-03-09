@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import jakarta.persistence.*;
@@ -43,12 +44,28 @@ public class UserEntity {
     @Column(name = "is_online")
     private boolean isOnline;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_stats_id", nullable = false, unique = true)
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private UserStatsEntity userStatsEntity;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_settings_id", nullable = false, unique = true)
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private UserSettingsEntity userSettingsEntity;
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity userEntity = (UserEntity) o;
+        return id != null && id.equals(userEntity.id);
+    }
+
+    // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + provider.hashCode();
+        result = 31 * result + providerId.hashCode();
+        return result;
+    }
 
 }

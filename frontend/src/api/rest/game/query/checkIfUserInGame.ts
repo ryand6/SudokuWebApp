@@ -2,6 +2,9 @@ import type { GameDto } from "@/types/dto/entity/game/GameDto";
 
 // Backend uses authentication principal to determine user
 export async function checkIfUserInGame(gameId: number): Promise<GameDto> {
+
+    console.log("checkIfUserInGame called with gameId:", gameId);
+
     const response = await fetch(`/api/game/check-user-in-game?gameId=${gameId}`, {
         method: "GET",
         credentials: "include",
@@ -9,7 +12,7 @@ export async function checkIfUserInGame(gameId: number): Promise<GameDto> {
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.errorMessage || "Unable to verify if user is an active player in game");
+        throw new Error(errorData?.errorMessage ?? "Unable to verify if user is an active player in game");
     }
     return await response.json();
 }

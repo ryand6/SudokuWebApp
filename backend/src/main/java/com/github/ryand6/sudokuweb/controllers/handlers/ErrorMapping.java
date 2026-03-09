@@ -1,13 +1,17 @@
 package com.github.ryand6.sudokuweb.controllers.handlers;
 
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
+import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.InvalidCellCoordinatesException;
+import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.game.state.IllegalBoardStateException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
+import com.github.ryand6.sudokuweb.exceptions.lobby.countdown.LobbyCountdownLockedException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerAlreadyExistsException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.InvalidLobbyPublicStatusParameterException;
@@ -31,17 +35,23 @@ public class ErrorMapping {
             Map.entry(GamePlayerStateNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(LobbyHostNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
             Map.entry(LobbySettingsLockedException.class, HttpStatus.CONFLICT),
+            Map.entry(LobbyCountdownLockedException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyOptimisticLockException.class, HttpStatus.CONFLICT),
             Map.entry(UsernameTakenException.class, HttpStatus.CONFLICT),
+            Map.entry(GameCreationInterruptedException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyInactiveException.class, HttpStatus.GONE),
             Map.entry(OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(InvalidTokenException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(UserExistsInActiveLobbyException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(InvalidLobbyPublicStatusParameterException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageProfanityException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(ExistingActiveGameException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(TooManyActivePlayersException.class, HttpStatus.BAD_REQUEST),
             Map.entry(LobbyPlayerAlreadyExistsException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(IllegalBoardStateException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS)
     );
 

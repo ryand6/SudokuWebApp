@@ -12,6 +12,7 @@ export function useCheckIfUserInGame(gameId: number) {
             return normalisePublicGameData(gameData);
         },
         staleTime: 0,
+        retry: false,
         enabled: gameId > 0
     })
 }

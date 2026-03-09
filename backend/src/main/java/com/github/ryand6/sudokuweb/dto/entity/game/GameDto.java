@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 public class GameDto {
 
-    private Long id;
+    private Long gameId;
 
     private Long lobbyId;
 

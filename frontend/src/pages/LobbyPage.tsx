@@ -43,7 +43,7 @@ export function LobbyPage() {
     useHandleLobbyWsSubscription(lobbyId, queryClient, navigate);
 
     // check if user is a player in the current game
-    const { data: gameQueryData, isLoading: isLoadingGame } = useCheckIfUserInGame(
+    const { data: gameQueryData, isLoading: isLoadingGame, error: isUserInGameError } = useCheckIfUserInGame(
         // Provide -1 default values if required parameters not available - will result in query not running until proper values are provided
         lobby?.currentGameId ?? -1
     );

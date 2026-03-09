@@ -21,8 +21,8 @@ public class GamePlayerSettingsEntity {
     @MapsId
     @OneToOne
     @JoinColumns({
-            @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false, unique = true),
-            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false, unique = true)
+            @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false),
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     })
     private GamePlayerEntity gamePlayerEntity;
 

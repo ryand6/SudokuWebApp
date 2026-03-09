@@ -14,6 +14,8 @@ export function GamePage() {
 
     const { gameId } = useParams();
 
+    console.log("GAME ID: ", gameId);
+
     const gameIdNum = gameId ? Number(gameId) : NaN;
 
     useValidateGameId(gameIdNum);
@@ -38,6 +40,12 @@ export function GamePage() {
     if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
 
     console.log("GAME DATA: ", publicGameState);
+
+    console.log("GAME ERROR: ", gameError?.message);
+
+    console.log("GAME STATE DATA: ", privateGameState);
+
+    console.log("GAME STATE ERROR: ", gameStateError?.message);
     
     if (!publicGameState || !currentUser || !privateGameState) return null;
 
@@ -47,7 +55,9 @@ export function GamePage() {
     return (
         <div>
             GAME PAGE
-            <SudokuBoard boardState={privateGameState.boardState} playerState={publicGameState.players[currentUser.id]} />
+            <div className="flex justify-center">
+                <SudokuBoard boardState={privateGameState.boardState} playerState={publicGameState.players[currentUser.id]} />
+            </div>
         </div>
     )
 }

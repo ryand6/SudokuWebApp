@@ -18,6 +18,7 @@ public class UserSettingsEntity {
     private Long id;
 
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity userEntity;
 

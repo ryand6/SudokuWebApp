@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -22,7 +23,7 @@ import java.time.Instant;
 public class GamePlayerEntity {
 
     @EmbeddedId
-    private GamePlayerId id;
+    private GamePlayerId id = new GamePlayerId();
 
     @ManyToOne
     @MapsId("gameId")
@@ -57,21 +58,20 @@ public class GamePlayerEntity {
     @Column(name = "game_result", nullable = false)
     private GameResult gameResult = GameResult.PENDING;
 
-    // Use GamePlayerId implementation of equals as the composite key is unique
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof GamePlayerEntity)) return false;
         GamePlayerEntity gamePlayerEntity = (GamePlayerEntity) o;
 
-        // Compare using only the embedded ID
-        return id != null && id.equals(gamePlayerEntity.id);
+        // Compare using the two linked entities that make up the unique identifier
+        return Objects.equals(gameEntity, gamePlayerEntity.gameEntity) &&
+                Objects.equals(userEntity, gamePlayerEntity.userEntity);
     }
 
-    // Use GamePlayerId implementation of hashCode as the composite key is unique
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return Objects.hash(gameEntity, userEntity);
     }
 
     //#######################//

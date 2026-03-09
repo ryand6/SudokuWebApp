@@ -1,9 +1,9 @@
 package com.github.ryand6.sudokuweb.services;
 
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.services.game.GameService;
 import com.github.ryand6.sudokuweb.services.lobby.LobbyWebSocketsService;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -40,24 +40,24 @@ public class TaskSchedulerService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void scheduleGameCreationTask(LobbyEntity lobby, Instant countdownEndsAt) {
-        String taskId = GAME_CREATION_TASK_NAME + lobby.getId();
+    public void scheduleGameCreationTask(Long lobbyId, Instant countdownEndsAt) {
+        String taskId = GAME_CREATION_TASK_NAME + lobbyId;
 
-        cancelGameCreationTask(lobby);
+        cancelGameCreationTask(lobbyId);
 
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
             try {
-                createGame(lobby);
+                createGame(lobbyId);
             } finally {
                 scheduledTasks.remove(taskId);
             }
-        }, countdownEndsAt);
+        }, countdownEndsAt.plusMillis(50));
 
         scheduledTasks.put(taskId, future);
     }
 
-    public void cancelGameCreationTask(LobbyEntity lobby) {
-        String taskId = GAME_CREATION_TASK_NAME + lobby.getId();
+    public void cancelGameCreationTask(Long lobbyId) {
+        String taskId = GAME_CREATION_TASK_NAME + lobbyId;
         ScheduledFuture<?> oldFuture = scheduledTasks.get(taskId);
 
         if (oldFuture != null) {
@@ -67,9 +67,11 @@ public class TaskSchedulerService {
         scheduledTasks.remove(taskId);
     }
 
-    private void createGame(LobbyEntity lobby) {
+    @Transactional
+    private void createGame(Long lobbyId) {
         try {
-            GameDto gameDto = gameService.createGameIfNoneActive(lobby);
+            GameDto gameDto = gameService.createGameIfNoneActive(lobbyId);
+
             if (gameDto != null) {
                 lobbyWebSocketsService.handleLobbyGameStart(gameDto, messagingTemplate);
             }

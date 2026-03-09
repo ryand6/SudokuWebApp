@@ -11,6 +11,8 @@ export function normalisePublicGameData(
     const playerIds: number[] = [];
     const players: GamePlayers = {};
 
+    console.log("GAME DATA BEFORE NORMALISING: ", gameData);
+
     gameData.gamePlayers.forEach((gp) => {
         playerIds.push(gp.user.id);
         players[gp.user.id] = {
@@ -24,7 +26,7 @@ export function normalisePublicGameData(
     });
     playerIds.sort();
     const gameState: PublicGameState = {
-        gameId: gameData.id,
+        gameId: gameData.gameId,
         playerIds: playerIds,
         players: players,
         sharedGameState: gameData.sharedGameState

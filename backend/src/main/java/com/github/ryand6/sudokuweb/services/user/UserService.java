@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services.user;
 
+import com.github.ryand6.sudokuweb.domain.user.UserFactory;
 import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
@@ -9,6 +10,7 @@ import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
+import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -58,6 +60,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     // Create user when they log into site for the first time
     public void createNewUser(String username, String provider, String providerId) {
         //Check if username already exists in DB
@@ -65,17 +68,8 @@ public class UserService {
             throw new UsernameTakenException("Username provided is taken, please choose another");
         }
 
-        // Create user stats and user settings entities first, so they can be persisted when User entity is persisted
-        UserStatsEntity userStats = new UserStatsEntity();
-        UserSettingsEntity userSettings = new UserSettingsEntity();
-        // Persist the user entity to DB
-        UserEntity newUser = new UserEntity();
-        newUser.setUsername(username);
-        newUser.setProvider(provider);
-        newUser.setProviderId(providerId);
-        newUser.setOnline(true);
-        newUser.setUserStatsEntity(userStats);
-        newUser.setUserSettingsEntity(userSettings);
+        UserEntity newUser = UserFactory.createUser(username, provider, providerId);
+
         userRepository.save(newUser);
     }
 

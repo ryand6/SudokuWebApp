@@ -13,10 +13,11 @@ export function useNavigateUserWhenInGame(
 ) {
     // Handle navigation only when confirmed if user is part of current game
     useEffect(() => {
-        if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId) return;
+        // Ensure game is active, created and normalised before redirect
+        if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId || isLoadingGameData || !gameQueryData || !gameQueryData.gameId) return;
 
-        if (gameQueryData) {
-            navigate(`/game/${gameQueryData.gameId}`);
-        }
+        console.log("NAVIGATE WHEN USER IN GAME - GAME DATA: ", gameQueryData);
+
+        navigate(`/game/${gameQueryData.gameId}`);
     }, [lobby, currentUser, gameQueryData, isLoadingGameData, navigate]);
 }

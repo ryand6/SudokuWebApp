@@ -1,11 +1,9 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
-import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
-import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
@@ -40,7 +38,8 @@ public class LobbyService {
     private final PrivateLobbyTokenService privateLobbyTokenService;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final MembershipService membershipService;
-    private final LobbyCountdownService lobbyCountdownService;
+    private final LobbyCountdownSchedulerService lobbyCountdownSchedulerService;
+    private final LobbyCountdownMutationService lobbyCountdownMutationService;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
@@ -50,7 +49,8 @@ public class LobbyService {
                         PrivateLobbyTokenService privateLobbyTokenService,
                         SimpMessagingTemplate simpMessagingTemplate,
                         MembershipService membershipService,
-                        LobbyCountdownService lobbyCountdownService) {
+                        LobbyCountdownSchedulerService lobbyCountdownSchedulerService,
+                        LobbyCountdownMutationService lobbyCountdownMutationService) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
         this.lobbyChatService = lobbyChatService;
@@ -59,7 +59,8 @@ public class LobbyService {
         this.privateLobbyTokenService = privateLobbyTokenService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.membershipService = membershipService;
-        this.lobbyCountdownService = lobbyCountdownService;
+        this.lobbyCountdownSchedulerService = lobbyCountdownSchedulerService;
+        this.lobbyCountdownMutationService = lobbyCountdownMutationService;
     }
 
     @Transactional
@@ -193,9 +194,9 @@ public class LobbyService {
         membershipService.removeLobbyPlayer(lobbyId, userId);
 
         // Stop the timer if the player count goes below 2
-        CountdownEvaluationResult countdownEvaluationResult = lobby.getLobbyCountdownEntity().evaluateCountdownState();
+        CountdownEvaluationResult countdownEvaluationResult = lobbyCountdownMutationService.safeEvaluateCountdown(lobby.getLobbyCountdownEntity());
 
-        lobbyCountdownService.handleCountdownEvaluationResult(lobby, countdownEvaluationResult);
+        lobbyCountdownSchedulerService.handleCountdownEvaluationResult(lobbyId, countdownEvaluationResult);
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 

@@ -7,7 +7,7 @@ const SudokuCell = React.memo(function SudokuCell({row, col, value, notes, class
                         text-xl font-semibold cursor-pointer box-border
                         animate-fill-cell bg-primary-foreground
                         ${className}`}
-            style={{ animationDelay: `${(row + col) * 400}ms`}}
+            style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}
         >
             <span>
                 {value ? value : null}

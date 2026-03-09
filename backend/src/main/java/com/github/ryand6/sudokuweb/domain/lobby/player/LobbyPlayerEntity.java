@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.lobby.player;
 
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
@@ -8,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -19,7 +21,7 @@ import java.time.Instant;
 public class LobbyPlayerEntity {
 
     @EmbeddedId
-    private LobbyPlayerId id;
+    private LobbyPlayerId id = new LobbyPlayerId();
 
     @ManyToOne
     @MapsId("lobbyId")
@@ -52,21 +54,20 @@ public class LobbyPlayerEntity {
         this.joinedAt = Instant.now();
     }
 
-    // Use LobbyPlayerId implementation of equals as the composite key is unique
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof LobbyPlayerEntity)) return false;
         LobbyPlayerEntity lobbyPlayerEntity = (LobbyPlayerEntity) o;
 
-        // Compare using only the embedded ID
-        return id != null && id.equals(lobbyPlayerEntity.id);
+        // Compare using the two linked entities that make up the unique identifier
+        return Objects.equals(lobby, lobbyPlayerEntity.lobby) &&
+                Objects.equals(user, lobbyPlayerEntity.user);
     }
 
-    // Use LobbyPlayerId implementation of hashCode as the composite key is unique
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return Objects.hash(lobby, user);
     }
 
     //#######################//
