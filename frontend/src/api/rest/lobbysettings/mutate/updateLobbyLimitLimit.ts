@@ -16,7 +16,7 @@ export async function updateLobbyTimeLimit(lobbyId: number, userId: number, time
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.errorMessage || "Failed to update lobby time limit setting");
+        throw new Error(errorData?.errorMessage ?? "Failed to update lobby time limit setting");
     }
     return await response.json();
 }

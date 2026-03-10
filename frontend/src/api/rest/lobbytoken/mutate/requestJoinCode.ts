@@ -13,7 +13,7 @@ export async function requestJoinCode(lobbyId: number, userId: number): Promise<
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.errorMessage || "Failed to generate new private lobby join code");
+        throw new Error(errorData?.errorMessage ?? "Failed to generate new private lobby join code");
     }
     return await response.json();
 } 

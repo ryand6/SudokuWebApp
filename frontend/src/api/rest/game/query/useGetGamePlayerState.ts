@@ -6,7 +6,7 @@ import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/Priva
 
 export function useGetGamePlayerState(gameId: number, userId: number | undefined) {
     return useQuery<PrivateGamePlayerState>({
-        queryKey: ["game", gameId, "user", userId, "state"],
+        queryKey: ["game", gameId, "user", userId],
         queryFn: async () => {
             const gamePlayerStateData: PrivateGamePlayerStateDtoRaw = await getGamePlayerState(gameId);
             return normalisePrivateGameStateData(gamePlayerStateData);

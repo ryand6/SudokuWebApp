@@ -12,14 +12,14 @@ export async function leaveLobby(lobbyId: number) {
         body: JSON.stringify({lobbyId})
     });
 
-     if (response.status === 204) {
+    if (response.status === 204) {
         return null;
     }
 
     if (!response.ok) {
         // if error message doesn't parse properly, assign null to errorData
         const errorData = await response.json().catch(() => null);
-        const error: ErrorWithStatus = new Error(errorData?.errorMessage || `HTTP ${response.status}`);
+        const error: ErrorWithStatus = new Error(errorData?.errorMessage ?? `HTTP ${response.status}`);
         error.status = response.status;
         throw error;
     };

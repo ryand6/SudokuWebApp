@@ -23,7 +23,7 @@ export async function processLobbySetup(lobbyName: string, isPublic: boolean): P
             if (Array.isArray(errorData)) {
                 error = backendValidationErrors(errorData);
             } else {
-                error = new Error(errorData?.errorMessage || `HTTP ${response.status}`);
+                error = new Error(errorData?.errorMessage ?? `HTTP ${response.status}`);
             }
             error.status = response.status;
             throw error;

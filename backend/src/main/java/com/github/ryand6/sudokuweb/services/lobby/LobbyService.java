@@ -191,10 +191,6 @@ public class LobbyService {
         // If host has left, update the host to the player that joined first after the host
         if (requesterEntity.equals(lobby.getHost())) {
             applyHostChangeOrCloseLobby(lobby);
-            // If lobby has been closed
-            if (!lobby.isActive()) {
-                return null;
-            }
         }
 
         // Send an info update to the lobby chat - must be sent before the transaction is committed, otherwise it will fail WebSocketSecurity checks that ensure messages come from active lobby members
@@ -202,6 +198,11 @@ public class LobbyService {
 
         // Remove the lobby player from the lobby - hibernate will clean up by removing the lobby player from the DB due to orphan removal
         lobby.getLobbyPlayers().remove(lobbyPlayer);
+
+        // If lobby has been closed
+        if (!lobby.isActive()) {
+            return null;
+        }
 
         // Update cache via synchronised event
         applicationEventPublisher.publishEvent(
@@ -252,7 +253,7 @@ public class LobbyService {
 
     @Transactional
     // Register the Lobby inactive
-    public void closeLobby(LobbyEntity lobby) {
+    void closeLobby(LobbyEntity lobby) {
         lobby.setActive(false);
 
         // CONSIDER WHETHER TO DELETE OR SOFT DELETE - want to keep game history

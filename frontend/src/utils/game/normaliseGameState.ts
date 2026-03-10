@@ -27,7 +27,14 @@ export function normalisePublicGameData(
         gameId: gameData.gameId,
         playerIds: playerIds,
         players: players,
-        sharedGameState: gameData.sharedGameState
+        sharedGameState: gameData.sharedGameState,
+        initialBoardState: gameData.initialBoardState,
+        gameMode: gameData.gameMode,
+        difficulty: gameData.difficulty,
+        timeLimit: gameData.timeLimit,
+        gameStatus: gameData.gameStatus,
+        gameStartsAt: gameData.gameStartsAt,
+        gameEndsAt: gameData.gameEndsAt 
     };
 
     return gameState;

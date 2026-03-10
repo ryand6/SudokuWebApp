@@ -10,7 +10,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
 import java.util.Map;
-import java.util.Objects;
 
 @ControllerAdvice(basePackages = "com.github.ryand6.sudokuweb.controllers.ws")
 public class WebSocketExceptionHandler {

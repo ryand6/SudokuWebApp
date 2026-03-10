@@ -62,18 +62,18 @@ public class LobbyWebSocketsService {
 
     // Used for listening to lobby update events sent from outside of lobby service layer e.g. game service
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleLobbyUpdateWsEvent(LobbyUpdateWsEvent event) {
+    void handleLobbyUpdateWsEvent(LobbyUpdateWsEvent event) {
         handleLobbyUpdate(event.getLobbyDto());
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleLobbyChatMessageSentWsEvent(LobbyChatMessageSentWsEvent event) {
+    void handleLobbyChatMessageSentWsEvent(LobbyChatMessageSentWsEvent event) {
         handleLobbyChatMessageSend(event.getLobbyChatMessageDto());
     }
 
     // Synchronised event handler used to ensure player leaving events are handled before a transaction commits, so that errors are not raised due to player being removed
     @EventListener
-    public void handleLobbyChatMessagePlayerLeftWsEvent(LobbyChatInfoMessageSentPreCommitWsEvent event) {
+    void handleLobbyChatMessagePlayerLeftWsEvent(LobbyChatInfoMessageSentPreCommitWsEvent event) {
         handleLobbyChatMessageSend(event.getLobbyChatMessageDto());
     }
 

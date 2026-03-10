@@ -128,6 +128,18 @@ public class GameEntity {
         }
     }
 
+    public boolean isAborted(GamePlayerEntity leaveRequester) {
+        return gamePlayerEntities.size() == 1 && gamePlayerEntities.contains(leaveRequester);
+    }
+
+    public void abortGame() {
+        gameStatus = GameStatus.ABORTED;
+    }
+
+    public void finishGame() {
+        gameStatus = GameStatus.FINISHED;
+    }
+
     private boolean checkAllPlayersLoaded() {
         return gamePlayerEntities.stream().allMatch(GamePlayerEntity::isGameLoaded);
     }

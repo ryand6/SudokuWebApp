@@ -15,7 +15,7 @@ export async function updateLobbyPlayerStatus(lobbyId: number, userId: number, l
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.errorMessage || "Failed to update lobby player status");
+        throw new Error(errorData?.errorMessage ?? "Failed to update lobby player status");
     }
     return await response.json();
 }

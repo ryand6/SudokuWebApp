@@ -9,6 +9,8 @@ import { useParams } from "react-router-dom";
 import { mapBoardToBlocks } from "@/utils/game/blockUtils";
 import type { CellState } from "@/types/game/GameTypes";
 import { useGetGamePlayerState } from "@/api/rest/game/query/useGetGamePlayerState";
+import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
+import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
 
 export function GamePage() {
 
@@ -25,13 +27,11 @@ export function GamePage() {
 
     const {data: privateGameState, isLoading: isGameStateLoading, isError: isGameStateError, error: gameStateError} = useGetGamePlayerState(gameIdNum, currentUser?.id);
 
-    // IMPLEMENT
-    //const leaveGameHandler = useLeaveGame();
+    const leaveGameHandler = useLeaveGame();
 
     useHandleGetGameError(isGameError, gameError);
 
-    // IMPLEMENT leaveGameHandler
-    //useValidateGamePlayer(gameState, currentUser, leaveGameHandler.isLeaving);
+    useValidateGamePlayer(publicGameState, currentUser, leaveGameHandler.isLeaving);
 
     // IMPLEMENT useHandleGameWsSubscription
 

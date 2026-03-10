@@ -34,7 +34,7 @@ export function useLeaveLobby() {
         },
         onError: (err: any) => {
             // Handle any error for display in UI
-            console.error("Leaving Lobby error: ", err?.message || err);
+            console.error("Leaving Lobby error: ", err?.message ?? err);
         }
     })
 

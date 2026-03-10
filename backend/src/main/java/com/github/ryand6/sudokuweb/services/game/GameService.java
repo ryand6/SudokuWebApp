@@ -13,6 +13,7 @@ import com.github.ryand6.sudokuweb.domain.game.GameFactory;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.GameStatus;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
@@ -20,6 +21,7 @@ import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePostGameCreationWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEntityDtoMapper;
@@ -148,22 +150,42 @@ public class GameService {
     @Transactional
     public GameDto removeGamePlayer(Long gameId, Long userId) {
         GameEntity game = getGameById(gameId);
+        // Retrieve GamePlayer
+        GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
+        if (game.isAborted(gamePlayer)) {
+            abortGame(game);
+        }
 
-        // IMPLEMENT LOGIC
+        // CREATE GAME EVENT ENTITY
+
+        game.getGamePlayerEntities().remove(gamePlayer);
+
+        if (game.getGameStatus() == GameStatus.ABORTED) {
+            return null;
+        }
 
         // Send event to remove player from lobby and update membership/in memory caches
         applicationEventPublisher.publishEvent(
                 new GamePlayerLeftEvent(game.getId(), game.getLobbyEntity().getId(), userId)
         );
 
-        // ADD WS EVENTS
+        // ADD GAME UPDATE WS EVENT
 
-        // CHANGE
-        return new GameDto();
+        GameDto gameDto = gameEntityDtoMapper.mapToDto(game);
+        return gameDto;
     }
 
     @Transactional
-    public GameDto endGame(Long gameId) {
+    void abortGame(GameEntity game) {
+        game.abortGame();
+        // Update membership and in memory caches
+        applicationEventPublisher.publishEvent(
+                new GameClosedEvent(game.getId())
+        );
+    }
+
+    @Transactional
+    public GameDto finishGame(Long gameId) {
         // IMPLEMENT LOGIC
 
         // Update membership and in memory caches
@@ -175,6 +197,15 @@ public class GameService {
 
         // CHANGE
         return new GameDto();
+    }
+
+    GamePlayerEntity findGamePlayer(GameEntity game, Long userId) {
+        return game.getGamePlayerEntities().stream()
+                .filter(gp -> gp.getUserEntity().getId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new GamePlayerNotFoundException(
+                        "Game Player with Game ID " + game.getId() + " and User ID " + userId + " does not exist"
+                ));
     }
 
 }

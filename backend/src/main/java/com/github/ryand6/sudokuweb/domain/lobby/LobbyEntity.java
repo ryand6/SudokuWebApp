@@ -51,7 +51,7 @@ public class LobbyEntity {
 
     // true if lobby open, false if no players active in the lobby anymore
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean isActive = true;
 
     // true if players are currently in the middle of a Sudoku game
     @Column(name = "in_game")

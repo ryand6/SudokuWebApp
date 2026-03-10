@@ -1,10 +1,9 @@
 package com.github.ryand6.sudokuweb.services.user;
 
 import com.github.ryand6.sudokuweb.domain.user.UserFactory;
-import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.events.types.user.ws.UsernameUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
@@ -12,6 +11,7 @@ import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,18 +21,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public UserService(UserRepository userRepository,
-                       UserEntityDtoMapper userEntityDtoMapper) {
+                       UserEntityDtoMapper userEntityDtoMapper,
+                       ApplicationEventPublisher applicationEventPublisher) {
         this.userRepository = userRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Cacheable(value = "userCache", key = "#root.methodName + '_' + T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderId(T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderName(#authToken),#principal)")
@@ -40,24 +42,17 @@ public class UserService {
     public UserDto getCurrentUserByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
-        Optional<UserEntity> user = userRepository.findByProviderAndProviderId(provider, providerId);
-        if (user.isPresent()) {
-            return userEntityDtoMapper.mapToDto(user.get());
-        } else {
-            throw new UserNotFoundException("User not found");
-        }
+        UserEntity user = userRepository.findByProviderAndProviderId(provider, providerId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return userEntityDtoMapper.mapToDto(user);
     }
 
     // Get the userEntity for internal use so that the entity can be updated
     UserEntity getCurrentUserEntityByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
-        Optional<UserEntity> user = userRepository.findByProviderAndProviderId(provider, providerId);
-        if (user.isPresent()) {
-            return user.get();
-        } else {
-            throw new UserNotFoundException("User not found");
-        }
+        return userRepository.findByProviderAndProviderId(provider, providerId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Transactional
@@ -73,6 +68,7 @@ public class UserService {
         userRepository.save(newUser);
     }
 
+    @Transactional
     @CacheEvict(value = "userCache", key = "'getCurrentUserByOAuth_' + T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderId(T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderName(#authToken), #principal)")
     // Update a user's username
     public UserDto updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
@@ -83,7 +79,18 @@ public class UserService {
         // update username
         user.setUsername(username);
         UserEntity updatedUser = userRepository.save(user);
-        return userEntityDtoMapper.mapToDto(updatedUser);
+        UserDto userDto = userEntityDtoMapper.mapToDto(updatedUser);
+
+        // Get providerId so that updated Dto can be sent to correct user via websockets
+        String providerName = OAuthUtil.retrieveOAuthProviderName(authToken);
+        String providerId = OAuthUtil.retrieveOAuthProviderId(providerName, principal);
+
+        // Publish WS event after commit
+        applicationEventPublisher.publishEvent(
+                new UsernameUpdatedWsEvent(userDto, providerId)
+        );
+
+        return userDto;
     }
 
     // Get top 5 players based on their total score

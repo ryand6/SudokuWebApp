@@ -16,7 +16,7 @@ export async function updateLobbyDifficulty(lobbyId: number, userId: number, dif
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.errorMessage || "Failed to update lobby difficulty setting");
+        throw new Error(errorData?.errorMessage ?? "Failed to update lobby difficulty setting");
     }
     return await response.json();
 }

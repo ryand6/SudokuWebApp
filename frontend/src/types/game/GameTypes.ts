@@ -1,7 +1,11 @@
 import type { GamePlayerSettingsDto } from "../dto/entity/game/GamePlayerSettingsDto";
 import type { SharedGameStateDto } from "../dto/entity/game/SharedGameStateDto";
+import type { Difficulty } from "../enum/Difficulty";
+import type { GameMode } from "../enum/GameMode";
 import type { GameResult } from "../enum/GameResult";
+import type { GameStatus } from "../enum/GameStatus";
 import type { PlayerColour } from "../enum/PlayerColour";
+import type { TimeLimitPreset } from "../enum/TimeLimitPreset";
 
 export type CellState = {
     value: string | undefined;
@@ -28,6 +32,13 @@ export type PublicGameState = {
     playerIds: number[],
     players: GamePlayers,
     sharedGameState: SharedGameStateDto | null,
+    initialBoardState: string,
+    gameMode: GameMode,
+    difficulty: Difficulty,
+    timeLimit: TimeLimitPreset,
+    gameStatus: GameStatus,
+    gameStartsAt: string | null,
+    gameEndsAt: string | null
 }
 
 // Requested separately from backend, stored in user's personal game cache

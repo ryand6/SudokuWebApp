@@ -13,7 +13,7 @@ export async function joinPrivateLobby(token: string): Promise<LobbyDto> {
     });
     if (!response.ok) {
         const errorData = await response.json().catch(() => null);
-        throw new Error(errorData?.errorMessage || "Failed to join private lobby")
+        throw new Error(errorData?.errorMessage ?? "Failed to join private lobby")
     }
     return await response.json();
 }
