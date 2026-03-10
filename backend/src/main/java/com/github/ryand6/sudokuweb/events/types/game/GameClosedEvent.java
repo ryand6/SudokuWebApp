@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GameLeftInMemoryStateEvent {
+public class GameClosedEvent {
 
     private Long gameId;
 

@@ -2,12 +2,11 @@ package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
-import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
-import com.github.ryand6.sudokuweb.events.types.lobby.LobbyDifficultySettingsUpdatedEvent;
-import com.github.ryand6.sudokuweb.events.types.lobby.LobbyTimeLimitSettingsUpdatedEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyDifficultySettingsUpdatedWsEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyTimeLimitSettingsUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import jakarta.transaction.Transactional;
@@ -53,7 +52,7 @@ public class LobbySettingsService {
 
         // Send Lobby Update WS event after commit
         applicationEventPublisher.publishEvent(
-                new LobbyDifficultySettingsUpdatedEvent(lobbyDto)
+                new LobbyDifficultySettingsUpdatedWsEvent(lobbyDto)
         );
 
         // Send an info update to the lobby chat after commit
@@ -85,7 +84,7 @@ public class LobbySettingsService {
 
         // Send Lobby Update WS event after commit
         applicationEventPublisher.publishEvent(
-                new LobbyTimeLimitSettingsUpdatedEvent(lobbyDto)
+                new LobbyTimeLimitSettingsUpdatedWsEvent(lobbyDto)
         );
 
         // Send an info update to the lobby chat after commit

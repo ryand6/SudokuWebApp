@@ -5,7 +5,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationRes
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
-import com.github.ryand6.sudokuweb.events.types.lobby.LobbyPlayerStatusUpdatedEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyPlayerStatusUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import jakarta.transaction.Transactional;
@@ -47,7 +47,7 @@ public class LobbyPlayerService {
 
         // Send Lobby Update WS event after commit
         applicationEventPublisher.publishEvent(
-                new LobbyPlayerStatusUpdatedEvent(lobbyDto)
+                new LobbyPlayerStatusUpdatedWsEvent(lobbyDto)
         );
 
         // update countdown scheduler via synchronised event

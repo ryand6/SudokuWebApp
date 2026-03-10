@@ -2,8 +2,8 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.events.types.game.GameLeftMembershipEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftMembershipEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyLeftMembershipEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyPlayerLeftMembershipEvent;
 import org.springframework.context.event.EventListener;
@@ -104,12 +104,12 @@ public class MembershipService {
     }
 
     @EventListener
-    void handleGamePlayerLeftMembershipEvent(GamePlayerLeftMembershipEvent event) {
+    void handleGamePlayerLeftMembershipEvent(GamePlayerLeftEvent event) {
         removeGamePlayer(event.getGameId(), event.getUserId());
     }
 
     @EventListener
-    void handleGameLeftMembershipEvent(GameLeftMembershipEvent event) {
+    void handleGameLeftMembershipEvent(GameClosedEvent event) {
         removeGame(event.getGameId());
     }
 

@@ -5,9 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GamePlayerLeftInMemoryStateEvent {
+public class GamePlayerLeftEvent {
 
     private Long gameId;
+
+    private Long lobbyId;
 
     private Long userId;
 

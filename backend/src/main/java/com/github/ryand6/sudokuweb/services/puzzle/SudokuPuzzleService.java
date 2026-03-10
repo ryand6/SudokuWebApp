@@ -59,12 +59,16 @@ public class SudokuPuzzleService {
         switch (difficultyString) {
             case "Easy":
                 listOfPuzzles = sudokuPuzzleLoader.getEasyPuzzles();
+                break;
             case "Medium":
                 listOfPuzzles = sudokuPuzzleLoader.getMediumPuzzles();
+                break;
             case "Hard":
                 listOfPuzzles = sudokuPuzzleLoader.getHardPuzzles();
+                break;
             case "Extreme":
                 listOfPuzzles = sudokuPuzzleLoader.getExtremePuzzles();
+                break;
         }
         return listOfPuzzles;
     }

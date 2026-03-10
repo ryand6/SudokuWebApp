@@ -6,7 +6,10 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
+import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.*;
+import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePlayerJoinedWsEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePlayerLeftWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
@@ -274,7 +277,7 @@ public class LobbyService {
     }
 
     @EventListener
-    void handleGamePlayerLeftLobbyEvent(GamePlayerLeftLobbyEvent event) {
+    void handleGamePlayerLeftLobbyEvent(GamePlayerLeftEvent event) {
         removeFromLobby(event.getLobbyId(), event.getUserId());
     }
 

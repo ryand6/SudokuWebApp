@@ -14,13 +14,10 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
-import com.github.ryand6.sudokuweb.events.types.game.GameLeftInMemoryStateEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GameLeftMembershipEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftInMemoryStateEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftMembershipEvent;
-import com.github.ryand6.sudokuweb.events.types.lobby.GamePlayerLeftLobbyEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
-import com.github.ryand6.sudokuweb.events.types.lobby.LobbyUpdatePostGameCreationWsEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePostGameCreationWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
@@ -29,7 +26,6 @@ import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.PrivateGamePlayerStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -44,8 +40,6 @@ public class GameService {
     private final GameRepository gameRepository;
     private final SudokuPuzzleService sudokuPuzzleService;
     private final GameEntityDtoMapper gameEntityDtoMapper;
-    private final MembershipService membershipService;
-    private final GameInMemoryStateService gameInMemoryStateService;
     private final GamePlayerStateRepository gamePlayerStateRepository;
     private final PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper;
     private final LobbyRepository lobbyRepository;
@@ -55,8 +49,6 @@ public class GameService {
     public GameService(GameRepository gameRepository,
                        SudokuPuzzleService sudokuPuzzleService,
                        GameEntityDtoMapper gameEntityDtoMapper,
-                       MembershipService membershipService,
-                       GameInMemoryStateService gameInMemoryStateService,
                        GamePlayerStateRepository gamePlayerStateRepository,
                        PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper,
                        LobbyRepository lobbyRepository,
@@ -65,8 +57,6 @@ public class GameService {
         this.gameRepository = gameRepository;
         this.sudokuPuzzleService = sudokuPuzzleService;
         this.gameEntityDtoMapper = gameEntityDtoMapper;
-        this.membershipService = membershipService;
-        this.gameInMemoryStateService = gameInMemoryStateService;
         this.gamePlayerStateRepository = gamePlayerStateRepository;
         this.privateGamePlayerStateEntityDtoMapper = privateGamePlayerStateEntityDtoMapper;
         this.lobbyRepository = lobbyRepository;
@@ -161,17 +151,9 @@ public class GameService {
 
         // IMPLEMENT LOGIC
 
-        // Send event to remove player from lobby
+        // Send event to remove player from lobby and update membership/in memory caches
         applicationEventPublisher.publishEvent(
-                new GamePlayerLeftLobbyEvent(game.getLobbyEntity().getId(), userId)
-        );
-
-        // update membership and inMemory caches
-        applicationEventPublisher.publishEvent(
-                new GamePlayerLeftMembershipEvent(gameId, userId)
-        );
-        applicationEventPublisher.publishEvent(
-                new GamePlayerLeftInMemoryStateEvent(gameId, userId)
+                new GamePlayerLeftEvent(game.getId(), game.getLobbyEntity().getId(), userId)
         );
 
         // ADD WS EVENTS
@@ -184,13 +166,9 @@ public class GameService {
     public GameDto endGame(Long gameId) {
         // IMPLEMENT LOGIC
 
-
-        // update membership and inMemory caches
+        // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
-                new GameLeftMembershipEvent(gameId)
-        );
-        applicationEventPublisher.publishEvent(
-                new GameLeftInMemoryStateEvent(gameId)
+                new GameClosedEvent(gameId)
         );
 
         // ADD WS EVENTS
