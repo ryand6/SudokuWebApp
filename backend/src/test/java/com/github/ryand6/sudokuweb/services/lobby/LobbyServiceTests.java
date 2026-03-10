@@ -343,7 +343,8 @@ public class LobbyServiceTests {
 
         when(lobby.getHost()).thenReturn(host);
 
-        when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
+        // UPDATE
+        //when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
 
         doNothing().when(lobbyWebSocketsService).handleLobbyChatMessageSend(any(LobbyChatMessageDto.class));
 
@@ -393,7 +394,8 @@ public class LobbyServiceTests {
 
         when(lobby.getHost()).thenReturn(host);
 
-        when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
+        // UPDATE
+        //when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(null));
 
         doNothing().when(lobbyWebSocketsService).handleLobbyChatMessageSend(any(LobbyChatMessageDto.class));
 
