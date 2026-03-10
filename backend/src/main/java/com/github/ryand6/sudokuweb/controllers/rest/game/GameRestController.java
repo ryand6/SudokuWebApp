@@ -27,16 +27,13 @@ public class GameRestController {
     private final GameService gameService;
     private final MembershipService membershipService;
     private final UserService userService;
-    private final SimpMessagingTemplate messagingTemplate;
 
     public GameRestController(GameService gameService,
                               MembershipService membershipService,
-                              UserService userService,
-                              SimpMessagingTemplate messagingTemplate) {
+                              UserService userService) {
         this.gameService = gameService;
         this.membershipService = membershipService;
         this.userService = userService;
-        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/check-user-in-game")

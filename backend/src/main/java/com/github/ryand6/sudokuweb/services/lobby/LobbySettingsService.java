@@ -2,12 +2,16 @@ package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyDifficultySettingsUpdatedEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyTimeLimitSettingsUpdatedEvent;
 import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -19,10 +23,18 @@ public class LobbySettingsService {
 
     private final LobbyService lobbyService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
+    private final LobbyChatService lobbyChatService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public LobbySettingsService(LobbyService lobbyService, LobbyEntityDtoMapper lobbyEntityDtoMapper) {
+
+    public LobbySettingsService(LobbyService lobbyService,
+                                LobbyEntityDtoMapper lobbyEntityDtoMapper,
+                                LobbyChatService lobbyChatService,
+                                ApplicationEventPublisher applicationEventPublisher) {
         this.lobbyService = lobbyService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
+        this.lobbyChatService = lobbyChatService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     @Retryable(
@@ -31,12 +43,24 @@ public class LobbySettingsService {
             backoff = @Backoff(delay = 50, multiplier = 2)
     )
     @Transactional
-    public LobbyDto updateLobbyDifficulty(Long lobbyId, Difficulty difficulty) {
+    public LobbyDto updateLobbyDifficulty(Long lobbyId, Long userId, Difficulty difficulty) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
         LobbySettingsEntity lobbySettings = lobby.getLobbySettingsEntity();
         lobbySettings.validateSettingsUpdates();
         lobbySettings.setDifficulty(difficulty);
-        return lobbyEntityDtoMapper.mapToDto(lobby);
+
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+        // Send Lobby Update WS event after commit
+        applicationEventPublisher.publishEvent(
+                new LobbyDifficultySettingsUpdatedEvent(lobbyDto)
+        );
+
+        // Send an info update to the lobby chat after commit
+        String message = "updated the difficulty to " + difficulty.toString().toLowerCase() + ".";
+        lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
+
+        return lobbyDto;
     }
 
     // Fallback if retries fail for updateLobbyDifficulty
@@ -51,12 +75,24 @@ public class LobbySettingsService {
             backoff = @Backoff(delay = 50, multiplier = 2)
     )
     @Transactional
-    public LobbyDto updateLobbyTimeLimit(Long lobbyId, TimeLimitPreset timeLimit) {
+    public LobbyDto updateLobbyTimeLimit(Long lobbyId, Long userId, TimeLimitPreset timeLimit) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
         LobbySettingsEntity lobbySettings = lobby.getLobbySettingsEntity();
         lobbySettings.validateSettingsUpdates();
         lobbySettings.setTimeLimit(timeLimit);
-        return lobbyEntityDtoMapper.mapToDto(lobby);
+
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+        // Send Lobby Update WS event after commit
+        applicationEventPublisher.publishEvent(
+                new LobbyTimeLimitSettingsUpdatedEvent(lobbyDto)
+        );
+
+        // Send an info update to the lobby chat after commit
+        String message = "updated the time limit to " + timeLimit.toString().toLowerCase() + ".";
+        lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
+
+        return lobbyDto;
     }
 
     // Fallback if retries fail for updateLobbyTimeLimit

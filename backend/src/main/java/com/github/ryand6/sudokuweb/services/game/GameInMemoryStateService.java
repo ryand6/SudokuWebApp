@@ -2,9 +2,12 @@ package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;
 import com.github.ryand6.sudokuweb.dto.events.SudokuCellCoordinatesDto;
+import com.github.ryand6.sudokuweb.events.types.game.GameLeftInMemoryStateEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftInMemoryStateEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.util.GameUtils;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -50,6 +53,16 @@ public class GameInMemoryStateService {
         if (!membershipService.isUserInGame(userId, gameId)) {
             throw new GamePlayerNotFoundException("User with ID " + userId + " is not part of the game with ID " + gameId);
         }
+    }
+
+    @EventListener
+    void handleGamePlayerLeftInMemoryStateEvent(GamePlayerLeftInMemoryStateEvent event) {
+        removeGamePlayer(event.getGameId(), event.getUserId());
+    }
+
+    @EventListener
+    void handleGameLeftInMemoryStateEvent(GameLeftInMemoryStateEvent event) {
+        removeGame(event.getGameId());
     }
 
 }

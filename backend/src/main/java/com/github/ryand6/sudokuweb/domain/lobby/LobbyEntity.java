@@ -150,4 +150,9 @@ public class LobbyEntity {
                         ));
     }
 
+    public void handleGameCreation(Long gameId) {
+        inGame = true;
+        currentGameId = gameId;
+    }
+
 }

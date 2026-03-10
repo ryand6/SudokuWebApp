@@ -1,7 +1,9 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
+import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
 import com.github.ryand6.sudokuweb.services.TaskSchedulerService;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +21,11 @@ public class LobbyCountdownSchedulerService {
         } else if (countdownEvaluationResult.shouldCountdownCancel()) {
             taskSchedulerService.cancelGameCreationTask(lobbyId);
         }
+    }
+
+    @EventListener
+    void handleUpdateLobbyCountdownSchedulerEvent(UpdateLobbyCountdownSchedulerEvent event) {
+        handleCountdownEvaluationResult(event.getLobbyId(), event.getCountdownEvaluationResult());
     }
 
 }

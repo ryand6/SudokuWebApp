@@ -1,6 +1,5 @@
 package com.github.ryand6.sudokuweb.controllers.rest.lobby;
 
-import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.request.*;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
@@ -12,7 +11,6 @@ import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -28,17 +26,11 @@ public class LobbyRestController {
 
     private final LobbyService lobbyService;
     private final UserService userService;
-    private final LobbyChatService lobbyChatService;
-    private final LobbyWebSocketsService lobbyWebSocketsService;
 
     public LobbyRestController(LobbyService lobbyService,
-                               UserService userService,
-                               LobbyChatService lobbyChatService,
-                               LobbyWebSocketsService lobbyWebSocketsService) {
+                               UserService userService) {
         this.lobbyService = lobbyService;
         this.userService = userService;
-        this.lobbyChatService = lobbyChatService;
-        this.lobbyWebSocketsService = lobbyWebSocketsService;
     }
 
     // Post form details to create Lobby in DB
@@ -89,13 +81,6 @@ public class LobbyRestController {
                                     @PathVariable Long lobbyId) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), lobbyId);
-
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto);
-
-        // Send an info update to the lobby chat
-        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "joined the lobby.");
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
-
         return ResponseEntity.ok(lobbyDto);
     }
 
@@ -107,13 +92,6 @@ public class LobbyRestController {
                                    @RequestBody PrivateLobbyJoinRequestDto joinRequest) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), joinRequest.getToken());
-
-        lobbyWebSocketsService.handleLobbyUpdate(lobbyDto);
-
-        // Send an info update to the lobby chat
-        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyDto.getId(), currentUser.getId(), "joined the lobby.");
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
-
         return ResponseEntity.ok(lobbyDto);
     }
 

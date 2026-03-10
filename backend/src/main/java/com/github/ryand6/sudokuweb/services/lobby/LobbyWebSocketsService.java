@@ -3,10 +3,11 @@ package com.github.ryand6.sudokuweb.services.lobby;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
-import com.github.ryand6.sudokuweb.events.LobbyUpdateEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyChatInfoMessageSentPreCommitWsEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyChatMessageSentWsEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyUpdateWsEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -37,7 +38,7 @@ public class LobbyWebSocketsService {
     }
 
     // Emmit event notification when a new message is sent in a lobby
-    public void handleLobbyChatMessage(LobbyChatMessageDto lobbyChatMessageDto) {
+    public void handleLobbyChatMessageSend(LobbyChatMessageDto lobbyChatMessageDto) {
         Map<String, Object> messageHeader = Map.of(
                 "type", "LOBBY_CHAT_MESSAGE",
                 "chatMessage", lobbyChatMessageDto
@@ -60,10 +61,20 @@ public class LobbyWebSocketsService {
     }
 
     // Used for listening to lobby update events sent from outside of lobby service layer e.g. game service
-    // Carries out after transaction committed
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void broadcastUpdate(LobbyUpdateEvent e) {
-        handleLobbyUpdate(e.getLobbyDto());
+    public void handleLobbyUpdateWsEvent(LobbyUpdateWsEvent event) {
+        handleLobbyUpdate(event.getLobbyDto());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleLobbyChatMessageSentWsEvent(LobbyChatMessageSentWsEvent event) {
+        handleLobbyChatMessageSend(event.getLobbyChatMessageDto());
+    }
+
+    // Synchronised event handler used to ensure player leaving events are handled before a transaction commits, so that errors are not raised due to player being removed
+    @EventListener
+    public void handleLobbyChatMessagePlayerLeftWsEvent(LobbyChatInfoMessageSentPreCommitWsEvent event) {
+        handleLobbyChatMessageSend(event.getLobbyChatMessageDto());
     }
 
 }

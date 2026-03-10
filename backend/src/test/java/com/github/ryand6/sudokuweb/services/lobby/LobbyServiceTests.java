@@ -26,7 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.HashSet;
 import java.util.List;
@@ -344,9 +343,9 @@ public class LobbyServiceTests {
 
         when(lobby.getHost()).thenReturn(host);
 
-        when(lobbyChatService.submitInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
+        when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
 
-        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessage(any(LobbyChatMessageDto.class));
+        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessageSend(any(LobbyChatMessageDto.class));
 
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(new LobbyDto());
 
@@ -394,9 +393,9 @@ public class LobbyServiceTests {
 
         when(lobby.getHost()).thenReturn(host);
 
-        when(lobbyChatService.submitInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
+        when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
 
-        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessage(any(LobbyChatMessageDto.class));
+        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessageSend(any(LobbyChatMessageDto.class));
 
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(new LobbyDto());
 

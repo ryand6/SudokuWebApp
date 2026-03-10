@@ -5,15 +5,12 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
-import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
-import com.github.ryand6.sudokuweb.events.LobbyUpdateEvent;
-import com.github.ryand6.sudokuweb.events.PlayerRemovedEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
-import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,7 +18,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -37,32 +33,23 @@ public class LobbyService {
     private final LobbyRepository lobbyRepository;
     private final UserService userService;
     private final LobbyChatService lobbyChatService;
-    private final LobbyWebSocketsService lobbyWebSocketsService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final PrivateLobbyTokenService privateLobbyTokenService;
-    private final MembershipService membershipService;
-    private final LobbyCountdownSchedulerService lobbyCountdownSchedulerService;
     private final LobbyCountdownMutationService lobbyCountdownMutationService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public LobbyService(LobbyRepository lobbyRepository,
                         UserService userService,
                         LobbyChatService lobbyChatService,
-                        LobbyWebSocketsService lobbyWebSocketsService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
                         PrivateLobbyTokenService privateLobbyTokenService,
-                        MembershipService membershipService,
-                        LobbyCountdownSchedulerService lobbyCountdownSchedulerService,
                         LobbyCountdownMutationService lobbyCountdownMutationService,
                         ApplicationEventPublisher applicationEventPublisher) {
         this.lobbyRepository = lobbyRepository;
         this.userService = userService;
         this.lobbyChatService = lobbyChatService;
-        this.lobbyWebSocketsService = lobbyWebSocketsService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.privateLobbyTokenService = privateLobbyTokenService;
-        this.membershipService = membershipService;
-        this.lobbyCountdownSchedulerService = lobbyCountdownSchedulerService;
         this.lobbyCountdownMutationService = lobbyCountdownMutationService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -113,7 +100,17 @@ public class LobbyService {
         // Add user to lobby
         UserEntity user = userService.findUserById(userId);
         addPlayerToLobby(lobby, user);
-        return lobbyEntityDtoMapper.mapToDto(lobby);
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+        // publisher WS update after commit
+        applicationEventPublisher.publishEvent(
+                new LobbyUpdatePlayerJoinedWsEvent(lobbyDto)
+        );
+
+        // Send an info update to the lobby chat
+        lobbyChatService.createInfoMessage(lobbyDto.getId(), userId, "joined the lobby.", false);
+
+        return lobbyDto;
     }
 
     // Fallback if retries fail for join lobby
@@ -145,7 +142,17 @@ public class LobbyService {
         // Add user to lobby
         UserEntity user = userService.findUserById(userId);
         addPlayerToLobby(lobby, user);
-        return lobbyEntityDtoMapper.mapToDto(lobby);
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+        // publisher WS update after commit
+        applicationEventPublisher.publishEvent(
+                new LobbyUpdatePlayerJoinedWsEvent(lobbyDto)
+        );
+
+        // Send an info update to the lobby chat
+        lobbyChatService.createInfoMessage(lobbyDto.getId(), userId, "joined the lobby.", false);
+
+        return lobbyDto;
     }
 
     // Fallback if retries fail for join lobby
@@ -188,26 +195,32 @@ public class LobbyService {
         }
 
         // Send an info update to the lobby chat - must be sent before the transaction is committed, otherwise it will fail WebSocketSecurity checks that ensure messages come from active lobby members
-        LobbyChatMessageDto infoMessage = lobbyChatService.submitInfoMessage(lobbyId, userId, "left the lobby.");
-        lobbyWebSocketsService.handleLobbyChatMessage(infoMessage);
+        lobbyChatService.createInfoMessage(lobbyId, userId, "left the lobby.", true);
 
         // Remove the lobby player from the lobby - hibernate will clean up by removing the lobby player from the DB due to orphan removal
         lobby.getLobbyPlayers().remove(lobbyPlayer);
 
-        // Update cache
-        membershipService.removeLobbyPlayer(lobbyId, userId);
+        // Update cache via synchronised event
+        applicationEventPublisher.publishEvent(
+                new LobbyPlayerLeftMembershipEvent(lobbyId, userId)
+        );
 
         // Stop the timer if the player count goes below 2
         CountdownEvaluationResult countdownEvaluationResult = lobbyCountdownMutationService.safeEvaluateCountdown(lobby.getLobbyCountdownEntity());
 
-        lobbyCountdownSchedulerService.handleCountdownEvaluationResult(lobbyId, countdownEvaluationResult);
-
-        // Emit notification of lobby update after transaction committed
+        // update countdown scheduler via synchronised event
         applicationEventPublisher.publishEvent(
-                new LobbyUpdateEvent(lobbyEntityDtoMapper.mapToDto(lobby))
+                new UpdateLobbyCountdownSchedulerEvent(lobbyId, countdownEvaluationResult)
         );
 
-        return lobbyEntityDtoMapper.mapToDto(lobby);
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+        // publisher WS update after commit
+        applicationEventPublisher.publishEvent(
+                new LobbyUpdatePlayerLeftWsEvent(lobbyDto)
+        );
+
+        return lobbyDto;
     }
 
     // Fallback if retries fail for leaving lobby
@@ -242,17 +255,15 @@ public class LobbyService {
         // CONSIDER WHETHER TO DELETE OR SOFT DELETE - want to keep game history
         //lobbyRepository.deleteById(lobby.getId());
 
-        // Update cache
-        membershipService.removeLobby(lobby.getId());
+        // Update cache via synchronised event
+        applicationEventPublisher.publishEvent(
+                new LobbyLeftMembershipEvent(lobby.getId())
+        );
     }
 
     public LobbyEntity getLobbyById(Long lobbyId) {
-        Optional<LobbyEntity> lobby = lobbyRepository.findById(lobbyId);
-        if (lobby.isPresent()) {
-            return lobby.get();
-        } else {
-            throw new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist");
-        }
+        return lobbyRepository.findById(lobbyId).orElseThrow(() ->
+                new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist"));
     }
 
     @Transactional
@@ -263,8 +274,8 @@ public class LobbyService {
     }
 
     @EventListener
-    public void handleGamePlayerRemoved(PlayerRemovedEvent e) {
-        removeFromLobby(e.getLobbyId(), e.getUserId());
+    void handleGamePlayerLeftLobbyEvent(GamePlayerLeftLobbyEvent event) {
+        removeFromLobby(event.getLobbyId(), event.getUserId());
     }
 
 }

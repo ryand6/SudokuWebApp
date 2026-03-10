@@ -14,8 +14,13 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
-import com.github.ryand6.sudokuweb.events.LobbyUpdateEvent;
-import com.github.ryand6.sudokuweb.events.PlayerRemovedEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GameLeftInMemoryStateEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GameLeftMembershipEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftInMemoryStateEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftMembershipEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.GamePlayerLeftLobbyEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyUpdatePostGameCreationWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
@@ -25,13 +30,9 @@ import com.github.ryand6.sudokuweb.mappers.Impl.game.PrivateGamePlayerStateEntit
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.services.MembershipService;
-import com.github.ryand6.sudokuweb.services.lobby.LobbyCountdownMutationService;
-import com.github.ryand6.sudokuweb.services.lobby.LobbyService;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
-import com.github.ryand6.sudokuweb.util.TransactionUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,7 +49,6 @@ public class GameService {
     private final GamePlayerStateRepository gamePlayerStateRepository;
     private final PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper;
     private final LobbyRepository lobbyRepository;
-    private final LobbyCountdownMutationService lobbyCountdownMutationService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -60,7 +60,6 @@ public class GameService {
                        GamePlayerStateRepository gamePlayerStateRepository,
                        PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper,
                        LobbyRepository lobbyRepository,
-                       LobbyCountdownMutationService lobbyCountdownMutationService,
                        LobbyEntityDtoMapper lobbyEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher) {
         this.gameRepository = gameRepository;
@@ -71,7 +70,6 @@ public class GameService {
         this.gamePlayerStateRepository = gamePlayerStateRepository;
         this.privateGamePlayerStateEntityDtoMapper = privateGamePlayerStateEntityDtoMapper;
         this.lobbyRepository = lobbyRepository;
-        this.lobbyCountdownMutationService = lobbyCountdownMutationService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -91,19 +89,20 @@ public class GameService {
         }
 
         GameDto game = createGame(lobby);
-        lobby.setInGame(true);
-        lobby.setCurrentGameId(game.getGameId());
 
-        lobbyCountdownMutationService.safeCountdownReset(lobby.getLobbyCountdownEntity());
+        lobby.handleGameCreation(game.getGameId());
+
+        applicationEventPublisher.publishEvent(
+                new LobbyCountdownResetEvent(lobby.getLobbyCountdownEntity())
+        );
 
         // Emit notification of lobby update after transaction committed
         applicationEventPublisher.publishEvent(
-                new LobbyUpdateEvent(lobbyEntityDtoMapper.mapToDto(lobby))
+                new LobbyUpdatePostGameCreationWsEvent(lobbyEntityDtoMapper.mapToDto(lobby))
         );
 
         return game;
     }
-
 
 
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
@@ -116,8 +115,6 @@ public class GameService {
 
         lobby.validateGameCreation();
 
-        // Call static method to generate sudokuPuzzleEntity, retrieving both the sudokuPuzzleEntity and solution as a string
-        // interpretation of a nested int array
         SudokuPuzzleEntity sudokuPuzzle = sudokuPuzzleService.generatePuzzle(difficulty);
 
         GameEntity newGame = GameFactory.createGame(lobby, sudokuPuzzle);
@@ -166,12 +163,18 @@ public class GameService {
 
         // Send event to remove player from lobby
         applicationEventPublisher.publishEvent(
-                new PlayerRemovedEvent(game.getLobbyEntity().getId(), userId)
+                new GamePlayerLeftLobbyEvent(game.getLobbyEntity().getId(), userId)
         );
 
-        // update caches
-        membershipService.removeGamePlayer(gameId, userId);
-        gameInMemoryStateService.removeGamePlayer(gameId, userId);
+        // update membership and inMemory caches
+        applicationEventPublisher.publishEvent(
+                new GamePlayerLeftMembershipEvent(gameId, userId)
+        );
+        applicationEventPublisher.publishEvent(
+                new GamePlayerLeftInMemoryStateEvent(gameId, userId)
+        );
+
+        // ADD WS EVENTS
 
         // CHANGE
         return new GameDto();
@@ -181,9 +184,16 @@ public class GameService {
     public GameDto endGame(Long gameId) {
         // IMPLEMENT LOGIC
 
-        // update caches
-        membershipService.removeGame(gameId);
-        gameInMemoryStateService.removeGame(gameId);
+
+        // update membership and inMemory caches
+        applicationEventPublisher.publishEvent(
+                new GameLeftMembershipEvent(gameId)
+        );
+        applicationEventPublisher.publishEvent(
+                new GameLeftInMemoryStateEvent(gameId)
+        );
+
+        // ADD WS EVENTS
 
         // CHANGE
         return new GameDto();

@@ -86,4 +86,8 @@ public class LobbyPlayerEntity {
         this.readyAt = (lobbyStatus == LobbyStatus.READY) ? Instant.now() : null;
     }
 
+    public void updateLastLobbyMessageTime() {
+        lastLobbyMessageTimestamp = Instant.now();
+    }
+
 }

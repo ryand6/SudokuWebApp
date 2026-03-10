@@ -1,6 +1,5 @@
 package com.github.ryand6.sudokuweb.domain.lobby.player;
 
-import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerId;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 

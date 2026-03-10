@@ -1,13 +1,11 @@
-package com.github.ryand6.sudokuweb.events;
+package com.github.ryand6.sudokuweb.events.types.lobby;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-@Builder
-public class PlayerRemovedEvent {
+public class LobbyPlayerLeftMembershipEvent {
 
     private Long lobbyId;
 
