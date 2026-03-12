@@ -5,12 +5,14 @@ import { useValidateGameId } from "@/hooks/game/useValidateGameId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetGame } from "@/api/rest/game/query/useGetGame";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { mapBoardToBlocks } from "@/utils/game/blockUtils";
 import type { CellState } from "@/types/game/GameTypes";
 import { useGetGamePlayerState } from "@/api/rest/game/query/useGetGamePlayerState";
 import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
+import { useHandleGameWsSubscriptions } from "@/hooks/game/useHandleGameWsSubscriptions";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function GamePage() {
 
@@ -19,6 +21,9 @@ export function GamePage() {
     const gameIdNum = gameId ? Number(gameId) : NaN;
 
     useValidateGameId(gameIdNum);
+
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
 
@@ -33,7 +38,7 @@ export function GamePage() {
 
     useValidateGamePlayer(publicGameState, currentUser, leaveGameHandler.isLeaving);
 
-    // IMPLEMENT useHandleGameWsSubscription
+    useHandleGameWsSubscriptions(gameId, currentUser?.id, queryClient, navigate);
 
     if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
 
