@@ -4,6 +4,7 @@ import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
 import { mapGameState } from "./mapGameState";
 import type { PrivateGamePlayerStateDto } from "@/types/dto/entity/game/PrivateGamePlayerStateDto";
+import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 
 export function normalisePublicGameData(
     gameData: GameDto
@@ -19,7 +20,8 @@ export function normalisePublicGameData(
             boardProgress: gp.boardProgress,
             score: gp.score,
             gameLoaded: gp.gameLoaded,
-            gameResult: gp.gameResult
+            gameResult: gp.gameResult,
+            currentHighlightedCell: null
         };
     });
     playerIds.sort();
@@ -38,6 +40,29 @@ export function normalisePublicGameData(
     };
 
     return gameState;
+}
+
+// Merge normalised data with player highlighted cells
+export function normalisePublicGameDataWithHighlightedCells(gameData: GameDto, gameHighlightedCells: GameHighlightedCellsResponseDto): PublicGameState {
+    const normalisedGameData = normalisePublicGameData(gameData);
+
+    // Game Highlighted Cells may be null e.g. start of game
+    if (!gameHighlightedCells) return normalisedGameData;
+
+    const updatedPlayers = {...normalisedGameData.players};
+    Object.entries(gameHighlightedCells).forEach(([playerIdStr, cellCoords]) => {
+        const playerIdNum = Number(playerIdStr);
+        if (updatedPlayers[playerIdNum]) {
+            updatedPlayers[playerIdNum] = {
+                    ...updatedPlayers[playerIdNum],
+                    currentHighlightedCell: cellCoords
+                };
+        }
+    });
+    return {
+        ...normalisedGameData,
+        players: updatedPlayers
+    };
 }
 
 // Handles client's private game state data (not visible to opponents)

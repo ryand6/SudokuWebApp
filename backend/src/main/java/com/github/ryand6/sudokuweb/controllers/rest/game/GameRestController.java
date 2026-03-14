@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.controllers.rest.game;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.dto.events.SudokuCellCoordinatesDto;
 import com.github.ryand6.sudokuweb.dto.request.LeaveGameRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
@@ -15,6 +16,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController

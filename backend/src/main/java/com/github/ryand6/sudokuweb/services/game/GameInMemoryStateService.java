@@ -22,7 +22,7 @@ public class GameInMemoryStateService {
         this.membershipService = membershipService;
     }
 
-    private final Map<Long, Map<Long, SudokuCellCoordinatesDto>> gameHighlightedCells = new ConcurrentHashMap<>();
+    private final Map<Long, Map<Long, SudokuCellCoordinatesDto>> highlightsByGameThenPlayer  = new ConcurrentHashMap<>();
 
     public PlayerHighlightedCellDto updatePlayerHighlightedCell(PlayerHighlightedCellDto updateRequest) {
         Long gameId = updateRequest.getGameId();
@@ -30,16 +30,21 @@ public class GameInMemoryStateService {
         int row = updateRequest.getRow();
         int col = updateRequest.getCol();
         validateHighlightedCellUpdate(gameId, userId, row, col);
-        gameHighlightedCells.computeIfAbsent(gameId, id -> new ConcurrentHashMap<>()).put(userId, new SudokuCellCoordinatesDto(updateRequest.getRow(), updateRequest.getCol()));
+        highlightsByGameThenPlayer.computeIfAbsent(gameId, id -> new ConcurrentHashMap<>()).put(userId, new SudokuCellCoordinatesDto(updateRequest.getRow(), updateRequest.getCol()));
+        // IMPLEMENT WS MESSAGING
         return updateRequest;
     }
 
+    public Map<Long, SudokuCellCoordinatesDto> gameGameHighlights(Long gameId) {
+        return highlightsByGameThenPlayer.get(gameId);
+    }
+
     public void removeGame(Long gameId) {
-        gameHighlightedCells.remove(gameId);
+        highlightsByGameThenPlayer.remove(gameId);
     }
 
     public void removeGamePlayer(Long gameId, Long userId) {
-        Map<Long, SudokuCellCoordinatesDto> players = gameHighlightedCells.get(gameId);
+        Map<Long, SudokuCellCoordinatesDto> players = highlightsByGameThenPlayer.get(gameId);
         if (players != null) {
             players.remove(userId);
             if (players.isEmpty()) {

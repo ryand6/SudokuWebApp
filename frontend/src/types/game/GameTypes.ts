@@ -14,13 +14,19 @@ export type CellState = {
 
 export type BoardState = CellState[][];
 
+export type CellCoordinates = {
+    row: number,
+    col: number
+}
+
 export type GamePlayer = {
     name: string,
     colour: PlayerColour,
     boardProgress: boolean[],
     score: number,
     gameLoaded: boolean,
-    gameResult: GameResult
+    gameResult: GameResult,
+    currentHighlightedCell: CellCoordinates | null
 };
 
 // Key represents playerId

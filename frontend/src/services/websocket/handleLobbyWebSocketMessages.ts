@@ -9,20 +9,20 @@ import { type NavigateFunction } from "react-router-dom";
 export function handleLobbyWebSocketMessages(message: any, queryClient: QueryClient, lobbyId: number, navigate: NavigateFunction) {
     switch (message.type) {
         // Updates React Query lobby cache if the lobby is updated in the backend
-        case "LOBBY_UPDATED":
+        case "LOBBY_UPDATED": {
             queryClient.setQueryData(["lobby", lobbyId], message.payload);
             break;
-
+        }
         // Transport lobby players to game page when game has started
-        case "GAME_CREATED":
+        case "GAME_CREATED": {
             const gameDto: GameDto = message.payload;
             const publicGameData: PublicGameState = normalisePublicGameData(gameDto);
             queryClient.setQueryData(["game", gameDto.gameId], publicGameData);
             navigate(`/game/${publicGameData.gameId}`);
             break;
-            
+        }
         // Updates session storage if message is received in lobby chat
-        case "LOBBY_CHAT_MESSAGE":
+        case "LOBBY_CHAT_MESSAGE": {
             const newMessage: {chatMessage: LobbyChatMessageDto} = {chatMessage: message.chatMessage};
             queryClient.setQueryData<LobbyChatMessageDto[]>(["lobbyChat", lobbyId], (existingData: any) => {
                 // If no data exists, add first message
@@ -55,5 +55,6 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
                 }
             });
             break;
+        }
     }
 }
