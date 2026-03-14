@@ -1,10 +1,11 @@
 import { getLobby } from "@/api/rest/lobby/query/getLobby";
+import { queryKeys } from "@/state/queryKeys";
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { useQuery } from "@tanstack/react-query";
 
 export function useGetLobby(lobbyId: number) {
     return useQuery<LobbyDto>({
-        queryKey: ["lobby", lobbyId],
+        queryKey: queryKeys.lobby(lobbyId),
         queryFn: () => getLobby(lobbyId),
         // Only run if lobbyId has a value
         enabled: !!lobbyId,

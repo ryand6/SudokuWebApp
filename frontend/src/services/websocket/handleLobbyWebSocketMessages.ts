@@ -1,4 +1,5 @@
 import { PAGE_SIZE } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages";
+import { queryKeys } from "@/state/queryKeys";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
 import type { PublicGameState } from "@/types/game/GameTypes";
@@ -10,21 +11,21 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
     switch (message.type) {
         // Updates React Query lobby cache if the lobby is updated in the backend
         case "LOBBY_UPDATED": {
-            queryClient.setQueryData(["lobby", lobbyId], message.payload);
+            queryClient.setQueryData(queryKeys.lobby(lobbyId), message.payload);
             break;
         }
         // Transport lobby players to game page when game has started
         case "GAME_CREATED": {
             const gameDto: GameDto = message.payload;
             const publicGameData: PublicGameState = normalisePublicGameData(gameDto);
-            queryClient.setQueryData(["game", gameDto.gameId], publicGameData);
+            queryClient.setQueryData(queryKeys.game(gameDto.gameId), publicGameData);
             navigate(`/game/${publicGameData.gameId}`);
             break;
         }
         // Updates session storage if message is received in lobby chat
         case "LOBBY_CHAT_MESSAGE": {
             const newMessage: {chatMessage: LobbyChatMessageDto} = {chatMessage: message.chatMessage};
-            queryClient.setQueryData<LobbyChatMessageDto[]>(["lobbyChat", lobbyId], (existingData: any) => {
+            queryClient.setQueryData<LobbyChatMessageDto[]>(queryKeys.lobbyChat(lobbyId), (existingData: any) => {
                 // If no data exists, add first message
                 if (!existingData || !existingData.pages[0]) {
                     return {

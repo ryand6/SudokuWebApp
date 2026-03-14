@@ -2,13 +2,14 @@ import { getGame } from "@/api/rest/game/query/getGame";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import type { PublicGameState } from "@/types/game/GameTypes";
-import { normalisePublicGameData, normalisePublicGameDataWithHighlightedCells } from "@/utils/game/normaliseGameState";
+import { normalisePublicGameDataWithHighlightedCells } from "@/utils/game/normaliseGameState";
 import { useQuery } from "@tanstack/react-query";
 import { getGameHighlightedCells } from "../memory/query/getGameHighlightedCells";
+import { queryKeys } from "@/state/queryKeys";
 
 export function useGetGame(gameId: number) {
     return useQuery<PublicGameState>({
-        queryKey: ["game", gameId],
+        queryKey: queryKeys.game(gameId),
         queryFn: async () => {
             // Get DB game data and in memory game highlighted cell data and merge during normalisation
             const [gameData, gameHighlightedCells]: [GameDto, GameHighlightedCellsResponseDto] = await Promise.all([

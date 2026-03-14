@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout } from "./logout";
 import { useNavigate } from "react-router-dom";
+import { queryKeys } from "@/state/queryKeys";
 
 export function useLogout() {
   const queryClient = useQueryClient();
@@ -10,7 +11,7 @@ export function useLogout() {
     mutationFn: logout,
     onSuccess: () => {
       // Invalidate the "currentUser" query so the cache is cleared
-      queryClient.setQueryData(["currentUser"], null);
+      queryClient.setQueryData(queryKeys.user, null);
       // redirect to home or login page
       navigate("/", { replace: true });
     },

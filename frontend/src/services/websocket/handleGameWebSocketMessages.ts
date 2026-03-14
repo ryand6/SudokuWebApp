@@ -1,3 +1,4 @@
+import { queryKeys } from "@/state/queryKeys";
 import type { PlayerHighlightedCellResponseDto } from "@/types/dto/response/PlayerHighlightedCellResponseDto";
 import type { PublicGameState } from "@/types/game/GameTypes";
 import type { QueryClient } from "@tanstack/react-query";
@@ -25,7 +26,7 @@ export function handleGameWebSocketMessages(message: any, queryClient: QueryClie
         }
         case "HIGHLIGHTED_CELL_UPDATE": {
             const payload: PlayerHighlightedCellResponseDto = message.payload;
-            queryClient.setQueryData(["game", gameId], (old: PublicGameState) => {
+            queryClient.setQueryData(queryKeys.game(gameId), (old: PublicGameState) => {
                 if (!old) return old;
                 const player = old.players[payload.playerId];
                 if (!player) return old;

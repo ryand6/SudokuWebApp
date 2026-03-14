@@ -1,4 +1,5 @@
 import { getLobbyChatMessages } from "@/api/rest/lobbychat/query/getLobbyChatMessages";
+import { queryKeys } from "@/state/queryKeys";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
@@ -6,7 +7,7 @@ export const PAGE_SIZE = 100;
 
 export function useGetLobbyChatMessages(lobbyId: number) { 
     return useInfiniteQuery<LobbyChatMessageDto[], Error>({ 
-        queryKey: ["lobbyChat", lobbyId],
+        queryKey: queryKeys.lobbyChat(lobbyId),
         queryFn: async ({ queryKey, pageParam }) => {
             const [, lobbyId] = queryKey;
             const dto = await getLobbyChatMessages(lobbyId as number, pageParam as number);

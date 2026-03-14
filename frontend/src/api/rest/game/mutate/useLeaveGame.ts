@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { leaveGame } from "./leaveGame";
+import { queryKeys } from "@/state/queryKeys";
 
 export function useLeaveGame() {
     const queryClient = useQueryClient();
@@ -22,13 +23,12 @@ export function useLeaveGame() {
             // handles when a game is closed
             if (updatedGame === null) {
                 // Remove game and game player state caches
-                queryClient.removeQueries({ queryKey: ["game", variables.gameId], exact: true });
-                queryClient.removeQueries({ queryKey: ["game", variables.gameId, "user", variables.userId], exact: true});
+                queryClient.removeQueries({ queryKey: queryKeys.game(variables.gameId), exact: true });
+                queryClient.removeQueries({ queryKey: queryKeys.gamePlayerState(variables.gameId, variables.userId), exact: true});
                 navigate("/dashboard", { replace: true });
                 return;
             } else {
-                const gameId = variables.gameId;
-                queryClient.setQueryData(["game", gameId], updatedGame);
+                queryClient.setQueryData(queryKeys.game(variables.gameId), updatedGame);
                 navigate("/dashboard", { replace: true });
             }
         },

@@ -1,5 +1,6 @@
 import { leaveLobby } from "@/api/rest/lobby/mutate/leaveLobby";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
+import { queryKeys } from "@/state/queryKeys";
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import type { LeaveLobbyRequestDto } from "@/types/dto/request/LeaveLobbyRequestDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,13 +23,12 @@ export function useLeaveLobby() {
             // handles when a lobby is closed
             if (updatedLobby === null) {
                 // Reset public lobbies list and removed lobby caches to account for removal of the lobby from the backend
-                queryClient.removeQueries({ queryKey: ["lobby", variables.lobbyId], exact: true });
-                queryClient.resetQueries({ queryKey: ["publicLobbiesList"], exact: true });
+                queryClient.removeQueries({ queryKey: queryKeys.lobby(variables.lobbyId), exact: true });
+                queryClient.resetQueries({ queryKey: queryKeys.publicLobbies, exact: true });
                 navigate("/dashboard", { replace: true });
                 return;
             } else {
-                const lobbyId = variables.lobbyId;
-                queryClient.setQueryData(["lobby", lobbyId], updatedLobby);
+                queryClient.setQueryData(queryKeys.lobby(variables.lobbyId), updatedLobby);
                 navigate("/dashboard", { replace: true });
             }
         },

@@ -3,10 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { getGamePlayerState } from "./getGamePlayerState";
 import { normalisePrivateGameStateData } from "@/utils/game/normaliseGameState";
 import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
+import { queryKeys } from "@/state/queryKeys";
 
 export function useGetGamePlayerState(gameId: number, userId: number | undefined) {
     return useQuery<PrivateGamePlayerState>({
-        queryKey: ["game", gameId, "user", userId],
+        queryKey: queryKeys.gamePlayerState(gameId, userId),
         queryFn: async () => {
             const gamePlayerStateData: PrivateGamePlayerStateDtoRaw = await getGamePlayerState(gameId);
             return normalisePrivateGameStateData(gamePlayerStateData);

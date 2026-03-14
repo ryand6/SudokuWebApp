@@ -3,6 +3,7 @@ import { type UpdateLobbyPlayerStatusDto } from "@/types/dto/request/UpdateLobby
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { updateLobbyPlayerStatus } from "@/api/rest/lobbyplayer/mutate/updateLobbyPlayerStatus";
 import { toast } from "react-toastify";
+import { queryKeys } from "@/state/queryKeys";
 
 export function useUpdateLobbyPlayerStatus() {
     const queryClient = useQueryClient();
@@ -11,7 +12,7 @@ export function useUpdateLobbyPlayerStatus() {
         mutationFn: ({lobbyId, userId, lobbyStatus}) => updateLobbyPlayerStatus(lobbyId, userId, lobbyStatus),
         onSuccess: (updatedLobby, variables) => {
             const lobbyId = variables.lobbyId;
-            queryClient.setQueryData(["lobby", lobbyId], updatedLobby);
+            queryClient.setQueryData(queryKeys.lobby(lobbyId), updatedLobby);
         },
         onError: (error) => {
             toast.error(error.message);

@@ -1,4 +1,5 @@
 import { requestJoinCode } from "@/api/rest/lobbytoken/mutate/requestJoinCode";
+import { queryKeys } from "@/state/queryKeys";
 import type { RequestLobbyTokenDto } from "@/types/dto/request/RequestLobbyTokenDto";
 import type { UserActiveTokensDto } from "@/types/dto/response/UserActiveTokensDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,7 +16,7 @@ export function useRequestJoinCode() {
     return useMutation<void, Error, RequestLobbyTokenDto>({
         mutationFn: async ({lobbyId, userId}) => {
             const newToken = await requestJoinCode(lobbyId, userId);
-            const queryKey = ["user", userId, "tokens"];
+            const queryKey = queryKeys.userTokens(userId);
             // Store token expiry date with token and remove any expired tokens whilst updating cache
             queryClient.setQueryData<UserActiveTokensDto>(queryKey, (existing) => {
                 const now = Date.now();

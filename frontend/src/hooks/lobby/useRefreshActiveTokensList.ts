@@ -1,3 +1,4 @@
+import { queryKeys } from "@/state/queryKeys";
 import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import type { QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -10,7 +11,7 @@ export function useRefreshActiveTokensList(
     useEffect(() => {
         const interval = setInterval(() => {
             queryClient.invalidateQueries({
-                queryKey: ["user", currentUser.id, "tokens"]}
+                queryKey: queryKeys.userTokens(currentUser.id)}
             );
         }, 60 * 1000);
         return () => clearInterval(interval);

@@ -1,11 +1,12 @@
 import { getTenPublicLobbies } from "@/api/rest/lobby/query/getTenPublicLobbies";
+import { queryKeys } from "@/state/queryKeys";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 const PAGE_SIZE = 10;
 
 export function useGetTenPublicLobbies() {
     return useInfiniteQuery({
-        queryKey: ["publicLobbiesList"],
+        queryKey: queryKeys.publicLobbies,
         queryFn: async ({ pageParam }) => {
             const dto = await getTenPublicLobbies(pageParam);
             return dto.publicLobbies;
