@@ -1,3 +1,4 @@
+import { gameCacheDispatcher } from "@/state/game/gameCacheDispatcher";
 import { queryKeys } from "@/state/queryKeys";
 import type { PlayerHighlightedCellResponseDto } from "@/types/dto/response/PlayerHighlightedCellResponseDto";
 import type { PublicGameState } from "@/types/game/GameTypes";
@@ -25,22 +26,11 @@ export function handleGameWebSocketMessages(message: any, queryClient: QueryClie
             break;
         }
         case "HIGHLIGHTED_CELL_UPDATE": {
-            const payload: PlayerHighlightedCellResponseDto = message.payload;
-            queryClient.setQueryData(queryKeys.game(gameId), (old: PublicGameState) => {
-                if (!old) return old;
-                const player = old.players[payload.playerId];
-                if (!player) return old;
-                return {
-                    ...old,
-                    players: {
-                        ...old.players,
-                        [payload.playerId]: {
-                            ...old.players[payload.playerId],
-                            currentHighlightedCell: payload.coordinates ?? null
-                        }
-                    }
-                }
-            })
+            gameCacheDispatcher(queryClient, gameId, {
+                type: message.type,
+                playerId: message.payload.playerId,
+                coordinates: message.payload.coordinates
+            });
             break;
         }
         
