@@ -18,3 +18,20 @@ export type GameEvent =
         playerId: number,
         coordinates: CellCoordinates
       };
+
+export type GamePlayerStateEvent = 
+    | {
+        type: "CELL_UPDATE_ACCEPTED"
+      }
+    | {
+        type: "CELL_UPDATE_REJECTED"
+      }
+    | {
+        type: "NOTE_UPDATE_ACCEPTED"
+      }
+    | {
+        type: "NOTE_UPDATE_REJECTED"
+      }
+    | {
+        type: "SETTINGS_UPDATED"
+      };

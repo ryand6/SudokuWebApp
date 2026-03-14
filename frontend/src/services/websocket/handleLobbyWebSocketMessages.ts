@@ -1,9 +1,6 @@
-import { PAGE_SIZE } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages";
-import { queryKeys } from "@/state/queryKeys";
-import type { GameDto } from "@/types/dto/entity/game/GameDto";
-import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
-import type { PublicGameState } from "@/types/game/GameTypes";
-import { normalisePublicGameData } from "@/utils/game/normaliseGameState";
+import { lobbyChatCacheDispatcher } from "@/state/lobby/chat/lobbyChatCacheDispatcher";
+import { gameCreationCacheDispatcher } from "@/state/lobby/gameCreationCacheDispatcher";
+import { lobbyCacheDispatcher } from "@/state/lobby/lobbyCacheDispatcher";
 import { QueryClient } from "@tanstack/react-query";
 import { type NavigateFunction } from "react-router-dom";
 
@@ -11,50 +8,26 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
     switch (message.type) {
         // Updates React Query lobby cache if the lobby is updated in the backend
         case "LOBBY_UPDATED": {
-            queryClient.setQueryData(queryKeys.lobby(lobbyId), message.payload);
+            lobbyCacheDispatcher(queryClient, lobbyId, {
+                type: "LOBBY_UPDATED",
+                lobbyData: message.payload
+            })
             break;
         }
         // Transport lobby players to game page when game has started
         case "GAME_CREATED": {
-            const gameDto: GameDto = message.payload;
-            const publicGameData: PublicGameState = normalisePublicGameData(gameDto);
-            queryClient.setQueryData(queryKeys.game(gameDto.gameId), publicGameData);
-            navigate(`/game/${publicGameData.gameId}`);
+            gameCreationCacheDispatcher(queryClient, navigate, {
+                type: "GAME_CREATED",
+                gameData: message.payload
+            })
             break;
         }
         // Updates session storage if message is received in lobby chat
         case "LOBBY_CHAT_MESSAGE": {
-            const newMessage: {chatMessage: LobbyChatMessageDto} = {chatMessage: message.chatMessage};
-            queryClient.setQueryData<LobbyChatMessageDto[]>(queryKeys.lobbyChat(lobbyId), (existingData: any) => {
-                // If no data exists, add first message
-                if (!existingData || !existingData.pages[0]) {
-                    return {
-                        // first page
-                        pages: [[newMessage.chatMessage]],
-                        pageParams: [0]
-                    }
-                }
-
-                const firstPage = existingData.pages[0];
-
-                if (firstPage && firstPage?.length >= PAGE_SIZE) {
-                    // Create a new page with message in it and insert at front of nested array 
-                    return {
-                        ...existingData,
-                        pages: [[newMessage.chatMessage], ...existingData.pages],
-                        pageParams: [...existingData.pageParams, existingData.pageParams.length]
-                    };
-                } else {
-                    // Add message to first page as this contains the most recent messages - add to start of page as the order will be reversed on render
-                    return {
-                        ...existingData,
-                        pages: [
-                            [newMessage.chatMessage, ...firstPage],
-                            ...existingData.pages.slice(1),
-                        ],
-                    };
-                }
-            });
+            lobbyChatCacheDispatcher(queryClient, lobbyId, {
+                type: "LOBBY_CHAT_MESSAGE",
+                newMessage: message.payload
+            })
             break;
         }
     }

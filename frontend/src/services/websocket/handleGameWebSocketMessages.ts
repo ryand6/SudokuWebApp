@@ -1,7 +1,4 @@
 import { gameCacheDispatcher } from "@/state/game/gameCacheDispatcher";
-import { queryKeys } from "@/state/queryKeys";
-import type { PlayerHighlightedCellResponseDto } from "@/types/dto/response/PlayerHighlightedCellResponseDto";
-import type { PublicGameState } from "@/types/game/GameTypes";
 import type { QueryClient } from "@tanstack/react-query";
 import type { NavigateFunction } from "react-router-dom";
 

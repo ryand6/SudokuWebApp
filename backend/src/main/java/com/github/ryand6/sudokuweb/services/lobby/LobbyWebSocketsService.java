@@ -41,7 +41,7 @@ public class LobbyWebSocketsService {
     public void handleLobbyChatMessageSend(LobbyChatMessageDto lobbyChatMessageDto) {
         Map<String, Object> messageHeader = Map.of(
                 "type", "LOBBY_CHAT_MESSAGE",
-                "chatMessage", lobbyChatMessageDto
+                "payload", lobbyChatMessageDto
         );
         String topic = "/topic/lobby/" + lobbyChatMessageDto.getLobbyId();
         // Send message over websocket to lobby topic where all active players are subscribed to

@@ -15,7 +15,7 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
             // IMPLEMENT
             break;
         }
-        case "NOTE_UPDATE_ACCEPTED": {
+        case "NOTE_UPDATE_REJECTED": {
             // IMPLEMENT
             break;
         }

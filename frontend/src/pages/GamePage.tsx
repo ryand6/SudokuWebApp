@@ -2,7 +2,6 @@ import { SudokuBoard } from "@/components/game/SudokuBoard";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { useHandleGetGameError } from "@/hooks/game/useHandleGetGameError";
 import { useValidateGameId } from "@/hooks/game/useValidateGameId";
-import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetGame } from "@/api/rest/game/query/useGetGame";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { useNavigate, useParams } from "react-router-dom";
