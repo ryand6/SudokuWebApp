@@ -15,7 +15,7 @@ export type GameEvent =
       }
     | {
         type: "HIGHLIGHTED_CELL_UPDATE",
-        playerId: number,
+        userId: number,
         coordinates: CellCoordinates
       };
 

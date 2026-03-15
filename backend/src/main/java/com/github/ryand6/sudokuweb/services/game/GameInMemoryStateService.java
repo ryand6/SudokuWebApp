@@ -4,9 +4,11 @@ import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;
 import com.github.ryand6.sudokuweb.dto.events.SudokuCellCoordinatesDto;
 import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
+import com.github.ryand6.sudokuweb.events.types.game.PlayerHighlightedCellUpdateEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.util.GameUtils;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +19,27 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameInMemoryStateService {
 
     private final MembershipService membershipService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public GameInMemoryStateService(MembershipService membershipService) {
+    public GameInMemoryStateService(MembershipService membershipService,
+                                    ApplicationEventPublisher applicationEventPublisher) {
         this.membershipService = membershipService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     private final Map<Long, Map<Long, SudokuCellCoordinatesDto>> highlightsByGameThenPlayer  = new ConcurrentHashMap<>();
 
-    public PlayerHighlightedCellDto updatePlayerHighlightedCell(PlayerHighlightedCellDto updateRequest) {
+    public void updatePlayerHighlightedCell(PlayerHighlightedCellDto updateRequest) {
         Long gameId = updateRequest.getGameId();
         Long userId = updateRequest.getUserId();
         int row = updateRequest.getRow();
         int col = updateRequest.getCol();
         validateHighlightedCellUpdate(gameId, userId, row, col);
         highlightsByGameThenPlayer.computeIfAbsent(gameId, id -> new ConcurrentHashMap<>()).put(userId, new SudokuCellCoordinatesDto(updateRequest.getRow(), updateRequest.getCol()));
-        // IMPLEMENT WS MESSAGING
-        return updateRequest;
+
+        applicationEventPublisher.publishEvent(
+                new PlayerHighlightedCellUpdateEvent(updateRequest)
+        );
     }
 
     public Map<Long, SudokuCellCoordinatesDto> gameGameHighlights(Long gameId) {

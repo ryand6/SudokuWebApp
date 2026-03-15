@@ -25,14 +25,14 @@ export function gameCacheReducer(
             return existingData;
         }
         case "HIGHLIGHTED_CELL_UPDATE": {
-            const player = existingData.players[event.playerId];
+            const player = existingData.players[event.userId];
             if (!player) return existingData;
             return {
                 ...existingData,
                 players: {
                     ...existingData.players,
-                    [event.playerId]: {
-                        ...existingData.players[event.playerId],
+                    [event.userId]: {
+                        ...existingData.players[event.userId],
                         currentHighlightedCell: event.coordinates ?? null
                     }
                 }

@@ -2,7 +2,12 @@ import { gameCacheDispatcher } from "@/state/game/gameCacheDispatcher";
 import type { QueryClient } from "@tanstack/react-query";
 import type { NavigateFunction } from "react-router-dom";
 
-export function handleGameWebSocketMessages(message: any, queryClient: QueryClient, gameId: number, navigate: NavigateFunction) {
+export function handleGameWebSocketMessages(
+    message: any, 
+    queryClient: QueryClient, 
+    gameId: number, 
+    navigate: NavigateFunction
+) {
     switch (message.type) {
         case "GAME_PLAYER_UPDATE": {
             // IMPLEMENT
@@ -25,8 +30,11 @@ export function handleGameWebSocketMessages(message: any, queryClient: QueryClie
         case "HIGHLIGHTED_CELL_UPDATE": {
             gameCacheDispatcher(queryClient, gameId, {
                 type: message.type,
-                playerId: message.payload.playerId,
-                coordinates: message.payload.coordinates
+                userId: message.payload.userId,
+                coordinates: {
+                    row: message.payload.row,
+                    col: message.payload.col
+                }
             });
             break;
         }

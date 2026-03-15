@@ -1,8 +1,13 @@
+import { useState } from "react";
 import SudokuCell from "./SudokuCell";
-import type { BoardState, GamePlayer } from "@/types/game/GameTypes";
+import type { BoardState, CellCoordinates, GamePlayer } from "@/types/game/GameTypes";
 
 
 export function SudokuBoard({boardState, playerState}: {boardState: BoardState, playerState: GamePlayer}) {
+
+    const [highlightedCell, setHighlightedCell] = useState<CellCoordinates | null>(
+        playerState.currentHighlightedCell
+    );
 
     return (
         <div className="">
@@ -22,6 +27,10 @@ export function SudokuBoard({boardState, playerState}: {boardState: BoardState, 
                                 col={c} 
                                 value={cell.value}
                                 notes={cell.notes}
+                                isHighlighted={
+                                    r === highlightedCell?.row && c === highlightedCell?.col
+                                }
+                                onClick={() => setHighlightedCell({ row: r, col: c })}
 
                                 className={`
                                     ${borderTop} ${borderLeft} ${borderBottom} ${borderRight}
