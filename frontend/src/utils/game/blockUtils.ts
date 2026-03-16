@@ -1,5 +1,5 @@
 
-import type { CellState } from "@/types/game/GameTypes";
+import type { CellCoordinates, CellState } from "@/types/game/GameTypes";
 import { GRID_SIZE } from "./gameConstants";
 
 /**
@@ -33,5 +33,11 @@ function fillBlock(i: number, j: number, boardState: CellState[][]): CellState[]
         }
     }
     return block;
+}
+
+export function isCellInSameBlock(r: number, c: number, playerHighlightedCell: CellCoordinates | undefined): boolean {
+    if (!playerHighlightedCell) return false;
+    return Math.floor(r / 3) === Math.floor(playerHighlightedCell.row / 3)
+        && Math.floor(c / 3) === Math.floor(playerHighlightedCell.col / 3);
 }
 

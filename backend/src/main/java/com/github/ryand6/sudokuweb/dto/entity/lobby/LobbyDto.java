@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.entity.lobby;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class LobbyDto {
 
     private Instant createdAt;
 
+    @JsonProperty("isActive")
     private boolean isActive;
 
     private boolean inGame;

@@ -23,6 +23,9 @@ public class GameInMemoryStateRestController {
     @GetMapping("/get-game-highlighted-cells")
     public ResponseEntity<?> getGameHighlightedCells(@RequestParam Long gameId) {
         Map<Long, SudokuCellCoordinatesDto> gameHighlightedCells = gameInMemoryStateService.gameGameHighlights(gameId);
+        if (gameHighlightedCells == null) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(gameHighlightedCells);
     }
 

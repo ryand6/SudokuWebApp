@@ -1,3 +1,4 @@
+import type { PlayerColour } from "@/types/enum/PlayerColour";
 import React from "react";
 
 const SudokuCell = React.memo(function SudokuCell(
@@ -6,25 +7,37 @@ const SudokuCell = React.memo(function SudokuCell(
         col, 
         value, 
         notes, 
-        isHighlighted, 
-        onClick,
+        playerColour,
+        isSelected,
+        isInRow,
+        isInCol,
+        isInBlock,
+        isSameNumber,
+        opponentsSelected,
+        onSelect,
         className
     }: {
         row: number, 
         col: number, 
         value: string | undefined, 
         notes: number, 
-        isHighlighted: boolean, 
-        onClick: () => void,
+        playerColour: PlayerColour,
+        isSelected: boolean, 
+        isInRow: boolean,
+        isInCol: boolean,
+        isInBlock: boolean,
+        isSameNumber: boolean,
+        opponentsSelected: PlayerColour[] | undefined
+        onSelect: () => void,
         className: string
     }
     ) {
     return (
-        <div onClick={onClick}
+        <div onClick={onSelect}
             className={`w-full h-full flex items-center justify-center 
                         text-xl font-semibold cursor-pointer box-border
                         animate-fill-cell 
-                        ${isHighlighted ? "bg-yellow-300" : "bg-primary-foreground"}
+                        ${isSelected ? "bg-yellow-300" : "bg-primary-foreground"}
                         ${className}`}
             style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}
         >

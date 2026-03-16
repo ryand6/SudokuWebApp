@@ -19,6 +19,12 @@ export type CellCoordinates = {
     col: number
 }
 
+export type CellHighlightDetails = {
+    row: number,
+    col: number,
+    colour: PlayerColour
+}
+
 export type GamePlayer = {
     name: string,
     colour: PlayerColour,

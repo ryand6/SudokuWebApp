@@ -28,6 +28,7 @@ export function handleGameWebSocketMessages(
             break;
         }
         case "HIGHLIGHTED_CELL_UPDATE": {
+            // Remove - don't use game dispatcher, instead update using setState
             gameCacheDispatcher(queryClient, gameId, {
                 type: message.type,
                 userId: message.payload.userId,

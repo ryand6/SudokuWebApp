@@ -1,13 +1,24 @@
 import { useState } from "react";
 import SudokuCell from "./SudokuCell";
-import type { BoardState, CellCoordinates, GamePlayer } from "@/types/game/GameTypes";
+import type { BoardState, CellCoordinates, GamePlayer, GamePlayers } from "@/types/game/GameTypes";
+import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
+import { isCellInSameBlock } from "@/utils/game/blockUtils";
 
 
-export function SudokuBoard({boardState, playerState}: {boardState: BoardState, playerState: GamePlayer}) {
-
-    const [highlightedCell, setHighlightedCell] = useState<CellCoordinates | null>(
-        playerState.currentHighlightedCell
-    );
+export function SudokuBoard(
+    {
+        userId,
+        boardState, 
+        gamePlayers, 
+        gameHighlightedCells
+    }: {
+        userId: number,
+        boardState: BoardState, 
+        gamePlayers: GamePlayers,
+        gameHighlightedCells: Map<number, CellCoordinates> | undefined
+    }
+) {
+    const playerHighlightedCell = gameHighlightedCells ? gameHighlightedCells.get(userId) : undefined;
 
     return (
         <div className="">
@@ -27,10 +38,22 @@ export function SudokuBoard({boardState, playerState}: {boardState: BoardState, 
                                 col={c} 
                                 value={cell.value}
                                 notes={cell.notes}
-                                isHighlighted={
-                                    r === highlightedCell?.row && c === highlightedCell?.col
+                                playerColour={gamePlayers[userId].colour}
+                                isSelected={
+                                    r === playerHighlightedCell?.row && c === playerHighlightedCell?.col
                                 }
-                                onClick={() => setHighlightedCell({ row: r, col: c })}
+                                isInRow = {r === playerHighlightedCell?.row}
+                                isInCol = {c === playerHighlightedCell?.col}
+                                // Implement
+                                isInBlock = {isCellInSameBlock(r, c, playerHighlightedCell)}
+                                isSameNumber = {playerHighlightedCell ? boardState[r][c].value === boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : false}
+                                selectedOpponentsColours={
+                                    gameHighlightedCells ? Array.from(gameHighlightedCells.entries())
+                                        .filter(([id, coords]) => id !== userId && coords.row === r && coords.col === c)
+                                        .map(([id]) => gamePlayers[id].colour) : undefined
+                                }
+                                // Replace - create a function that updates the state object
+                                onSelect={() => setHighlightedCell({ row: r, col: c })}
 
                                 className={`
                                     ${borderTop} ${borderLeft} ${borderBottom} ${borderRight}

@@ -42,29 +42,6 @@ export function normalisePublicGameData(
     return gameState;
 }
 
-// Merge normalised data with player highlighted cells
-export function normalisePublicGameDataWithHighlightedCells(gameData: GameDto, gameHighlightedCells: GameHighlightedCellsResponseDto): PublicGameState {
-    const normalisedGameData = normalisePublicGameData(gameData);
-
-    // Game Highlighted Cells may be null e.g. start of game
-    if (!gameHighlightedCells) return normalisedGameData;
-
-    const updatedPlayers = {...normalisedGameData.players};
-    Object.entries(gameHighlightedCells).forEach(([playerIdStr, cellCoords]) => {
-        const playerIdNum = Number(playerIdStr);
-        if (updatedPlayers[playerIdNum]) {
-            updatedPlayers[playerIdNum] = {
-                    ...updatedPlayers[playerIdNum],
-                    currentHighlightedCell: cellCoords
-                };
-        }
-    });
-    return {
-        ...normalisedGameData,
-        players: updatedPlayers
-    };
-}
-
 // Handles client's private game state data (not visible to opponents)
 export function normalisePrivateGameStateData(
     gameState: PrivateGamePlayerStateDtoRaw
