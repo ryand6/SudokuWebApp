@@ -188,6 +188,38 @@
   .box-shadow {
     box-shadow: var(--box-shadow-default);
   }
+
+  .player-colour-blue {
+    background-color: rgb(156, 186, 235);
+  }
+
+  .player-colour-blue-faded {
+    background-color: rgb(213, 226, 247);
+  }
+
+  .player-colour-green {
+    background-color: rgb(182, 238, 203);
+  }
+
+  .player-colour-green-faded {
+    background-color: rgb(228, 247, 235);
+  }
+
+  .player-colour-orange {
+    background-color: rgb(243, 209, 157);
+  }
+
+  .player-colour-orange-faded {
+    background-color: rgb(250, 238, 221);
+  }
+
+  .player-colour-purple {
+    background-color: rgb(215, 181, 253);
+  }
+
+  .player-colour-purple-faded {
+    background-color: rgb(242, 228, 248);
+  }
 }
 
 

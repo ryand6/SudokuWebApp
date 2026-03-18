@@ -46,13 +46,15 @@ export function GamePage() {
 
     useValidateGamePlayer(publicGameState, currentUser, leaveGameHandler.isLeaving);
 
-    useHandleGameWsSubscriptions(gameId, currentUser?.id, queryClient, navigate);
+    useHandleGameWsSubscriptions(gameId, currentUser?.id, queryClient, navigate, setGameHighlightedCells);
 
     if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
 
     console.log("GAME DATA: ", publicGameState);
 
     console.log("GAME STATE DATA: ", privateGameState);
+
+    console.log("GAME HIGHLIGHTED CELLS: ", gameHighlightedCells);
     
     if (!publicGameState || !currentUser || !privateGameState) return null;    
 
@@ -64,10 +66,12 @@ export function GamePage() {
             GAME PAGE
             <div className="flex justify-center">
                 <SudokuBoard 
+                    gameId={publicGameState.gameId}
                     userId={currentUser.id}
                     boardState={privateGameState.boardState} 
                     gamePlayers={publicGameState.players}
-                    gameHighlightedCells={gameHighlightedCells} 
+                    gameHighlightedCells={gameHighlightedCells}
+                    setGameHighlightedCells={setGameHighlightedCells} 
                 />
             </div>
         </div>

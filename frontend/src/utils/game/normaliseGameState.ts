@@ -4,7 +4,6 @@ import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
 import { mapGameState } from "./mapGameState";
 import type { PrivateGamePlayerStateDto } from "@/types/dto/entity/game/PrivateGamePlayerStateDto";
-import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 
 export function normalisePublicGameData(
     gameData: GameDto
@@ -20,8 +19,7 @@ export function normalisePublicGameData(
             boardProgress: gp.boardProgress,
             score: gp.score,
             gameLoaded: gp.gameLoaded,
-            gameResult: gp.gameResult,
-            currentHighlightedCell: null
+            gameResult: gp.gameResult
         };
     });
     playerIds.sort();

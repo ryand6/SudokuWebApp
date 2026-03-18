@@ -1,23 +1,31 @@
-import { useState } from "react";
+import { useCallback, useMemo, type Dispatch, type SetStateAction } from "react";
 import SudokuCell from "./SudokuCell";
-import type { BoardState, CellCoordinates, GamePlayer, GamePlayers } from "@/types/game/GameTypes";
-import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
+import type { BoardState, CellCoordinates, GamePlayers } from "@/types/game/GameTypes";
 import { isCellInSameBlock } from "@/utils/game/blockUtils";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
+import { sendPlayerHighlightedCellUpdate } from "@/api/ws/game/sendPlayerHighlightedCellUpdate";
+import { updateGameHighlightedCells, updateGameHighlightedCellsAndSendWsUpdate } from "@/utils/game/cellUtils";
 
 
 export function SudokuBoard(
     {
+        gameId,
         userId,
         boardState, 
         gamePlayers, 
-        gameHighlightedCells
+        gameHighlightedCells,
+        setGameHighlightedCells
     }: {
+        gameId: number,
         userId: number,
         boardState: BoardState, 
         gamePlayers: GamePlayers,
-        gameHighlightedCells: Map<number, CellCoordinates> | undefined
+        gameHighlightedCells: Map<number, CellCoordinates> | undefined,
+        setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
     }
 ) {
+    const { send } = useWebSocketContext();
+
     const playerHighlightedCell = gameHighlightedCells ? gameHighlightedCells.get(userId) : undefined;
 
     return (
@@ -30,6 +38,17 @@ export function SudokuBoard(
                         const borderLeft = c % 3 === 0 ? "border-l-4 border-black" : "border-l-1 border-black";
                         const borderBottom = r === 8 ? "border-b-4 border-black" : "border-b-1 border-black";
                         const borderRight = c === 8 ? "border-r-4 border-black" : "border-r-1 border-black";
+
+                        const selectedOpponentsColors = useMemo(() => {
+                            if (!gameHighlightedCells) return undefined;
+                            return Array.from(gameHighlightedCells.entries())
+                                        .filter(([id, coords]) => id !== userId && coords.row === r && coords.col === c)
+                                        .map(([id]) => gamePlayers[id].colour)
+                        }, [gameHighlightedCells, userId, r, c, gamePlayers]);
+
+                        const handleCellSelect = useCallback(() => {
+                            setGameHighlightedCells(prev => updateGameHighlightedCellsAndSendWsUpdate(send, gameId, userId, prev, { row: r, col: c }))
+                        }, [r, c]);
 
                         return (
                             <SudokuCell 
@@ -47,13 +66,9 @@ export function SudokuBoard(
                                 // Implement
                                 isInBlock = {isCellInSameBlock(r, c, playerHighlightedCell)}
                                 isSameNumber = {playerHighlightedCell ? boardState[r][c].value === boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : false}
-                                selectedOpponentsColours={
-                                    gameHighlightedCells ? Array.from(gameHighlightedCells.entries())
-                                        .filter(([id, coords]) => id !== userId && coords.row === r && coords.col === c)
-                                        .map(([id]) => gamePlayers[id].colour) : undefined
-                                }
+                                selectedOpponentsColours={selectedOpponentsColors}
                                 // Replace - create a function that updates the state object
-                                onSelect={() => setHighlightedCell({ row: r, col: c })}
+                                onSelect={handleCellSelect}
 
                                 className={`
                                     ${borderTop} ${borderLeft} ${borderBottom} ${borderRight}

@@ -1,12 +1,16 @@
 import { gameCacheDispatcher } from "@/state/game/gameCacheDispatcher";
+import type { CellCoordinates } from "@/types/game/GameTypes";
+import { updateGameHighlightedCells } from "@/utils/game/cellUtils";
 import type { QueryClient } from "@tanstack/react-query";
+import type { Dispatch, SetStateAction } from "react";
 import type { NavigateFunction } from "react-router-dom";
 
 export function handleGameWebSocketMessages(
     message: any, 
-    queryClient: QueryClient, 
+    queryClient: QueryClient,
     gameId: number, 
-    navigate: NavigateFunction
+    navigate: NavigateFunction,
+    setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
 ) {
     switch (message.type) {
         case "GAME_PLAYER_UPDATE": {
@@ -28,17 +32,8 @@ export function handleGameWebSocketMessages(
             break;
         }
         case "HIGHLIGHTED_CELL_UPDATE": {
-            // Remove - don't use game dispatcher, instead update using setState
-            gameCacheDispatcher(queryClient, gameId, {
-                type: message.type,
-                userId: message.payload.userId,
-                coordinates: {
-                    row: message.payload.row,
-                    col: message.payload.col
-                }
-            });
+            setGameHighlightedCells(prev => updateGameHighlightedCells(message.payload.userId, prev, { row: message.payload.row, col: message.payload.col }))
             break;
         }
-        
     }
 }

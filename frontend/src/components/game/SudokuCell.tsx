@@ -1,4 +1,5 @@
 import type { PlayerColour } from "@/types/enum/PlayerColour";
+import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
 import React from "react";
 
 const SudokuCell = React.memo(function SudokuCell(
@@ -13,7 +14,7 @@ const SudokuCell = React.memo(function SudokuCell(
         isInCol,
         isInBlock,
         isSameNumber,
-        opponentsSelected,
+        selectedOpponentsColours,
         onSelect,
         className
     }: {
@@ -27,17 +28,21 @@ const SudokuCell = React.memo(function SudokuCell(
         isInCol: boolean,
         isInBlock: boolean,
         isSameNumber: boolean,
-        opponentsSelected: PlayerColour[] | undefined
+        selectedOpponentsColours: PlayerColour[] | undefined
         onSelect: () => void,
         className: string
     }
-    ) {
+) {
+    const playerColourClassName = playerColourClassNamePicker[playerColour];
+
     return (
         <div onClick={onSelect}
             className={`w-full h-full flex items-center justify-center 
-                        text-xl font-semibold cursor-pointer box-border
+                        cursor-pointer box-border
                         animate-fill-cell 
-                        ${isSelected ? "bg-yellow-300" : "bg-primary-foreground"}
+                        ${(isInRow || isInCol || isInBlock) && !isSelected ? playerColourClassName.faded : "bg-primary-foreground"}
+                        ${isSelected ? playerColourClassName.standard : "bg-primary-foreground"}
+                        ${isSameNumber ? "font-extrabold text-2xl" : "font-semibold text-xl"}
                         ${className}`}
             style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}
         >

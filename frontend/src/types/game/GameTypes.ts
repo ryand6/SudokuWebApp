@@ -31,8 +31,7 @@ export type GamePlayer = {
     boardProgress: boolean[],
     score: number,
     gameLoaded: boolean,
-    gameResult: GameResult,
-    currentHighlightedCell: CellCoordinates | null
+    gameResult: GameResult
 };
 
 // Key represents playerId
