@@ -3,20 +3,24 @@ import type { CellCoordinates } from "@/types/game/GameTypes";
 
 export const playerColourClassNamePicker = {
   BLUE: {
-    standard: "player-colour-blue",
-    faded: "player-colour-blue-faded",
+    strong: "player-colour-blue-strong",
+    medium: "player-colour-blue-medium",
+    light: "player-colour-blue-light",
   },
   GREEN: {
-    standard: "player-colour-green",
-    faded: "player-colour-green-faded",
+    strong: "player-colour-green-strong",
+    medium: "player-colour-green-medium",
+    light: "player-colour-green-light",
   },
   ORANGE: {
-    standard: "player-colour-orange",
-    faded: "player-colour-orange-faded",
+    strong: "player-colour-orange-strong",
+    medium: "player-colour-orange-medium",
+    light: "player-colour-orange-light",
   },
   PURPLE: {
-    standard: "player-colour-purple",
-    faded: "player-colour-purple-faded",
+    strong: "player-colour-purple-strong",
+    medium: "player-colour-purple-medium",
+    light: "player-colour-purple-light",
   },
 };
 
@@ -37,10 +41,17 @@ export function updateGameHighlightedCells(
     cellCoordinates: CellCoordinates
 ): Map<number, CellCoordinates> {
     if (!gameHighlightedCells) {
-        console.log("RESETTING MAP");
         return new Map<number, CellCoordinates>([[userId, cellCoordinates]]);
     }
     const updatedGameHighlightedCells = new Map(gameHighlightedCells);
     updatedGameHighlightedCells.set(userId, cellCoordinates);
     return updatedGameHighlightedCells;
+}
+
+export function onHoverHandler(setIsHovered: React.Dispatch<React.SetStateAction<boolean>>) {
+  return () => setIsHovered(true);
+}
+
+export function onLeaveHandler(setIsHovered: React.Dispatch<React.SetStateAction<boolean>>) {
+  return () => setIsHovered(false);
 }

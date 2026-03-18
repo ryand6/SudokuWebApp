@@ -189,35 +189,51 @@
     box-shadow: var(--box-shadow-default);
   }
 
-  .player-colour-blue {
+  .player-colour-blue-strong {
     background-color: rgb(156, 186, 235);
   }
 
-  .player-colour-blue-faded {
+  .player-colour-blue-medium {
+    background-color: rgb(181, 203, 238);
+  }
+
+  .player-colour-blue-light {
     background-color: rgb(213, 226, 247);
   }
 
-  .player-colour-green {
+  .player-colour-green-strong {
     background-color: rgb(182, 238, 203);
   }
 
-  .player-colour-green-faded {
+  .player-colour-green-medium {
+    background-color: rgb(196, 235, 210);
+  }
+
+  .player-colour-green-light {
     background-color: rgb(228, 247, 235);
   }
 
-  .player-colour-orange {
+  .player-colour-orange-strong {
     background-color: rgb(243, 209, 157);
   }
 
-  .player-colour-orange-faded {
+  .player-colour-orange-medium {
+    background-color: rgb(240, 215, 178);
+  }
+
+  .player-colour-orange-light {
     background-color: rgb(250, 238, 221);
   }
 
-  .player-colour-purple {
+  .player-colour-purple-strong {
     background-color: rgb(215, 181, 253);
   }
 
-  .player-colour-purple-faded {
+  .player-colour-purple-medium {
+    background-color: rgb(215, 191, 243);
+  }
+
+  .player-colour-purple-light {
     background-color: rgb(242, 228, 248);
   }
 }

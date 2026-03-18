@@ -24,22 +24,6 @@ export function gameCacheReducer(
             // IMPLEMENT - gameStartsAt and gameEndsAt ?
             return existingData;
         }
-        case "HIGHLIGHTED_CELL_UPDATE": {
-
-            // UPDATE - Remove and handle solely in WS by calling setState - don't update React Query
-            const player = existingData.players[event.userId];
-            if (!player) return existingData;
-            return {
-                ...existingData,
-                players: {
-                    ...existingData.players,
-                    [event.userId]: {
-                        ...existingData.players[event.userId],
-                        currentHighlightedCell: event.coordinates ?? null
-                    }
-                }
-            }
-        }
         default: 
             return existingData;
     }

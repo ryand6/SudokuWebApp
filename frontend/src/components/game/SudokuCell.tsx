@@ -1,6 +1,6 @@
 import type { PlayerColour } from "@/types/enum/PlayerColour";
-import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
-import React from "react";
+import { onHoverHandler, onLeaveHandler, playerColourClassNamePicker } from "@/utils/game/cellUtils";
+import React, { useCallback, useState } from "react";
 
 const SudokuCell = React.memo(function SudokuCell(
     {
@@ -35,13 +35,19 @@ const SudokuCell = React.memo(function SudokuCell(
 ) {
     const playerColourClassName = playerColourClassNamePicker[playerColour];
 
+    const [isHovered, setIsHovered] = useState(false);
+
     return (
-        <div onClick={onSelect}
+        <div 
+            onClick={onSelect}
+            onMouseEnter={onHoverHandler(setIsHovered)}
+            onMouseLeave={onLeaveHandler(setIsHovered)}
             className={`w-full h-full flex items-center justify-center 
                         cursor-pointer box-border
                         animate-fill-cell 
-                        ${(isInRow || isInCol || isInBlock) && !isSelected ? playerColourClassName.faded : "bg-primary-foreground"}
-                        ${isSelected ? playerColourClassName.standard : "bg-primary-foreground"}
+                        ${(isInRow || isInCol || isInBlock) && !isSelected && !isHovered ? playerColourClassName.light : "bg-primary-foreground"}
+                        ${(isHovered && !isSelected) && playerColourClassName.medium}
+                        ${isSelected ? playerColourClassName.strong : "bg-primary-foreground"}
                         ${isSameNumber ? "font-extrabold text-2xl" : "font-semibold text-xl"}
                         ${className}`}
             style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}

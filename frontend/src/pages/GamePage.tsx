@@ -16,6 +16,7 @@ import { useState } from "react";
 import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHighlightedCells";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
+import { UserActionBar } from "@/components/game/UserActionBar";
 
 export function GamePage() {
 
@@ -26,6 +27,7 @@ export function GamePage() {
     useValidateGameId(gameIdNum);
 
     const [gameHighlightedCells, setGameHighlightedCells] = useState<Map<number, CellCoordinates> | undefined>(undefined);
+    const [notesModeOn, setNotesModeOn] = useState<boolean>(false);
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -65,14 +67,21 @@ export function GamePage() {
         <div>
             GAME PAGE
             <div className="flex justify-center">
-                <SudokuBoard 
-                    gameId={publicGameState.gameId}
-                    userId={currentUser.id}
-                    boardState={privateGameState.boardState} 
-                    gamePlayers={publicGameState.players}
-                    gameHighlightedCells={gameHighlightedCells}
-                    setGameHighlightedCells={setGameHighlightedCells} 
-                />
+                <div className="flex flex-col">
+                    <SudokuBoard 
+                        gameId={publicGameState.gameId}
+                        userId={currentUser.id}
+                        boardState={privateGameState.boardState} 
+                        gamePlayers={publicGameState.players}
+                        gameHighlightedCells={gameHighlightedCells}
+                        setGameHighlightedCells={setGameHighlightedCells} 
+                    />
+                    <UserActionBar 
+                        playerHighlightedCell={gameHighlightedCells?.get(currentUser.id)}
+                        setNotesModeOn={setNotesModeOn}
+                    />
+                </div>
+                
             </div>
         </div>
     )

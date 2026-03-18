@@ -3,8 +3,7 @@ import SudokuCell from "./SudokuCell";
 import type { BoardState, CellCoordinates, GamePlayers } from "@/types/game/GameTypes";
 import { isCellInSameBlock } from "@/utils/game/blockUtils";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
-import { sendPlayerHighlightedCellUpdate } from "@/api/ws/game/sendPlayerHighlightedCellUpdate";
-import { updateGameHighlightedCells, updateGameHighlightedCellsAndSendWsUpdate } from "@/utils/game/cellUtils";
+import { updateGameHighlightedCellsAndSendWsUpdate } from "@/utils/game/cellUtils";
 
 
 export function SudokuBoard(
@@ -26,10 +25,10 @@ export function SudokuBoard(
 ) {
     const { send } = useWebSocketContext();
 
-    const playerHighlightedCell = gameHighlightedCells ? gameHighlightedCells.get(userId) : undefined;
+    const playerHighlightedCell: CellCoordinates | undefined = gameHighlightedCells ? gameHighlightedCells.get(userId) : undefined;
 
     return (
-        <div className="">
+        <div className="m-2">
             <div className="grid grid-cols-9 grid-rows-9 w-200 h-200">
                 {boardState.map((row, r) =>
                     row.map((cell, c) => {
@@ -48,7 +47,7 @@ export function SudokuBoard(
 
                         const handleCellSelect = useCallback(() => {
                             setGameHighlightedCells(prev => updateGameHighlightedCellsAndSendWsUpdate(send, gameId, userId, prev, { row: r, col: c }))
-                        }, [r, c]);
+                        }, [send, gameId, userId, r, c]);
 
                         return (
                             <SudokuCell 

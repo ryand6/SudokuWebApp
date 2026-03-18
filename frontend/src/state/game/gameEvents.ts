@@ -21,16 +21,19 @@ export type GameEvent =
 
 export type GamePlayerStateEvent = 
     | {
+        type: "CELL_UPDATE_SUBMITTED",
+        row: number,
+        col: number,
+        value: number
+      }
+    | {
         type: "CELL_UPDATE_ACCEPTED"
       }
     | {
         type: "CELL_UPDATE_REJECTED"
       }
     | {
-        type: "NOTE_UPDATE_ACCEPTED"
-      }
-    | {
-        type: "NOTE_UPDATE_REJECTED"
+        type: "NOTE_UPDATE"
       }
     | {
         type: "SETTINGS_UPDATED"
