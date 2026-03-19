@@ -9,12 +9,12 @@ import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
 import { Button } from "../ui/button";
 import { ButtonCopy } from "../ui/custom/ButtonCopy";
 import { JoinCodeAlertDialog } from "../ui/custom/JoinCodeAlertDialog";
-import { useRequestJoinCode } from "@/api/rest/lobbytoken/mutate/useRequestJoinCode";
-import { useGetActiveUserTokens } from "@/api/rest/lobbytoken/query/useGetActiveUserTokens";
 import { useQueryClient } from "@tanstack/react-query";
-import { useUpdateLobbyDifficulty } from "@/api/rest/lobbysettings/mutate/useUpdateLobbyDifficulty";
-import { useUpdateLobbyTimeLimit } from "@/api/rest/lobbysettings/mutate/useUpdateLobbyTimeLimit";
 import { useRefreshActiveTokensList } from "@/hooks/lobby/useRefreshActiveTokensList";
+import { useRequestJoinCode } from "@/api/rest/lobby/token/mutate/useRequestJoinCode";
+import { useGetActiveUserTokens } from "@/api/rest/lobby/token/query/useGetActiveUserTokens";
+import { useUpdateLobbyDifficulty } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyDifficulty";
+import { useUpdateLobbyTimeLimit } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyTimeLimit";
 
 export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 

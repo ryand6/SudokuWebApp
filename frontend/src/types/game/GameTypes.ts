@@ -10,6 +10,7 @@ import type { TimeLimitPreset } from "../enum/TimeLimitPreset";
 export type CellState = {
     value: string | undefined;
     notes: number;
+    isRejected: boolean
 };
 
 export type BoardState = CellState[][];

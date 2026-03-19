@@ -1,7 +1,7 @@
 import type { InfiniteData } from "@tanstack/react-query";
 import type { LobbyChatEvent } from "../lobbyEvents";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
-import { PAGE_SIZE } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages";
+import { PAGE_SIZE } from "@/api/rest/lobby/chat/query/useGetLobbyChatMessages";
 
 export function lobbyChatCacheReducer(
     existingData: InfiniteData<LobbyChatMessageDto[]> | undefined,

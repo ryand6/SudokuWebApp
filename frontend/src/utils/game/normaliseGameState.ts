@@ -64,7 +64,7 @@ function fillBoardState(gameDtoState: PrivateGamePlayerStateDto): CellState[][] 
         for (let x = 0; x < GRID_SIZE; x++) {
             const value = getCellValue(gameDtoState.currentBoardState, y, x);
             const notes = gameDtoState.notes[(y * 9) + x];
-            boardRow[x] = {value: value, notes: notes};
+            boardRow[x] = {value: value, notes: notes, isRejected: false};
         }
         boardState.push(boardRow);
     }

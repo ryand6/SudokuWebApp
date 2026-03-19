@@ -5,5 +5,5 @@ export function sendPlayerHighlightedCellUpdate(
     row: number, 
     col: number
 ) {
-    send(`/app/game/${gameId}`, {userId: userId, row: row, col: col});
+    send(`/app/game/${gameId}/update-highlighted-cell`, {userId: userId, row: row, col: col});
 }

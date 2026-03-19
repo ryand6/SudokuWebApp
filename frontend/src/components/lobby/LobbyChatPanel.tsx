@@ -1,4 +1,3 @@
-import { useGetLobbyChatMessages } from "@/api/rest/lobbychat/query/useGetLobbyChatMessages"
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
@@ -12,6 +11,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useHandleFetchNextLobbyMessagePage } from "@/hooks/lobby/useHandleFetchNextLobbyMessagePage";
 import { useHandleScrollOnMessagePageLoad } from "@/hooks/lobby/useHandleScrollOnMessagePageLoad";
 import { useHandleNewChatMessages } from "@/hooks/lobby/useHandleNewChatMessages";
+import { useGetLobbyChatMessages } from "@/api/rest/lobby/chat/query/useGetLobbyChatMessages";
 
 export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 

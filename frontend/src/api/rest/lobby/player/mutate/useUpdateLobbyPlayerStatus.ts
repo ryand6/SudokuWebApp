@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type UpdateLobbyPlayerStatusDto } from "@/types/dto/request/UpdateLobbyPlayerStatusDto";
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
-import { updateLobbyPlayerStatus } from "@/api/rest/lobbyplayer/mutate/updateLobbyPlayerStatus";
 import { toast } from "react-toastify";
 import { queryKeys } from "@/state/queryKeys";
+import { updateLobbyPlayerStatus } from "./updateLobbyPlayerStatus";
 
 export function useUpdateLobbyPlayerStatus() {
     const queryClient = useQueryClient();

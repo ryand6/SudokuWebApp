@@ -1,9 +1,9 @@
-import { requestJoinCode } from "@/api/rest/lobbytoken/mutate/requestJoinCode";
 import { queryKeys } from "@/state/queryKeys";
 import type { RequestLobbyTokenDto } from "@/types/dto/request/RequestLobbyTokenDto";
 import type { UserActiveTokensDto } from "@/types/dto/response/UserActiveTokensDto";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { requestJoinCode } from "./requestJoinCode";
 
 export type TokenWithExpiry = {
         token: string,

@@ -16,7 +16,7 @@ public class LobbyChatWsController {
         this.lobbyChatService = lobbyChatService;
     }
 
-    @MessageMapping("/lobby/{lobbyId}/chat")
+    @MessageMapping("/lobby/{lobbyId}/chat/send-message")
     public void sendLobbyChatMessage(
             @DestinationVariable Long lobbyId,
             @Valid LobbyChatMessageRequestDto requestDto) {

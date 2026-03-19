@@ -1,5 +1,5 @@
 import { Client, type IMessage, type StompSubscription } from "@stomp/stompjs";
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
 import { useQueryClient } from "@tanstack/react-query";
 import { useHandleUnmount } from "@/hooks/ws/useHandleUnmount";
@@ -47,7 +47,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
 
     useInitClient(currentUser, clientRef, setIsConnected, queryClient, subscriptionsRef, pendingQueueRef, handleDisconnect, handleWebSocketClose);
 
-    const subscribe = (topic: string, onMessage: (body: any) => void) => {
+    const subscribe = useCallback((topic: string, onMessage: (body: any) => void) => {
         // If the user is already subscribed, return that subscription 
         if (subscriptionsRef.current.has(topic)) return subscriptionsRef.current.get(topic)?.subscription!;
 
@@ -69,26 +69,33 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         // Add the subscription to the map if newly subscribed
         subscriptionsRef.current.set(topic, subscriptionDetails);
         return subscription;
-    };
+    }, []);
 
-    const unsubscribe = (topic: string) => {
+    const unsubscribe = useCallback((topic: string) => {
         const subscriptionDetails = subscriptionsRef.current.get(topic);
         if (subscriptionDetails) {
             subscriptionDetails.subscription.unsubscribe();
             subscriptionsRef.current.delete(topic);
         }
-    };
+    }, []);
 
-    const send = (destination: string, body: any) => {
+    const send = useCallback((destination: string, body: any) => {
         clientRef.current?.publish({
             destination: destination,
             body: JSON.stringify(body)
         });
-    };
+    }, []);
+
+    const value = useMemo(() => ({
+        subscribe,
+        unsubscribe,
+        send,
+        isConnected
+    }), [subscribe, unsubscribe, send, isConnected]);
 
     return (
         // Provide the subscribe, unsubscribe, and send methods to the rest of app via useContext
-        <WebSocketContext.Provider value={{ subscribe, unsubscribe, send, isConnected }}>
+        <WebSocketContext.Provider value={value}>
             {children}
         </WebSocketContext.Provider>
     );

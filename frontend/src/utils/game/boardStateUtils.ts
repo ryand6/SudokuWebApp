@@ -4,7 +4,7 @@ export function updateCellStateInBoardState(boardState: BoardState, rowIndex: nu
     return boardState.map((row, r) => 
         r === rowIndex ? row.map((cell, c) => 
             c === colIndex
-            ? {...cell, value: String(value)}
+            ? {...cell, value: String(value), isRejected: false} // optimistically set isRejected to false - will be overwritten if the server rejects
             : cell)
         : row);
 }

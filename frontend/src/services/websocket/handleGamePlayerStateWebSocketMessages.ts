@@ -1,7 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
-import type { NavigateFunction } from "react-router-dom";
 
-export function handleGamePlayerStateWebSocketMessages(message: any, queryClient: QueryClient, gameId: number, userId: number, navigate: NavigateFunction) {
+export function handleGamePlayerStateWebSocketMessages(message: any, queryClient: QueryClient, gameId: number, userId: number) {
     switch (message.type) {
         case "CELL_UPDATE_ACCEPTED": {
             // IMPLEMENT - INCLUDE MULTIPLIER AND STREAK DETAILS

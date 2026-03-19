@@ -1,6 +1,8 @@
-import type { PrivateGamePlayerState } from "@/types/game/GameTypes";
+import type { CellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GamePlayerStateEvent } from "../gameEvents";
 import { updateCellStateInBoardState } from "@/utils/game/boardStateUtils";
+
+export class CellUpdateValidationError extends Error {}
 
 export function gamePlayerStateCacheReducer(
     existingData: PrivateGamePlayerState,
@@ -9,7 +11,17 @@ export function gamePlayerStateCacheReducer(
     switch (event.type) {
         // Handles optimistic UI update prior to server validation
         case "CELL_UPDATE_SUBMITTED": {
-            if (existingData.boardState[event.row][event.col] || event.value < 1 || event.value > 9) return existingData;
+            const cacheState: CellState = existingData.boardState[event.row][event.col];
+            if (cacheState.value === String(event.value)) {
+                throw new CellUpdateValidationError("Inputted number already exists in cache");
+            }
+            // Invalid answers in the cache can be overwritten - these are not synced in the backend, the backend only stores correct answers
+            if (cacheState.value && !cacheState.isRejected) {
+                throw new CellUpdateValidationError("Cell already contains a valid answer");
+            }
+            if (event.value < 1 || event.value > 9) {
+                throw new CellUpdateValidationError("Submitted value out of valid range 1 - 9");
+            }
             const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value);
             return {
                 ...existingData,

@@ -17,7 +17,7 @@ public class GameWsController {
         this.gameInMemoryStateService = gameInMemoryStateService;
     }
 
-    @MessageMapping("/game/{gameId}")
+    @MessageMapping("/game/{gameId}/update-highlighted-cell")
     public void updatePlayerHighlightedCell(
             @DestinationVariable Long gameId,
             @Valid PlayerHighlightedCellRequestDto requestDto) {

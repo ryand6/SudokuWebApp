@@ -77,8 +77,13 @@ export function GamePage() {
                         setGameHighlightedCells={setGameHighlightedCells} 
                     />
                     <UserActionBar 
+                        gameId={publicGameState.gameId}
+                        userId={currentUser.id}
+                        initialBoardState={publicGameState.initialBoardState}
                         playerHighlightedCell={gameHighlightedCells?.get(currentUser.id)}
+                        notesModeOn={notesModeOn}
                         setNotesModeOn={setNotesModeOn}
+                        queryClient={queryClient}
                     />
                 </div>
                 

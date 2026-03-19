@@ -1,7 +1,7 @@
-import { getLobbyChatMessages } from "@/api/rest/lobbychat/query/getLobbyChatMessages";
 import { queryKeys } from "@/state/queryKeys";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { getLobbyChatMessages } from "./getLobbyChatMessages";
 
 export const PAGE_SIZE = 100;
 

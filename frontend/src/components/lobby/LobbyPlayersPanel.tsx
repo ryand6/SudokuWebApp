@@ -4,7 +4,7 @@ import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 import { toast } from "react-toastify";
 import type { LobbyStatus } from "@/types/enum/LobbyStatus";
-import { useUpdateLobbyPlayerStatus } from "@/api/rest/lobbyplayer/mutate/useUpdateLobbyPlayerStatus";
+import { useUpdateLobbyPlayerStatus } from "@/api/rest/lobby/player/mutate/useUpdateLobbyPlayerStatus";
 
 export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
 
