@@ -24,6 +24,8 @@ public class GamePlayerDto {
 
     private int mistakes;
 
+    private int maxStreak;
+
     private boolean gameLoaded;
 
     private GameResult gameResult;

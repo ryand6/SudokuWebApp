@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Getter
-public class FirstClaimEvaluationResult {
+public class CellClaimEvaluationResult {
 
-    private boolean firstWon;
+    private int cellClaimPosition;
 
     private boolean streakContinued;
 

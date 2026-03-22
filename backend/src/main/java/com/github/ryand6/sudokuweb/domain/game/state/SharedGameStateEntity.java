@@ -6,9 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Getter
 @Setter
@@ -35,12 +33,13 @@ public class SharedGameStateEntity {
             }
     )
     @MapKeyColumn(name = "cell_index")
-    @Column(name = "user_id")
-    private Map<Integer, Long> cellFirstOwnership = new HashMap<>();
+    @Column(name = "claim_count")
+    private Map<Integer, Integer> cellClaimCounts = new HashMap<>();
 
     // Track the user ID of the last player to claim a first on a cell
     @Column(name = "last_first_winner_user_id")
     private Long lastFirstWinnerUserId;
+
 
     @Column(name = "current_shared_board_state", nullable = true)
     private String currentSharedBoardState;
@@ -56,27 +55,44 @@ public class SharedGameStateEntity {
     // Domain Business Logic //
     //#######################//
 
-    public FirstClaimEvaluationResult evaluateFirstClaim(int cellIndex, Long userId, boolean hasCellMistakeOccurred) {
+    public CellClaimEvaluationResult evaluateCellClaim(int cellIndex, Long userId, boolean hasCellMistakeOccurred) {
         boolean firstWon = !hasCellMistakeOccurred && isFirstWon(cellIndex);
         boolean streakContinued = firstWon && isStreakContinued(userId);
+        int claimPosition;
         if (firstWon) {
-            addFirstWin(cellIndex, userId);
+            updateLastFirstWinnerId(userId);
+            addFirstWin(cellIndex);
+            claimPosition = 1;
+        } else if (!hasCellMistakeOccurred) {
+            claimPosition = incrementCellClaim(cellIndex);
+        } else {
+            // User made a mistake
+            claimPosition = -1;
         }
-        return new FirstClaimEvaluationResult(firstWon, streakContinued);
+        return new CellClaimEvaluationResult(claimPosition, streakContinued);
     }
 
-    private void addFirstWin(int cellIndex, Long userId) {
-        cellFirstOwnership.put(cellIndex, userId);
+    private void addFirstWin(int cellIndex) {
+        cellClaimCounts.put(cellIndex, 1);
+    }
+
+    private int incrementCellClaim(int cellIndex) {
+        int claimCount = cellClaimCounts.getOrDefault(cellIndex, 0);
+        claimCount += 1;
+        cellClaimCounts.put(cellIndex, claimCount);
+        return claimCount;
     }
 
     private boolean isFirstWon(int cellIndex) {
-        return cellFirstOwnership.get(cellIndex) == null;
+        return cellClaimCounts.get(cellIndex) == null;
     }
 
     private boolean isStreakContinued(Long userId) {
-        boolean streakContinued = lastFirstWinnerUserId != null && lastFirstWinnerUserId.equals(userId);
+        return lastFirstWinnerUserId != null && lastFirstWinnerUserId.equals(userId);
+    }
+
+    private void updateLastFirstWinnerId(Long userId) {
         lastFirstWinnerUserId = userId;
-        return streakContinued;
     }
 
 }

@@ -8,7 +8,9 @@ import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Getter
@@ -46,8 +48,9 @@ public class GamePlayerStateEntity {
                     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
             }
     )
-    @Column(name = "cell_index")
-    private Set<Integer> mistakenCells = new HashSet<>();
+    @MapKeyColumn(name = "cell_index")
+    @Column(name = "number_of_mistakes")
+    private Map<Integer, Integer> mistakenCells = new HashMap<>();
 
     @Column(name = "current_streak", nullable = false)
     private int currentStreak = 0;
@@ -95,11 +98,21 @@ public class GamePlayerStateEntity {
     }
 
     public void addCellMistake(int cellIndex) {
-        mistakenCells.add(cellIndex);
+        Integer mistakeCount = mistakenCells.get(cellIndex);
+        mistakeCount = mistakeCount != null ? mistakeCount + 1 : 1;
+        mistakenCells.put(cellIndex, mistakeCount);
     }
 
     public boolean hasCellMistakeOccurred(int cellIndex) {
-        return mistakenCells.contains(cellIndex);
+        return mistakenCells.get(cellIndex) != null;
+    }
+
+    public void incrementCurrentStreak() {
+        currentStreak += 1;
+    }
+
+    public void resetCurrentStreak() {
+        currentStreak = 0;
     }
 
 }

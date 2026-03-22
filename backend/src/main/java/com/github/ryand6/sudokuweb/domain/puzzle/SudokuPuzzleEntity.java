@@ -44,4 +44,8 @@ public class SudokuPuzzleEntity {
         }
     }
 
+    public int getNumberOfCellsToFill() {
+        return initialBoardState.length() - initialBoardState.replace(".", "").length();
+    }
+
 }

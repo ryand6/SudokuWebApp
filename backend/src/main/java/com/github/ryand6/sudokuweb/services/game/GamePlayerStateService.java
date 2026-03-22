@@ -4,7 +4,7 @@ import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
-import com.github.ryand6.sudokuweb.domain.game.state.FirstClaimEvaluationResult;
+import com.github.ryand6.sudokuweb.domain.game.state.CellClaimEvaluationResult;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionAcceptedEvent;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionInvalidEvent;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionRejectedEvent;
@@ -60,6 +60,7 @@ public class GamePlayerStateService {
             applicationEventPublisher.publishEvent(
                     new CellUpdateSubmissionRejectedEvent(gameId, userId, new CellValueUpdate(row, col, value))
             );
+            return;
         }
         updateCurrentBoardState(gamePlayerState, cellIndex, value);
         // IMPLEMENT CALL TO GAME EVENT CREATION - CELL UPDATE ACCEPTED
@@ -68,23 +69,30 @@ public class GamePlayerStateService {
         );
 
         boolean hasCellMistakeOccurred = gamePlayerState.hasCellMistakeOccurred(cellIndex);
-        FirstClaimEvaluationResult firstClaimEvaluationResult = gamePlayer.getGameEntity().getSharedGameStateEntity().evaluateFirstClaim(cellIndex, userId, hasCellMistakeOccurred);
-        if (firstClaimEvaluationResult.isFirstWon()) {
+        CellClaimEvaluationResult cellClaimEvaluationResult = gamePlayer.getGameEntity().getSharedGameStateEntity().evaluateCellClaim(cellIndex, userId, hasCellMistakeOccurred);
+        if (cellClaimEvaluationResult.getCellClaimPosition() == 1) {
             gamePlayer.incrementFirsts();
         }
         // IMPLEMENT CALL TO SCORE, STREAK AND MULTIPLIER UPDATES BASED ON firstClaimEvaluationResult
+
 
 
         // IMPLEMENT CALL TO SCORE, STREAK AND MULTIPLIER UPDATE
         if (gamePlayer.getGamePlayerStateEntity().isBoardStateComplete()) {
             // IMPLEMENT CALL TO GAME EVENT CREATION - BOARD COMPLETE
             // IMPLEMENT CALL TO SCORE UPDATE
+            // IMPLEMENT CALL TO GAME FINISH HANDLER (if applicable)
         }
     }
 
     @Recover
     public void handleCellUpdateSubmissionRecover(ObjectOptimisticLockingFailureException ex, Long gameId, Long userId, int row, int col, int value) {
         throw new GamePlayerStateOptimisticLockException("Unable to apply cell update due to a conflict.");
+    }
+
+    @Transactional
+    int determineStandardGameModeScoreToAdd() {
+
     }
 
     @Transactional

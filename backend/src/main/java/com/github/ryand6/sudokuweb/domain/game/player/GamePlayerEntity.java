@@ -55,6 +55,9 @@ public class GamePlayerEntity {
     @Column(name = "mistakes")
     private int mistakes = 0;
 
+    @Column(name = "max_streak", nullable = false)
+    private int maxStreak = 0;
+
     @Column(name = "game_loaded")
     private boolean gameLoaded = false;
 
@@ -105,6 +108,14 @@ public class GamePlayerEntity {
 
     public void incrementMistakes() {
         mistakes += 1;
+    }
+
+    public void updateScore(int scoreUpdate) {
+        score += scoreUpdate;
+    }
+
+    void setMaxStreak(int currentStreak) {
+        maxStreak = currentStreak > maxStreak ? currentStreak : maxStreak;
     }
 
 }
