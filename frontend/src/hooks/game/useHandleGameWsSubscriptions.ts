@@ -21,8 +21,8 @@ export function useHandleGameWsSubscriptions(
         const gameTopic = `/topic/game/${gameId}`;
         const gameSubscription = subscribe(gameTopic, (body: any) => handleGameWebSocketMessages(body, queryClient, gameIdNum, navigate, setGameHighlightedCells));
 
-        const gamePlayerStateTopic = `/topic/game/${gameId}/player/${userId}`;
-        const gamePlayerStateSubscription = subscribe(gameTopic, (body: any) => handleGamePlayerStateWebSocketMessages(body, queryClient, gameIdNum, userId, navigate));
+        const gamePlayerStateTopic = `/topic/game/${gameId}/user/${userId}`;
+        const gamePlayerStateSubscription = subscribe(gameTopic, (body: any) => handleGamePlayerStateWebSocketMessages(body, queryClient, gameIdNum, userId));
 
         return () => {
             if (gameSubscription) unsubscribe(gameTopic);

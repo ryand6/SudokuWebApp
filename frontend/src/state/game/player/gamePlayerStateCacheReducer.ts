@@ -36,6 +36,10 @@ export function gamePlayerStateCacheReducer(
             // IMPLEMENT
             return existingData;
         }
+        case "CELL_UPDATE_INVALID": {
+            // IMPLEMENT
+            return existingData;
+        }
         // Handles optimistic UI update prior to server validation
         case "NOTE_UPDATE": {
             // IMPLEMENT 

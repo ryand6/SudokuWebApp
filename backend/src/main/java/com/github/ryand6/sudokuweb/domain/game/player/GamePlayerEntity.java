@@ -48,6 +48,13 @@ public class GamePlayerEntity {
     @Column(name = "score")
     private int score = 0;
 
+    // Counts the number of times a player answered a cell without making a mistake before any other player
+    @Column(name = "firsts")
+    private int firsts = 0;
+
+    @Column(name = "mistakes")
+    private int mistakes = 0;
+
     @Column(name = "game_loaded")
     private boolean gameLoaded = false;
 
@@ -57,6 +64,9 @@ public class GamePlayerEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "game_result", nullable = false)
     private GameResult gameResult = GameResult.PENDING;
+
+    @Version
+    private Long version;
 
     @Override
     public boolean equals(Object o) {
@@ -87,6 +97,14 @@ public class GamePlayerEntity {
             gameLoaded = true;
             gameLoadedTimestamp = Instant.now();
         }
+    }
+
+    public void incrementFirsts() {
+        firsts += 1;
+    }
+
+    public void incrementMistakes() {
+        mistakes += 1;
     }
 
 }

@@ -122,7 +122,7 @@ public class GameService {
         // Create Game Players
         for (LobbyPlayerEntity lobbyPlayerEntity : lobby.getLobbyPlayers()) {
             PlayerColour playerColour = colourList.get(i);
-            GamePlayerEntity gamePlayer = GamePlayerFactory.createGamePlayer(newGame, lobbyPlayerEntity.getUser(), playerColour, newGame.isGameStateShared(), newGame.getSudokuPuzzleEntity().getInitialBoardState());
+            GamePlayerEntity gamePlayer = GamePlayerFactory.createGamePlayer(newGame, lobbyPlayerEntity.getUser(), playerColour, newGame.isBoardStateShared(), newGame.getSudokuPuzzleEntity().getInitialBoardState());
             gamePlayers.add(gamePlayer);
             i++;
         }

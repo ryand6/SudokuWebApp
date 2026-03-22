@@ -9,7 +9,7 @@ export type GameDto = {
     gameId: number,
     lobbyId: number,
     gamePlayers: GamePlayerDto[],
-    sharedGameState: SharedGameStateDto | null,
+    sharedGameState: SharedGameStateDto,
     initialBoardState: string,
     gameMode: GameMode,
     difficulty: Difficulty,

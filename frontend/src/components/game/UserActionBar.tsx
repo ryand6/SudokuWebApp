@@ -41,7 +41,7 @@ export function UserActionBar(
                 });
             } catch (err) {
                 if (err instanceof CellUpdateValidationError) {
-                    console.log("Error trying to update cell value in cache: ", err);
+                    //console.log("Error trying to update cell value in cache: ", err);
                     return;
                 }
                 console.error("Issue found when attempting CELL_UPDATE_SUBMITTED: ", err);

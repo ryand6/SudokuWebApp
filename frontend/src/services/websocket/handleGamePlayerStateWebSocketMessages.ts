@@ -10,12 +10,12 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
             // IMPLEMENT - INCLUDE MULTIPLIER AND STREAK DETAILS
             break;
         }
-        case "NOTE_UPDATE_ACCEPTED": {
-            // IMPLEMENT
+        case "CELL_UPDATE_INVALID": {
+            // IMPLEMENT - INCLUDE MULTIPLIER AND STREAK DETAILS
             break;
         }
-        case "NOTE_UPDATE_REJECTED": {
-            // IMPLEMENT
+        case "NOTE_UPDATE": {
+            // IMPLEMENT - May not need a websocket event for this 
             break;
         }
         case "SETTINGS_UPDATED": {

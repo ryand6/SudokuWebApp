@@ -23,6 +23,8 @@ public class GamePlayerEntityDtoMapper implements EntityDtoMapper<GamePlayerEnti
                 .playerColour(gamePlayer.getPlayerColour())
                 .boardProgress(GameUtils.convertBoardStateIntoProgressState(gamePlayer.getGamePlayerStateEntity().getCurrentBoardState()))
                 .score(gamePlayer.getScore())
+                .firsts(gamePlayer.getFirsts())
+                .mistakes(gamePlayer.getMistakes())
                 .gameLoaded(gamePlayer.isGameLoaded())
                 .gameResult(gamePlayer.getGameResult())
                 .build();

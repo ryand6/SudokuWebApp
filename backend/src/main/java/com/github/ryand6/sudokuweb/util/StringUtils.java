@@ -61,4 +61,12 @@ public final class StringUtils {
         return Character.toUpperCase(lowerCase.charAt(0)) + lowerCase.substring(1);
     }
 
+    public static char getBoardStateValueFromNestedArrayIndexes(String boardState, int row, int col) {
+        return boardState.charAt((row * 9) + col);
+    }
+
+    public static String replaceCharAtIndex(String text, int index, char replacementValue) {
+        return text.substring(0, index) + replacementValue + text.substring(index + 1);
+    }
+
 }

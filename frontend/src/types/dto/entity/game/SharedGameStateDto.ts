@@ -1,3 +1,4 @@
 export type SharedGameStateDto = {
-    currentSharedBoardState: string
+    cellFirstOwnership: Record<number, number>,
+    currentSharedBoardState: string | null
 }

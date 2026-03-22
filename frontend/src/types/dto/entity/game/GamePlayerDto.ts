@@ -7,6 +7,8 @@ export type GamePlayerDto = {
     playerColour: PlayerColour,
     boardProgress: boolean[],
     score: number,
+    firsts: number,
+    mistakes: number,
     gameLoaded: boolean,
     gameResult: GameResult
 }

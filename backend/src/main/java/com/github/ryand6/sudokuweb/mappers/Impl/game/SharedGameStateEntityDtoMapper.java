@@ -11,6 +11,7 @@ public class SharedGameStateEntityDtoMapper implements EntityDtoMapper<SharedGam
     @Override
     public SharedGameStateDto mapToDto(SharedGameStateEntity sharedGameState) {
         return SharedGameStateDto.builder()
+                .cellFirstOwnership(sharedGameState.getCellFirstOwnership())
                 .currentSharedBoardState(sharedGameState.getCurrentSharedBoardState())
                 .build();
     }

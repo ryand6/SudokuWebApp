@@ -18,6 +18,8 @@ export function normalisePublicGameData(
             colour: gp.playerColour,
             boardProgress: gp.boardProgress,
             score: gp.score,
+            firsts: gp.firsts,
+            mistakes: gp.mistakes,
             gameLoaded: gp.gameLoaded,
             gameResult: gp.gameResult
         };

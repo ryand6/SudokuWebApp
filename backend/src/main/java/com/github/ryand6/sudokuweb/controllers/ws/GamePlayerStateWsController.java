@@ -22,9 +22,7 @@ public class GamePlayerStateWsController {
             @DestinationVariable Long userId,
             @Valid SubmitCellUpdateRequestDto requestDto) {
         // IMPLEMENT
-        System.out.println("Received DTO row=" + requestDto.getRow()
-                + " col=" + requestDto.getCol()
-                + " value=" + requestDto.getValue());
+
     }
 
 }

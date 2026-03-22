@@ -20,6 +20,10 @@ public class GamePlayerDto {
 
     private int score;
 
+    private int firsts;
+
+    private int mistakes;
+
     private boolean gameLoaded;
 
     private GameResult gameResult;

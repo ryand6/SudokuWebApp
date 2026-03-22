@@ -4,7 +4,13 @@ import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 
 public class SharedGameStateFactory {
 
-    public static SharedGameStateEntity createSharedGameState(GameEntity game, String sharedBoardState) {
+    public static SharedGameStateEntity createSharedGameStateWithoutSharedBoardState(GameEntity game) {
+        SharedGameStateEntity sharedGameState = new SharedGameStateEntity();
+        sharedGameState.setGameEntity(game);
+        return sharedGameState;
+    }
+
+    public static SharedGameStateEntity createSharedGameStateWithSharedBoardState(GameEntity game, String sharedBoardState) {
         SharedGameStateEntity sharedGameState = new SharedGameStateEntity();
         sharedGameState.setGameEntity(game);
         sharedGameState.setCurrentSharedBoardState(sharedBoardState);

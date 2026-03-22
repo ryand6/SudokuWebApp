@@ -97,7 +97,7 @@ public class GameEntity {
         }
     }
 
-    public boolean isGameStateShared() {
+    public boolean isBoardStateShared() {
         GameMode gameMode = lobbyEntity.getLobbySettingsEntity().getGameMode();
         return gameMode == GameMode.DOMINATION || gameMode == GameMode.TIMEATTACK;
     }

@@ -2,11 +2,14 @@ package com.github.ryand6.sudokuweb.domain.game.player.state;
 
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerId;
+import com.github.ryand6.sudokuweb.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -35,6 +38,17 @@ public class GamePlayerStateEntity {
     @Column(name = "notes", nullable = false)
     private byte[] notes = new byte[81 * 2];
 
+    @ElementCollection
+    @CollectionTable(
+            name = "player_mistaken_cells",
+            joinColumns = {
+                    @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false),
+                    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
+            }
+    )
+    @Column(name = "cell_index")
+    private Set<Integer> mistakenCells = new HashSet<>();
+
     @Column(name = "current_streak", nullable = false)
     private int currentStreak = 0;
 
@@ -48,6 +62,9 @@ public class GamePlayerStateEntity {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Version
+    private Long version;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -59,6 +76,30 @@ public class GamePlayerStateEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    public void updateCurrentBoardState(int cellIndex, char value) {
+        setCurrentBoardState(StringUtils.replaceCharAtIndex(currentBoardState, cellIndex, value));
+    }
+
+    public boolean isBoardStateComplete() {
+        return currentBoardState.indexOf('.') == -1;
+    }
+
+    public int getCellIndex(int row, int col) {
+        return (row * 9) + col;
+    }
+
+    public void addCellMistake(int cellIndex) {
+        mistakenCells.add(cellIndex);
+    }
+
+    public boolean hasCellMistakeOccurred(int cellIndex) {
+        return mistakenCells.contains(cellIndex);
     }
 
 }

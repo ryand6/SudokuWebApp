@@ -31,6 +31,8 @@ export type GamePlayer = {
     colour: PlayerColour,
     boardProgress: boolean[],
     score: number,
+    firsts: number,
+    mistakes: number,
     gameLoaded: boolean,
     gameResult: GameResult
 };
@@ -43,7 +45,7 @@ export type PublicGameState = {
     gameId: number,
     playerIds: number[],
     players: GamePlayers,
-    sharedGameState: SharedGameStateDto | null,
+    sharedGameState: SharedGameStateDto,
     initialBoardState: string,
     gameMode: GameMode,
     difficulty: Difficulty,

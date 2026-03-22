@@ -33,6 +33,9 @@ export type GamePlayerStateEvent =
         type: "CELL_UPDATE_REJECTED"
       }
     | {
+        type: "CELL_UPDATE_INVALID"
+      }
+    | {
         type: "NOTE_UPDATE"
       }
     | {

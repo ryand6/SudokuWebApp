@@ -23,10 +23,13 @@ public class GameFactory {
 
         String initialBoardState = sudokuPuzzleEntity.getInitialBoardState();
 
-        boolean isGameStateShared = newGame.isGameStateShared();
+        boolean isGameStateShared = newGame.isBoardStateShared();
 
         if (isGameStateShared) {
-            SharedGameStateEntity sharedGameState = SharedGameStateFactory.createSharedGameState(newGame, initialBoardState);
+            SharedGameStateEntity sharedGameState = SharedGameStateFactory.createSharedGameStateWithSharedBoardState(newGame, initialBoardState);
+            newGame.setSharedGameStateEntity(sharedGameState);
+        } else {
+            SharedGameStateEntity sharedGameState = SharedGameStateFactory.createSharedGameStateWithoutSharedBoardState(newGame);
             newGame.setSharedGameStateEntity(sharedGameState);
         }
 
