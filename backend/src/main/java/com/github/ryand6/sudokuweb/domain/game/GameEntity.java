@@ -47,6 +47,10 @@ public class GameEntity {
     @OneToOne(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private SharedGameStateEntity sharedGameStateEntity;
 
+    @Column(name = "mode")
+    @Enumerated(EnumType.STRING)
+    private GameMode gameMode = GameMode.CLASSIC;
+
     @Column(name = "game_status")
     @Enumerated(EnumType.STRING)
     private GameStatus gameStatus = GameStatus.LOADING;

@@ -13,6 +13,6 @@ public class CellClaimEvaluationResult {
 
     private int cellClaimPosition;
 
-    private boolean streakContinued;
+    private Long previousFirstWinner;
 
 }

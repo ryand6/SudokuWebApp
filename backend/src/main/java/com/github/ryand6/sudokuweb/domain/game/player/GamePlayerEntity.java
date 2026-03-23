@@ -114,7 +114,7 @@ public class GamePlayerEntity {
         score += scoreUpdate;
     }
 
-    void setMaxStreak(int currentStreak) {
+    public void setMaxStreak(int currentStreak) {
         maxStreak = currentStreak > maxStreak ? currentStreak : maxStreak;
     }
 

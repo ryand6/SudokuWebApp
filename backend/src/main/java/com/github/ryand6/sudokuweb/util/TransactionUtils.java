@@ -3,7 +3,7 @@ package com.github.ryand6.sudokuweb.util;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-public class TransactionUtils {
+public final class TransactionUtils {
 
     public static void run(Runnable task) {
         // Schedules task to run after transaction committed

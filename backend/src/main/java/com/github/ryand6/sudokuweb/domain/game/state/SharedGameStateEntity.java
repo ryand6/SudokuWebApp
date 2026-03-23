@@ -25,9 +25,22 @@ public class SharedGameStateEntity {
     @JoinColumn(name = "game_id", nullable = false, unique = true)
     private GameEntity gameEntity;
 
+    // Used to provide cell highlighting in frontend representative of which players claimed which cells first
     @ElementCollection
     @CollectionTable(
             name = "cell_first_ownership",
+            joinColumns = {
+                    @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false)
+            }
+    )
+    @MapKeyColumn(name = "cell_index")
+    @Column(name = "user_id")
+    private Map<Integer, Long> cellFirstOwnership = new HashMap<>();
+
+    // Used to track the claim position of each user when they claim a cell to determine scoring in some game modes
+    @ElementCollection
+    @CollectionTable(
+            name = "cell_claim_counts",
             joinColumns = {
                     @JoinColumn(name = "game_id", referencedColumnName = "game_id", nullable = false)
             }
@@ -39,7 +52,6 @@ public class SharedGameStateEntity {
     // Track the user ID of the last player to claim a first on a cell
     @Column(name = "last_first_winner_user_id")
     private Long lastFirstWinnerUserId;
-
 
     @Column(name = "current_shared_board_state", nullable = true)
     private String currentSharedBoardState;
@@ -57,19 +69,24 @@ public class SharedGameStateEntity {
 
     public CellClaimEvaluationResult evaluateCellClaim(int cellIndex, Long userId, boolean hasCellMistakeOccurred) {
         boolean firstWon = !hasCellMistakeOccurred && isFirstWon(cellIndex);
-        boolean streakContinued = firstWon && isStreakContinued(userId);
+        Long previousFirstWinner = lastFirstWinnerUserId;
         int claimPosition;
         if (firstWon) {
             updateLastFirstWinnerId(userId);
             addFirstWin(cellIndex);
+            addFirstOwnership(cellIndex, userId);
             claimPosition = 1;
         } else if (!hasCellMistakeOccurred) {
             claimPosition = incrementCellClaim(cellIndex);
         } else {
-            // User made a mistake
+            // User made a mistake on cell at some point
             claimPosition = -1;
         }
-        return new CellClaimEvaluationResult(claimPosition, streakContinued);
+        return new CellClaimEvaluationResult(claimPosition, previousFirstWinner);
+    }
+
+    private void addFirstOwnership(int cellIndex, Long userId) {
+        cellFirstOwnership.put(cellIndex, userId);
     }
 
     private void addFirstWin(int cellIndex) {
@@ -85,10 +102,6 @@ public class SharedGameStateEntity {
 
     private boolean isFirstWon(int cellIndex) {
         return cellClaimCounts.get(cellIndex) == null;
-    }
-
-    private boolean isStreakContinued(Long userId) {
-        return lastFirstWinnerUserId != null && lastFirstWinnerUserId.equals(userId);
     }
 
     private void updateLastFirstWinnerId(Long userId) {

@@ -107,6 +107,10 @@ public class GamePlayerStateEntity {
         return mistakenCells.get(cellIndex) != null;
     }
 
+    public Integer getNumberOfCellMistakes(int cellIndex) {
+        return mistakenCells.get(cellIndex);
+    }
+
     public void incrementCurrentStreak() {
         currentStreak += 1;
     }

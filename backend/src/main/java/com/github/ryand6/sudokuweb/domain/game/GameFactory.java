@@ -20,6 +20,7 @@ public class GameFactory {
         GameEntity newGame = new GameEntity();
         newGame.setLobbyEntity(lobbyEntity);
         newGame.setSudokuPuzzleEntity(sudokuPuzzleEntity);
+        newGame.setGameMode(lobbyEntity.getLobbySettingsEntity().getGameMode());
 
         String initialBoardState = sudokuPuzzleEntity.getInitialBoardState();
 

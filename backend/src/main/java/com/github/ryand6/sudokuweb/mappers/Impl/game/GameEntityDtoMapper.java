@@ -43,7 +43,7 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
                 )
                 .sharedGameState(sharedGameStateDto)
                 .initialBoardState(game.getSudokuPuzzleEntity().getInitialBoardState())
-                .gameMode(lobbySettings.getGameMode())
+                .gameMode(game.getGameMode())
                 .difficulty(lobbySettings.getDifficulty())
                 .timeLimit(lobbySettings.getTimeLimit())
                 .gameStatus(game.getGameStatus())
