@@ -64,7 +64,7 @@ public class LobbyChatMessageEntity {
         if (lastMessageTime == null) {
             return;
         }
-        // User must wait 5 seconds before another message can be sent
+        // User must wait 3 seconds before another message can be sent
         Long timeSinceMessage = Instant.now().getEpochSecond() - lastMessageTime.getEpochSecond();
         if (timeSinceMessage < 3) {
             Long remainingSeconds = 3 - timeSinceMessage;

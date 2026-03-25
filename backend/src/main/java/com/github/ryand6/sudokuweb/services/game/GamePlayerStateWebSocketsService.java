@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb.services.game;
 
+import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
+import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionAcceptedEvent;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionInvalidEvent;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionRejectedEvent;
 import org.springframework.context.event.EventListener;
@@ -27,10 +29,19 @@ public class GamePlayerStateWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
-    public void handleCellUpdateSubmissionRejected(Long gameId, Long userId, CellValueUpdate cellValueUpdate) {
+    public void handleCellUpdateSubmissionRejected(Long gameId, Long userId, CellValueAndScoreUpdate cellValueAndScoreUpdate) {
         Map<String, Object> messageHeader = Map.of(
                 "type", "CELL_UPDATE_REJECTED",
-                "payload", cellValueUpdate
+                "payload", cellValueAndScoreUpdate
+        );
+        String topic = "/topic/game/" + gameId + "/user/" + userId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
+    public void handleCellUpdateSubmissionAccepted(Long gameId, Long userId, CellValueAndScoreUpdate cellValueAndScoreUpdate) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "CELL_UPDATE_ACCEPTED",
+                "payload", cellValueAndScoreUpdate
         );
         String topic = "/topic/game/" + gameId + "/user/" + userId;
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
@@ -43,7 +54,12 @@ public class GamePlayerStateWebSocketsService {
 
     @EventListener
     void handleCellUpdateSubmissionRejectedEvent(CellUpdateSubmissionRejectedEvent event) {
-        handleCellUpdateSubmissionRejected(event.getGameId(), event.getUserId(), event.getCellValueUpdate());
+        handleCellUpdateSubmissionRejected(event.getGameId(), event.getUserId(), event.getCellValueAndScoreUpdate());
+    }
+
+    @EventListener
+    void handleCellUpdateSubmissionAcceptedEvent(CellUpdateSubmissionAcceptedEvent event) {
+        handleCellUpdateSubmissionAccepted(event.getGameId(), event.getUserId(), event.getCellValueAndScoreUpdate());
     }
 
 }

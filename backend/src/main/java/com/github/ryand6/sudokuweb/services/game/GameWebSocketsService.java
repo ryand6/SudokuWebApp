@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb.services.game;
 
+import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
 import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;
+import com.github.ryand6.sudokuweb.events.types.game.GameLogSendEvent;
 import com.github.ryand6.sudokuweb.events.types.game.PlayerHighlightedCellUpdateEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,9 +28,23 @@ public class GameWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleGameLogSend(GameEventDto gameEventDto) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_EVENT",
+                "payload", gameEventDto
+        );
+        String topic = "/topic/game/" + gameEventDto.getGameId();
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handlePlayerHighlightedCellUpdateEvent(PlayerHighlightedCellUpdateEvent event) {
         handlePlayerHighlightedCellUpdate(event.getPlayerHighlightedCellDto());
+    }
+
+    @EventListener
+    void handleGameLogSendEvent(GameLogSendEvent gameLogSendEvent) {
+        handleGameLogSend(gameLogSendEvent.getGameEventDto());
     }
 
 }

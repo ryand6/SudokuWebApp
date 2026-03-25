@@ -1,17 +1,19 @@
 package com.github.ryand6.sudokuweb.events.types.game;
 
-import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
+import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
-public class CellUpdateSubmissionRejectedEvent {
+public class CreateBatchGameLogEvent {
 
     private Long gameId;
 
     private Long userId;
 
-    private CellValueAndScoreUpdate cellValueAndScoreUpdate;
+    List<GameEventRequest> gameEventRequests;
 
 }

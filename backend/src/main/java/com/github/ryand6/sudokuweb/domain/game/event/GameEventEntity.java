@@ -49,11 +49,14 @@ public class GameEventEntity {
     @Enumerated(EnumType.STRING)
     private GameEventType eventType;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "payload", columnDefinition = "jsonb", nullable = false)
-    private Map<String, Object> payload;
+//    @JdbcTypeCode(SqlTypes.JSON)
+//    @Column(name = "payload", columnDefinition = "jsonb", nullable = false)
+//    private Map<String, Object> payload;
 
-    @Column(name = "sequence_number", nullable = false, unique = true)
+    @Column(name = "message", nullable = false)
+    private String message;
+
+    @Column(name = "sequence_number", nullable = false)
     private long sequenceNumber;
 
 }

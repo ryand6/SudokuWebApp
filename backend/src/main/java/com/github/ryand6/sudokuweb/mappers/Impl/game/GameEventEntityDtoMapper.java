@@ -14,7 +14,7 @@ public class GameEventEntityDtoMapper implements EntityDtoMapper<GameEventEntity
                 .gameId(gameEventEntity.getGameEntity().getId())
                 .userId(gameEventEntity.getUserEntity().getId())
                 .eventType(gameEventEntity.getEventType())
-                .payload(gameEventEntity.getPayload())
+                .message(gameEventEntity.getMessage())
                 .sequenceNumber(gameEventEntity.getSequenceNumber())
                 .build();
     }

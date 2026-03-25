@@ -19,6 +19,11 @@ export type GameEvent =
         coordinates: CellCoordinates
       };
 
+export type GameEventLog = 
+    | {
+        type: "GAME_EVENT"
+      }
+
 export type GamePlayerStateEvent = 
     | {
         type: "CELL_UPDATE_SUBMITTED",

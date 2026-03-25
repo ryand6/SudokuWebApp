@@ -18,7 +18,7 @@ public class GameEventDto {
 
     private GameEventType eventType;
 
-    private Map<String, Object> payload;
+    private String message;
 
     private Long sequenceNumber;
 

@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.events.types.game;
 
-import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
+import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,6 +12,6 @@ public class CellUpdateSubmissionAcceptedEvent {
 
     private Long userId;
 
-    private CellValueUpdate cellValueUpdate;
+    private CellValueAndScoreUpdate cellValueAndScoreUpdate;
 
 }

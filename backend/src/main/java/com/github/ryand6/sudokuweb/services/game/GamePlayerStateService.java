@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
+import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.game.state.CellClaimEvaluationResult;
@@ -78,18 +79,17 @@ public class GamePlayerStateService {
             int col,
             int value
     ) {
+
         // IMPLEMENT CALL TO GAME EVENT CREATION - CELL UPDATE REJECTED
+
         gamePlayerState.addCellMistake(cellIndex);
         gamePlayer.incrementMistakes();
         int numberOfMistakesOnCell = gamePlayerState.getNumberOfCellMistakes(cellIndex);
         int scoreToBeApplied = determinePenalty(gameMode, numberOfMistakesOnCell);
         gamePlayer.updateScore(scoreToBeApplied);
         applicationEventPublisher.publishEvent(
-                new CellUpdateSubmissionRejectedEvent(gameId, userId, new CellValueUpdate(row, col, value))
+                new CellUpdateSubmissionRejectedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied))
         );
-
-        // IMPLEMENT WS EVENT FOR SCORE UPDATE
-
     }
 
    private void handleCorrectSubmission(
@@ -104,10 +104,8 @@ public class GamePlayerStateService {
            int value
    ) {
        updateCurrentBoardState(gamePlayerState, cellIndex, value);
+
        // IMPLEMENT CALL TO GAME EVENT CREATION - CELL UPDATE ACCEPTED
-       applicationEventPublisher.publishEvent(
-               new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueUpdate(row, col, value))
-       );
 
        boolean hasCellMistakeOccurred = gamePlayerState.hasCellMistakeOccurred(cellIndex);
        CellClaimEvaluationResult cellClaimEvaluationResult = gamePlayer.getGameEntity().getSharedGameStateEntity().evaluateCellClaim(cellIndex, userId, hasCellMistakeOccurred);
@@ -115,9 +113,11 @@ public class GamePlayerStateService {
        handleStreakUpdates(gamePlayerState, gamePlayer, cellClaimEvaluationResult, gameId, userId);
        int scoreToBeApplied = determineScoreToAdd(gameMode, cellClaimPosition, gamePlayerState.getCurrentStreak());
        gamePlayer.updateScore(scoreToBeApplied);
-       // IMPLEMENT WS EVENT FOR SCORE UPDATE
 
-       // IMPLEMENT CALL TO SCORE, STREAK AND MULTIPLIER UPDATE
+       applicationEventPublisher.publishEvent(
+               new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied))
+       );
+
        if (gamePlayer.getGamePlayerStateEntity().isBoardStateComplete()) {
            // IMPLEMENT CALL TO GAME EVENT CREATION - BOARD COMPLETE
            // IMPLEMENT CALL TO SCORE UPDATE
