@@ -21,8 +21,7 @@ public class GamePlayerStateWsController {
             @DestinationVariable Long gameId,
             @DestinationVariable Long userId,
             @Valid SubmitCellUpdateRequestDto requestDto) {
-        // IMPLEMENT
-
+        gamePlayerStateService.handleCellUpdateSubmission(gameId, userId, requestDto.getRow(), requestDto.getCol(), requestDto.getValue());
     }
 
 }

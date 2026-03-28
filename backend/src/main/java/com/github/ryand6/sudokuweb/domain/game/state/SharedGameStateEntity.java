@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.domain.game.state;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -106,6 +107,16 @@ public class SharedGameStateEntity {
 
     private void updateLastFirstWinnerId(Long userId) {
         lastFirstWinnerUserId = userId;
+    }
+
+    public void updateCurrentBoardState(int cellIndex, char value) {
+        if (currentSharedBoardState != null) {
+            setCurrentSharedBoardState(StringUtils.replaceCharAtIndex(currentSharedBoardState, cellIndex, value));
+        }
+    }
+
+    public boolean isBoardStateComplete() {
+        return currentSharedBoardState.indexOf('.') == -1;
     }
 
 }

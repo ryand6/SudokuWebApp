@@ -158,4 +158,14 @@ public class GameEntity {
         return colourList;
     }
 
+    public void addSecondsToGameEndTime(int seconds) {
+        gameEndsAt = gameEndsAt.plusSeconds(seconds);
+    }
+
+    public void removeSecondsFromGameEndTime(int seconds) {
+        gameEndsAt = gameEndsAt.minusSeconds(seconds).isAfter(Instant.now())
+                ? gameEndsAt.minusSeconds(seconds)
+                : Instant.now();
+    }
+
 }

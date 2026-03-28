@@ -86,7 +86,9 @@ public class GamePlayerStateEntity {
     //#######################//
 
     public void updateCurrentBoardState(int cellIndex, char value) {
-        setCurrentBoardState(StringUtils.replaceCharAtIndex(currentBoardState, cellIndex, value));
+        if (currentBoardState != null) {
+            setCurrentBoardState(StringUtils.replaceCharAtIndex(currentBoardState, cellIndex, value));
+        }
     }
 
     public boolean isBoardStateComplete() {

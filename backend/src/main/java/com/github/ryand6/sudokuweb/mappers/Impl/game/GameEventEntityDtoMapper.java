@@ -13,6 +13,7 @@ public class GameEventEntityDtoMapper implements EntityDtoMapper<GameEventEntity
         return GameEventDto.builder()
                 .gameId(gameEventEntity.getGameEntity().getId())
                 .userId(gameEventEntity.getUserEntity().getId())
+                .createdAt(gameEventEntity.getCreatedAt())
                 .eventType(gameEventEntity.getEventType())
                 .message(gameEventEntity.getMessage())
                 .sequenceNumber(gameEventEntity.getSequenceNumber())

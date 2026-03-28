@@ -1,15 +1,20 @@
 package com.github.ryand6.sudokuweb.services.game;
 
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.game.state.CellClaimEvaluationResult;
+import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
+import com.github.ryand6.sudokuweb.enums.GameEventType;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionAcceptedEvent;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionInvalidEvent;
 import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionRejectedEvent;
+import com.github.ryand6.sudokuweb.events.types.game.CreateGameLogEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateOptimisticLockException;
 import com.github.ryand6.sudokuweb.util.ScoringTables;
@@ -42,15 +47,21 @@ public class GamePlayerStateService {
     @Transactional
     public void handleCellUpdateSubmission(Long gameId, Long userId, int row, int col, int value) {
 
-        // IMPLEMENT CALL TO GAME EVENT CREATION - CELL UPDATE SUBMISSION
+        applicationEventPublisher.publishEvent(
+                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.CELL_UPDATE_SUBMISSION, "cell update submitted for row " + row + " and col " + col))
+        );
 
         GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
         GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
         GameMode gameMode = gamePlayer.getGameEntity().getGameMode();
         int cellIndex = gamePlayerState.getCellIndex(row, col);
 
-        if (!isCellUpdateSubmissionStructurallyValid(gamePlayer, row, col, value)) {
-            // IMPLEMENT CALL TO GAME EVENT CREATION - CELL UPDATE INVALID
+        if (!isCellUpdateSubmissionStructurallyValid(gamePlayer, row, col)) {
+
+            applicationEventPublisher.publishEvent(
+                    new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.CELL_UPDATE_INVALID, "cell update submission invalid for row " + row + " and col " + col))
+            );
+
             applicationEventPublisher.publishEvent(
                     new CellUpdateSubmissionInvalidEvent(gameId, userId, new CellValueUpdate(row, col, value))
             );
@@ -80,13 +91,24 @@ public class GamePlayerStateService {
             int value
     ) {
 
-        // IMPLEMENT CALL TO GAME EVENT CREATION - CELL UPDATE REJECTED
+        applicationEventPublisher.publishEvent(
+                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.CELL_UPDATE_REJECTED, "cell update submission rejected for row " + row + " and col " + col))
+        );
 
         gamePlayerState.addCellMistake(cellIndex);
         gamePlayer.incrementMistakes();
         int numberOfMistakesOnCell = gamePlayerState.getNumberOfCellMistakes(cellIndex);
         int scoreToBeApplied = determinePenalty(gameMode, numberOfMistakesOnCell);
         gamePlayer.updateScore(scoreToBeApplied);
+
+        if (gameMode == GameMode.TIMEATTACK) {
+            handleTimeAttackTimerDeduction(gamePlayer.getGameEntity());
+        }
+
+        applicationEventPublisher.publishEvent(
+                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "received a score penalty"))
+        );
+
         applicationEventPublisher.publishEvent(
                 new CellUpdateSubmissionRejectedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied))
         );
@@ -103,26 +125,48 @@ public class GamePlayerStateService {
            int col,
            int value
    ) {
-       updateCurrentBoardState(gamePlayerState, cellIndex, value);
 
-       // IMPLEMENT CALL TO GAME EVENT CREATION - CELL UPDATE ACCEPTED
+        if (gamePlayer.getGameEntity().isBoardStateShared()) {
+            updatedSharedBoardState(gamePlayer.getGameEntity().getSharedGameStateEntity(), cellIndex, value);
+        } else {
+            updateCurrentBoardState(gamePlayerState, cellIndex, value);
+        }
 
-       boolean hasCellMistakeOccurred = gamePlayerState.hasCellMistakeOccurred(cellIndex);
-       CellClaimEvaluationResult cellClaimEvaluationResult = gamePlayer.getGameEntity().getSharedGameStateEntity().evaluateCellClaim(cellIndex, userId, hasCellMistakeOccurred);
-       int cellClaimPosition = cellClaimEvaluationResult.getCellClaimPosition();
-       handleStreakUpdates(gamePlayerState, gamePlayer, cellClaimEvaluationResult, gameId, userId);
-       int scoreToBeApplied = determineScoreToAdd(gameMode, cellClaimPosition, gamePlayerState.getCurrentStreak());
-       gamePlayer.updateScore(scoreToBeApplied);
+        applicationEventPublisher.publishEvent(
+                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.CELL_UPDATE_ACCEPTED, "cell update submission accepted for row " + row + " and col " + col))
+        );
 
-       applicationEventPublisher.publishEvent(
-               new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied))
-       );
+        boolean hasCellMistakeOccurred = gamePlayerState.hasCellMistakeOccurred(cellIndex);
+        CellClaimEvaluationResult cellClaimEvaluationResult = gamePlayer.getGameEntity().getSharedGameStateEntity().evaluateCellClaim(cellIndex, userId, hasCellMistakeOccurred);
+        int cellClaimPosition = cellClaimEvaluationResult.getCellClaimPosition();
+        handleStreakUpdates(gamePlayerState, gamePlayer, cellClaimEvaluationResult, gameId, userId);
+        int scoreToBeApplied = determineScoreToAdd(gameMode, cellClaimPosition, gamePlayerState.getCurrentStreak());
+        gamePlayer.updateScore(scoreToBeApplied);
 
-       if (gamePlayer.getGamePlayerStateEntity().isBoardStateComplete()) {
-           // IMPLEMENT CALL TO GAME EVENT CREATION - BOARD COMPLETE
-           // IMPLEMENT CALL TO SCORE UPDATE
-           // IMPLEMENT CALL TO GAME FINISH HANDLER (if applicable)
+       if (gameMode == GameMode.TIMEATTACK) {
+           handleTimeAttackTimerDeduction(gamePlayer.getGameEntity());
        }
+
+        applicationEventPublisher.publishEvent(
+               new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "score increased"))
+        );
+
+        applicationEventPublisher.publishEvent(
+               new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied))
+        );
+
+       boolean isBoardComplete = gamePlayer.getGameEntity().isBoardStateShared()
+               ? gamePlayer.getGameEntity().getSharedGameStateEntity() != null
+               && gamePlayer.getGameEntity().getSharedGameStateEntity().isBoardStateComplete()
+               : gamePlayerState.getCurrentBoardState() != null
+               && gamePlayerState.isBoardStateComplete();
+
+        if (isBoardComplete) {
+           applicationEventPublisher.publishEvent(
+                   new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.BOARD_COMPLETED, "completed the board"))
+           );
+           // IMPLEMENT CALL TO GAME FINISH HANDLER (if applicable)
+        }
    }
 
    private void handleStreakUpdates(
@@ -140,25 +184,41 @@ public class GamePlayerStateService {
            if (previousFirstWinnerId != null && !previousFirstWinnerId.equals(userId)) {
                resetPlayersStreak(gameId, previousFirstWinnerId);
            }
+
+           if (gamePlayerState.getCurrentStreak() > 1) {
+               applicationEventPublisher.publishEvent(
+                       new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.STREAK_UPDATE, "streak increased"))
+               );
+           }
+
        } else {
            gamePlayerState.resetCurrentStreak();
        }
    }
 
+   private void handleTimeAttackTimerDeduction(GameEntity game) {
+        game.removeSecondsFromGameEndTime(ScoringTables.timeAttackGameMode_RemovedSecondsOnIncorrectAnswer);
+
+        // IMPLEMENT CALL TO SCHEDULER THAT UPDATES GAME END SCHEDULE
+   }
+
+    private void handleTimeAttackTimerAddition(GameEntity game) {
+        game.removeSecondsFromGameEndTime(ScoringTables.timeAttackGameMode_AddedSecondsOnCorrectAnswer);
+
+        // IMPLEMENT CALL TO SCHEDULER THAT UPDATES GAME END SCHEDULE
+    }
+
     int determinePenalty(GameMode gameMode, Integer numberOfMistakesOnCell) {
         int scoreToBeApplied = 0;
         switch (gameMode) {
-            case CLASSIC: {
+            case CLASSIC -> {
                 scoreToBeApplied = determineStandardGameModePenalty(numberOfMistakesOnCell);
-                break;
             }
-            case DOMINATION: {
-                // IMPLEMENT
-                break;
+            case DOMINATION -> {
+                scoreToBeApplied = determineDominationGameModePenalty();
             }
-            case TIMEATTACK: {
-                // IMPLEMENT
-                break;
+            case TIMEATTACK -> {
+                // No score penalty, only timer penalty
             }
         }
         return scoreToBeApplied;
@@ -167,17 +227,14 @@ public class GamePlayerStateService {
     int determineScoreToAdd(GameMode gameMode, int cellClaimPosition, int currentStreak) {
         int scoreToBeApplied = 0;
         switch (gameMode) {
-            case CLASSIC: {
+            case CLASSIC -> {
                 scoreToBeApplied = determineStandardGameModeScoreToAdd(cellClaimPosition, currentStreak);
-                break;
             }
-            case DOMINATION: {
-                // IMPLEMENT
-                break;
+            case DOMINATION -> {
+                scoreToBeApplied = determineDominationGameModeScoreToAdd(currentStreak);
             }
-            case TIMEATTACK: {
-                // IMPLEMENT
-                break;
+            case TIMEATTACK -> {
+                scoreToBeApplied = determineTimeAttackGameModeScoreToAdd();
             }
         }
         return scoreToBeApplied;
@@ -196,9 +253,32 @@ public class GamePlayerStateService {
         return bonusScore != null ? baseScore + bonusScore : baseScore;
     }
 
+    int determineDominationGameModePenalty() {
+        return ScoringTables.dominationGameMode_BasePenalty;
+    }
+
+    int determineDominationGameModeScoreToAdd(int currentStreak) {
+        int baseScore = ScoringTables.dominationGameMode_BaseScore;
+        int streakMultiplier = Math.min(currentStreak, ScoringTables.dominationGameMode_StreakBonusCap);
+        Integer bonusScore = ScoringTables.dominationGameMode_BonusPointsPerStreak.get(streakMultiplier);
+        return bonusScore != null ? baseScore + bonusScore : baseScore;
+    }
+
+    int determineTimeAttackGameModeScoreToAdd() {
+        return ScoringTables.timeAttackGameMode_BaseScore;
+    }
+
     void resetPlayersStreak(Long gameId, Long userId) {
         GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
-        gamePlayer.getGamePlayerStateEntity().resetCurrentStreak();
+        GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
+
+        if (gamePlayerState.getCurrentStreak() > 1) {
+            applicationEventPublisher.publishEvent(
+                    new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.STREAK_UPDATE, "streak reset"))
+            );
+        }
+
+        gamePlayerState.resetCurrentStreak();
     }
 
     @Transactional
@@ -206,9 +286,16 @@ public class GamePlayerStateService {
         gamePlayerState.updateCurrentBoardState(cellIndex, Character.forDigit(value, 10));
     }
 
-    boolean isCellUpdateSubmissionStructurallyValid(GamePlayerEntity gamePlayer, int row, int col, int value) {
+    @Transactional
+    void updatedSharedBoardState(SharedGameStateEntity sharedGameState, int cellIndex, int value) {
+        sharedGameState.updateCurrentBoardState(cellIndex, Character.forDigit(value, 10));
+    }
+
+    boolean isCellUpdateSubmissionStructurallyValid(GamePlayerEntity gamePlayer, int row, int col) {
         String initialBoardState = gamePlayer.getGameEntity().getSudokuPuzzleEntity().getInitialBoardState();
-        String currentBoardState = gamePlayer.getGamePlayerStateEntity().getCurrentBoardState();
+        String currentBoardState = gamePlayer.getGamePlayerStateEntity().getCurrentBoardState() != null
+                ? gamePlayer.getGamePlayerStateEntity().getCurrentBoardState()
+                : gamePlayer.getGameEntity().getSharedGameStateEntity().getCurrentSharedBoardState();
         if (currentBoardState == null) return false;
         // Number already exists
         if (StringUtils.getBoardStateValueFromNestedArrayIndexes(initialBoardState, row, col) != '.') {

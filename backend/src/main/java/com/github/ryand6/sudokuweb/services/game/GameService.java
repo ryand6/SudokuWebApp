@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceEntity;
+import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerFactory;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
@@ -46,6 +48,7 @@ public class GameService {
     private final PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper;
     private final LobbyRepository lobbyRepository;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
+    private final GameEventSequenceRepository gameEventSequenceRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public GameService(GameRepository gameRepository,
@@ -55,6 +58,7 @@ public class GameService {
                        PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper,
                        LobbyRepository lobbyRepository,
                        LobbyEntityDtoMapper lobbyEntityDtoMapper,
+                       GameEventSequenceRepository gameEventSequenceRepository,
                        ApplicationEventPublisher applicationEventPublisher) {
         this.gameRepository = gameRepository;
         this.sudokuPuzzleService = sudokuPuzzleService;
@@ -63,6 +67,7 @@ public class GameService {
         this.privateGamePlayerStateEntityDtoMapper = privateGamePlayerStateEntityDtoMapper;
         this.lobbyRepository = lobbyRepository;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
+        this.gameEventSequenceRepository = gameEventSequenceRepository;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -126,6 +131,13 @@ public class GameService {
             gamePlayers.add(gamePlayer);
             i++;
         }
+
+        // Initialise sequence entity for ordering game events
+        GameEventSequenceEntity gameEventSequence = GameEventSequenceEntity.builder()
+                .gameId(newGame.getId())
+                .build();
+
+        gameEventSequenceRepository.save(gameEventSequence);
 
         return gameEntityDtoMapper.mapToDto(newGame);
     }

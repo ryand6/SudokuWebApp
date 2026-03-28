@@ -8,12 +8,12 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class CreateBatchGameLogEvent {
+public class CreateGameLogEvent {
 
     private Long gameId;
 
     private Long userId;
 
-    List<GameEventRequest> gameEventRequests;
+    GameEventRequest gameEventRequest;
 
 }
