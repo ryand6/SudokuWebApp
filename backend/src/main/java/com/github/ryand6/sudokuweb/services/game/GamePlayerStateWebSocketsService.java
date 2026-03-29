@@ -7,6 +7,8 @@ import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.Map;
 
@@ -65,27 +67,27 @@ public class GamePlayerStateWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionInvalidEvent(CellUpdateSubmissionInvalidEvent event) {
         handleCellUpdateSubmissionInvalid(event.getGameId(), event.getUserId(), event.getCellValueUpdate());
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionRejectedEvent(CellUpdateSubmissionRejectedEvent event) {
         handleCellUpdateSubmissionRejected(event.getGameId(), event.getUserId(), event.getCellValueAndScoreUpdate());
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionAcceptedEvent(CellUpdateSubmissionAcceptedEvent event) {
         handleCellUpdateSubmissionAccepted(event.getGameId(), event.getUserId(), event.getCellValueAndScoreUpdate());
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionRejectedEvent_TimeAttackGameMode(TimeAttackCellUpdateSubmissionRejectedEvent event) {
         handleCellUpdateSubmissionRejected_TimeAttackGameMode(event.getGameId(), event.getUserId(), event.getTimeAttackUpdate());
     }
 
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionAcceptedEvent_TimeAttackGameMode(TimeAttackCellUpdateSubmissionAcceptedEvent event) {
         handleCellUpdateSubmissionAccepted_TimeAttackGameMode(event.getGameId(), event.getUserId(), event.getTimeAttackUpdate());
     }

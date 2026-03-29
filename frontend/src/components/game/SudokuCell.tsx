@@ -11,13 +11,12 @@ const SudokuCell = React.memo(function SudokuCell(
         userId,
         isRejected, 
         playerColours,
-        //playerColour,
         isSelected,
         isInRow,
         isInCol,
         isInBlock,
         isSameNumber,
-        //selectedOpponentsColours,
+        cellOwnership,
         onSelect,
         className
     }: {
@@ -28,32 +27,33 @@ const SudokuCell = React.memo(function SudokuCell(
         userId: number,
         isRejected: boolean, 
         playerColours: Record<number, PlayerColour>,
-        //playerColour: PlayerColour,
         isSelected: boolean, 
         isInRow: boolean,
         isInCol: boolean,
         isInBlock: boolean,
         isSameNumber: boolean,
-        //selectedOpponentsColours: PlayerColour[] | undefined
-        onSelect: () => void,
+        cellOwnership: number | undefined,
+        onSelect: (r: number, c: number) => void,
         className: string
     }
 ) {
     const playerColourClassName = playerColourClassNamePicker[playerColours[userId]];
 
+    const baseBackground = cellOwnership !== undefined ? playerColourClassNamePicker[playerColours[cellOwnership]] : "bg-primary-foreground";
+
     const [isHovered, setIsHovered] = useState(false);
 
     return (
         <div 
-            onClick={onSelect}
+            onClick={() => {onSelect(row, col)}}
             onMouseEnter={onHoverHandler(setIsHovered)}
             onMouseLeave={onLeaveHandler(setIsHovered)}
             className={`w-full h-full flex items-center justify-center 
                         cursor-pointer box-border
                         animate-fill-cell 
-                        ${(isInRow || isInCol || isInBlock) && !isSelected && !isHovered ? playerColourClassName.light : "bg-primary-foreground"}
+                        ${(isInRow || isInCol || isInBlock) && !isSelected && !isHovered ? playerColourClassName.light : baseBackground}
                         ${(isHovered && !isSelected) && playerColourClassName.medium}
-                        ${isSelected ? playerColourClassName.strong : "bg-primary-foreground"}
+                        ${isSelected ? playerColourClassName.strong : baseBackground}
                         ${isSameNumber ? "font-extrabold text-2xl" : "font-semibold text-xl"}
                         ${isRejected ? "text-red-500 text-2xl" : "text-black"}
                         ${className}`}

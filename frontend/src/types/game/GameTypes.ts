@@ -1,5 +1,4 @@
 import type { GamePlayerSettingsDto } from "../dto/entity/game/GamePlayerSettingsDto";
-import type { SharedGameStateDto } from "../dto/entity/game/SharedGameStateDto";
 import type { Difficulty } from "../enum/Difficulty";
 import type { GameMode } from "../enum/GameMode";
 import type { GameResult } from "../enum/GameResult";

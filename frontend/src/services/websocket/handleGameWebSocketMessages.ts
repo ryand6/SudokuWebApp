@@ -13,14 +13,27 @@ export function handleGameWebSocketMessages(
     setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
 ) {
     switch (message.type) {
-        case "GAME_PLAYER_UPDATE": {
-            // IMPLEMENT
+        case "PLAYER_CELL_UPDATE_ACCEPTED": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "PLAYER_CELL_UPDATE_ACCEPTED",
+                userId: message.payload.userId,
+                score: message.payload.score,
+                firsts: message.payload.firsts,
+                gameEndsAt: message.payload.gameEndsAt,
+                row: message.payload.row,
+                col: message.payload.col,
+                firstUserId: message.payload.firstUserId
+            })
             break;
         }
-        case "BOARD_PROGRESS_UPDATE": {
-            // IMPLEMENT FUNCTION FOR HANDLING INCREMENTAL BOARD PROGRESS UPDATES PER PLAYER
-
-            // DETERMINE TO KEEP THIS SEPARATE, OR JUST DO GAME PLAYER UPDATE
+        case "PLAYER_CELL_UPDATE_REJECTED": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "PLAYER_CELL_UPDATE_REJECTED",
+                userId: message.payload.userId,
+                score: message.payload.score,
+                mistakes: message.payload.mistakes,
+                gameEndsAt: message.payload.gameEndsAt
+            })
             break;
         }
         case "GAME_STATUS_UPDATE": {

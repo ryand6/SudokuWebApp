@@ -90,6 +90,10 @@ public class SharedGameStateEntity {
         cellFirstOwnership.put(cellIndex, userId);
     }
 
+    public Long getFirstOwnership(int cellIndex) {
+        return cellFirstOwnership.get(cellIndex);
+    }
+
     private void addFirstWin(int cellIndex) {
         cellClaimCounts.put(cellIndex, 1);
     }

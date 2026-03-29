@@ -24,28 +24,32 @@ export const playerColourClassNamePicker = {
   },
 };
 
+export function getCellIndex(row: number, col: number) {
+  return (row * 9) + col;
+}
+
 export function updateGameHighlightedCellsAndSendWsUpdate(
-    send: (dest: string, body: any) => void,
-    gameId: number, 
-    userId: number, 
-    gameHighlightedCells: Map<number, CellCoordinates> | undefined, 
-    cellCoordinates: CellCoordinates) {
-    const updatedGameHighlightedCells = updateGameHighlightedCells(userId, gameHighlightedCells, cellCoordinates);
-    sendPlayerHighlightedCellUpdate(send, gameId, userId, cellCoordinates.row, cellCoordinates.col);
-    return updatedGameHighlightedCells;
+  send: (dest: string, body: any) => void,
+  gameId: number, 
+  userId: number, 
+  gameHighlightedCells: Map<number, CellCoordinates> | undefined, 
+  cellCoordinates: CellCoordinates) {
+  const updatedGameHighlightedCells = updateGameHighlightedCells(userId, gameHighlightedCells, cellCoordinates);
+  sendPlayerHighlightedCellUpdate(send, gameId, userId, cellCoordinates.row, cellCoordinates.col);
+  return updatedGameHighlightedCells;
 }
 
 export function updateGameHighlightedCells(
-    userId: number, 
-    gameHighlightedCells: Map<number, CellCoordinates> | undefined, 
-    cellCoordinates: CellCoordinates
+  userId: number, 
+  gameHighlightedCells: Map<number, CellCoordinates> | undefined, 
+  cellCoordinates: CellCoordinates
 ): Map<number, CellCoordinates> {
-    if (!gameHighlightedCells) {
-        return new Map<number, CellCoordinates>([[userId, cellCoordinates]]);
-    }
-    const updatedGameHighlightedCells = new Map(gameHighlightedCells);
-    updatedGameHighlightedCells.set(userId, cellCoordinates);
-    return updatedGameHighlightedCells;
+  if (!gameHighlightedCells) {
+    return new Map<number, CellCoordinates>([[userId, cellCoordinates]]);
+  }
+  const updatedGameHighlightedCells = new Map(gameHighlightedCells);
+  updatedGameHighlightedCells.set(userId, cellCoordinates);
+  return updatedGameHighlightedCells;
 }
 
 export function onHoverHandler(setIsHovered: React.Dispatch<React.SetStateAction<boolean>>) {

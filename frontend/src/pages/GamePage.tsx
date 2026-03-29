@@ -44,6 +44,10 @@ export function GamePage() {
 
     const {data: privateGameState, isLoading: isGameStateLoading, isError: isGameStateError, error: gameStateError} = useGetGamePlayerState(gameIdNum, currentUser?.id);
 
+    const boardState = useMemo(() => {
+        return resolveBoardState(publicGameState?.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);
+    }, [publicGameState?.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState]);
+
     const leaveGameHandler = useLeaveGame();
 
     useHandleGetGameError(isGameError, gameError);
@@ -54,11 +58,7 @@ export function GamePage() {
 
     if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
     
-    if (!publicGameState || !currentUser || !privateGameState) return null;    
-
-    const boardState = useMemo(() => {
-        return resolveBoardState(publicGameState.gameMode, publicGameState.sharedGameState.currentSharedBoardState, privateGameState.boardState);
-    }, [publicGameState.gameMode, publicGameState.sharedGameState.currentSharedBoardState, privateGameState.boardState]);
+    if (!publicGameState || !currentUser || !privateGameState || !boardState) return null;    
 
     return (
         <div>
@@ -71,6 +71,7 @@ export function GamePage() {
                         userId={currentUser.id}
                         boardState={boardState} 
                         gamePlayers={publicGameState.players}
+                        cellFirstOwnership={publicGameState.sharedGameState.cellFirstOwnership}
                         gameHighlightedCells={gameHighlightedCells}
                         setGameHighlightedCells={setGameHighlightedCells} 
                     />

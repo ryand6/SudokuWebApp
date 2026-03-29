@@ -7,10 +7,11 @@ export function isBoardStateShared(gameMode: GameMode): boolean {
 
 // creates the user's personal board state data depending on if the board is shared or private
 export function resolveBoardState(
-    gameMode: GameMode,
+    gameMode: GameMode | undefined,
     sharedBoardState: SharedBoardState | undefined,
-    privateBoardState: PrivateBoardState
-): PrivateBoardState {
+    privateBoardState: PrivateBoardState | undefined
+): PrivateBoardState | undefined {
+    if (!gameMode || !privateBoardState) return undefined;
     if (isBoardStateShared(gameMode) && sharedBoardState) {
         return sharedBoardState.map((row, r) => 
             row.map((cellState, c) => {

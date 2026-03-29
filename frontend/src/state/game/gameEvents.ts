@@ -2,10 +2,21 @@ import type { CellCoordinates } from "@/types/game/GameTypes"
 
 export type GameEvent = 
     | {
-        type: "GAME_PLAYER_UPDATE"
+        type: "PLAYER_CELL_UPDATE_ACCEPTED",
+        userId: number,
+        score: number,
+        firsts: number,
+        gameEndsAt: string,
+        row: number,
+        col: number,
+        firstUserId: number | null
       }
     | {
-        type: "BOARD_PROGRESS_UPDATE"
+        type: "PLAYER_CELL_UPDATE_REJECTED",
+        userId: number,
+        score: number,
+        mistakes: number,
+        gameEndsAt: string
       }
     | {
         type: "GAME_STATUS_UPDATE"

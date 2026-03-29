@@ -1,5 +1,7 @@
 package com.github.ryand6.sudokuweb.services.game;
 
+import com.github.ryand6.sudokuweb.domain.game.CellAcceptedPublicUpdate;
+import com.github.ryand6.sudokuweb.domain.game.CellRejectedPublicUpdate;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
@@ -113,6 +115,10 @@ public class GamePlayerStateService {
         }
 
         applicationEventPublisher.publishEvent(
+                new CellRejectedPublicUpdateEvent(gameId, new CellRejectedPublicUpdate(userId, gamePlayer.getScore(), gamePlayer.getMistakes(), gamePlayer.getGameEntity().getGameEndsAt()))
+        );
+
+        applicationEventPublisher.publishEvent(
                 new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "received a score penalty"))
         );
     }
@@ -158,9 +164,13 @@ public class GamePlayerStateService {
            );
        }
 
-        applicationEventPublisher.publishEvent(
+       applicationEventPublisher.publishEvent(
+               new CellAcceptedPublicUpdateEvent(gameId, new CellAcceptedPublicUpdate(userId, gamePlayer.getScore(), gamePlayer.getFirsts(), gamePlayer.getGameEntity().getGameEndsAt(), row, col, gamePlayer.getGameEntity().getSharedGameStateEntity().getFirstOwnership(cellIndex)))
+       );
+
+       applicationEventPublisher.publishEvent(
                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "score increased"))
-        );
+       );
 
        boolean isBoardComplete = gamePlayer.getGameEntity().isBoardStateShared()
                ? gamePlayer.getGameEntity().getSharedGameStateEntity() != null
@@ -168,12 +178,12 @@ public class GamePlayerStateService {
                : gamePlayerState.getCurrentBoardState() != null
                && gamePlayerState.isBoardStateComplete();
 
-        if (isBoardComplete) {
+       if (isBoardComplete) {
            applicationEventPublisher.publishEvent(
                    new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.BOARD_COMPLETED, "completed the board"))
            );
            // IMPLEMENT CALL TO GAME FINISH HANDLER (if applicable)
-        }
+       }
    }
 
    private void handleStreakUpdates(

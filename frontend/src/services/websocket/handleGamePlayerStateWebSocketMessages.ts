@@ -8,9 +8,6 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
 
     switch (message.type) {
         case "CELL_UPDATE_ACCEPTED": {
-
-            console.log("UPDATE ACCEPTED!");
-
             gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
                 type: "CELL_UPDATE_ACCEPTED",
                 row: message.payload.row,
@@ -23,9 +20,6 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
             break;
         }
         case "CELL_UPDATE_REJECTED": {
-
-            console.log("UPDATE REJECTED!");
-
             gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
                 type: "CELL_UPDATE_REJECTED",
                 row: message.payload.row,
