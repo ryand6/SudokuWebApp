@@ -95,8 +95,10 @@ public class GamePlayerStateService {
 
         gamePlayerState.addCellMistake(cellIndex);
         gamePlayer.incrementMistakes();
-        int numberOfMistakesOnCell = gamePlayerState.getNumberOfCellMistakes(cellIndex);
-        int scoreToBeApplied = determinePenalty(gameMode, numberOfMistakesOnCell);
+        gamePlayerState.incrementConsecutiveMistakeCount();
+        gamePlayerState.resetCurrentStreak();
+        int mistakeMultiplier = Math.max(gamePlayerState.getNumberOfCellMistakes(cellIndex), gamePlayerState.getConsecutiveMistakeCount()); ;
+        int scoreToBeApplied = determinePenalty(gameMode, mistakeMultiplier);
         gamePlayer.updateScore(scoreToBeApplied);
 
         if (gameMode == GameMode.TIMEATTACK) {
@@ -143,6 +145,7 @@ public class GamePlayerStateService {
         handleStreakUpdates(gamePlayerState, gamePlayer, cellClaimEvaluationResult, gameId, userId);
         int scoreToBeApplied = determineScoreToAdd(gameMode, cellClaimPosition, gamePlayerState.getCurrentStreak());
         gamePlayer.updateScore(scoreToBeApplied);
+        gamePlayerState.resetConsecutiveMistakeCount();
 
        if (gameMode == GameMode.TIMEATTACK) {
            int secondsToAdd = handleTimeAttackTimerAddition(gamePlayer.getGameEntity());
@@ -195,8 +198,6 @@ public class GamePlayerStateService {
                );
            }
 
-       } else {
-           gamePlayerState.resetCurrentStreak();
        }
    }
 
@@ -220,11 +221,11 @@ public class GamePlayerStateService {
         return secondsToAdd;
     }
 
-    int determinePenalty(GameMode gameMode, Integer numberOfMistakesOnCell) {
+    int determinePenalty(GameMode gameMode, Integer mistakeMultiplier) {
         int scoreToBeApplied = 0;
         switch (gameMode) {
             case CLASSIC -> {
-                scoreToBeApplied = determineStandardGameModePenalty(numberOfMistakesOnCell);
+                scoreToBeApplied = determineStandardGameModePenalty(mistakeMultiplier);
             }
             case DOMINATION -> {
                 scoreToBeApplied = determineDominationGameModePenalty();

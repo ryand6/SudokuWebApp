@@ -1,9 +1,10 @@
 import { CELL_COUNT, GRID_SIZE } from "./gameConstants";
-import type { CellState, PublicGameState, GamePlayers, PrivateGamePlayerState } from "@/types/game/GameTypes";
+import type { PrivateCellState, PublicGameState, GamePlayers, PrivateGamePlayerState, SharedGameState, SharedCellState } from "@/types/game/GameTypes";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
 import { mapGameState } from "./mapGameState";
 import type { PrivateGamePlayerStateDto } from "@/types/dto/entity/game/PrivateGamePlayerStateDto";
+import type { SharedGameStateDto } from "@/types/dto/entity/game/SharedGameStateDto";
 
 export function normalisePublicGameData(
     gameData: GameDto
@@ -29,7 +30,7 @@ export function normalisePublicGameData(
         gameId: gameData.gameId,
         playerIds: playerIds,
         players: players,
-        sharedGameState: gameData.sharedGameState,
+        sharedGameState: normaliseSharedGameStateData(gameData.sharedGameState),
         initialBoardState: gameData.initialBoardState,
         gameMode: gameData.gameMode,
         difficulty: gameData.difficulty,
@@ -42,6 +43,17 @@ export function normalisePublicGameData(
     return gameState;
 }
 
+function normaliseSharedGameStateData(
+    sharedGameStateDto: SharedGameStateDto
+): SharedGameState {
+    return {
+        cellFirstOwnership: sharedGameStateDto.cellFirstOwnership,
+        currentSharedBoardState: sharedGameStateDto.currentSharedBoardState != null 
+            ? fillPublicBoardState(sharedGameStateDto.currentSharedBoardState)
+            : undefined
+    }
+}
+
 // Handles client's private game state data (not visible to opponents)
 export function normalisePrivateGameStateData(
     gameState: PrivateGamePlayerStateDtoRaw
@@ -51,7 +63,7 @@ export function normalisePrivateGameStateData(
     }
     const normalisedGameDtoState: PrivateGamePlayerStateDto = mapGameState(gameState);
     return {
-        boardState: fillBoardState(normalisedGameDtoState),
+        boardState: fillPrivateBoardState(normalisedGameDtoState),
         currentStreak: normalisedGameDtoState.currentStreak,
         activeMultiplier: normalisedGameDtoState.activeMultiplier,
         multiplierEndsAt: normalisedGameDtoState.multiplierEndsAt,
@@ -59,14 +71,27 @@ export function normalisePrivateGameStateData(
     }
 }
 
-function fillBoardState(gameDtoState: PrivateGamePlayerStateDto): CellState[][] {
+function fillPrivateBoardState(gameDtoState: PrivateGamePlayerStateDto): PrivateCellState[][] {
     const boardState = [];
     for (let y = 0; y < GRID_SIZE; y++) {
-        let boardRow: CellState[] = [];
+        let boardRow: PrivateCellState[] = [];
         for (let x = 0; x < GRID_SIZE; x++) {
             const value = getCellValue(gameDtoState.currentBoardState, y, x);
             const notes = gameDtoState.notes[(y * 9) + x];
             boardRow[x] = {value: value, notes: notes, isRejected: false};
+        }
+        boardState.push(boardRow);
+    }
+    return boardState;
+}
+
+function fillPublicBoardState(currentSharedBoardState: string) {
+    const boardState = [];
+    for (let y = 0; y < GRID_SIZE; y++) {
+        let boardRow: SharedCellState[] = [];
+        for (let x = 0; x < GRID_SIZE; x++) {
+            const value = getCellValue(currentSharedBoardState, y, x);
+            boardRow[x] = {value: value};
         }
         boardState.push(boardRow);
     }

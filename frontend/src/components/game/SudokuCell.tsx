@@ -8,14 +8,16 @@ const SudokuCell = React.memo(function SudokuCell(
         col, 
         value, 
         notes,
+        userId,
         isRejected, 
-        playerColour,
+        playerColours,
+        //playerColour,
         isSelected,
         isInRow,
         isInCol,
         isInBlock,
         isSameNumber,
-        selectedOpponentsColours,
+        //selectedOpponentsColours,
         onSelect,
         className
     }: {
@@ -23,19 +25,21 @@ const SudokuCell = React.memo(function SudokuCell(
         col: number, 
         value: string | undefined, 
         notes: number,
+        userId: number,
         isRejected: boolean, 
-        playerColour: PlayerColour,
+        playerColours: Record<number, PlayerColour>,
+        //playerColour: PlayerColour,
         isSelected: boolean, 
         isInRow: boolean,
         isInCol: boolean,
         isInBlock: boolean,
         isSameNumber: boolean,
-        selectedOpponentsColours: PlayerColour[] | undefined
+        //selectedOpponentsColours: PlayerColour[] | undefined
         onSelect: () => void,
         className: string
     }
 ) {
-    const playerColourClassName = playerColourClassNamePicker[playerColour];
+    const playerColourClassName = playerColourClassNamePicker[playerColours[userId]];
 
     const [isHovered, setIsHovered] = useState(false);
 

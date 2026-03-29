@@ -1,10 +1,10 @@
 import { useCallback, useMemo, type Dispatch, type SetStateAction } from "react";
 import SudokuCell from "./SudokuCell";
-import type { BoardState, CellCoordinates, GamePlayers } from "@/types/game/GameTypes";
+import type { PrivateBoardState, CellCoordinates, GamePlayers } from "@/types/game/GameTypes";
 import { isCellInSameBlock } from "@/utils/game/blockUtils";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { updateGameHighlightedCellsAndSendWsUpdate } from "@/utils/game/cellUtils";
-
+import type { PlayerColour } from "@/types/enum/PlayerColour";
 
 export function SudokuBoard(
     {
@@ -17,7 +17,7 @@ export function SudokuBoard(
     }: {
         gameId: number,
         userId: number,
-        boardState: BoardState, 
+        boardState: PrivateBoardState, 
         gamePlayers: GamePlayers,
         gameHighlightedCells: Map<number, CellCoordinates> | undefined,
         setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
@@ -38,12 +38,18 @@ export function SudokuBoard(
                         const borderBottom = r === 8 ? "border-b-4 border-black" : "border-b-1 border-black";
                         const borderRight = c === 8 ? "border-r-4 border-black" : "border-r-1 border-black";
 
-                        const selectedOpponentsColors = useMemo(() => {
-                            if (!gameHighlightedCells) return undefined;
-                            return Array.from(gameHighlightedCells.entries())
-                                        .filter(([id, coords]) => id !== userId && coords.row === r && coords.col === c)
-                                        .map(([id]) => gamePlayers[id].colour)
-                        }, [gameHighlightedCells, userId, r, c, gamePlayers]);
+                        const playerColours: Record<number, PlayerColour> = useMemo(() => {
+                            const newObj: Record<number, PlayerColour> = {};
+                            Object.keys(gamePlayers).forEach((key) => newObj[Number(key)] = gamePlayers[Number(key)].colour);
+                            return newObj;
+                        }, [gamePlayers]);
+
+                        // const selectedOpponentsColors = useMemo(() => {
+                        //     if (!gameHighlightedCells) return undefined;
+                        //     return Array.from(gameHighlightedCells.entries())
+                        //                 .filter(([id, coords]) => id !== userId && coords.row === r && coords.col === c)
+                        //                 .map(([id]) => gamePlayers[id].colour)
+                        // }, [gameHighlightedCells, userId, r, c, gamePlayers]);
 
                         const handleCellSelect = useCallback(() => {
                             setGameHighlightedCells(prev => updateGameHighlightedCellsAndSendWsUpdate(send, gameId, userId, prev, { row: r, col: c }))
@@ -55,9 +61,11 @@ export function SudokuBoard(
                                 row={r} 
                                 col={c} 
                                 value={cell.value}
+                                userId={userId}
                                 notes={cell.notes}
                                 isRejected={cell.isRejected}
-                                playerColour={gamePlayers[userId].colour}
+                                playerColours={playerColours}
+                                //playerColour={gamePlayers[userId].colour}
                                 isSelected={
                                     r === playerHighlightedCell?.row && c === playerHighlightedCell?.col
                                 }
@@ -66,7 +74,7 @@ export function SudokuBoard(
                                 // Implement
                                 isInBlock = {isCellInSameBlock(r, c, playerHighlightedCell)}
                                 isSameNumber = {playerHighlightedCell ? boardState[r][c].value === boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : false}
-                                selectedOpponentsColours={selectedOpponentsColors}
+                                //selectedOpponentsColours={selectedOpponentsColors}
                                 // Replace - create a function that updates the state object
                                 onSelect={handleCellSelect}
 

@@ -1,13 +1,13 @@
 
-import type { CellCoordinates, CellState } from "@/types/game/GameTypes";
+import type { CellCoordinates, PrivateCellState } from "@/types/game/GameTypes";
 import { GRID_SIZE } from "./gameConstants";
 
 /**
  * Maps a nested array of cell states in grid to an array of blocks, where each element contains all the cell states in the block ordered by grid position
- * @param {CellState[][]} boardState - nested array representing all the cell states in the sudoku board, in grid order
- * @returns {CellState[][]} - the array of blocks, where each element is a nested array containing each of the blocks cell states
+ * @param {PrivateCellState[][]} boardState - nested array representing all the cell states in the sudoku board, in grid order
+ * @returns {PrivateCellState[][]} - the array of blocks, where each element is a nested array containing each of the blocks cell states
  */
-export function mapBoardToBlocks(boardState: CellState[][]): CellState[][] {
+export function mapBoardToBlocks(boardState: PrivateCellState[][]): PrivateCellState[][] {
     const blocks = [];
     // Build nested array of sudoku blocks
     for (let i = 0; i < GRID_SIZE; i += 3) {
@@ -22,11 +22,11 @@ export function mapBoardToBlocks(boardState: CellState[][]): CellState[][] {
  * Fills a block array with all the relevant cell states
  * @param {number} i - the row index to begin iteration
  * @param {number} j - the col index to begin iteration
- * @param {CellState[][]} boardState - nested array representing all the cell states in the sudoku board, in grid order
- * @returns {CellState[]} - the block array containing all corresponding cell states
+ * @param {PrivateCellState[][]} boardState - nested array representing all the cell states in the sudoku board, in grid order
+ * @returns {PrivateCellState[]} - the block array containing all corresponding cell states
  */
-function fillBlock(i: number, j: number, boardState: CellState[][]): CellState[] {
-    let block: CellState[] = [];
+function fillBlock(i: number, j: number, boardState: PrivateCellState[][]): PrivateCellState[] {
+    let block: PrivateCellState[] = [];
     for (let x = i; x < i + 3; x++) {
         for (let y = j; y < j + 3; y++) {
             block.push(boardState[x][y]);

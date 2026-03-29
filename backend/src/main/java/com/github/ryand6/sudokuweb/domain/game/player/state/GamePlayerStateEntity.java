@@ -52,6 +52,9 @@ public class GamePlayerStateEntity {
     @Column(name = "number_of_mistakes")
     private Map<Integer, Integer> mistakenCells = new HashMap<>();
 
+    @Column(name = "consecutive_mistake_count")
+    private int consecutiveMistakeCount = 0;
+
     @Column(name = "current_streak", nullable = false)
     private int currentStreak = 0;
 
@@ -119,6 +122,14 @@ public class GamePlayerStateEntity {
 
     public void resetCurrentStreak() {
         currentStreak = 0;
+    }
+
+    public void incrementConsecutiveMistakeCount() {
+        consecutiveMistakeCount += 1;
+    }
+
+    public void resetConsecutiveMistakeCount() {
+        consecutiveMistakeCount = 0;
     }
 
 }

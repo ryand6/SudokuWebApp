@@ -7,13 +7,20 @@ import type { GameStatus } from "../enum/GameStatus";
 import type { PlayerColour } from "../enum/PlayerColour";
 import type { TimeLimitPreset } from "../enum/TimeLimitPreset";
 
-export type CellState = {
+
+export type PrivateCellState = {
     value: string | undefined;
     notes: number;
     isRejected: boolean
+}
+
+export type SharedCellState = {
+    value: string | undefined;
 };
 
-export type BoardState = CellState[][];
+export type PrivateBoardState = PrivateCellState[][];
+
+export type SharedBoardState = SharedCellState[][];
 
 export type CellCoordinates = {
     row: number,
@@ -45,7 +52,7 @@ export type PublicGameState = {
     gameId: number,
     playerIds: number[],
     players: GamePlayers,
-    sharedGameState: SharedGameStateDto,
+    sharedGameState: SharedGameState,
     initialBoardState: string,
     gameMode: GameMode,
     difficulty: Difficulty,
@@ -55,9 +62,14 @@ export type PublicGameState = {
     gameEndsAt: string | null
 }
 
+export type SharedGameState = {
+    cellFirstOwnership: Record<number, number>,
+    currentSharedBoardState?: SharedBoardState
+}
+
 // Requested separately from backend, stored in user's personal game cache
 export type PrivateGamePlayerState = {
-    boardState: BoardState,
+    boardState: PrivateBoardState,
     currentStreak: number,
     activeMultiplier: number,
     multiplierEndsAt: string | null,

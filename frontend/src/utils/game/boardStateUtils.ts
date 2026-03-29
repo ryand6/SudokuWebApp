@@ -1,6 +1,6 @@
-import type { BoardState } from "@/types/game/GameTypes";
+import type { PrivateBoardState } from "@/types/game/GameTypes";
 
-export function updateCellStateInBoardState(boardState: BoardState, rowIndex: number, colIndex: number, value: number, isRejected: boolean) {
+export function updateCellStateInBoardState(boardState: PrivateBoardState, rowIndex: number, colIndex: number, value: number, isRejected: boolean) {
     return boardState.map((row, r) => 
         r === rowIndex ? row.map((cell, c) => 
             c === colIndex

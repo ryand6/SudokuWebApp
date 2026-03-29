@@ -6,18 +6,20 @@ import { useGetGame } from "@/api/rest/game/query/useGetGame";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { useNavigate, useParams } from "react-router-dom";
 import { mapBoardToBlocks } from "@/utils/game/blockUtils";
-import type { CellCoordinates, CellHighlightDetails, CellState } from "@/types/game/GameTypes";
+import type { CellCoordinates, CellHighlightDetails, PrivateCellState } from "@/types/game/GameTypes";
 import { useGetGamePlayerState } from "@/api/rest/game/query/useGetGamePlayerState";
 import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
 import { useHandleGameWsSubscriptions } from "@/hooks/game/useHandleGameWsSubscriptions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHighlightedCells";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
 import { UserActionBar } from "@/components/game/UserActionBar";
 import { GameNotificationLayer } from "@/components/game/GameNotificationLayer";
+import { resolveBoardState } from "@/utils/game/GameUtils";
+
 
 export function GamePage() {
 
@@ -54,8 +56,9 @@ export function GamePage() {
     
     if (!publicGameState || !currentUser || !privateGameState) return null;    
 
-    // map board to sudoku blocks 
-    //const sudokuBlocks: CellState[][] = mapBoardToBlocks(gameState.gameStates[currentUser.id]);
+    const boardState = useMemo(() => {
+        return resolveBoardState(publicGameState.gameMode, publicGameState.sharedGameState.currentSharedBoardState, privateGameState.boardState);
+    }, [publicGameState.gameMode, publicGameState.sharedGameState.currentSharedBoardState, privateGameState.boardState]);
 
     return (
         <div>
@@ -66,7 +69,7 @@ export function GamePage() {
                     <SudokuBoard 
                         gameId={publicGameState.gameId}
                         userId={currentUser.id}
-                        boardState={privateGameState.boardState} 
+                        boardState={boardState} 
                         gamePlayers={publicGameState.players}
                         gameHighlightedCells={gameHighlightedCells}
                         setGameHighlightedCells={setGameHighlightedCells} 

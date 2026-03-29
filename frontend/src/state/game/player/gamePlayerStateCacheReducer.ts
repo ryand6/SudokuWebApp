@@ -1,4 +1,4 @@
-import type { CellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
+import type { PrivateCellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GamePlayerStateEvent } from "../gameEvents";
 import { updateCellStateInBoardState } from "@/utils/game/boardStateUtils";
 import { notificationEmitter } from "@/utils/game/gameNotificationUtils";
@@ -12,7 +12,7 @@ export function gamePlayerStateCacheReducer(
     switch (event.type) {
         // Handles optimistic UI update prior to server validation
         case "CELL_UPDATE_SUBMITTED": {
-            const cacheState: CellState = existingData.boardState[event.row][event.col];
+            const cacheState: PrivateCellState = existingData.boardState[event.row][event.col];
             if (cacheState.value === String(event.value)) {
                 throw new CellUpdateValidationError("Inputted number already exists in cache");
             }
