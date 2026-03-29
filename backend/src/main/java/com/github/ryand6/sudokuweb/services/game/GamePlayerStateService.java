@@ -7,14 +7,12 @@ import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
+import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
 import com.github.ryand6.sudokuweb.domain.game.state.CellClaimEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.enums.GameEventType;
 import com.github.ryand6.sudokuweb.enums.GameMode;
-import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionAcceptedEvent;
-import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionInvalidEvent;
-import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionRejectedEvent;
-import com.github.ryand6.sudokuweb.events.types.game.CreateGameLogEvent;
+import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateOptimisticLockException;
 import com.github.ryand6.sudokuweb.util.ScoringTables;
@@ -102,15 +100,18 @@ public class GamePlayerStateService {
         gamePlayer.updateScore(scoreToBeApplied);
 
         if (gameMode == GameMode.TIMEATTACK) {
-            handleTimeAttackTimerDeduction(gamePlayer.getGameEntity());
+            int secondsToDeduct = handleTimeAttackTimerDeduction(gamePlayer.getGameEntity());
+            applicationEventPublisher.publishEvent(
+                    new TimeAttackCellUpdateSubmissionRejectedEvent(gameId, userId, new TimeAttackUpdate(row, col, value, scoreToBeApplied, secondsToDeduct, gamePlayerState.getCurrentStreak()))
+            );
+        } else {
+            applicationEventPublisher.publishEvent(
+                    new CellUpdateSubmissionRejectedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied, gamePlayerState.getCurrentStreak()))
+            );
         }
 
         applicationEventPublisher.publishEvent(
                 new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "received a score penalty"))
-        );
-
-        applicationEventPublisher.publishEvent(
-                new CellUpdateSubmissionRejectedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied))
         );
     }
 
@@ -144,15 +145,18 @@ public class GamePlayerStateService {
         gamePlayer.updateScore(scoreToBeApplied);
 
        if (gameMode == GameMode.TIMEATTACK) {
-           handleTimeAttackTimerDeduction(gamePlayer.getGameEntity());
+           int secondsToAdd = handleTimeAttackTimerAddition(gamePlayer.getGameEntity());
+           applicationEventPublisher.publishEvent(
+                   new TimeAttackCellUpdateSubmissionAcceptedEvent(gameId, userId, new TimeAttackUpdate(row, col, value, scoreToBeApplied, secondsToAdd, gamePlayerState.getCurrentStreak()))
+           );
+       } else {
+           applicationEventPublisher.publishEvent(
+                   new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied, gamePlayerState.getCurrentStreak()))
+           );
        }
 
         applicationEventPublisher.publishEvent(
                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "score increased"))
-        );
-
-        applicationEventPublisher.publishEvent(
-               new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied))
         );
 
        boolean isBoardComplete = gamePlayer.getGameEntity().isBoardStateShared()
@@ -196,16 +200,24 @@ public class GamePlayerStateService {
        }
    }
 
-   private void handleTimeAttackTimerDeduction(GameEntity game) {
-        game.removeSecondsFromGameEndTime(ScoringTables.timeAttackGameMode_RemovedSecondsOnIncorrectAnswer);
+   private int handleTimeAttackTimerDeduction(GameEntity game) {
+        int secondsToDeduct = ScoringTables.timeAttackGameMode_RemovedSecondsOnIncorrectAnswer;
+
+        game.removeSecondsFromGameEndTime(secondsToDeduct);
 
         // IMPLEMENT CALL TO SCHEDULER THAT UPDATES GAME END SCHEDULE
+
+       return secondsToDeduct;
    }
 
-    private void handleTimeAttackTimerAddition(GameEntity game) {
-        game.removeSecondsFromGameEndTime(ScoringTables.timeAttackGameMode_AddedSecondsOnCorrectAnswer);
+    private int handleTimeAttackTimerAddition(GameEntity game) {
+        int secondsToAdd = ScoringTables.timeAttackGameMode_AddedSecondsOnCorrectAnswer;
+
+        game.addSecondsToGameEndTime(secondsToAdd);
 
         // IMPLEMENT CALL TO SCHEDULER THAT UPDATES GAME END SCHEDULE
+
+        return secondsToAdd;
     }
 
     int determinePenalty(GameMode gameMode, Integer numberOfMistakesOnCell) {

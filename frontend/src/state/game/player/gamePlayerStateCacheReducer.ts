@@ -1,6 +1,7 @@
 import type { CellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GamePlayerStateEvent } from "../gameEvents";
 import { updateCellStateInBoardState } from "@/utils/game/boardStateUtils";
+import { notificationEmitter } from "@/utils/game/gameNotificationUtils";
 
 export class CellUpdateValidationError extends Error {}
 
@@ -22,19 +23,35 @@ export function gamePlayerStateCacheReducer(
             if (event.value < 1 || event.value > 9) {
                 throw new CellUpdateValidationError("Submitted value out of valid range 1 - 9");
             }
-            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value);
+            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, false);
             return {
                 ...existingData,
                 boardState: newBoard
             };
         }
         case "CELL_UPDATE_ACCEPTED": {
-            // IMPLEMENT
-            return existingData;
+            const prevStreak: number = existingData.currentStreak;
+            if (prevStreak !== event.currentStreak) {
+                emitStreakUpdate(prevStreak, event.currentStreak);
+            }
+            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, false);
+            return {
+                ...existingData,
+                currentStreak: event.currentStreak,
+                boardState: newBoard
+            };
         }
         case "CELL_UPDATE_REJECTED": {
-            // IMPLEMENT
-            return existingData;
+            const prevStreak: number = existingData.currentStreak;
+            if (prevStreak !== event.currentStreak) {
+                emitStreakUpdate(prevStreak, event.currentStreak);
+            }
+            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, true);
+            return {
+                ...existingData,
+                currentStreak: event.currentStreak,
+                boardState: newBoard
+            };
         }
         case "CELL_UPDATE_INVALID": {
             // IMPLEMENT
@@ -52,4 +69,19 @@ export function gamePlayerStateCacheReducer(
         default: 
             return existingData;
     }
+}
+
+function emitStreakUpdate(prevStreak: number, currentStreak: number) {
+    if (currentStreak === 1 || (prevStreak === 1 && currentStreak === 0)) return;
+
+    let message = "";
+
+    if (currentStreak === 0) {
+        message = "Streak Lost";
+    } else {
+        message = `x${currentStreak} Streak!`;
+    }
+
+    notificationEmitter.emit({ type: "streak", message: message });
+
 }

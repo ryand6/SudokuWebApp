@@ -2,9 +2,8 @@ package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
-import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionAcceptedEvent;
-import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionInvalidEvent;
-import com.github.ryand6.sudokuweb.events.types.game.CellUpdateSubmissionRejectedEvent;
+import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
+import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -47,6 +46,25 @@ public class GamePlayerStateWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleCellUpdateSubmissionRejected_TimeAttackGameMode(Long gameId, Long userId, TimeAttackUpdate timeAttackUpdate) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "CELL_UPDATE_REJECTED",
+                "payload", timeAttackUpdate
+        );
+        String topic = "/topic/game/" + gameId + "/user/" + userId;
+
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
+    public void handleCellUpdateSubmissionAccepted_TimeAttackGameMode(Long gameId, Long userId, TimeAttackUpdate timeAttackUpdate) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "CELL_UPDATE_ACCEPTED",
+                "payload", timeAttackUpdate
+        );
+        String topic = "/topic/game/" + gameId + "/user/" + userId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handleCellUpdateSubmissionInvalidEvent(CellUpdateSubmissionInvalidEvent event) {
         handleCellUpdateSubmissionInvalid(event.getGameId(), event.getUserId(), event.getCellValueUpdate());
@@ -60,6 +78,16 @@ public class GamePlayerStateWebSocketsService {
     @EventListener
     void handleCellUpdateSubmissionAcceptedEvent(CellUpdateSubmissionAcceptedEvent event) {
         handleCellUpdateSubmissionAccepted(event.getGameId(), event.getUserId(), event.getCellValueAndScoreUpdate());
+    }
+
+    @EventListener
+    void handleCellUpdateSubmissionRejectedEvent_TimeAttackGameMode(TimeAttackCellUpdateSubmissionRejectedEvent event) {
+        handleCellUpdateSubmissionRejected_TimeAttackGameMode(event.getGameId(), event.getUserId(), event.getTimeAttackUpdate());
+    }
+
+    @EventListener
+    void handleCellUpdateSubmissionAcceptedEvent_TimeAttackGameMode(TimeAttackCellUpdateSubmissionAcceptedEvent event) {
+        handleCellUpdateSubmissionAccepted_TimeAttackGameMode(event.getGameId(), event.getUserId(), event.getTimeAttackUpdate());
     }
 
 }

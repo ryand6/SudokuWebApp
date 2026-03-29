@@ -17,6 +17,7 @@ import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHig
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
 import { UserActionBar } from "@/components/game/UserActionBar";
+import { GameNotificationLayer } from "@/components/game/GameNotificationLayer";
 
 export function GamePage() {
 
@@ -35,7 +36,6 @@ export function GamePage() {
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
 
     useGetGameHighlightedCells(gameIdNum, currentUser?.id, setGameHighlightedCells);
-    
 
     // CREATE FUNCTION - gets game data from server, includes game state data for each player
     const {data: publicGameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
@@ -51,12 +51,6 @@ export function GamePage() {
     useHandleGameWsSubscriptions(gameId, currentUser?.id, queryClient, navigate, setGameHighlightedCells);
 
     if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
-
-    console.log("GAME DATA: ", publicGameState);
-
-    console.log("GAME STATE DATA: ", privateGameState);
-
-    console.log("GAME HIGHLIGHTED CELLS: ", gameHighlightedCells);
     
     if (!publicGameState || !currentUser || !privateGameState) return null;    
 
@@ -65,6 +59,7 @@ export function GamePage() {
 
     return (
         <div>
+            <GameNotificationLayer />
             GAME PAGE
             <div className="flex justify-center">
                 <div className="flex flex-col">

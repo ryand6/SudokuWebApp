@@ -8,9 +8,10 @@ import com.github.ryand6.sudokuweb.events.types.game.GameLogSendEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameEventSequenceNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEventEntityDtoMapper;
 import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -63,6 +64,7 @@ public class GameEventService {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void handleCreateGameEvent(CreateGameLogEvent event) {
         createGameEvent(event.getGameId(), event.getUserId(), event.getGameEventRequest());
     }

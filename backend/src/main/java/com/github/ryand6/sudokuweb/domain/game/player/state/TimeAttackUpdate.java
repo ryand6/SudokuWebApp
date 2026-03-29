@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class CellValueAndScoreUpdate {
+public class TimeAttackUpdate {
 
     private int row;
 
@@ -18,6 +18,8 @@ public class CellValueAndScoreUpdate {
     private int value;
 
     private int scoreUpdate;
+
+    private int timerUpdate;
 
     private int currentStreak;
 

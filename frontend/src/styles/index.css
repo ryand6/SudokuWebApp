@@ -130,21 +130,41 @@
   */ 
   --animate-fill-cell: fill-cell 1500ms ease-in-out 1;
 
+  --animate-float-up: float-up 2000ms ease-out forwards;
+
   @keyframes fill-cell {
     50% {
-        /* transform: scale(1.5); */
-        z-index: 100;
-        color: #d4af37;
-        font-size: 30px;
-        font-weight: bold;
-        border-style: inset;
-        border-width: 5px;
-        border-color: #d4af37
+      /* transform: scale(1.5); */
+      z-index: 100;
+      color: #d4af37;
+      font-size: 30px;
+      font-weight: bold;
+      border-style: inset;
+      border-width: 5px;
+      border-color: #d4af37
     }
     100% {
       transform: none;
       /* color: #000; */
       font-weight: normal;
+    }
+  }
+
+  @keyframes float-up {
+    0%   { 
+      opacity: 0; 
+      transform: translateY(0); 
+    }
+    15%  { 
+      opacity: 1; 
+    }
+    85%  { 
+      opacity: 1; 
+      transform: translateY(-2.5rem); 
+    }
+    100% { 
+      opacity: 0; 
+      transform: translateY(-3.5rem); 
     }
   }
 }

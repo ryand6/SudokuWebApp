@@ -7,7 +7,8 @@ const SudokuCell = React.memo(function SudokuCell(
         row, 
         col, 
         value, 
-        notes, 
+        notes,
+        isRejected, 
         playerColour,
         isSelected,
         isInRow,
@@ -21,7 +22,8 @@ const SudokuCell = React.memo(function SudokuCell(
         row: number, 
         col: number, 
         value: string | undefined, 
-        notes: number, 
+        notes: number,
+        isRejected: boolean, 
         playerColour: PlayerColour,
         isSelected: boolean, 
         isInRow: boolean,
@@ -49,6 +51,7 @@ const SudokuCell = React.memo(function SudokuCell(
                         ${(isHovered && !isSelected) && playerColourClassName.medium}
                         ${isSelected ? playerColourClassName.strong : "bg-primary-foreground"}
                         ${isSameNumber ? "font-extrabold text-2xl" : "font-semibold text-xl"}
+                        ${isRejected ? "text-red-500 text-2xl" : "text-black"}
                         ${className}`}
             style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}
         >

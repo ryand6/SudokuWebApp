@@ -52,6 +52,6 @@ public class ScoringTables {
 
     public static final int timeAttackGameMode_AddedSecondsOnCorrectAnswer = 5;
 
-    public static final int timeAttackGameMode_RemovedSecondsOnIncorrectAnswer = 8;
+    public static final int timeAttackGameMode_RemovedSecondsOnIncorrectAnswer = -8;
 
 }

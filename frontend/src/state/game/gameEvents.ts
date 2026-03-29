@@ -32,13 +32,24 @@ export type GamePlayerStateEvent =
         value: number
       }
     | {
-        type: "CELL_UPDATE_ACCEPTED"
+        type: "CELL_UPDATE_ACCEPTED",
+        row: number,
+        col: number,
+        value: number,
+        currentStreak: number
       }
     | {
-        type: "CELL_UPDATE_REJECTED"
+        type: "CELL_UPDATE_REJECTED",
+        row: number,
+        col: number,
+        value: number,
+        currentStreak: number
       }
     | {
-        type: "CELL_UPDATE_INVALID"
+        type: "CELL_UPDATE_INVALID",
+        row: number,
+        col: number,
+        value: number
       }
     | {
         type: "NOTE_UPDATE"

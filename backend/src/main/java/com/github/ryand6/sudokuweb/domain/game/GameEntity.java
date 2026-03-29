@@ -151,7 +151,6 @@ public class GameEntity {
     public List<PlayerColour> getShuffledPlayerColours() {
         // Get list of player colour enums
         PlayerColour[] playerColours = PlayerColour.values();
-        int playerColoursCount = playerColours.length;
         List<PlayerColour> colourList = Arrays.asList(playerColours);
         // Randomise order
         Collections.shuffle(colourList);
@@ -163,6 +162,7 @@ public class GameEntity {
     }
 
     public void removeSecondsFromGameEndTime(int seconds) {
+        seconds = Math.abs(seconds);
         gameEndsAt = gameEndsAt.minusSeconds(seconds).isAfter(Instant.now())
                 ? gameEndsAt.minusSeconds(seconds)
                 : Instant.now();

@@ -56,6 +56,7 @@ export function SudokuBoard(
                                 col={c} 
                                 value={cell.value}
                                 notes={cell.notes}
+                                isRejected={cell.isRejected}
                                 playerColour={gamePlayers[userId].colour}
                                 isSelected={
                                     r === playerHighlightedCell?.row && c === playerHighlightedCell?.col
