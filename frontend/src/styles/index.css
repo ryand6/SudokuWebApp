@@ -130,7 +130,7 @@
   */ 
   --animate-fill-cell: fill-cell 1500ms ease-in-out 1;
 
-  --animate-float-up: float-up 2000ms ease-out forwards;
+  --animate-float-up: float-up 5000ms ease-out forwards;
 
   @keyframes fill-cell {
     50% {
@@ -152,14 +152,17 @@
 
   @keyframes float-up {
     0%   { 
-      opacity: 0; 
+      opacity: 1; 
       transform: translateY(0); 
     }
     15%  { 
-      opacity: 1; 
+      opacity: 0.85; 
+    }
+    50% {
+      opacity: 0.5;
     }
     85%  { 
-      opacity: 1; 
+      opacity: 0.15; 
       transform: translateY(-2.5rem); 
     }
     100% { 

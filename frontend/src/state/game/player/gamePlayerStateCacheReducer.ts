@@ -57,6 +57,13 @@ export function gamePlayerStateCacheReducer(
             // IMPLEMENT
             return existingData;
         }
+        case "STREAK_RESET": {
+            notificationEmitter.emit({ type: "streak", message: "Streak Lost" });
+            return {
+                ...existingData,
+                currentStreak: 0
+            }
+        }
         // Handles optimistic UI update prior to server validation
         case "NOTE_UPDATE": {
             // IMPLEMENT 

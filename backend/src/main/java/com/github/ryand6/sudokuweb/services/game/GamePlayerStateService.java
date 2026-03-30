@@ -299,6 +299,10 @@ public class GamePlayerStateService {
             applicationEventPublisher.publishEvent(
                     new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.STREAK_UPDATE, "streak reset"))
             );
+
+            applicationEventPublisher.publishEvent(
+                    new PlayerStreakResetEvent(gameId, userId)
+            );
         }
 
         gamePlayerState.resetCurrentStreak();

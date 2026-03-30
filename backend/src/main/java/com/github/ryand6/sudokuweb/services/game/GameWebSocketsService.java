@@ -54,7 +54,7 @@ public class GameWebSocketsService {
 
     public void handleCellAcceptedPublicUpdate(Long gameId, CellAcceptedPublicUpdate cellAcceptedPublicUpdate) {
         Map<String, Object> messageHeader = Map.of(
-                "type", "PLAYER_CELL_UPDATE_REJECTED",
+                "type", "PLAYER_CELL_UPDATE_ACCEPTED",
                 "payload", cellAcceptedPublicUpdate
         );
         String topic = "/topic/game/" + gameId;

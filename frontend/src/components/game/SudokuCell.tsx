@@ -38,10 +38,8 @@ const SudokuCell = React.memo(function SudokuCell(
     }
 ) {
     const playerColourClassName = playerColourClassNamePicker[playerColours[userId]];
-
-    const baseBackground = cellOwnership !== undefined ? playerColourClassNamePicker[playerColours[cellOwnership]] : "bg-primary-foreground";
-
     const [isHovered, setIsHovered] = useState(false);
+    const isInUnit: boolean = (isInRow || isInCol || isInBlock);
 
     return (
         <div 
@@ -51,9 +49,10 @@ const SudokuCell = React.memo(function SudokuCell(
             className={`w-full h-full flex items-center justify-center 
                         cursor-pointer box-border
                         animate-fill-cell 
-                        ${(isInRow || isInCol || isInBlock) && !isSelected && !isHovered ? playerColourClassName.light : baseBackground}
+                        ${cellOwnership && !isSelected && !isHovered && !isInUnit ? playerColourClassNamePicker[playerColours[cellOwnership]].medium : "bg-primary-foreground"}
+                        ${(isInUnit && !isSelected && !isHovered) && playerColourClassName.light}
                         ${(isHovered && !isSelected) && playerColourClassName.medium}
-                        ${isSelected ? playerColourClassName.strong : baseBackground}
+                        ${isSelected && playerColourClassName.strong}
                         ${isSameNumber ? "font-extrabold text-2xl" : "font-semibold text-xl"}
                         ${isRejected ? "text-red-500 text-2xl" : "text-black"}
                         ${className}`}

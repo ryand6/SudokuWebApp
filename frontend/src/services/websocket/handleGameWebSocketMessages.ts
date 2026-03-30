@@ -12,6 +12,9 @@ export function handleGameWebSocketMessages(
     navigate: NavigateFunction,
     setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
 ) {
+
+    console.log(message);
+
     switch (message.type) {
         case "PLAYER_CELL_UPDATE_ACCEPTED": {
             gameCacheDispatcher(queryClient, gameId, {

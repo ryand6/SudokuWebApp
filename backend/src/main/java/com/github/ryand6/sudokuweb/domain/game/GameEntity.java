@@ -92,7 +92,7 @@ public class GameEntity {
                 .plusSeconds(MAX_WAIT_SECONDS)
                 .plusSeconds(GAME_COUNTDOWN_SECONDS);
 
-        if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null) {
+        if (lobbyEntity != null && !lobbyEntity.getLobbySettingsEntity().getTimeLimit().isUnlimited()) {
             gameEndsAt = gameStartsAt.plusSeconds(
                     lobbyEntity.getLobbySettingsEntity()
                             .getTimeLimit()

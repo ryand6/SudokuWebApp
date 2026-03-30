@@ -63,6 +63,9 @@ export type GamePlayerStateEvent =
         value: number
       }
     | {
+        type: "STREAK_RESET"
+      }
+    | {
         type: "NOTE_UPDATE"
       }
     | {

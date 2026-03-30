@@ -67,6 +67,14 @@ public class GamePlayerStateWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handlePlayerStreakReset(Long gameId, Long userId) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "STREAK_RESET"
+        );
+        String topic = "/topic/game/" + gameId + "/user/" + userId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionInvalidEvent(CellUpdateSubmissionInvalidEvent event) {
         handleCellUpdateSubmissionInvalid(event.getGameId(), event.getUserId(), event.getCellValueUpdate());
@@ -90,6 +98,11 @@ public class GamePlayerStateWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionAcceptedEvent_TimeAttackGameMode(TimeAttackCellUpdateSubmissionAcceptedEvent event) {
         handleCellUpdateSubmissionAccepted_TimeAttackGameMode(event.getGameId(), event.getUserId(), event.getTimeAttackUpdate());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handlePlayerStreakResetEvent(PlayerStreakResetEvent event) {
+        handlePlayerStreakReset(event.getGameId(), event.getUserId());
     }
 
 }

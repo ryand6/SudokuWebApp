@@ -3,9 +3,6 @@ import { notificationEmitter } from "@/utils/game/gameNotificationUtils";
 import type { QueryClient } from "@tanstack/react-query";
 
 export function handleGamePlayerStateWebSocketMessages(message: any, queryClient: QueryClient, gameId: number, userId: number) {
-
-    console.log(message);
-
     switch (message.type) {
         case "CELL_UPDATE_ACCEPTED": {
             gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
@@ -32,10 +29,13 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
             break;
         }
         case "CELL_UPDATE_INVALID": {
-
-            console.log("UPDATE INVALID!");
-
             // Add logging details
+            break;
+        }
+        case "STREAK_RESET": {
+            gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
+                type: "STREAK_RESET"
+            })
             break;
         }
         case "NOTE_UPDATE": {
