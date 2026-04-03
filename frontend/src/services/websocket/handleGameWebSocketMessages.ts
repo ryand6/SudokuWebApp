@@ -22,6 +22,7 @@ export function handleGameWebSocketMessages(
                 userId: message.payload.userId,
                 score: message.payload.score,
                 firsts: message.payload.firsts,
+                maxStreak: message.payload.maxStreak,
                 gameEndsAt: message.payload.gameEndsAt,
                 row: message.payload.row,
                 col: message.payload.col,

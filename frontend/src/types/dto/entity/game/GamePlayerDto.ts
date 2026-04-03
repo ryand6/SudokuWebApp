@@ -9,6 +9,7 @@ export type GamePlayerDto = {
     score: number,
     firsts: number,
     mistakes: number,
+    maxStreak: number,
     gameLoaded: boolean,
     gameResult: GameResult
 }

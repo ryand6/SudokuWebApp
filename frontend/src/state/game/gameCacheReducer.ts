@@ -13,6 +13,8 @@ export function gameCacheReducer(
             const updatedBoardProgress = [...existingData.players[event.userId].boardProgress];
             updatedBoardProgress[cellIndex] = true;
 
+            console.log("EVENT: ", event);
+
             return {
                 ...existingData,
                 players: {
@@ -21,6 +23,7 @@ export function gameCacheReducer(
                         ...existingData.players[event.userId],
                         score: event.score,
                         firsts: event.firsts,
+                        maxStreak: event.maxStreak,
                         boardProgress: updatedBoardProgress
                     }
                 },

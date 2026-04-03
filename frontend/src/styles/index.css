@@ -260,6 +260,34 @@
   .player-colour-purple-light {
     background-color: rgb(242, 228, 248);
   }
+
+  .elevated {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.527) 0%,
+      rgba(150, 150, 216, 0.349) 50%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
+    /* backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); */
+
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.18),
+      0 2px 8px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+
+  }
+
+  .divider {
+    width: 1px;
+    height: calc(100% - 8px); /* controls the gap — adjust 32px to taste */
+    align-self: center;
+    background: #333;
+  }
+
 }
 
 

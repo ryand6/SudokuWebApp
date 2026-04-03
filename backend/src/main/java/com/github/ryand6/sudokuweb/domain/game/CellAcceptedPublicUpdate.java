@@ -19,6 +19,8 @@ public class CellAcceptedPublicUpdate {
 
     private Integer firsts;
 
+    private Integer maxStreak;
+
     private Instant gameEndsAt;
 
     private int row;

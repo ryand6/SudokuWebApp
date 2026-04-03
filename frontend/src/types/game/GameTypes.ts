@@ -39,6 +39,7 @@ export type GamePlayer = {
     score: number,
     firsts: number,
     mistakes: number,
+    maxStreak: number,
     gameLoaded: boolean,
     gameResult: GameResult
 };

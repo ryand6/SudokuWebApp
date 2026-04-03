@@ -165,7 +165,7 @@ public class GamePlayerStateService {
        }
 
        applicationEventPublisher.publishEvent(
-               new CellAcceptedPublicUpdateEvent(gameId, new CellAcceptedPublicUpdate(userId, gamePlayer.getScore(), gamePlayer.getFirsts(), gamePlayer.getGameEntity().getGameEndsAt(), row, col, gamePlayer.getGameEntity().getSharedGameStateEntity().getFirstOwnership(cellIndex)))
+               new CellAcceptedPublicUpdateEvent(gameId, new CellAcceptedPublicUpdate(userId, gamePlayer.getScore(), gamePlayer.getFirsts(), gamePlayer.getMaxStreak(), gamePlayer.getGameEntity().getGameEndsAt(), row, col, gamePlayer.getGameEntity().getSharedGameStateEntity().getFirstOwnership(cellIndex)))
        );
 
        applicationEventPublisher.publishEvent(

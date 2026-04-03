@@ -6,6 +6,7 @@ export type GameEvent =
         userId: number,
         score: number,
         firsts: number,
+        maxStreak: number,
         gameEndsAt: string,
         row: number,
         col: number,

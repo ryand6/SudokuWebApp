@@ -18,7 +18,8 @@ import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameH
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
 import { UserActionBar } from "@/components/game/UserActionBar";
 import { GameNotificationLayer } from "@/components/game/GameNotificationLayer";
-import { resolveBoardState } from "@/utils/game/GameUtils";
+import { resolveBoardState } from "@/utils/game/gameUtils";
+import { GameHUD } from "@/components/game/GameHUD";
 
 
 export function GamePage() {
@@ -60,12 +61,25 @@ export function GamePage() {
     
     if (!publicGameState || !currentUser || !privateGameState || !boardState) return null;    
 
+    console.log("PUBLIC GAME STATE", publicGameState);
+
+    console.log("PRIVATE GAME STATE", privateGameState);
+
+    console.log("BOARD STATE", boardState);
+
     return (
         <div>
             <GameNotificationLayer />
             GAME PAGE
             <div className="flex justify-center">
                 <div className="flex flex-col">
+                    <GameHUD 
+                        userId={currentUser.id}
+                        gamePlayers={publicGameState.players} 
+                        difficulty={publicGameState.difficulty}
+                        gameMode={publicGameState.gameMode}
+                        currentStreak={privateGameState.currentStreak} 
+                    />
                     <SudokuBoard 
                         gameId={publicGameState.gameId}
                         userId={currentUser.id}

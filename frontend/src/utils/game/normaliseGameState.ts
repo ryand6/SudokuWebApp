@@ -21,6 +21,7 @@ export function normalisePublicGameData(
             score: gp.score,
             firsts: gp.firsts,
             mistakes: gp.mistakes,
+            maxStreak: gp.maxStreak,
             gameLoaded: gp.gameLoaded,
             gameResult: gp.gameResult
         };

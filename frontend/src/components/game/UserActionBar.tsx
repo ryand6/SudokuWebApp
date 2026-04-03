@@ -59,7 +59,7 @@ export function UserActionBar(
     return (
         <div 
             className="flex flex-row justify-between 
-                        p-1 border-2 rounded border-border bg-primary-foreground"
+                        p-1 border-2 rounded-sm border-border bg-primary-foreground"
         >
             {numberInputArray.map((num, index) => {
                 return (

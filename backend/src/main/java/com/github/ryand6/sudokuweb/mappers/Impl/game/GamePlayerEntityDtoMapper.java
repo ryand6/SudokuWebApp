@@ -25,6 +25,7 @@ public class GamePlayerEntityDtoMapper implements EntityDtoMapper<GamePlayerEnti
                 .score(gamePlayer.getScore())
                 .firsts(gamePlayer.getFirsts())
                 .mistakes(gamePlayer.getMistakes())
+                .maxStreak(gamePlayer.getMaxStreak())
                 .gameLoaded(gamePlayer.isGameLoaded())
                 .gameResult(gamePlayer.getGameResult())
                 .build();
