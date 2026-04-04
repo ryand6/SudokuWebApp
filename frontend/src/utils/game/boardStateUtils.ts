@@ -1,4 +1,4 @@
-import type { PrivateBoardState } from "@/types/game/GameTypes";
+import type { PrivateBoardState, PrivateCellState } from "@/types/game/GameTypes";
 
 export function updateCellStateInBoardState(boardState: PrivateBoardState, rowIndex: number, colIndex: number, value: number, isRejected: boolean) {
     return boardState.map((row, r) => 
@@ -7,4 +7,8 @@ export function updateCellStateInBoardState(boardState: PrivateBoardState, rowIn
             ? {...cell, value: String(value), isRejected: isRejected} // optimistically set isRejected to false - will be overwritten if the server rejects
             : cell)
         : row);
+}
+
+export function getCellState(boardState: PrivateBoardState, row: number, col: number): PrivateCellState {
+    return boardState[row][col];
 }

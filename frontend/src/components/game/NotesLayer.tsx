@@ -1,4 +1,5 @@
-import { getCellIndex } from "@/utils/game/cellUtils";
+import type { PlayerColour } from "@/types/enum/PlayerColour";
+import { getCellIndex, playerColourClassNamePicker } from "@/utils/game/cellUtils";
 import { hasNote } from "@/utils/game/noteUtils";
 import React from "react";
 
@@ -10,7 +11,9 @@ const NotesLayer = React.memo(function NotesLayer(
         notes,
         userId,
         isRejected,
-        notesModeOn
+        notesModeOn,
+        highlightedCellNumber,
+        playerColour
     }: {
         row: number, 
         col: number, 
@@ -18,10 +21,13 @@ const NotesLayer = React.memo(function NotesLayer(
         notes: number,
         userId: number,
         isRejected: boolean,
-        notesModeOn: boolean 
+        notesModeOn: boolean,
+        highlightedCellNumber: string | undefined,
+        playerColour: PlayerColour
     }
 ) {
     const notesAllowed: boolean = !value || isRejected;
+    const highlightedNumberClassName = "rounded-b-full m-1" + playerColourClassNamePicker[playerColour].light;
 
     return (
         <div className="fixed pointer-events-none m-2 z-10">
@@ -35,9 +41,10 @@ const NotesLayer = React.memo(function NotesLayer(
                             return (
                                 <div 
                                     key={`${r}-${c}`}
-                                    className={`${!notesModeOn && 'text-gray-500 text-opacity-50'}`}
+                                    className={`${!notesModeOn && 'text-gray-500 text-opacity-50'}
+                                                ${(Number(highlightedCellNumber) === note) && notePresent && highlightedNumberClassName}`}
                                 >
-                                    { notePresent ?? note }
+                                    { notePresent && note }
                                 </div>
                             )
                         })

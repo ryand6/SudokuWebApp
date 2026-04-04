@@ -33,7 +33,8 @@ export function updateGameHighlightedCellsAndSendWsUpdate(
   gameId: number, 
   userId: number, 
   gameHighlightedCells: Map<number, CellCoordinates> | undefined, 
-  cellCoordinates: CellCoordinates) {
+  cellCoordinates: CellCoordinates
+) {
   const updatedGameHighlightedCells = updateGameHighlightedCells(userId, gameHighlightedCells, cellCoordinates);
   sendPlayerHighlightedCellUpdate(send, gameId, userId, cellCoordinates.row, cellCoordinates.col);
   return updatedGameHighlightedCells;

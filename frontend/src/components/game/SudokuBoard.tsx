@@ -5,6 +5,7 @@ import { isCellInSameBlock } from "@/utils/game/blockUtils";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { getCellIndex, updateGameHighlightedCellsAndSendWsUpdate } from "@/utils/game/cellUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
+import NotesLayer from "./NotesLayer";
 
 
 export function SudokuBoard(
@@ -56,27 +57,41 @@ export function SudokuBoard(
                         const cellIndex: number = getCellIndex(r, c);
 
                         return (
-                            <SudokuCell 
-                                key={`${r}-${c}`}
-                                row={r} 
-                                col={c} 
-                                value={cell.value}
-                                userId={userId}
-                                notes={cell.notes}
-                                isRejected={cell.isRejected}
-                                playerColours={playerColours}
-                                isSelected={r === playerHighlightedCell?.row && c === playerHighlightedCell?.col}
-                                isInRow={r === playerHighlightedCell?.row}
-                                isInCol={c === playerHighlightedCell?.col}
-                                isInBlock={isCellInSameBlock(r, c, playerHighlightedCell)}
-                                isSameNumber={playerHighlightedCell ? boardState[r][c].value === boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : false}
-                                cellOwnership={cellFirstOwnership[cellIndex]}
-                                onSelect={handleCellSelect}
+                            <div>
+                                <NotesLayer 
+                                    key={`${r}-${c}`}
+                                    row={r} 
+                                    col={c} 
+                                    value={cell.value}
+                                    userId={userId}
+                                    notes={cell.notes}
+                                    isRejected={cell.isRejected}
+                                    notesModeOn={notesModeOn}
+                                    highlightedCellNumber={playerHighlightedCell ? boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : undefined}
+                                    playerColour={playerColours[userId]}
+                                />
+                                <SudokuCell 
+                                    key={`${r}-${c}`}
+                                    row={r} 
+                                    col={c} 
+                                    value={cell.value}
+                                    userId={userId}
+                                    notes={cell.notes}
+                                    isRejected={cell.isRejected}
+                                    playerColours={playerColours}
+                                    isSelected={r === playerHighlightedCell?.row && c === playerHighlightedCell?.col}
+                                    isInRow={r === playerHighlightedCell?.row}
+                                    isInCol={c === playerHighlightedCell?.col}
+                                    isInBlock={isCellInSameBlock(r, c, playerHighlightedCell)}
+                                    isSameNumber={playerHighlightedCell ? boardState[r][c].value === boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : false}
+                                    cellOwnership={cellFirstOwnership[cellIndex]}
+                                    onSelect={handleCellSelect}
 
-                                className={`
-                                    ${borderTop} ${borderLeft} ${borderBottom} ${borderRight}
-                                `}
-                            />
+                                    className={`
+                                        ${borderTop} ${borderLeft} ${borderBottom} ${borderRight}
+                                    `}
+                                />
+                            </div> 
                         )
                     }
                 ))}

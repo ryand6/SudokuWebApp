@@ -2,7 +2,8 @@ import { submitCellUpdate } from "@/api/ws/game/playerstate/submitCellUpdate";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { gamePlayerStateCacheDispatcher } from "@/state/game/player/gamePlayerStateCacheDispatcher";
 import { CellUpdateValidationError } from "@/state/game/player/gamePlayerStateCacheReducer";
-import type { CellCoordinates } from "@/types/game/GameTypes";
+import type { CellCoordinates, PrivateCellState } from "@/types/game/GameTypes";
+import { hasNote } from "@/utils/game/noteUtils";
 import type { QueryClient } from "@tanstack/react-query";
 import { useCallback, type Dispatch, type SetStateAction } from "react";
 
@@ -12,6 +13,7 @@ export function UserActionBar(
         userId,
         initialBoardState,
         playerHighlightedCell,
+        highlightedCellState,
         notesModeOn,
         setNotesModeOn,
         queryClient
@@ -20,6 +22,7 @@ export function UserActionBar(
         userId: number,
         initialBoardState: string,
         playerHighlightedCell: CellCoordinates | undefined,
+        highlightedCellState: PrivateCellState | undefined,
         notesModeOn: boolean,
         setNotesModeOn: Dispatch<SetStateAction<boolean>>
         queryClient: QueryClient
@@ -62,10 +65,12 @@ export function UserActionBar(
                         p-1 border-2 rounded-sm border-border bg-primary-foreground"
         >
             {numberInputArray.map((num, index) => {
+                const noteActive: boolean = notesModeOn && highlightedCellState !== undefined && hasNote(highlightedCellState.notes, num);
                 return (
                     <div 
                         onClick={() => onNumberInputClick(num, playerHighlightedCell, notesModeOn)}
-                        className="flex justify-center p-6 text-4xl hover:bg-sidebar-primary rounded cursor-pointer"
+                        className={`flex justify-center p-6 text-4xl hover:bg-sidebar-primary rounded cursor-pointer
+                                    ${noteActive && 'bg-sidebar-primary'}`}
                         key={index}    
                     >
                         {num}

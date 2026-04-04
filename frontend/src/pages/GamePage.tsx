@@ -20,6 +20,7 @@ import { UserActionBar } from "@/components/game/UserActionBar";
 import { GameNotificationLayer } from "@/components/game/GameNotificationLayer";
 import { resolveBoardState } from "@/utils/game/gameUtils";
 import { GameHUD } from "@/components/game/GameHUD";
+import { getCellState } from "@/utils/game/boardStateUtils";
 
 
 export function GamePage() {
@@ -61,6 +62,8 @@ export function GamePage() {
     
     if (!publicGameState || !currentUser || !privateGameState || !boardState) return null;    
 
+    const userHighlightedCell: CellCoordinates | undefined = gameHighlightedCells?.get(currentUser.id);
+
     console.log("PUBLIC GAME STATE", publicGameState);
 
     console.log("PRIVATE GAME STATE", privateGameState);
@@ -87,14 +90,15 @@ export function GamePage() {
                         gamePlayers={publicGameState.players}
                         cellFirstOwnership={publicGameState.sharedGameState.cellFirstOwnership}
                         gameHighlightedCells={gameHighlightedCells}
-                        setGameHighlightedCells={setGameHighlightedCells} 
+                        setGameHighlightedCells={setGameHighlightedCells}
                         notesModeOn={notesModeOn}
                     />
                     <UserActionBar 
                         gameId={publicGameState.gameId}
                         userId={currentUser.id}
                         initialBoardState={publicGameState.initialBoardState}
-                        playerHighlightedCell={gameHighlightedCells?.get(currentUser.id)}
+                        playerHighlightedCell={userHighlightedCell}
+                        highlightedCellState={userHighlightedCell ? getCellState(privateGameState.boardState, userHighlightedCell.row, userHighlightedCell.col) : undefined}
                         notesModeOn={notesModeOn}
                         setNotesModeOn={setNotesModeOn}
                         queryClient={queryClient}

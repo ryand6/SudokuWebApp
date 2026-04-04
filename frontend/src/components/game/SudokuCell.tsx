@@ -1,6 +1,6 @@
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { onHoverHandler, onLeaveHandler, playerColourClassNamePicker } from "@/utils/game/cellUtils";
-import React, { useState } from "react";
+import React, { useState, type Dispatch, type SetStateAction } from "react";
 
 const SudokuCell = React.memo(function SudokuCell(
     {
