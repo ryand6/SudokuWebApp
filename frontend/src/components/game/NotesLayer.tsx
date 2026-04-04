@@ -27,21 +27,21 @@ const NotesLayer = React.memo(function NotesLayer(
     }
 ) {
     const notesAllowed: boolean = !value || isRejected;
-    const highlightedNumberClassName = "rounded-b-full m-1" + playerColourClassNamePicker[playerColour].light;
+    const highlightedNumberClassName = "rounded-full " + playerColourClassNamePicker[playerColour].strong;
 
     return (
-        <div className="fixed pointer-events-none m-2 z-10">
-            <div className="grid grid-cols-3 grid-rows-3 w-auto h-auto">
+        <div className="absolute inset-0 pointer-events-none m-2 z-10 flex items-center justify-center">
+            <div className="grid grid-cols-3 grid-rows-3 w-full h-full">
                 {
                     notesAllowed && Array.from([0, 1, 2]).map((row, r) => 
                         Array.from([0, 1, 2]).map((col, c) => {
-                            const note = getCellIndex(row, col);
-                            const notePresent = hasNote(notes, note);
-                            
+                            const note = (row * 3) + col + 1;
+                            const notePresent = hasNote(notes, note);                            
                             return (
                                 <div 
                                     key={`${r}-${c}`}
-                                    className={`${!notesModeOn && 'text-gray-500 text-opacity-50'}
+                                    className={`aspect-square text-xs flex items-center justify-center 
+                                                ${!notesModeOn && 'text-gray-500 text-opacity-50'}
                                                 ${(Number(highlightedCellNumber) === note) && notePresent && highlightedNumberClassName}`}
                                 >
                                     { notePresent && note }

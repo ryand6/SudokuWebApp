@@ -58,20 +58,8 @@ export function SudokuBoard(
 
                         return (
                             <div>
-                                <NotesLayer 
-                                    key={`${r}-${c}`}
-                                    row={r} 
-                                    col={c} 
-                                    value={cell.value}
-                                    userId={userId}
-                                    notes={cell.notes}
-                                    isRejected={cell.isRejected}
-                                    notesModeOn={notesModeOn}
-                                    highlightedCellNumber={playerHighlightedCell ? boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : undefined}
-                                    playerColour={playerColours[userId]}
-                                />
                                 <SudokuCell 
-                                    key={`${r}-${c}`}
+                                    key={`cell${r}-${c}`}
                                     row={r} 
                                     col={c} 
                                     value={cell.value}
@@ -86,6 +74,8 @@ export function SudokuBoard(
                                     isSameNumber={playerHighlightedCell ? boardState[r][c].value === boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : false}
                                     cellOwnership={cellFirstOwnership[cellIndex]}
                                     onSelect={handleCellSelect}
+                                    notesModeOn={notesModeOn}
+                                    highlightedCellNumber={playerHighlightedCell ? boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : undefined}
 
                                     className={`
                                         ${borderTop} ${borderLeft} ${borderBottom} ${borderRight}

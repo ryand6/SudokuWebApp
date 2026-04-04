@@ -67,7 +67,10 @@ export type GamePlayerStateEvent =
         type: "STREAK_RESET"
       }
     | {
-        type: "NOTE_UPDATE"
+        type: "NOTE_UPDATE",
+        row: number,
+        col: number,
+        note: number
       }
     | {
         type: "SETTINGS_UPDATED"

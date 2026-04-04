@@ -1,9 +1,11 @@
 import type { PrivateCellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GamePlayerStateEvent } from "../gameEvents";
-import { updateCellStateInBoardState } from "@/utils/game/boardStateUtils";
+import { getCellState, updateCellStateInBoardState, updateNotesInBoardState } from "@/utils/game/boardStateUtils";
 import { notificationEmitter } from "@/utils/game/gameNotificationUtils";
+import { toggleNote } from "@/utils/game/noteUtils";
 
 export class CellUpdateValidationError extends Error {}
+export class NotesUpdateValidationError extends Error {}
 
 export function gamePlayerStateCacheReducer(
     existingData: PrivateGamePlayerState,
@@ -66,8 +68,18 @@ export function gamePlayerStateCacheReducer(
         }
         // Handles optimistic UI update prior to server validation
         case "NOTE_UPDATE": {
-            // IMPLEMENT 
-            return existingData;
+            if (event.note < 0 || event.note > 9) {
+                throw new NotesUpdateValidationError("Submitted note outside of valid range");
+            }
+            const updatedCellNotes = toggleNote(existingData.boardState[event.row][event.col].notes, event.note);
+            if (updatedCellNotes < 0 || updatedCellNotes > 511) {
+                throw new NotesUpdateValidationError("Submitted notes outside of valid range");
+            }
+            const newBoard = updateNotesInBoardState(existingData.boardState, event.row, event.col, updatedCellNotes);
+            return {
+                ...existingData,
+                boardState: newBoard
+            };
         }
         case "SETTINGS_UPDATED": {
             // IMPLEMENT

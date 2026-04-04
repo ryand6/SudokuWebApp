@@ -1,7 +1,7 @@
 import { submitCellUpdate } from "@/api/ws/game/playerstate/submitCellUpdate";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { gamePlayerStateCacheDispatcher } from "@/state/game/player/gamePlayerStateCacheDispatcher";
-import { CellUpdateValidationError } from "@/state/game/player/gamePlayerStateCacheReducer";
+import { CellUpdateValidationError, NotesUpdateValidationError } from "@/state/game/player/gamePlayerStateCacheReducer";
 import type { CellCoordinates, PrivateCellState } from "@/types/game/GameTypes";
 import { hasNote } from "@/utils/game/noteUtils";
 import type { QueryClient } from "@tanstack/react-query";
@@ -56,12 +56,29 @@ export function UserActionBar(
             return;
         } else {
             // IMPLEMENT NOTE SUBMISSION
+            try {
+                gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
+                    type: "NOTE_UPDATE",
+                    row: playerHighlightedCell.row,
+                    col: playerHighlightedCell.col,
+                    note: num
+                });
+            } catch (err) {
+                if (err instanceof NotesUpdateValidationError) {
+                    console.error("Invalid note submission due to input range: ", err);
+                    return;
+                }
+                console.error("Issue found when attempting NOTE_UPDATE: ", err);
+                return;
+            }
+            // IMPLEMENT SUBMIT NOTE UPDATE
+            return;
         }
     }, [gameId, userId, initialBoardState, queryClient, send]);
 
     return (
         <div 
-            className="flex flex-row justify-between 
+            className="flex flex-row justify-between gap-0.5
                         p-1 border-2 rounded-sm border-border bg-primary-foreground"
         >
             {numberInputArray.map((num, index) => {
@@ -70,7 +87,7 @@ export function UserActionBar(
                     <div 
                         onClick={() => onNumberInputClick(num, playerHighlightedCell, notesModeOn)}
                         className={`flex justify-center p-6 text-4xl hover:bg-sidebar-primary rounded cursor-pointer
-                                    ${noteActive && 'bg-sidebar-primary'}`}
+                                    ${noteActive && 'bg-ring'}`}
                         key={index}    
                     >
                         {num}
