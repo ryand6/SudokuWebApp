@@ -15,7 +15,8 @@ export function SudokuBoard(
         gamePlayers,
         cellFirstOwnership,
         gameHighlightedCells,
-        setGameHighlightedCells
+        setGameHighlightedCells,
+        notesModeOn
     }: {
         gameId: number,
         userId: number,
@@ -23,7 +24,8 @@ export function SudokuBoard(
         gamePlayers: GamePlayers,
         cellFirstOwnership: Record<number, number>,
         gameHighlightedCells: Map<number, CellCoordinates> | undefined,
-        setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
+        setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>,
+        notesModeOn: boolean
     }
 ) {
     const { send } = useWebSocketContext();

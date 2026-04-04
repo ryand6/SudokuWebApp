@@ -88,6 +88,7 @@ export function GamePage() {
                         cellFirstOwnership={publicGameState.sharedGameState.cellFirstOwnership}
                         gameHighlightedCells={gameHighlightedCells}
                         setGameHighlightedCells={setGameHighlightedCells} 
+                        notesModeOn={notesModeOn}
                     />
                     <UserActionBar 
                         gameId={publicGameState.gameId}
