@@ -1,6 +1,6 @@
 import type { PrivateCellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GamePlayerStateEvent } from "../gameEvents";
-import { getCellState, updateCellStateInBoardState, updateNotesInBoardState } from "@/utils/game/boardStateUtils";
+import { updateCellStateInBoardState, updateNotesInBoardState } from "@/utils/game/boardStateUtils";
 import { notificationEmitter } from "@/utils/game/gameNotificationUtils";
 import { toggleNote } from "@/utils/game/noteUtils";
 

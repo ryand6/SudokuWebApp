@@ -19,7 +19,7 @@ export function HUDStats(
                     <div className="flex">
                         <div 
                             className={`flex flex-col px-2 mx-2
-                                        ${userId === Number(key) && "elevated "}`}
+                                        ${userId === Number(key) && "elevated shine "}`}
                         >
                             <div className="flex gap-2">
                                 <div>

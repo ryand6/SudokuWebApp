@@ -55,7 +55,6 @@ export function UserActionBar(
             submitCellUpdate(send, gameId, userId, playerHighlightedCell.row, playerHighlightedCell.col, num);
             return;
         } else {
-            // IMPLEMENT NOTE SUBMISSION
             try {
                 gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
                     type: "NOTE_UPDATE",
@@ -78,7 +77,7 @@ export function UserActionBar(
 
     return (
         <div 
-            className="flex flex-row justify-between gap-0.5
+            className="flex flex-row items-center gap-2 h-auto max-h-[200px]
                         p-1 border-2 rounded-sm border-border bg-primary-foreground"
         >
             {numberInputArray.map((num, index) => {
@@ -86,8 +85,9 @@ export function UserActionBar(
                 return (
                     <div 
                         onClick={() => onNumberInputClick(num, playerHighlightedCell, notesModeOn)}
-                        className={`flex justify-center p-6 text-4xl hover:bg-sidebar-primary rounded cursor-pointer
-                                    ${noteActive && 'bg-ring'}`}
+                        className={`flex h-full justify-center items-center p-4 md:p-5 lg:p-6 text-2xl md:3-xl lg:text-4xl 
+                                    hover:bg-sidebar-primary rounded cursor-pointer elevated 
+                                    ${noteActive && 'shine'}`}
                         key={index}    
                     >
                         {num}
@@ -96,11 +96,11 @@ export function UserActionBar(
             })}
             <div 
                 onClick={() => setNotesModeOn(prev => !prev)}
-                className="flex justify-center p-6 text-2xl hover:bg-sidebar-primary rounded cursor-pointer">
+                className="flex justify-center items-center h-full p-4 md:p-5 lg:p-6 text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer">
                 {notesModeOn ? "Notes (on)" : "Notes (off)"}
             </div>
             <div
-                className="flex justify-center p-6 text-2xl hover:bg-sidebar-primary rounded cursor-pointer">
+                className="flex justify-center items-center h-full p-4 md:p-5 lg:p-6 text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer">
                 Clear
             </div>
         </div>

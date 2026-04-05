@@ -6,7 +6,7 @@ export function GameNotificationLayer() {
 
     return (
         <div 
-            className="fixed top-3.5 left-[50%] translate-x-[50%] 
+            className="fixed top-[1vh] left-[50%] translate-x-[50%] 
                         flex flex-col items-center gap-0.5 z-50 
                         pointer-events-none"
         >

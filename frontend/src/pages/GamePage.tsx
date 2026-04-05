@@ -5,8 +5,7 @@ import { useValidateGameId } from "@/hooks/game/useValidateGameId";
 import { useGetGame } from "@/api/rest/game/query/useGetGame";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { useNavigate, useParams } from "react-router-dom";
-import { mapBoardToBlocks } from "@/utils/game/blockUtils";
-import type { CellCoordinates, CellHighlightDetails, PrivateCellState } from "@/types/game/GameTypes";
+import type { CellCoordinates } from "@/types/game/GameTypes";
 import { useGetGamePlayerState } from "@/api/rest/game/query/useGetGamePlayerState";
 import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
@@ -71,11 +70,11 @@ export function GamePage() {
     console.log("BOARD STATE", boardState);
 
     return (
-        <div>
+        <div className="flex flex-col h-screen">
             <GameNotificationLayer />
-            GAME PAGE
-            <div className="flex justify-center">
-                <div className="flex flex-col">
+            <div className="flex justify-center items-center min-h-[500px] h-full py-[2%]">
+                <div className="flex flex-col justify-center w-[90%] max-w-[1200px] h-full">
+                    {/* GAME PAGE */}
                     <GameHUD 
                         userId={currentUser.id}
                         gamePlayers={publicGameState.players} 

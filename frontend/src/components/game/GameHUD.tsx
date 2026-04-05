@@ -20,7 +20,10 @@ export function GameHUD(
 ) {
 
     return (
-        <div className="flex gap-4 bg-card border-border border-2 py-2 rounded-sm">
+        <div 
+            className="flex gap-4 bg-card border-border border-2 py-2 rounded-sm
+                        h-auto max-h-[200px]"
+        >
             
             <HUDStats 
                 userId={userId}

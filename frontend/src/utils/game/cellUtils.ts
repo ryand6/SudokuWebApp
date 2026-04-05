@@ -60,3 +60,14 @@ export function onHoverHandler(setIsHovered: React.Dispatch<React.SetStateAction
 export function onLeaveHandler(setIsHovered: React.Dispatch<React.SetStateAction<boolean>>) {
   return () => setIsHovered(false);
 }
+
+const CORNER_POSITIONS: Record<number, string> = {
+    0: "-top-2 -left-2",
+    1: "-top-2 -right-2", 
+    2: "-bottom-2 -right-2",
+    3: "-bottom-2 -left-2",
+}
+
+export function getPlayerCorner(playerCornerIndex: number): string {
+    return CORNER_POSITIONS[playerCornerIndex];
+}
