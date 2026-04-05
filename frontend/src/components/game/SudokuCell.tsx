@@ -54,6 +54,8 @@ const SudokuCell = React.memo(function SudokuCell(
             }, {} as Record<number, number>)
     }, [playerColours]);
 
+    const showValue: boolean = (value && !isRejected) || (value && isRejected && notes === 0) ? true : false;
+
     return (
         <div className="relative h-full w-full overflow-hidden">
             <NotesLayer 
@@ -95,7 +97,7 @@ const SudokuCell = React.memo(function SudokuCell(
                 style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}
             >
                 <span>
-                    {value ? value : null}
+                    {showValue ? value : null}
                 </span>
             </div>
         </div>

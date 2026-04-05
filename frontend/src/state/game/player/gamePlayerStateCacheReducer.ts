@@ -1,6 +1,6 @@
 import type { PrivateCellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GamePlayerStateEvent } from "../gameEvents";
-import { updateCellStateInBoardState, updateNotesInBoardState } from "@/utils/game/boardStateUtils";
+import { clearCellState, updateCellStateInBoardState, updateNotesInBoardState } from "@/utils/game/boardStateUtils";
 import { notificationEmitter } from "@/utils/game/gameNotificationUtils";
 import { toggleNote } from "@/utils/game/noteUtils";
 
@@ -25,7 +25,7 @@ export function gamePlayerStateCacheReducer(
             if (event.value < 1 || event.value > 9) {
                 throw new CellUpdateValidationError("Submitted value out of valid range 1 - 9");
             }
-            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, false);
+            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, false, true);
             return {
                 ...existingData,
                 boardState: newBoard
@@ -36,7 +36,7 @@ export function gamePlayerStateCacheReducer(
             if (prevStreak !== event.currentStreak) {
                 emitStreakUpdate(prevStreak, event.currentStreak);
             }
-            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, false);
+            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, false, false);
             return {
                 ...existingData,
                 currentStreak: event.currentStreak,
@@ -48,7 +48,7 @@ export function gamePlayerStateCacheReducer(
             if (prevStreak !== event.currentStreak) {
                 emitStreakUpdate(prevStreak, event.currentStreak);
             }
-            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, true);
+            const newBoard = updateCellStateInBoardState(existingData.boardState, event.row, event.col, event.value, true, false);
             return {
                 ...existingData,
                 currentStreak: event.currentStreak,
@@ -71,7 +71,11 @@ export function gamePlayerStateCacheReducer(
             if (event.note < 0 || event.note > 9) {
                 throw new NotesUpdateValidationError("Submitted note outside of valid range");
             }
-            const updatedCellNotes = toggleNote(existingData.boardState[event.row][event.col].notes, event.note);
+            const boardCell = existingData.boardState[event.row][event.col];
+            if (boardCell.value && !boardCell.isRejected) {
+                throw new NotesUpdateValidationError("Valid answer already exists for cell");
+            }
+            const updatedCellNotes = toggleNote(boardCell.notes, event.note);
             if (updatedCellNotes < 0 || updatedCellNotes > 511) {
                 throw new NotesUpdateValidationError("Submitted notes outside of valid range");
             }
@@ -80,6 +84,13 @@ export function gamePlayerStateCacheReducer(
                 ...existingData,
                 boardState: newBoard
             };
+        }
+        case "CELL_CLEAR": {
+            const newBoard = clearCellState(existingData.boardState, event.row, event.col);
+            return {
+                ...existingData,
+                boardState: newBoard
+            }
         }
         case "SETTINGS_UPDATED": {
             // IMPLEMENT

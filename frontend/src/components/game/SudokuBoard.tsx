@@ -12,7 +12,7 @@ export function SudokuBoard(
         gameId,
         userId,
         boardState, 
-        gamePlayers,
+        playerColours,
         cellFirstOwnership,
         gameHighlightedCells,
         setGameHighlightedCells,
@@ -21,6 +21,7 @@ export function SudokuBoard(
         gameId: number,
         userId: number,
         boardState: PrivateBoardState, 
+        playerColours: Record<number, PlayerColour>,
         gamePlayers: GamePlayers,
         cellFirstOwnership: Record<number, number>,
         gameHighlightedCells: Map<number, CellCoordinates> | undefined,
@@ -34,12 +35,6 @@ export function SudokuBoard(
 
     const opponentHighlightedCells: Map<number, CellCoordinates> | undefined = gameHighlightedCells ? new Map(gameHighlightedCells) : undefined;
     opponentHighlightedCells && opponentHighlightedCells.delete(userId);
-
-    const playerColours: Record<number, PlayerColour> = useMemo(() => {
-        const newObj: Record<number, PlayerColour> = {};
-        Object.keys(gamePlayers).forEach((key) => newObj[Number(key)] = gamePlayers[Number(key)].colour);
-        return newObj;
-    }, [gamePlayers]);
 
     const handleCellSelect = useCallback((r: number, c: number) => {
         setGameHighlightedCells(prev => updateGameHighlightedCellsAndSendWsUpdate(send, gameId, userId, prev, { row: r, col: c }))
@@ -56,7 +51,7 @@ export function SudokuBoard(
     }, [gameId, userId, gameHighlightedCells]);
 
     return (
-        <div className="m-2 aspect-square max-h-full max-w-full min-h-0" >
+        <div className="mx-2 my-4 aspect-square max-h-full max-w-full min-h-0" >
             <div className="grid grid-cols-9 grid-rows-9 h-full w-full">
                 {boardState.map((row, r) =>
                     row.map((cell, c) => {

@@ -73,5 +73,10 @@ export type GamePlayerStateEvent =
         note: number
       }
     | {
+        type: "CELL_CLEAR",
+        row: number,
+        col: number
+      }
+    | {
         type: "SETTINGS_UPDATED"
       };

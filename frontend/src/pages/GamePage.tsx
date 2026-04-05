@@ -20,6 +20,7 @@ import { GameNotificationLayer } from "@/components/game/GameNotificationLayer";
 import { resolveBoardState } from "@/utils/game/gameUtils";
 import { GameHUD } from "@/components/game/GameHUD";
 import { getCellState } from "@/utils/game/boardStateUtils";
+import type { PlayerColour } from "@/types/enum/PlayerColour";
 
 
 export function GamePage() {
@@ -49,6 +50,13 @@ export function GamePage() {
         return resolveBoardState(publicGameState?.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);
     }, [publicGameState?.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState]);
 
+    const playerColours: Record<number, PlayerColour> | undefined = useMemo(() => {
+        if (!publicGameState) return;
+            const newObj: Record<number, PlayerColour> = {};
+            Object.keys(publicGameState.players).forEach((key) => newObj[Number(key)] = publicGameState.players[Number(key)].colour);
+            return newObj;
+    }, [publicGameState?.players]);
+
     const leaveGameHandler = useLeaveGame();
 
     useHandleGetGameError(isGameError, gameError);
@@ -73,8 +81,7 @@ export function GamePage() {
         <div className="flex flex-col h-screen">
             <GameNotificationLayer />
             <div className="flex justify-center items-center min-h-[500px] h-full py-[2%]">
-                <div className="flex flex-col justify-center w-[90%] max-w-[1200px] h-full">
-                    {/* GAME PAGE */}
+                <div className="flex flex-col justify-center w-[80%] max-w-[1200px] h-full">
                     <GameHUD 
                         userId={currentUser.id}
                         gamePlayers={publicGameState.players} 
@@ -86,6 +93,7 @@ export function GamePage() {
                         gameId={publicGameState.gameId}
                         userId={currentUser.id}
                         boardState={boardState} 
+                        playerColours={playerColours!}
                         gamePlayers={publicGameState.players}
                         cellFirstOwnership={publicGameState.sharedGameState.cellFirstOwnership}
                         gameHighlightedCells={gameHighlightedCells}
@@ -100,6 +108,7 @@ export function GamePage() {
                         highlightedCellState={userHighlightedCell ? getCellState(privateGameState.boardState, userHighlightedCell.row, userHighlightedCell.col) : undefined}
                         notesModeOn={notesModeOn}
                         setNotesModeOn={setNotesModeOn}
+                        playerColours={playerColours!}
                         queryClient={queryClient}
                     />
                 </div>

@@ -6,21 +6,29 @@ export const playerColourClassNamePicker = {
     strong: "player-colour-blue-strong",
     medium: "player-colour-blue-medium",
     light: "player-colour-blue-light",
+    hover: "hover-player-colour-blue",
+    shine: "shine-blue"
   },
   GREEN: {
     strong: "player-colour-green-strong",
     medium: "player-colour-green-medium",
     light: "player-colour-green-light",
+    hover: "hover-player-colour-green",
+    shine: "shine-green"
   },
   ORANGE: {
     strong: "player-colour-orange-strong",
     medium: "player-colour-orange-medium",
     light: "player-colour-orange-light",
+    hover: "hover-player-colour-orange",
+    shine: "shine-orange"
   },
   PURPLE: {
     strong: "player-colour-purple-strong",
     medium: "player-colour-purple-medium",
     light: "player-colour-purple-light",
+    hover: "hover-player-colour-purple",
+    shine: "shine-purple"
   },
 };
 
