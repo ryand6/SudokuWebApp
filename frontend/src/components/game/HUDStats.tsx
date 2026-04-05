@@ -13,12 +13,12 @@ export function HUDStats(
     }
 ) {
     return (
-        <div className="flex flex-1">
+        <div className="flex flex-col flex-1">
             {Object.entries(gamePlayers).map(([key, player]) => {
                 return (
-                    <div className="flex">
+                    <div className="flex justify-center items-center">
                         <div 
-                            className={`flex flex-col px-2 mx-2
+                            className={`flex flex-col w-full
                                         ${userId === Number(key) && "elevated shine "}`}
                         >
                             <div className="flex gap-2">
@@ -42,8 +42,9 @@ export function HUDStats(
                             <div>
                                 Max Streak: { player.maxStreak }
                             </div>
+                            <div className="horizontal-divider"></div>
                         </div>
-                        <div className="divider"></div>
+                        
                     </div>
                     
                 );
