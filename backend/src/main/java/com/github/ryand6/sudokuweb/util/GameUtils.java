@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.util;
 
+import com.github.ryand6.sudokuweb.enums.CellStatus;
 import com.github.ryand6.sudokuweb.exceptions.game.InvalidCellCoordinatesException;
 
 public final class GameUtils {
@@ -10,13 +11,17 @@ public final class GameUtils {
         }
     }
 
-    public static boolean[] convertBoardStateIntoProgressState(String boardState) {
+    public static CellStatus[] convertBoardStateIntoProgressState(String boardState, String initialBoardState) {
         int boardStateLength = boardState.length();
-        boolean[] progressState = new boolean[boardStateLength];
+        CellStatus[] progressState = new CellStatus[boardStateLength];
         for (int i = 0; i < boardStateLength; i++) {
-            progressState[i] = boardState.charAt(i) != '.';
+            progressState[i] = boardState.charAt(i) == '.' ? CellStatus.INCOMPLETE : determineGiven(i, initialBoardState);
         }
         return progressState;
     }
+
+    private static CellStatus determineGiven(int index, String initialBoardState) {
+        return initialBoardState.charAt(index) == '.' ? CellStatus.WON : CellStatus.GIVEN;
+    };
 
 }

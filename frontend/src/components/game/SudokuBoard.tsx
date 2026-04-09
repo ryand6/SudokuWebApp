@@ -51,22 +51,23 @@ export function SudokuBoard(
     }, [gameId, userId, gameHighlightedCells]);
 
     return (
-        <div className="mx-2 my-4 aspect-square max-h-full max-w-full min-h-0" >
+        <div className="mx-2 my-4 aspect-square w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[800px] min-h-0" >
             <div className="grid grid-cols-9 grid-rows-9 h-full w-full">
                 {boardState.map((row, r) =>
                     row.map((cell, c) => {
                         // Tailwind border logic
-                        const borderTop    = r === 0 ? "border-t-6 border-black" : r % 3 === 0 ? "border-t-4 border-black" : "border-t border-black";
-                        const borderLeft   = c === 0 ? "border-l-6 border-black" : c % 3 === 0 ? "border-l-4 border-black" : "border-l border-black";
+                        const borderTop = r === 0 ? "border-t-6 border-black" : r % 3 === 0 ? "border-t-4 border-black" : "border-t border-black";
+                        const borderLeft = c === 0 ? "border-l-6 border-black" : c % 3 === 0 ? "border-l-4 border-black" : "border-l border-black";
                         const borderBottom = r === 8 ? "border-b-6 border-black" : "border-b border-black";
-                        const borderRight  = c === 8 ? "border-r-6 border-black" : "border-r border-black";
+                        const borderRight = c === 8 ? "border-r-6 border-black" : "border-r border-black";
 
                         const cellIndex: number = getCellIndex(r, c);
 
                         return (
-                            <div className={`
-                                        ${borderTop} ${borderLeft} ${borderBottom} ${borderRight}
-                                    `}>
+                            <div 
+                                className={`${borderTop} ${borderLeft} ${borderBottom} ${borderRight}`}
+                                key={`container${r}-${c}`}    
+                            >
                                 <SudokuCell 
                                     key={`cell${r}-${c}`}
                                     row={r} 

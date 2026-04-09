@@ -91,7 +91,7 @@ export function UserActionBar(
     const noteShineClassName = playerColourClassNamePicker[playerColours[userId]].shine + " font-semibold";
 
     return (
-        <div className="flex flex-col h-auto max-h-[300px] border-2 rounded-sm border-border bg-primary-foreground p-4 gap-2">
+        <div className="flex flex-col h-auto max-h-[300px] w-full border-2 rounded-sm border-border bg-primary-foreground p-4 gap-2">
             <div className="flex justify-evenly">
                 <div 
                     onClick={() => setNotesModeOn(prev => !prev)}

@@ -1,0 +1,1 @@
+export type CellStatus = "GIVEN" | "WON" | "INCOMPLETE";

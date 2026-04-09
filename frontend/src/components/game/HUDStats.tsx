@@ -13,37 +13,41 @@ export function HUDStats(
     }
 ) {
     return (
-        <div className="flex flex-col flex-1">
+        <div className="flex flex-col flex-1 p-4">
             {Object.entries(gamePlayers).map(([key, player]) => {
                 return (
                     <div className="flex justify-center items-center">
-                        <div 
-                            className={`flex flex-col w-full
-                                        ${userId === Number(key) && "elevated shine "}`}
-                        >
-                            <div className="flex gap-2">
-                                <div>
-                                    { player.name }
+                        <div className="flex flex-col w-full gap-1">
+                            <div 
+                                className={`flex flex-col
+                                            ${userId === Number(key) && "elevated shine "}`}
+                            >
+                                <div className="flex gap-2">
+                                    <div>
+                                        { player.name }
+                                    </div>
+                                    <div className={`p-2 my-1 border-border border-1 ${playerColourClassNamePicker[player.colour].medium}`}></div>
+                                    { (userId === Number(key)) && currentStreak > 1 && 
+                                        (<div className="font-extrabold">x{ currentStreak }</div>)
+                                    }
                                 </div>
-                                <div className={`p-2 my-1 border-border border-1 ${playerColourClassNamePicker[player.colour].medium}`}></div>
-                                { (userId === Number(key)) && currentStreak > 1 && 
-                                    (<div className="font-extrabold">x{ currentStreak }</div>)
-                                }
-                            </div>
-                            <div>
-                                Score: { player.score }
-                            </div>
-                            <div>
-                                Firsts: { player.firsts }
-                            </div>
-                            <div>
-                                Mistakes: { player.mistakes }
-                            </div>
-                            <div>
-                                Max Streak: { player.maxStreak }
+                                <div>
+                                    Score: { player.score }
+                                </div>
+                                <div>
+                                    Firsts: { player.firsts }
+                                </div>
+                                <div>
+                                    Mistakes: { player.mistakes }
+                                </div>
+                                <div>
+                                    Max Streak: { player.maxStreak }
+                                </div>
+                                
                             </div>
                             <div className="horizontal-divider"></div>
                         </div>
+                        
                         
                     </div>
                     

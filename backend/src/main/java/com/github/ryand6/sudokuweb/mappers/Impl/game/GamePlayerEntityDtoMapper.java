@@ -21,7 +21,7 @@ public class GamePlayerEntityDtoMapper implements EntityDtoMapper<GamePlayerEnti
         return GamePlayerDto.builder()
                 .user(userEntityDtoMapper.mapToDto(gamePlayer.getUserEntity()))
                 .playerColour(gamePlayer.getPlayerColour())
-                .boardProgress(GameUtils.convertBoardStateIntoProgressState(gamePlayer.getGamePlayerStateEntity().getCurrentBoardState()))
+                .boardProgress(GameUtils.convertBoardStateIntoProgressState(gamePlayer.getGamePlayerStateEntity().getCurrentBoardState(), gamePlayer.getGameEntity().getSudokuPuzzleEntity().getInitialBoardState()))
                 .score(gamePlayer.getScore())
                 .firsts(gamePlayer.getFirsts())
                 .mistakes(gamePlayer.getMistakes())

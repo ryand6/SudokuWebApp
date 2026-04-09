@@ -1,10 +1,11 @@
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { GameMode } from "@/types/enum/GameMode";
-import type { GamePlayers } from "@/types/game/GameTypes";
+import type { GamePlayer, GamePlayers } from "@/types/game/GameTypes";
 import { HUDStats } from "./HUDStats";
 import { Modal } from "../ui/custom/Modal";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
+import { HUDHeatMaps } from "./HUDHeatMaps";
 
 export function GameHUD(
     {
@@ -23,6 +24,7 @@ export function GameHUD(
 ) {
 
     const [isStatsModalOpen, setStatsModalOpen] = useState(false);
+    const [isHeatMapModalOpen, setHeatMapModalOpen] = useState(false);
 
     const openModal = (setter: Dispatch<SetStateAction<boolean>>) => {
         setter(true);
@@ -37,7 +39,7 @@ export function GameHUD(
     return (
         <div 
             className="flex flex-col gap-4 bg-card border-border border-2 py-2 rounded-sm
-                        h-auto max-h-[200px]"
+                        h-auto max-h-[200px] w-full"
         >   
             <div className="flex justify-evenly">
                 <div 
@@ -46,12 +48,18 @@ export function GameHUD(
                 >
                     Game Stats    
                 </div>
+                <div 
+                    onClick={() => openModal(setHeatMapModalOpen)}
+                    className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
+                >
+                    Heat Maps   
+                </div>
             </div>
             <div className="flex">
                 <div className="flex flex-1">
-                    {Object.entries(gamePlayers).map(([key, player]) => {
+                    {Object.entries(gamePlayers).map(([key, player], index) => {
                         return (
-                            <div className="flex">
+                            <div className="flex" key={index}>
                                 <div 
                                     className={`flex flex-col px-2 mx-2
                                                 ${userId === Number(key) && "elevated shine "}`}
@@ -79,12 +87,24 @@ export function GameHUD(
             <Modal 
                 isOpen={isStatsModalOpen} 
                 onClose={() => closeModal(setStatsModalOpen)}
-                className="w-[60%]! h-[60%]! top-[20%]! left-[20%]! !blur-none z-50"
+                className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50"
             >
                 <HUDStats 
                     userId={userId}
                     gamePlayers={gamePlayers}
                     currentStreak={currentStreak} 
+                />
+            </Modal>
+
+
+            <Modal 
+                isOpen={isHeatMapModalOpen} 
+                onClose={() => closeModal(setHeatMapModalOpen)}
+                className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50 overflow-scroll"
+            >
+                <HUDHeatMaps 
+                    userId={userId}
+                    gamePlayers={gamePlayers}
                 />
             </Modal>
             

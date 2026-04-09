@@ -70,13 +70,16 @@ const SudokuCell = React.memo(function SudokuCell(
                 highlightedCellNumber={highlightedCellNumber}
                 playerColour={playerColours[userId]}
             />
-            {opponentsHighlighted && opponentsHighlighted.map((opponentId) => {
+            {opponentsHighlighted && opponentsHighlighted.map((opponentId, index) => {
                 const cornerPosition = getPlayerCorner(playerCornerIndex[opponentId]);
                 const opponentColourClassName = playerColourClassNamePicker[playerColours[opponentId]].strong;
                 return (
-                    <div className={`absolute rotate-45 z-0 h-4 w-4
+                    <div 
+                        className={`absolute rotate-45 z-0 h-4 w-4
                                     ${cornerPosition}
-                                    ${opponentColourClassName}`}>
+                                    ${opponentColourClassName}`}
+                        key={`corner-${index}`}
+                    >
                     </div>
                 )
             })}

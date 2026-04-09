@@ -1,4 +1,5 @@
 import type { GamePlayerSettingsDto } from "../dto/entity/game/GamePlayerSettingsDto";
+import type { CellStatus } from "../enum/CellStatus";
 import type { Difficulty } from "../enum/Difficulty";
 import type { GameMode } from "../enum/GameMode";
 import type { GameResult } from "../enum/GameResult";
@@ -35,7 +36,7 @@ export type CellHighlightDetails = {
 export type GamePlayer = {
     name: string,
     colour: PlayerColour,
-    boardProgress: boolean[],
+    boardProgress: CellStatus[],
     score: number,
     firsts: number,
     mistakes: number,

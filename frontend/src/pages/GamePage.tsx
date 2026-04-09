@@ -81,7 +81,7 @@ export function GamePage() {
         <div className="flex flex-col h-screen">
             <GameNotificationLayer />
             <div className="flex justify-center items-center min-h-[500px] h-full py-[2%]">
-                <div className="flex flex-col justify-center w-[80%] max-w-[1200px] h-full">
+                <div className="flex flex-col justify-center items-center w-[80%] max-w-[1200px] h-full">
                     <GameHUD 
                         userId={currentUser.id}
                         gamePlayers={publicGameState.players} 
