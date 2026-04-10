@@ -2,7 +2,7 @@ import { useGetTenPublicLobbies } from "@/api/rest/lobby/query/useGetTenPublicLo
 import { SpinnerButton } from "../ui/custom/SpinnerButton";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";
 import { useInView } from "react-intersection-observer";
-import { LobbyResultRow } from "../lobby/LobbyResultRow";
+import { LobbyResultRow } from "./LobbyResultRow";
 import { useJoinPublicLobby } from "@/api/rest/lobby/mutate/useJoinPublicLobby";
 import { Button } from "../ui/button";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
@@ -45,7 +45,7 @@ export function PublicLobbyList() {
     return (
         <div>
             <div className="flex justify-center">
-                <Button className="rounded-3xl bg-sidebar-primary cursor-pointer" onClick={() => refetch()}>⭯ Refresh</Button>
+                <Button className="rounded-3xl cursor-pointer" onClick={() => refetch()} variant={"secondary"}>⭯ Refresh</Button>
             </div>
             <div className="flex flex-col scroll-auto" >
                 {lobbies.map((lobby, key) => (

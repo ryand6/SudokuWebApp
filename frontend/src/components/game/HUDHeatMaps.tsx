@@ -11,7 +11,7 @@ export function HUDHeatMaps({
     return (
         <div className="p-4 w-full">
             <div className="flex flex-col flex-1">
-                <h2>Heat Maps</h2>
+                <h2 className="font-bold text-secondary">Heat Maps</h2>
                 {Object.values(gamePlayers).map((gp, index) => {
                     return (
                         <div 

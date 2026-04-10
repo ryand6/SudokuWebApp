@@ -27,17 +27,14 @@ export function HeatMap({
                 {board.map((row, r) => 
                     row.map((cell, c) => {
 
-                        console.log("ROW: ", r);
-                        console.log("COL: ", c);
-
-                        const borderTop = r === 0 ? "border-t-3 border-black" : r % 3 === 0 ? "border-t-2 border-black" : "";
-                        const borderLeft = c === 0 ? "border-l-3 border-black" : c % 3 === 0 ? "border-l-2 border-black" : "";
-                        const borderBottom = r === 8 ? "border-b-3 border-black" : "border-b border-black";
-                        const borderRight = c === 8 ? "border-r-3 border-black" : "border-r border-black";
+                        const borderTop = r === 0 ? "border-t-3 border-grid-line" : r % 3 === 0 ? "border-t-2 border-grid-line" : "";
+                        const borderLeft = c === 0 ? "border-l-3 border-grid-line" : c % 3 === 0 ? "border-l-2 border-grid-line" : "";
+                        const borderBottom = r === 8 ? "border-b-3 border-grid-line" : "border-b border-grid-line";
+                        const borderRight = c === 8 ? "border-r-3 border-grid-line" : "border-r border-grid-line";
 
                         const cellIndex: number = getCellIndex(r, c);
 
-                        const cellColour = boardProgress[cellIndex] === "INCOMPLETE" ? 'bg-secondary' : getCellColour(cellIndex);
+                        const cellColour = boardProgress[cellIndex] === "INCOMPLETE" ? 'bg-card' : getCellColour(cellIndex);
 
                         return (
                             <div

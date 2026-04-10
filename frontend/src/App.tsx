@@ -12,6 +12,7 @@ import { CreateLobbyPage } from "./pages/CreateLobbyPage";
 import { LobbyPage } from "./pages/LobbyPage";
 import { PrivateLobbyJoinPage } from "./pages/PrivateLobbyJoinPage";
 import { GamePage } from "./pages/GamePage";
+import MainLayout from "./pages/MainLayout";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -22,17 +23,19 @@ function App() {
       <WebSocketProvider>
         <BrowserRouter>
           <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<HomePage />} />
-            {/* One time public routes - new users only */}
-            <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
-            {/* Protected routes */}
-            <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
-            <Route path="/user-update" element={<RequireAuth><UserAmendPage /></RequireAuth>} />
-            <Route path="/create-lobby" element={<RequireAuth><CreateLobbyPage /></RequireAuth>} />
-            <Route path="/lobby/:lobbyId" element={<RequireAuth><LobbyPage /></RequireAuth>} />
-            <Route path="/lobby/private/:token" element={<RequireAuth><PrivateLobbyJoinPage /></RequireAuth>} />
-            <Route path="/game/:gameId" element={<RequireAuth><GamePage /></RequireAuth>} />
+            <Route element={<MainLayout />}>
+              {/* Public routes */}
+              <Route path="/" element={<HomePage />} />
+              {/* One time public routes - new users only */}
+              <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
+              {/* Protected routes */}
+              <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+              <Route path="/user-update" element={<RequireAuth><UserAmendPage /></RequireAuth>} />
+              <Route path="/create-lobby" element={<RequireAuth><CreateLobbyPage /></RequireAuth>} />
+              <Route path="/lobby/:lobbyId" element={<RequireAuth><LobbyPage /></RequireAuth>} />
+              <Route path="/lobby/private/:token" element={<RequireAuth><PrivateLobbyJoinPage /></RequireAuth>} />
+              <Route path="/game/:gameId" element={<RequireAuth><GamePage /></RequireAuth>} />
+            </Route>
           </Routes>
           <ToastContainer position="top-right" autoClose={5000} />
         </BrowserRouter>

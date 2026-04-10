@@ -99,7 +99,7 @@ const SudokuCell = React.memo(function SudokuCell(
                             `}
                 style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}
             >
-                <span>
+                <span className="font-mono">
                     {showValue ? value : null}
                 </span>
             </div>

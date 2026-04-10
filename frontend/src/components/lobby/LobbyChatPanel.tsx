@@ -84,7 +84,7 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
     };
 
     return (
-        <div id="lobby-chat-panel" className="flex flex-col lobby-card flex-1 min-h-0">
+        <div id="lobby-chat-panel" className="flex flex-col justify-between lobby-card flex-1 min-h-0">
             <h2 className="card-header">Lobby Chat</h2>
             <div id="lobby-chat-messages" className="overflow-y-auto flex flex-col flex-1 border-1 rounded-md my-2 min-h-0 max-h-[75vh]" ref={chatRef} onScroll={handleScroll}>
                 <div ref={ref} className="h-1" />
@@ -121,15 +121,16 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                 })}
                 {/* "Scroll to bottom" indicator */}
                 {hasNewMessages && !isAtBottom && (
-                    <button
+                    <Button
                         onClick={scrollToBottom}
-                        className="absolute bottom-3 right-3 bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full shadow-lg transition"
+                        className="absolute bottom-3 right-3 p-2 rounded-full shadow-lg transition cursor-pointer"
+                        variant={"secondary"}
                     >
                         <ChevronDown className="w-5 h-5" />
-                    </button>
+                    </Button>
                 )}
             </div>
-            <div>
+            <div className="flex flex-col justify-between gap-1">
                 <Textarea 
                     id="lobby-chat-input" 
                     placeholder="Type your message here."
@@ -144,7 +145,12 @@ export function LobbyChatPanel({lobby, currentUser}: {lobby: LobbyDto, currentUs
                         }
                     }}
                 />
-                <Button onClick={handleClick}>Send message</Button>
+                <Button 
+                    onClick={handleClick}
+                    className="cursor-pointer"
+                >
+                    Send message
+                </Button>
             </div>
         </div>
     )

@@ -16,12 +16,12 @@ export const playerColourClassNamePicker = {
     hover: "hover-player-colour-green",
     shine: "shine-green"
   },
-  ORANGE: {
-    strong: "player-colour-orange-strong",
-    medium: "player-colour-orange-medium",
-    light: "player-colour-orange-light",
-    hover: "hover-player-colour-orange",
-    shine: "shine-orange"
+  RED: {
+    strong: "player-colour-red-strong",
+    medium: "player-colour-red-medium",
+    light: "player-colour-red-light",
+    hover: "hover-player-colour-red",
+    shine: "shine-red"
   },
   PURPLE: {
     strong: "player-colour-purple-strong",

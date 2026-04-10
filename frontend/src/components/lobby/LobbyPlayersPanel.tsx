@@ -47,7 +47,12 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
                     </div>
                 )
             })}
-            <Button onClick={handleClick} disabled={lobby.lobbyPlayers.length < 2}>Toggle Ready</Button>
+            <Button 
+                onClick={handleClick} disabled={lobby.lobbyPlayers.length < 2}
+                className="cursor-pointer"
+            >
+                Toggle Ready
+            </Button>
         </div>
     )
 }

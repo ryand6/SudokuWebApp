@@ -9,7 +9,7 @@ import { wordToProperCase } from "@/utils/string/wordToProperCase";
 export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: LobbyDto, currentUser: UserDto, handleClick: (id: number) => void }) {
     return (
         <div className="flex w-full p-2" >
-            <Card className="w-full gap-2 p-2 text-sm hover:ring-4 hover:ring-ring">
+            <Card className="w-full gap-2 p-2 text-sm hover:ring-4 hover:ring-ring/50">
                 <CardHeader>
                     <CardTitle className="font-bold text-xl">{lobby.lobbyName}</CardTitle>
                     {lobby.inGame && <CardDescription>Lobby is currently in game</CardDescription>}
@@ -25,7 +25,7 @@ export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: Lob
                 <CardFooter className="items-stretch">
                     <div className="flex w-full text-xs sm:text-sm md:text-base">
                         <div className="flex-1">{lobby.lobbyPlayers.length} / 4 Players</div>
-                        {!isCurrentUserInLobby(lobby, currentUser) && <Button className="justify-self-end cursor-pointer bg-sidebar-primary" onClick={() => handleClick(lobby.id)} >Join Lobby</Button>}
+                        {!isCurrentUserInLobby(lobby, currentUser) && <Button className="justify-self-end cursor-pointer bg-primary" onClick={() => handleClick(lobby.id)} >Join Lobby</Button>}
                     </div>
                 </CardFooter>
             </Card>

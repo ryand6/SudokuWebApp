@@ -62,18 +62,33 @@ export function LobbyPage() {
     return (
         <div id="lobby-container" className="flex flex-col flex-1">
             <div id="lobby-header" className="flex flex-row justify-between">
-                <h1 className="text-secondary font-bold text-shadow m-3">{lobby?.lobbyName}</h1>
+                <h1 className="text-foreground-strong font-bold text-shadow m-3">{lobby?.lobbyName}</h1>
                 {/* Show countdown timer to game start if it's running */}
                 {lobby.lobbyCountdown.countdownActive && lobby.lobbyCountdown.countdownEndsAt && (
                     <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.lobbyCountdown.countdownEndsAt)} />
                 )}
-                <Button className="m-2 cursor-pointer" onClick={handleLeaveLobbyClick}>Leave Lobby</Button>
+                <Button className="m-2 cursor-pointer" onClick={handleLeaveLobbyClick} variant={"secondary"}>Leave Lobby</Button>
             </div>
             <div id="lobby-content" className="flex flex-col flex-1 gap-4 max-h-[70vh] md:max-h-[75vh]">
                 <div id="mobile-tabs" className="md:hidden">
-                    <Button onClick={() => setActivePanel("players")}>Players</Button>
-                    <Button onClick={() => setActivePanel("settings")}>Settings</Button>
-                    <Button onClick={() => setActivePanel("chat")}>Lobby Chat</Button>
+                    <Button 
+                        onClick={() => setActivePanel("players")}
+                        className="cursor-pointer"
+                    >
+                        Players
+                    </Button>
+                    <Button 
+                        onClick={() => setActivePanel("settings")}
+                        className="cursor-pointer"
+                    >
+                        Settings
+                    </Button>
+                    <Button 
+                        onClick={() => setActivePanel("chat")}
+                        className="cursor-pointer"
+                    >
+                        Lobby Chat
+                    </Button>
                 </div>
                 <div className="flex flex-row flex-1 min-h-0">
                     {/* Mobile only: render the active panel directly */}
