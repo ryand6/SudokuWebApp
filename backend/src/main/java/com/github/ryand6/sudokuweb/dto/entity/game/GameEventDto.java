@@ -17,6 +17,8 @@ public class GameEventDto {
 
     private Long userId;
 
+    private String username;
+
     private Instant createdAt;
 
     private GameEventType eventType;

@@ -6,9 +6,9 @@ export function GameEventMessage({
     msg: GameEventDto
 }) {
     return (
-        <div id="game-event-message-container" className="flex flex-row m-2">
+        <div id="game-event-message-container" className="flex flex-row m-0.5">
             <div id="lobby-message-user" className="w-[30%]">
-                {msg.userId}
+                {msg.username}
             </div>
             <div id="lobby-message-content" className="w-[70%] whitespace-pre-line">
                 {msg.message}
