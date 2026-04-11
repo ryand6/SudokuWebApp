@@ -1,11 +1,13 @@
 package com.github.ryand6.sudokuweb.domain.game.event;
 
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface GameEventRepository extends JpaRepository<GameEventEntity, Long> {
@@ -17,5 +19,7 @@ public interface GameEventRepository extends JpaRepository<GameEventEntity, Long
 //        WHERE ge.gameEntity.id = :gameId
 //        """)
 //    Long getMaxSequenceNumber(@Param("gameId") Long gameId);
+
+    Page<GameEventEntity> findByGameEntity_IdOrderBySequenceNumberDesc(Long gameId, Pageable pageable);
 
 }

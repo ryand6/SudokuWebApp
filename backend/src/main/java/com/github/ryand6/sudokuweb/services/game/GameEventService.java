@@ -3,17 +3,24 @@ package com.github.ryand6.sudokuweb.services.game;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.*;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
 import com.github.ryand6.sudokuweb.events.types.game.CreateGameLogEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GameLogSendEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameEventSequenceNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEventEntityDtoMapper;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GameEventService {
@@ -34,6 +41,14 @@ public class GameEventService {
         this.entityManager = entityManager;
         this.gameEventEntityDtoMapper = gameEventEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    public List<GameEventDto> getGameEvents(Long gameId, int page) {
+        Pageable pageable = PageRequest.of(page, GameEventEntity.PAGE_SIZE, Sort.by(Sort.Direction.DESC, "sequenceNumber"));
+        return gameEventRepository.findByGameEntity_IdOrderBySequenceNumberDesc(gameId, pageable)
+                .stream()
+                .map(gameEventEntityDtoMapper::mapToDto)
+                .collect(Collectors.toList());
     }
 
     @Transactional

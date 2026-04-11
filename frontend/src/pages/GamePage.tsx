@@ -78,12 +78,13 @@ export function GamePage() {
     console.log("BOARD STATE", boardState);
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-screen w-full">
             <GameNotificationLayer />
             <div className="flex justify-center items-center min-h-[500px] h-full py-[2%]">
                 <div className="flex flex-col justify-center items-center w-[80%] max-w-[1200px] h-full">
                     <GameHUD 
                         userId={currentUser.id}
+                        gameId={gameIdNum}
                         gamePlayers={publicGameState.players} 
                         difficulty={publicGameState.difficulty}
                         gameMode={publicGameState.gameMode}

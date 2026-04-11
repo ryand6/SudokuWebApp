@@ -1,16 +1,16 @@
 import { queryKeys } from "@/state/queryKeys";
-import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getLobbyChatMessages } from "./getLobbyChatMessages";
 import { PAGE_SIZE } from "@/utils/global/globalConstants";
+import { getGameEvents } from "./getGameEvents";
+import type { GameEventDto } from "@/types/dto/entity/game/GameEventDto";
 
-export function useGetLobbyChatMessages(lobbyId: number) { 
-    return useInfiniteQuery<LobbyChatMessageDto[], Error>({ 
-        queryKey: queryKeys.lobbyChat(lobbyId),
+export function useGetGameEvents(gameId: number) { 
+    return useInfiniteQuery<GameEventDto[], Error>({ 
+        queryKey: queryKeys.gameEvents(gameId),
         queryFn: async ({ queryKey, pageParam }) => {
-            const [, lobbyId] = queryKey;
-            const dto = await getLobbyChatMessages(lobbyId as number, pageParam as number);
-            return dto.lobbyChatMessages;
+            const [, gameId] = queryKey;
+            const dto = await getGameEvents(gameId as number, pageParam as number);
+            return dto.gameEvents;
         },
         initialPageParam: 0,
         // Pages use zero-based indexing, therefore next page is equal to the length of the current page array (containing all pages retrieved so far) rather than incrementing the length by 1

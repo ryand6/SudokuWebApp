@@ -7,5 +7,6 @@ export const queryKeys = {
     lobby: (lobbyId: number) => ["lobby", lobbyId] as const,
     lobbyChat: (lobbyId: number) => ["lobbyChat", lobbyId] as const,
     game: (gameId: number) => ["game", gameId] as const,
+    gameEvents: (gameId: number) => ["gameEvents", gameId] as const,
     gamePlayerState: (gameId: number, userId: number | undefined) => ["game", gameId, "user", userId] as const,
 }

@@ -1,3 +1,4 @@
+import type { GameEventDto } from "@/types/dto/entity/game/GameEventDto";
 import type { CellCoordinates } from "@/types/game/GameTypes"
 
 export type GameEvent = 
@@ -33,7 +34,8 @@ export type GameEvent =
 
 export type GameEventLog = 
     | {
-        type: "GAME_EVENT"
+        type: "GAME_EVENT",
+        newMessage: GameEventDto
       }
 
 export type GamePlayerStateEvent = 

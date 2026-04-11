@@ -11,9 +11,7 @@ export function gameCacheReducer(
             const cellIndex: number = getCellIndex(event.row, event.col);
 
             const updatedBoardProgress = [...existingData.players[event.userId].boardProgress];
-            updatedBoardProgress[cellIndex] = true;
-
-            console.log("EVENT: ", event);
+            updatedBoardProgress[cellIndex] = "WON";
 
             return {
                 ...existingData,

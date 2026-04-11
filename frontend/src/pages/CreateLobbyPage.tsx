@@ -44,7 +44,7 @@ export function CreateLobbyPage() {
     }
 
     return (
-        <div className="flex flex-1 justify-center items-center min-h-0">
+        <div className="flex flex-1 justify-center items-center min-h-0 w-full">
             <div className="w-full max-w-[1200px] max-h-[90vh] border-border m-5 bg-white rounded-md p-10 shadow-md overflow-y-auto min-h-0" >
                 <form onSubmit={handleSubmit} method="post">
                     <FieldSet>

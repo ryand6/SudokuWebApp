@@ -1,3 +1,5 @@
+import { gameEventsCacheDispatcher } from "@/state/game/events/gameEventsCacheDispatcher";
+import { gameEventsCacheReducer } from "@/state/game/events/gameEventsCacheReducer";
 import { gameCacheDispatcher } from "@/state/game/gameCacheDispatcher";
 import type { CellCoordinates } from "@/types/game/GameTypes";
 import { updateGameHighlightedCells } from "@/utils/game/cellUtils";
@@ -12,9 +14,6 @@ export function handleGameWebSocketMessages(
     navigate: NavigateFunction,
     setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
 ) {
-
-    console.log(message);
-
     switch (message.type) {
         case "PLAYER_CELL_UPDATE_ACCEPTED": {
             gameCacheDispatcher(queryClient, gameId, {
@@ -37,6 +36,13 @@ export function handleGameWebSocketMessages(
                 score: message.payload.score,
                 mistakes: message.payload.mistakes,
                 gameEndsAt: message.payload.gameEndsAt
+            })
+            break;
+        }
+        case "GAME_EVENT": {
+            gameEventsCacheDispatcher(queryClient, gameId, {
+                type: "GAME_EVENT",
+                newMessage: message.payload
             })
             break;
         }

@@ -29,6 +29,8 @@ import java.util.Map;
 )
 public class GameEventEntity {
 
+    public static final int PAGE_SIZE = 100;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_event_id_seq")
     private Long id;

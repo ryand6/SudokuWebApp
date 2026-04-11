@@ -10,6 +10,6 @@ export function lobbyChatCacheDispatcher(
     event: LobbyChatEvent
 ) {
     queryClient.setQueryData<InfiniteData<LobbyChatMessageDto[]>>(queryKeys.lobbyChat(lobbyId), (old: InfiniteData<LobbyChatMessageDto[]> | undefined) => {
-        return lobbyChatCacheReducer(old, event);
+        return lobbyChatCacheReducer(old, event) as InfiniteData<LobbyChatMessageDto[], unknown> | undefined;
     })
 }

@@ -6,16 +6,19 @@ import { Modal } from "../ui/custom/Modal";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
 import { HUDHeatMaps } from "./HUDHeatMaps";
+import { GameEventLog } from "./GameEventLog";
 
 export function GameHUD(
     {
         userId,
+        gameId,
         gamePlayers, 
         difficulty, 
         gameMode,
         currentStreak,
     }: {
-        userId: number
+        userId: number,
+        gameId: number,
         gamePlayers: GamePlayers, 
         difficulty: Difficulty, 
         gameMode: GameMode,
@@ -25,6 +28,7 @@ export function GameHUD(
 
     const [isStatsModalOpen, setStatsModalOpen] = useState(false);
     const [isHeatMapModalOpen, setHeatMapModalOpen] = useState(false);
+    const [isGameLogModalOpen, setGameLogModalOpen] = useState(false);
 
     const openModal = (setter: Dispatch<SetStateAction<boolean>>) => {
         setter(true);
@@ -53,6 +57,12 @@ export function GameHUD(
                     className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
                 >
                     Heat Maps   
+                </div>
+                <div 
+                    onClick={() => openModal(setGameLogModalOpen)}
+                    className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
+                >
+                    Game Log   
                 </div>
             </div>
             <div className="flex">
@@ -105,6 +115,16 @@ export function GameHUD(
                 <HUDHeatMaps 
                     userId={userId}
                     gamePlayers={gamePlayers}
+                />
+            </Modal>
+
+            <Modal 
+                isOpen={isGameLogModalOpen} 
+                onClose={() => closeModal(setGameLogModalOpen)}
+                className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50 overflow-scroll"
+            >
+                <GameEventLog 
+                    gameId={gameId}
                 />
             </Modal>
             

@@ -95,7 +95,7 @@ export function LobbyPage() {
                     <div className="flex-1 flex flex-col min-h-0 max-w-[95%] md:hidden m-5">
                         {activePanel === "players" && <LobbyPlayersPanel lobby={lobby} currentUser={currentUser} />}
                         {activePanel === "settings" && <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />}
-                        {activePanel === "chat" && <LobbyChatPanel lobby={lobby} currentUser={currentUser} />}
+                        {activePanel === "chat" && <LobbyChatPanel lobbyId={lobbyIdNum} userId={currentUser.id} />}
                     </div>
 
                     {/* Desktop only: split left/right columns */}
@@ -111,7 +111,7 @@ export function LobbyPage() {
                         </div>
                         {/* Right column */}
                         <div className="flex flex-col flex-1 min-h-0 max-w-[50%]">
-                            <LobbyChatPanel lobby={lobby} currentUser={currentUser} />
+                            <LobbyChatPanel lobbyId={lobbyIdNum} userId={currentUser.id} />
                         </div>
                     </div>
                 </div>

@@ -13,7 +13,7 @@ export function UserSetupPage(): JSX.Element {
     }
 
     return (
-        <div className="flex justify-center min-h-screen">
+        <div className="flex justify-center min-h-screen w-full">
             <div className="flex flex-col w-full max-w-md min-h-screen p-6">
                 <h1 className="my-4 font-extrabold tracking-tight text-secondary">User Setup</h1>
                 <UserForm onSubmit={handleSetup} submitLabel="Create Account"/>
