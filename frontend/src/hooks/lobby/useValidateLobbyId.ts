@@ -7,7 +7,7 @@ export function useValidateLobbyId(id: number) {
 
     useEffect(() => {
         if (isNaN(id)) {
-            toast.error("Lobby does not exist");
+            toast.error("Lobby does not exist", {containerId: "foreground"});
             navigate("/dashboard", { replace: true });
         }
     }, [id, navigate]);

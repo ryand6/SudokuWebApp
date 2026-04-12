@@ -7,7 +7,7 @@ export function useValidateGameId(id: number) {
 
     useEffect(() => {
         if (isNaN(id)) {
-            toast.error("Game does not exist");
+            toast.error("Game does not exist", {containerId: "foreground"});
             navigate("/dashboard", { replace: true });
         }
     }, [id, navigate]);

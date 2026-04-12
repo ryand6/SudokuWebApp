@@ -1,37 +1,6 @@
 import { sendPlayerHighlightedCellUpdate } from "@/api/ws/game/sendPlayerHighlightedCellUpdate";
 import type { CellCoordinates } from "@/types/game/GameTypes";
 
-export const playerColourClassNamePicker = {
-  BLUE: {
-    strong: "player-colour-blue-strong",
-    medium: "player-colour-blue-medium",
-    light: "player-colour-blue-light",
-    hover: "hover-player-colour-blue",
-    shine: "shine-blue"
-  },
-  GREEN: {
-    strong: "player-colour-green-strong",
-    medium: "player-colour-green-medium",
-    light: "player-colour-green-light",
-    hover: "hover-player-colour-green",
-    shine: "shine-green"
-  },
-  RED: {
-    strong: "player-colour-red-strong",
-    medium: "player-colour-red-medium",
-    light: "player-colour-red-light",
-    hover: "hover-player-colour-red",
-    shine: "shine-red"
-  },
-  PURPLE: {
-    strong: "player-colour-purple-strong",
-    medium: "player-colour-purple-medium",
-    light: "player-colour-purple-light",
-    hover: "hover-player-colour-purple",
-    shine: "shine-purple"
-  },
-};
-
 export function getCellIndex(row: number, col: number) {
   return (row * 9) + col;
 }

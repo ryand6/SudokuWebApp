@@ -18,7 +18,7 @@ export function useValidateLobbyUser(
         const isUserInLobby = isCurrentUserInLobby(lobby, currentUser);
         
         if (!isUserInLobby) {
-            toast.error("You are not an active player in this lobby");
+            toast.error("You are not an active player in this lobby", {containerId: "foreground"});
             navigate("/dashboard", { replace: true });
         }
     }, [lobby, currentUser, navigate, isLeaving]);

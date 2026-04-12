@@ -10,7 +10,7 @@ export function useHandleGetGameError(
 
     useEffect(() => {
         if (isError && error) {
-            toast.error(error.message);
+            toast.error(error.message, {containerId: "foreground"});
             navigate("/dashboard", { replace: true });
         }
     }, [isError, error, navigate]);

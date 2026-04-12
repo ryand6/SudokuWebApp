@@ -46,7 +46,7 @@ public class GameChatService {
     }
 
     public List<GameChatMessageDto> getGameChatMessages(Long gameId, int page) {
-        Pageable pageable = PageRequest.of(page, GameChatMessageEntity.PAGE_SIZE, Sort.by(Sort.Direction.DESC, "created_at"));
+        Pageable pageable = PageRequest.of(page, GameChatMessageEntity.PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
         return gameChatMessageRepository.findByGameEntity_IdOrderByCreatedAtDesc(gameId, pageable)
                 .stream()
                 .map(gameChatMessageEntityDtoMapper::mapToDto)

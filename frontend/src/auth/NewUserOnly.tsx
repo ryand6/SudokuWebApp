@@ -27,7 +27,7 @@ export function NewUserOnly({ children }: { children : React.ReactNode }) {
     useEffect(() => {
         if (!isLoading && user && !firstTimeSetup) {
             navigate("/dashboard", { replace: true });
-            toast.info("Your account is already set up. Redirected to the dashboard.");
+            toast.info("Your account is already set up. Redirected to the dashboard.", {containerId: "foreground"});
         }
     }, [isLoading, user, navigate]);
 

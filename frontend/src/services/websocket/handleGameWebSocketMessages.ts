@@ -1,6 +1,7 @@
 import { gameChatCacheDispatcher } from "@/state/game/chat/gameChatCacheDispatcher";
 import { gameEventsCacheDispatcher } from "@/state/game/events/gameEventsCacheDispatcher";
 import { gameCacheDispatcher } from "@/state/game/gameCacheDispatcher";
+import type { PlayerColour } from "@/types/enum/PlayerColour";
 import type { CellCoordinates } from "@/types/game/GameTypes";
 import { updateGameHighlightedCells } from "@/utils/game/cellUtils";
 import type { QueryClient } from "@tanstack/react-query";
@@ -10,7 +11,9 @@ import type { NavigateFunction } from "react-router-dom";
 export function handleGameWebSocketMessages(
     message: any, 
     queryClient: QueryClient,
-    gameId: number, 
+    gameId: number,
+    userId: number,
+    playerColours: Record<number, PlayerColour>,
     navigate: NavigateFunction,
     setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
 ) {
@@ -47,7 +50,7 @@ export function handleGameWebSocketMessages(
             break;
         }
         case "GAME_CHAT_MESSAGE": {
-            gameChatCacheDispatcher(queryClient, gameId, {
+            gameChatCacheDispatcher(queryClient, gameId, userId, playerColours, {
                 type: "GAME_CHAT_MESSAGE",
                 newMessage: message.payload
             })

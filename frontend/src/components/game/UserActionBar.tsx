@@ -4,7 +4,7 @@ import { gamePlayerStateCacheDispatcher } from "@/state/game/player/gamePlayerSt
 import { CellUpdateValidationError, NotesUpdateValidationError } from "@/state/game/player/gamePlayerStateCacheReducer";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import type { CellCoordinates, PrivateCellState } from "@/types/game/GameTypes";
-import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
+import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import { hasNote } from "@/utils/game/noteUtils";
 import type { QueryClient } from "@tanstack/react-query";
 import { useCallback, type Dispatch, type SetStateAction } from "react";

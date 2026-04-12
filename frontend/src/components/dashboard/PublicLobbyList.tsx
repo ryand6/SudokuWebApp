@@ -32,7 +32,7 @@ export function PublicLobbyList() {
     if (isLoadingLobbies || isLoadingUser) return <SpinnerButton />;
 
     if (!currentUser) {
-        toast.error("An error has occurred.");
+        toast.error("An error has occurred.", {containerId: "foreground"});
         return null;
     }
 

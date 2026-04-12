@@ -15,7 +15,7 @@ export function useUpdateLobbyTimeLimit() {
             queryClient.setQueryData(queryKeys.lobby(lobbyId), updatedLobby);
         },
         onError: (error) => {
-            toast.error(error.message);
+            toast.error(error.message, {containerId: "foreground"});
         }
     })
 }

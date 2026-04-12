@@ -23,7 +23,6 @@ public class LobbyPlayerEntityDtoMapper implements EntityDtoMapper<LobbyPlayerEn
                 .joinedAt(lobbyPlayerEntity.getJoinedAt())
                 .lobbyStatus(lobbyPlayerEntity.getLobbyStatus())
                 .readyAt(lobbyPlayerEntity.getReadyAt())
-                .lastLobbyMessageTimestamp(lobbyPlayerEntity.getLastLobbyMessageTimestamp())
                 .build();
     }
 

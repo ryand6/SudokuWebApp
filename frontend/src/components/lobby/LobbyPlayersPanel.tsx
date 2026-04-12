@@ -20,7 +20,7 @@ export function LobbyPlayersPanel({lobby, currentUser}: {lobby: LobbyDto, curren
 
     const handleClick = () => {
         if (!currentLobbyPlayer) {
-            toast.error("Lobby player does not exist");
+            toast.error("Lobby player does not exist", {containerId: "foreground"});
             return;
         }
         const updatedStatus: LobbyStatus = currentLobbyPlayer.lobbyStatus === "READY" ? "WAITING" : "READY";

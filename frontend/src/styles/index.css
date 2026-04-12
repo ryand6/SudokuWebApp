@@ -4,13 +4,11 @@
 
 :root {
   font-family: var(--font-sans);
-  /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; */
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
   background: #fefdf8;
-  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 60%); */
   color: #333; 
 
   font-synthesis: none;
@@ -22,7 +20,6 @@
   --box-shadow-default: 0px 2px 5px rgba(0,0,0,0.3);
 
   --radius: 0.65rem;
-  /* --background: oklch(1 0 0); */
   --background:                 #FAF6EE;
   --foreground:                 #2C2416;
   --card:                       #EEE8D8;
@@ -59,6 +56,22 @@
   --header-foreground:          #FAF6EE;
   --footer:                     #3D6B4A;
   --footer-foreground:          #FAF6EE;
+
+  --player-colour-one-strong: rgb(156, 186, 235);
+  --player-colour-one-medium: rgb(181, 203, 238);
+  --player-colour-one-light: rgb(213, 226, 247);
+
+  --player-colour-two-strong: rgb(182, 238, 203);
+  --player-colour-two-medium: rgb(196, 235, 210);
+  --player-colour-two-light: rgb(228, 247, 235);
+
+  --player-colour-three-strong: rgb(243, 157, 157);
+  --player-colour-three-medium: rgb(240, 178, 178);
+  --player-colour-three-light: rgb(250, 221, 221);
+
+  --player-colour-four-strong: rgb(203, 162, 250);
+  --player-colour-four-medium: rgb(220, 204, 240);
+  --player-colour-four-light: rgb(242, 228, 248);
 }
 
 .dark {
@@ -98,6 +111,22 @@
   --header-foreground:          #FAF6EE;
   --footer:                     #3D6B4A;
   --footer-foreground:          #FAF6EE;
+
+  --player-colour-one-strong: rgb(156, 186, 235);
+  --player-colour-one-medium: rgb(181, 203, 238);
+  --player-colour-one-light: rgb(213, 226, 247);
+
+  --player-colour-two-strong: rgb(182, 238, 203);
+  --player-colour-two-medium: rgb(196, 235, 210);
+  --player-colour-two-light: rgb(228, 247, 235);
+
+  --player-colour-three-strong: rgb(243, 157, 157);
+  --player-colour-three-medium: rgb(240, 178, 178);
+  --player-colour-three-light: rgb(250, 221, 221);
+
+  --player-colour-four-strong: rgb(203, 162, 250);
+  --player-colour-four-medium: rgb(220, 204, 240);
+  --player-colour-four-light: rgb(242, 228, 248);
 }
 
 
@@ -228,72 +257,38 @@
   .text-shadow {
     text-shadow: var(--text-shadow-default);
   }
+
   .box-shadow {
     box-shadow: var(--box-shadow-default);
   }
 
-  .player-colour-blue-strong {
-    background-color: rgb(156, 186, 235);
-  }
+  .player-colour-one-strong { background-color: var(--player-colour-one-strong); }
+  .player-colour-one-medium { background-color: var(--player-colour-one-medium); }
+  .player-colour-one-light { background-color: var(--player-colour-one-light); }
+  .hover-player-colour-one:hover { background-color: var(--player-colour-one-medium); }
+  .shine-one { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, color-mix(in srgb, var(--player-colour-one-medium) 60%, transparent) 50%, rgba(255, 255, 255, 0.2) 100%); }
 
-  .player-colour-blue-medium {
-    background-color: rgb(181, 203, 238);
-  }
+  .player-colour-two-strong { background-color: var(--player-colour-two-strong); }
+  .player-colour-two-medium { background-color: var(--player-colour-two-medium); }
+  .player-colour-two-light { background-color: var(--player-colour-two-light); }
+  .hover-player-colour-two:hover { background-color: var(--player-colour-two-medium); }
+  .shine-two { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, color-mix(in srgb, var(--player-colour-two-medium) 60%, transparent) 50%, rgba(255, 255, 255, 0.2) 100%); }
 
-  .player-colour-blue-light {
-    background-color: rgb(213, 226, 247);
-  }
+  .player-colour-three-strong { background-color: var(--player-colour-three-strong); }
+  .player-colour-three-medium { background-color: var(--player-colour-three-medium); }
+  .player-colour-three-light { background-color: var(--player-colour-three-light); }
+  .hover-player-colour-three:hover { background-color: var(--player-colour-three-medium); }
+  .shine-three { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, color-mix(in srgb, var(--player-colour-three-medium) 60%, transparent) 50%, rgba(255, 255, 255, 0.2) 100%); }
 
-  .hover-player-colour-blue:hover {
-    background-color: rgb(181, 203, 238);
-  }
+  .player-colour-four-strong { background-color: var(--player-colour-four-strong); }
+  .player-colour-four-medium { background-color: var(--player-colour-four-medium); }
+  .player-colour-four-light { background-color: var(--player-colour-four-light); }
+  .hover-player-colour-four:hover { background-color: var(--player-colour-four-medium); }
+  .shine-four { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, color-mix(in srgb, var(--player-colour-four-medium) 60%, transparent) 50%, rgba(255, 255, 255, 0.2) 100%); }
 
-  .player-colour-green-strong {
-    background-color: rgb(182, 238, 203);
-  }
-
-  .player-colour-green-medium {
-    background-color: rgb(196, 235, 210);
-  }
-
-  .player-colour-green-light {
-    background-color: rgb(228, 247, 235);
-  }
-
-  .hover-player-colour-green:hover {
-    background-color: rgb(196, 235, 210);
-  }
-
-  .player-colour-red-strong {
-    background-color: rgb(243, 157, 157);
-  }
-
-  .player-colour-red-medium {
-    background-color: rgb(240, 178, 178);
-  }
-
-  .player-colour-red-light {
-    background-color: rgb(250, 221, 221);
-  }
-
-  .hover-player-colour-red:hover {
-    background-color: rgb(240, 178, 178);
-  }
-
-  .player-colour-purple-strong {
-    background-color: rgb(203, 162, 250);
-  }
-
-  .player-colour-purple-medium {
-    background-color: rgb(220, 204, 240);
-  }
-
-  .player-colour-purple-light {
-    background-color: rgb(242, 228, 248);
-  }
-
-  .hover-player-colour-purple:hover {
-    background-color: rgb(215, 191, 243);
+  .toast-game-chat-message {
+    --toastify-text-color-light: var(--popover-foreground);
+    border: 1px solid var(--border);
   }
 
   .elevated {
@@ -313,12 +308,7 @@
       rgba(255, 255, 255, 0.2) 100%
     );
   }
-
-  .shine-blue   { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, rgba(181, 203, 238, 0.6) 50%, rgba(255, 255, 255, 0.2) 100%); }
-  .shine-green  { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, rgba(196, 235, 210, 0.6) 50%, rgba(255, 255, 255, 0.2) 100%); }
-  .shine-red { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, rgba(240, 178, 178, 0.6) 50%, rgba(255, 255, 255, 0.2) 100%); }
-  .shine-purple { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, rgba(215, 191, 243, 0.6) 50%, rgba(255, 255, 255, 0.2) 100%); }
-
+ 
   .vertical-divider {
     width: 1px;
     height: calc(100% - 8px); /* controls the gap — adjust 32px to taste */
@@ -333,4 +323,16 @@
     background: #333;
   }
 
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+main {
+  flex: 1
+}
+ 
+main > * {
+  height: 100%
 }

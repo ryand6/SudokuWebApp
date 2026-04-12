@@ -1,1 +1,1 @@
-export type PlayerColour = "BLUE" | "GREEN" | "PURPLE" | "RED";
+export type PlayerColour = "ONE" | "TWO" | "THREE" | "FOUR";

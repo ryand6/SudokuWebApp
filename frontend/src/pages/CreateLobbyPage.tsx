@@ -36,7 +36,7 @@ export function CreateLobbyPage() {
             navigate(`/lobby/${response.id}`, { replace: true });
         } catch (err: any) {
             // Display toast error message when the user is already part of an active lobby
-            if (err.status === 401) toast.error(err.message);
+            if (err.status === 401) toast.error(err.message, {containerId: "foreground"});
             // Handle backend form validation errors
             if (err.status === 400) setError(err.message);
             else setError("Something went wrong whilst processing this request");

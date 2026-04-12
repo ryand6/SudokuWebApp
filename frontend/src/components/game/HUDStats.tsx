@@ -1,5 +1,5 @@
 import type { GamePlayers } from "@/types/game/GameTypes"
-import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
+import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 
 export function HUDStats(
     {
@@ -14,9 +14,9 @@ export function HUDStats(
 ) {
     return (
         <div className="flex flex-col flex-1 p-4">
-            {Object.entries(gamePlayers).map(([key, player]) => {
+            {Object.entries(gamePlayers).map(([key, player], index) => {
                 return (
-                    <div className="flex justify-center items-center">
+                    <div className="flex justify-center items-center" key={index}>
                         <div className="flex flex-col w-full gap-1">
                             <div 
                                 className={`flex flex-col

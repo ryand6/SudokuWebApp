@@ -63,7 +63,7 @@ export function GamePage() {
 
     useValidateGamePlayer(publicGameState, currentUser, leaveGameHandler.isLeaving);
 
-    useHandleGameWsSubscriptions(gameId, currentUser?.id, queryClient, navigate, setGameHighlightedCells);
+    useHandleGameWsSubscriptions(gameId, currentUser?.id, playerColours, queryClient, navigate, setGameHighlightedCells);
 
     if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
     

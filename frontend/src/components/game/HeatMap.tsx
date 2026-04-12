@@ -1,6 +1,7 @@
 import type { CellStatus } from "@/types/enum/CellStatus";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
-import { getCellIndex, playerColourClassNamePicker } from "@/utils/game/cellUtils";
+import { getCellIndex } from "@/utils/game/cellUtils";
+import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import { useCallback } from "react";
 
 export function HeatMap({

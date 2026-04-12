@@ -18,7 +18,7 @@ export function useValidateGamePlayer(
         const isUserInGame = isCurrentUserInGame(game, currentUser);
         
         if (!isUserInGame) {
-            toast.error("You are not an active player in this game");
+            toast.error("You are not an active player in this game", {containerId: "foreground"});
             navigate("/dashboard", { replace: true });
         }
     }, [game, currentUser, navigate, isLeaving]);

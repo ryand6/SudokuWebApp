@@ -17,7 +17,7 @@ export function HUDGameChat({
 }) {
     const { send } = useWebSocketContext();
     const [inputMessage, setInputMessage] = useState("");
-    const {data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameChatMessages(gameId);
+    const { data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameChatMessages(gameId);
     const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch });
 
     const handleClick = () => {
@@ -29,7 +29,7 @@ export function HUDGameChat({
     };
 
     return (
-        <div id="game-chat-panel" className="flex flex-col justify-between flex-1 min-h-0">
+        <div id="game-chat-panel" className="flex flex-col justify-between gap-1 flex-1 min-h-0 m-2">
             <h2 className="card-header">Game Chat</h2>
             <InfiniteMessageList
                 chatRef={chatRef}
@@ -39,13 +39,13 @@ export function HUDGameChat({
                 hasNewMessages={hasNewMessages}
                 onScroll={handleScroll}
                 onScrollToBottom={scrollToBottom}
-                renderMessage={(msg, index) => {
+                renderMessage={(msg, index) => 
                     <GameChatMessage key={index} msg={msg} />
-                }}
+                }
             />
             <div className="flex flex-col justify-between gap-1">
                 <Textarea 
-                    id="lobby-chat-input" 
+                    id="game-chat-input" 
                     placeholder="Type your message here."
                     value={inputMessage} 
                     onChange={(e) => {

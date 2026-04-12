@@ -16,7 +16,7 @@ export function DashboardPage() {
     const [isModalOpen, setModalOpen] = useState(false);
 
     return (
-        <div className="flex flex-col h-screen w-full">
+        <div className="flex flex-col h-screen">
             <header className="bg-[#333] text-white py-[10px] px-[20px] flex justify-between items-center">
                 <div>
                     Welcome, <span>{currentUser?.username ?? "User"}</span> | Score: <span>{currentUser?.userStats.totalScore ?? 0}</span> | Rank: <span>#{userRankDto?.userRank ?? "0"}</span>

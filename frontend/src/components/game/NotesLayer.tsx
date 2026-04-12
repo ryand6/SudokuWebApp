@@ -1,5 +1,5 @@
 import type { PlayerColour } from "@/types/enum/PlayerColour";
-import { getCellIndex, playerColourClassNamePicker } from "@/utils/game/cellUtils";
+import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import { hasNote } from "@/utils/game/noteUtils";
 import React from "react";
 

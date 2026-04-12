@@ -7,7 +7,7 @@ export function GameChatMessage({
     msg: GameChatMessageDto
 }) {
     return (
-        <div id="game-message-container" className="flex flex-row m-2">
+        <div id="game-message-container" className="flex flex-row m-0.5">
             <div id="game-message-user" className="w-[25%]">
                 {msg.username}
             </div>

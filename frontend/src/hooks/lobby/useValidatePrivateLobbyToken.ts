@@ -7,7 +7,7 @@ export function useValidatePrivateLobbyToken(token?: string) {
 
     useEffect(() => {
         if (!token || !token.trim()) {
-            toast.error("Lobby does not exist");
+            toast.error("Lobby does not exist", {containerId: "foreground"});
             navigate("/dashboard", { replace: true });
         }
     }, [token, navigate]);

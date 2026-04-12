@@ -30,7 +30,7 @@ export function useRequestJoinCode() {
             });
         },
         onError: (error) => {
-            toast.error(error.message);
+            toast.error(error.message, {containerId: "foreground"});
         }
     })
 }

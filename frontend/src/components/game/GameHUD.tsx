@@ -4,10 +4,10 @@ import type { GamePlayer, GamePlayers } from "@/types/game/GameTypes";
 import { HUDStats } from "./HUDStats";
 import { Modal } from "../ui/custom/Modal";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
 import { HUDHeatMaps } from "./HUDHeatMaps";
 import { HUDGameEventLog } from "./HUDGameEventLog";
 import { HUDGameChat } from "./HUDGameChat";
+import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 
 export function GameHUD(
     {
