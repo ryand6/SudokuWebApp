@@ -3,7 +3,7 @@ import { InfiniteMessageList } from "../shared/InfiniteMessageList";
 import { GameEventMessage } from "./GameEventMessage";
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
 
-export function GameEventLog({
+export function HUDGameEventLog({
     gameId
 }: {
     gameId: number

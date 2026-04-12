@@ -7,6 +7,5 @@ export type LobbyPlayerDto = {
     user: UserDto,
     joinedAt: string,
     lobbyStatus: LobbyStatus,
-    readyAt: string | null,
-    lastLobbyMessageTimestamp: string | null,
+    readyAt: string | null
 }

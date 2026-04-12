@@ -1,3 +1,4 @@
+import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessageDto";
 import type { GameEventDto } from "@/types/dto/entity/game/GameEventDto";
 import type { CellCoordinates } from "@/types/game/GameTypes"
 
@@ -37,6 +38,12 @@ export type GameEventLog =
         type: "GAME_EVENT",
         newMessage: GameEventDto
       }
+
+export type GameChatEvent = 
+    | {
+      type: "GAME_CHAT_MESSAGE",
+      newMessage: GameChatMessageDto
+    }
 
 export type GamePlayerStateEvent = 
     | {

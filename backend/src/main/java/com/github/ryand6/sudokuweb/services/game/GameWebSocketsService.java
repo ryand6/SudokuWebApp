@@ -2,12 +2,10 @@ package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.CellAcceptedPublicUpdate;
 import com.github.ryand6.sudokuweb.domain.game.CellRejectedPublicUpdate;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
 import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;
-import com.github.ryand6.sudokuweb.events.types.game.CellAcceptedPublicUpdateEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GameLogSendEvent;
-import com.github.ryand6.sudokuweb.events.types.game.CellRejectedPublicUpdateEvent;
-import com.github.ryand6.sudokuweb.events.types.game.PlayerHighlightedCellUpdateEvent;
+import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -61,6 +59,15 @@ public class GameWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleGameChatMessageSend(GameChatMessageDto gameChatMessageDto) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_CHAT_MESSAGE",
+                "payload", gameChatMessageDto
+        );
+        String topic = "/topic/game/" + gameChatMessageDto.getGameId();
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handlePlayerHighlightedCellUpdateEvent(PlayerHighlightedCellUpdateEvent event) {
         handlePlayerHighlightedCellUpdate(event.getPlayerHighlightedCellDto());
@@ -79,6 +86,11 @@ public class GameWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellAcceptedPublicUpdateEvent(CellAcceptedPublicUpdateEvent event) {
         handleCellAcceptedPublicUpdate(event.getGameId(), event.getCellAcceptedPublicUpdate());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleGameChatMessageSentWsEvent(GameChatMessageSentWsEvent event) {
+        handleGameChatMessageSend(event.getGameChatMessageDto());
     }
 
 }

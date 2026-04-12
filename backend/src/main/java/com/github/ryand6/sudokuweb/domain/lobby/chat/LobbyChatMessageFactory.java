@@ -11,7 +11,7 @@ public class LobbyChatMessageFactory {
         lobbyChatMessage.setLobbyEntity(lobby);
         lobbyChatMessage.setUserEntity(user);
         lobbyChatMessage.setMessage(message);
-        lobbyChatMessage.setMessageType(MessageType.MESSAGE);
+        lobbyChatMessage.setMessageType(messageType);
         return lobbyChatMessage;
     }
 

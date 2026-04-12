@@ -1,0 +1,23 @@
+package com.github.ryand6.sudokuweb.dto.request;
+
+import com.github.ryand6.sudokuweb.enums.MessageType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class GameChatMessageRequestDto {
+
+    private Long userId;
+
+    @NotBlank
+    @Size(min=3, max=100, message="Messages have a 100 character limit.")
+    private String message;
+
+    private MessageType messageType;
+
+}

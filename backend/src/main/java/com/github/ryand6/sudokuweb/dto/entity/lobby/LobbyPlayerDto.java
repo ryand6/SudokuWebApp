@@ -27,6 +27,4 @@ public class LobbyPlayerDto {
 
     private Instant readyAt;
 
-    private Instant lastLobbyMessageTimestamp;
-
 }

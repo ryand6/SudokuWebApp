@@ -103,8 +103,7 @@ public class LobbyChatService {
     }
 
     private LobbyPlayerEntity updateLobbyMessageTime(LobbyPlayerEntity lobbyPlayer) {
-        Instant now = Instant.now();
-        lobbyPlayer.setLastLobbyMessageTimestamp(now);
+        lobbyPlayer.updateLastLobbyMessageTime();
         return lobbyPlayer;
     }
 

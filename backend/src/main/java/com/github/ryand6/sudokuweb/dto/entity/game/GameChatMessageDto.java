@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dto.entity.lobby;
+package com.github.ryand6.sudokuweb.dto.entity.game;
 
 import com.github.ryand6.sudokuweb.enums.MessageType;
 import lombok.*;
@@ -10,11 +10,11 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LobbyChatMessageDto {
+public class GameChatMessageDto {
 
     private Long id;
 
-    private Long lobbyId;
+    private Long gameId;
 
     private Long userId;
 

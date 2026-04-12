@@ -68,6 +68,10 @@ public class GamePlayerEntity {
     @Column(name = "game_result", nullable = false)
     private GameResult gameResult = GameResult.PENDING;
 
+    // Stored the UTC timestamp of the last submitted chat message by the player - used to prevent message spamming
+    @Column(name = "game_message_timestamp")
+    private Instant lastGameMessageTimestamp = null;
+
     @Version
     private Long version;
 
@@ -116,6 +120,10 @@ public class GamePlayerEntity {
 
     public void setMaxStreak(int currentStreak) {
         maxStreak = currentStreak > maxStreak ? currentStreak : maxStreak;
+    }
+
+    public void updateLastGameMessageTime() {
+        lastGameMessageTimestamp = Instant.now();
     }
 
 }

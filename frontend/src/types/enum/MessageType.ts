@@ -1,1 +1,1 @@
-export type MessageType = "MESSAGE" | "INFO";
+export type MessageType = "MESSAGE" | "INFO" | "TEMPLATE";

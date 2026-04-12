@@ -1,5 +1,5 @@
+import { gameChatCacheDispatcher } from "@/state/game/chat/gameChatCacheDispatcher";
 import { gameEventsCacheDispatcher } from "@/state/game/events/gameEventsCacheDispatcher";
-import { gameEventsCacheReducer } from "@/state/game/events/gameEventsCacheReducer";
 import { gameCacheDispatcher } from "@/state/game/gameCacheDispatcher";
 import type { CellCoordinates } from "@/types/game/GameTypes";
 import { updateGameHighlightedCells } from "@/utils/game/cellUtils";
@@ -42,6 +42,13 @@ export function handleGameWebSocketMessages(
         case "GAME_EVENT": {
             gameEventsCacheDispatcher(queryClient, gameId, {
                 type: "GAME_EVENT",
+                newMessage: message.payload
+            })
+            break;
+        }
+        case "GAME_CHAT_MESSAGE": {
+            gameChatCacheDispatcher(queryClient, gameId, {
+                type: "GAME_CHAT_MESSAGE",
                 newMessage: message.payload
             })
             break;

@@ -4,7 +4,6 @@ import { getLocalTime } from "@/utils/time/getLocalTime";
 export function LobbyChatMessage({
     msg
 }: {
-    key: number,
     msg: LobbyChatMessageDto
 }) {
     return (

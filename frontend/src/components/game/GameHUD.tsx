@@ -6,7 +6,8 @@ import { Modal } from "../ui/custom/Modal";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import { playerColourClassNamePicker } from "@/utils/game/cellUtils";
 import { HUDHeatMaps } from "./HUDHeatMaps";
-import { GameEventLog } from "./GameEventLog";
+import { HUDGameEventLog } from "./HUDGameEventLog";
+import { HUDGameChat } from "./HUDGameChat";
 
 export function GameHUD(
     {
@@ -29,6 +30,7 @@ export function GameHUD(
     const [isStatsModalOpen, setStatsModalOpen] = useState(false);
     const [isHeatMapModalOpen, setHeatMapModalOpen] = useState(false);
     const [isGameLogModalOpen, setGameLogModalOpen] = useState(false);
+    const [isGameChatModalOpen, setGameChatModalOpen] = useState(false);
 
     const openModal = (setter: Dispatch<SetStateAction<boolean>>) => {
         setter(true);
@@ -63,6 +65,12 @@ export function GameHUD(
                     className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
                 >
                     Game Log   
+                </div>
+                <div 
+                    onClick={() => openModal(setGameChatModalOpen)}
+                    className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
+                >
+                    Game Chat   
                 </div>
             </div>
             <div className="flex">
@@ -123,12 +131,22 @@ export function GameHUD(
                 onClose={() => closeModal(setGameLogModalOpen)}
                 className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50 overflow-scroll"
             >
-                <GameEventLog 
+                <HUDGameEventLog 
                     gameId={gameId}
                 />
             </Modal>
-            
 
+            <Modal 
+                isOpen={isGameChatModalOpen} 
+                onClose={() => closeModal(setGameChatModalOpen)}
+                className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50 overflow-scroll"
+            >
+                <HUDGameChat 
+                    gameId={gameId}
+                    userId={userId}
+                />
+            </Modal>
+            
         </div>
     )
 

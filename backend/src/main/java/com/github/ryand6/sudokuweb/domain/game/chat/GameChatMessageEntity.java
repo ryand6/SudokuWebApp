@@ -1,9 +1,8 @@
-package com.github.ryand6.sudokuweb.domain.lobby.chat;
+package com.github.ryand6.sudokuweb.domain.game.chat;
 
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.MessageType;
-import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageProfanityException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.chat.MessageTooSoonException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,25 +18,25 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @Entity
-// Using index for fast message lookups per each lobby, useful for when multiple lobbies are active
+// Using index for fast message lookups per each game, useful for when multiple lobbies are active
 @Table(
-        name = "lobby_chat_messages",
+        name = "game_chat_messages",
         indexes = {
-                @Index(name = "idx_lobby_messages_created", columnList = "lobby_id, created_at DESC")
+                @Index(name = "idx_game_messages_created", columnList = "game_id, created_at DESC")
         }
 )
-public class LobbyChatMessageEntity {
+public class GameChatMessageEntity {
 
     public static final int PAGE_SIZE = 100;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lobby_message_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_message_id_seq")
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "lobby_id", nullable = false)
+    @JoinColumn(name = "game_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private LobbyEntity lobbyEntity;
+    private GameEntity gameEntity;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -59,15 +58,15 @@ public class LobbyChatMessageEntity {
     // Domain Business Logic //
     //#######################//
 
-    // Validate if user can send another message in the lobby chat yet (3 second cool down period)
+    // Validate if user can send another message in the game chat (5 second cool down period)
     public void validateMessageTime(Instant lastMessageTime) {
         if (lastMessageTime == null) {
             return;
         }
         // User must wait 3 seconds before another message can be sent
         Long timeSinceMessage = Instant.now().getEpochSecond() - lastMessageTime.getEpochSecond();
-        if (timeSinceMessage < 3) {
-            Long remainingSeconds = 3 - timeSinceMessage;
+        if (timeSinceMessage < 5) {
+            Long remainingSeconds = 5 - timeSinceMessage;
             throw new MessageTooSoonException(
                     "Please wait " + remainingSeconds + " more seconds before sending another message",
                     remainingSeconds
