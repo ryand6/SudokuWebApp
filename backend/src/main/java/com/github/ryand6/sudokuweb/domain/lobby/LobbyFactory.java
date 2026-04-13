@@ -3,10 +3,11 @@ package com.github.ryand6.sudokuweb.domain.lobby;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.enums.GameMode;
 
 public class LobbyFactory {
 
-    public static LobbyEntity createLobby(UserEntity requester, String lobbyName, boolean isPublic) {
+    public static LobbyEntity createLobby(UserEntity requester, String lobbyName, boolean isPublic, GameMode gameMode) {
         LobbyEntity newLobby = new LobbyEntity();
         newLobby.setActive(true);
         newLobby.setLobbyName(lobbyName);
@@ -15,6 +16,7 @@ public class LobbyFactory {
 
         LobbySettingsEntity lobbySettings = new LobbySettingsEntity();
         lobbySettings.setPublic(isPublic);
+        lobbySettings.setGameMode(gameMode);
         newLobby.setLobbySettingsEntity(lobbySettings);
         lobbySettings.setLobbyEntity(newLobby);
 

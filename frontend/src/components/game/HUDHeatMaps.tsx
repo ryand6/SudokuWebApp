@@ -16,6 +16,7 @@ export function HUDHeatMaps({
                     return (
                         <div 
                             className="flex justify-center items-center"
+                            key={index}
                         >
                             <div className="flex flex-col items-center w-full gap-2">
                                 <div>
@@ -24,7 +25,6 @@ export function HUDHeatMaps({
                                 <HeatMap
                                     playerColour={gp.colour}
                                     boardProgress={gp.boardProgress}
-                                    key={index}
                                 />
                                 <div className="horizontal-divider"></div>
                             </div>

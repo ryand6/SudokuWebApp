@@ -40,7 +40,7 @@ public class LobbySettingsEntity {
     private TimeLimitPreset timeLimit = TimeLimitPreset.STANDARD;
 
     // Also present in GameEntity
-    @Column(name = "mode")
+    @Column(name = "game_mode")
     @Enumerated(EnumType.STRING)
     private GameMode gameMode = GameMode.CLASSIC;
 

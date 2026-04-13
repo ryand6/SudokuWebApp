@@ -10,6 +10,7 @@ import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.UserExistsInActiveLobbyException;
@@ -96,7 +97,7 @@ public class LobbyServiceTests {
         String lobbyName = "Test Lobby";
         boolean isPublic = true;
         Long requesterId = 1L;
-        LobbyDto lobbyDtoTest = lobbyService.createNewLobby(lobbyName, isPublic, requesterId);
+        LobbyDto lobbyDtoTest = lobbyService.createNewLobby(lobbyName, isPublic, requesterId, GameMode.CLASSIC);
         assertThat(lobbyDtoTest.getId()).isEqualTo(1L);
         assertThat(lobbyDtoTest.getLobbyName()).isEqualTo("Test Lobby");
         assertThat(lobbyDtoTest.getLobbyPlayers()).hasSize(1);

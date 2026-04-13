@@ -286,11 +286,6 @@
   .hover-player-colour-four:hover { background-color: var(--player-colour-four-medium); }
   .shine-four { background: linear-gradient(135deg, rgba(255, 255, 255, 0.527) 0%, color-mix(in srgb, var(--player-colour-four-medium) 60%, transparent) 50%, rgba(255, 255, 255, 0.2) 100%); }
 
-  .toast-game-chat-message {
-    --toastify-text-color-light: var(--popover-foreground);
-    border: 1px solid var(--border);
-  }
-
   .elevated {
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.18),

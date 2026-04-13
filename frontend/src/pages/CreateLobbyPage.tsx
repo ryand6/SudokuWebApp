@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import type { GameMode } from "@/types/enum/GameMode";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,6 +12,7 @@ export function CreateLobbyPage() {
 
     const [lobbyName, setLobbyName] = useState("");
     const [isPublic, setIsPublic] = useState(true);
+    const [gameMode, setGameMode] = useState<GameMode>("CLASSIC");
     const [error, setError] = useState("");
 
     const navigate = useNavigate();
@@ -32,7 +34,7 @@ export function CreateLobbyPage() {
         if (!validate()) return;
         setError("");
         try {
-            const response = await processLobbySetup(lobbyName, isPublic);
+            const response = await processLobbySetup(lobbyName, isPublic, gameMode);
             navigate(`/lobby/${response.id}`, { replace: true });
         } catch (err: any) {
             // Display toast error message when the user is already part of an active lobby
@@ -45,7 +47,9 @@ export function CreateLobbyPage() {
 
     return (
         <div className="flex flex-1 justify-center items-center min-h-0 w-full">
-            <div className="w-full max-w-[1200px] max-h-[90vh] border-border m-5 bg-white rounded-md p-10 shadow-md overflow-y-auto min-h-0" >
+            <div className="w-full max-w-[1200px] max-h-[90vh] border-border border-1 m-5 bg-card 
+                            text-foreground rounded-md p-10 shadow-md overflow-y-auto min-h-0" 
+            >
                 <form onSubmit={handleSubmit} method="post">
                     <FieldSet>
                         <FieldLegend>Lobby Creation</FieldLegend>
@@ -66,6 +70,7 @@ export function CreateLobbyPage() {
                                     maxLength={20}
                                     minLength={3}
                                     onChange={(e) => setLobbyName(e.target.value)}
+                                    className="text-accent-foreground"
                                 />
                             </Field>
                             {/* display any errors found during attempted form submission */}
@@ -78,7 +83,7 @@ export function CreateLobbyPage() {
                                 <FieldDescription>Select the lobby access type</FieldDescription>
                                 <RadioGroup defaultValue="public" className="flex flex-col gap-2" onValueChange={(value) => setIsPublic(value === "public")}>
                                     <FieldLabel htmlFor="public-radio">
-                                        <Field orientation="horizontal">
+                                        <Field orientation="horizontal" className="cursor-pointer">
                                             <FieldContent>
                                                 <FieldTitle>Public Lobby</FieldTitle>
                                                 <FieldDescription>Lobby is open to the public and is discoverable via the dashboard</FieldDescription>
@@ -87,12 +92,48 @@ export function CreateLobbyPage() {
                                         </Field>
                                     </FieldLabel>
                                     <FieldLabel htmlFor="private-radio">
-                                        <Field orientation="horizontal">
+                                        <Field orientation="horizontal" className="cursor-pointer">
                                             <FieldContent>
                                                 <FieldTitle>Private Lobby</FieldTitle>
                                                 <FieldDescription>Lobby is only accessible to those with a valid access token and is not discoverable via the dashboard</FieldDescription>
                                             </FieldContent>
                                             <RadioGroupItem value="private" id="private-radio" />
+                                        </Field>
+                                    </FieldLabel>
+                                </RadioGroup>
+                            </FieldSet>
+                        </FieldGroup>
+                        <FieldSeparator />
+                        <FieldGroup>
+                            <FieldSet>
+                                <FieldLabel>Game Mode</FieldLabel>
+                                <FieldDescription>Select the game mode</FieldDescription>
+                                <RadioGroup defaultValue="CLASSIC" className="flex flex-col md:flex-row gap-2" onValueChange={(value) => setGameMode(value.toUpperCase() as GameMode)}>
+                                    <FieldLabel htmlFor="classic-radio">
+                                        <Field orientation="horizontal" className="cursor-pointer">
+                                            <FieldContent>
+                                                <FieldTitle>Classic</FieldTitle>
+                                                <FieldDescription>...classic game mode description...</FieldDescription>
+                                            </FieldContent>
+                                            <RadioGroupItem value="CLASSIC" id="classic-radio" />
+                                        </Field>
+                                    </FieldLabel>
+                                    <FieldLabel htmlFor="domination-radio">
+                                        <Field orientation="horizontal" className="cursor-pointer">
+                                            <FieldContent>
+                                                <FieldTitle>Domination</FieldTitle>
+                                                <FieldDescription>...domination game mode description...</FieldDescription>
+                                            </FieldContent>
+                                            <RadioGroupItem value="DOMINATION" id="domination-radio" />
+                                        </Field>
+                                    </FieldLabel>
+                                    <FieldLabel htmlFor="time-attack-radio">
+                                        <Field orientation="horizontal" className="cursor-pointer">
+                                            <FieldContent>
+                                                <FieldTitle>Time Attack</FieldTitle>
+                                                <FieldDescription>...time attack game mode description...</FieldDescription>
+                                            </FieldContent>
+                                            <RadioGroupItem value="TIMEATTACK" id="time-attack-radio" />
                                         </Field>
                                     </FieldLabel>
                                 </RadioGroup>

@@ -40,6 +40,7 @@ export function HeatMap({
                         return (
                             <div
                                 className={`${borderTop} ${borderLeft} ${borderBottom} ${borderRight} ${cellColour}`} 
+                                key={`${r}-${c}`}
                             >
                             </div>
                         )

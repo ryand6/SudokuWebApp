@@ -10,16 +10,17 @@ export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: Lob
     return (
         <div className="flex w-full p-2" >
             <Card className="w-full gap-2 p-2 text-sm hover:ring-4 hover:ring-ring/50">
-                <CardHeader>
+                <CardHeader className="flex justify-between items-center">
                     <CardTitle className="font-bold text-xl">{lobby.lobbyName}</CardTitle>
                     {lobby.inGame && <CardDescription>Lobby is currently in game</CardDescription>}
+                    <CardDescription>Created {computeTimeDifferenceMinutes(lobby.createdAt)} minutes ago</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <div className="flex gap-4 text-xs sm:text-sm md:text-base">
                         <div className="flex-1 text-left">Difficulty: {wordToProperCase(lobby.lobbySettings.difficulty)}</div>
                         <div className="flex-1 text-left">Time limit: {wordToProperCase(lobby.lobbySettings.timeLimit)}</div>
+                        <div className="flex-1 text-left">Game mode: {wordToProperCase(lobby.lobbySettings.gameMode)}</div>
                         <div className="flex-1 text-left">Host: {lobby.host.username}</div>
-                        <div className="flex-1 text-left">Created {computeTimeDifferenceMinutes(lobby.createdAt)} minutes ago</div>
                     </div>
                 </CardContent>
                 <CardFooter className="items-stretch">

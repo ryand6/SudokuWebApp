@@ -2,8 +2,9 @@ import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { backendValidationErrors } from "@/utils/error/backendValidationErrors";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
+import type { GameMode } from "@/types/enum/GameMode";
 
-export async function processLobbySetup(lobbyName: string, isPublic: boolean): Promise<LobbyDto> {
+export async function processLobbySetup(lobbyName: string, isPublic: boolean, gameMode: GameMode): Promise<LobbyDto> {
     try {
         const response = await fetch("/api/lobby/process-lobby-setup", {
             method: "POST",
@@ -14,7 +15,7 @@ export async function processLobbySetup(lobbyName: string, isPublic: boolean): P
                 // assign token to empty string if it is null because header cannot accept null/undefined values
                 "X-XSRF-TOKEN": getCsrfTokenFromCookie() ?? "",
             },
-            body: JSON.stringify({lobbyName, isPublic})
+            body: JSON.stringify({lobbyName, isPublic, gameMode})
         });
         if (!response.ok) {
             // if error message doesn't parse properly, assign null to errorData
