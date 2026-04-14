@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.game.player;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
-import com.github.ryand6.sudokuweb.domain.game.player.settings.GamePlayerSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.GameResult;
@@ -37,9 +36,6 @@ public class GamePlayerEntity {
 
     @OneToOne(mappedBy = "gamePlayerEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private GamePlayerStateEntity gamePlayerStateEntity;
-
-    @OneToOne(mappedBy = "gamePlayerEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private GamePlayerSettingsEntity gamePlayerSettingsEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "player_colour", nullable = false)

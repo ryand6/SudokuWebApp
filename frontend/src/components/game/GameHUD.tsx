@@ -8,6 +8,7 @@ import { HUDHeatMaps } from "./HUDHeatMaps";
 import { HUDGameEventLog } from "./HUDGameEventLog";
 import { HUDGameChat } from "./HUDGameChat";
 import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
+import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 
 export function GameHUD(
     {
@@ -17,13 +18,15 @@ export function GameHUD(
         difficulty, 
         gameMode,
         currentStreak,
+        userSettings,
     }: {
         userId: number,
         gameId: number,
         gamePlayers: GamePlayers, 
         difficulty: Difficulty, 
         gameMode: GameMode,
-        currentStreak: number
+        currentStreak: number,
+        userSettings: UserSettingsDto
     }
 ) {
 

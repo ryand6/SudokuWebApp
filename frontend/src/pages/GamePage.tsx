@@ -89,6 +89,7 @@ export function GamePage() {
                         difficulty={publicGameState.difficulty}
                         gameMode={publicGameState.gameMode}
                         currentStreak={privateGameState.currentStreak} 
+                        userSettings={currentUser.userSettings}
                     />
                     <SudokuBoard 
                         gameId={publicGameState.gameId}

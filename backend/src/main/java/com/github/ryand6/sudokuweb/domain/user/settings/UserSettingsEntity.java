@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.domain.user.settings;
 
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.enums.Theme;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,10 +23,40 @@ public class UserSettingsEntity {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity userEntity;
 
-    @Column(name = "is_dark_mode_active")
-    private boolean isDarkModeActive = false;
+    //#######################//
+    //    Visual Settings    //
+    //#######################//
 
-    @Column(name = "is_sound_active")
-    private boolean isSoundActive = true;
+    @Column(name = "theme")
+    private Theme theme = Theme.DEFAULT;
+
+    @Column(name = "opponent_highlighted_squares")
+    private boolean opponentHighlightedSquaresEnabled = true;
+
+    @Column(name = "highlighted_houses")
+    private boolean highlightedHousesEnabled = true;
+
+    @Column(name = "highlighted_firsts")
+    private boolean highlightedFirstsEnabled = true;
+
+    //#######################//
+    //    Audio Settings     //
+    //#######################//
+
+    @Column(name = "audio")
+    private boolean audioEnabled = false;
+
+    //#######################//
+    // Notification Settings //
+    //#######################//
+
+    @Column(name = "game_chat_notifications")
+    private boolean gameChatNotificationsEnabled = true;
+
+    @Column(name = "score_notifications")
+    private boolean scoreNotificationsEnabled = true;
+
+    @Column(name = "streak_notifications")
+    private boolean streakNotificationsEnabled = true;
 
 }

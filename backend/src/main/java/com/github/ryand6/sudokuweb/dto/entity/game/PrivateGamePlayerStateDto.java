@@ -21,6 +21,4 @@ public class PrivateGamePlayerStateDto {
 
     private Instant multiplierEndsAt;
 
-    private GamePlayerSettingsDto gamePlayerSettings;
-
 }

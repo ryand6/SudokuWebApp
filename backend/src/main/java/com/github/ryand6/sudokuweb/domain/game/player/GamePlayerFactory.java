@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.game.player;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
-import com.github.ryand6.sudokuweb.domain.game.player.settings.GamePlayerSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
@@ -24,13 +23,8 @@ public class GamePlayerFactory {
         }
         gamePlayerState.setGamePlayerEntity(gamePlayer);
 
-        // Set up player settings
-        GamePlayerSettingsEntity gamePlayerSettings = new GamePlayerSettingsEntity();
-        gamePlayerSettings.setGamePlayerEntity(gamePlayer);
-
         // Attach children to parent
         gamePlayer.setGamePlayerStateEntity(gamePlayerState);
-        gamePlayer.setGamePlayerSettingsEntity(gamePlayerSettings);
 
         return gamePlayer;
     }
