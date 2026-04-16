@@ -23,4 +23,5 @@ public class GameWsController {
             @Valid PlayerHighlightedCellRequestDto requestDto) {
         gameInMemoryStateService.updatePlayerHighlightedCell(new PlayerHighlightedCellDto(gameId, requestDto.getUserId(), requestDto.getRow(), requestDto.getCol()));
     }
+
 }

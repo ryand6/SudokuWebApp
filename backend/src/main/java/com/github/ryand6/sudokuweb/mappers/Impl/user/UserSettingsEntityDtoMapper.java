@@ -11,8 +11,14 @@ public class UserSettingsEntityDtoMapper implements EntityDtoMapper<UserSettings
     @Override
     public UserSettingsDto mapToDto(UserSettingsEntity userSettings) {
         return UserSettingsDto.builder()
-                .isDarkModeActive(userSettings.isDarkModeActive())
-                .isSoundActive(userSettings.isSoundActive())
+                .theme(userSettings.getTheme())
+                .opponentHighlightedSquaresEnabled(userSettings.isOpponentHighlightedSquaresEnabled())
+                .highlightedHousesEnabled(userSettings.isHighlightedHousesEnabled())
+                .highlightedFirstsEnabled(userSettings.isHighlightedFirstsEnabled())
+                .audioEnabled(userSettings.isAudioEnabled())
+                .gameChatNotificationsEnabled(userSettings.isGameChatNotificationsEnabled())
+                .scoreNotificationsEnabled(userSettings.isScoreNotificationsEnabled())
+                .streakNotificationsEnabled(userSettings.isStreakNotificationsEnabled())
                 .build();
     }
 

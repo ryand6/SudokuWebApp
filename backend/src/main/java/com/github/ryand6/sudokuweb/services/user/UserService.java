@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services.user;
 
+import com.github.ryand6.sudokuweb.config.CacheConfig;
 import com.github.ryand6.sudokuweb.domain.user.UserFactory;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
@@ -10,6 +11,8 @@ import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -37,10 +40,15 @@ public class UserService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
     @Cacheable(value = "userCache", key = "#root.methodName + '_' + T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderId(T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderName(#authToken),#principal)")
     // Try retrieve User's OAuth provider name and ID
     public UserDto getCurrentUserByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
+
+        log.info("Cache MISS - fetching user from DB for provider: {}", provider);
+
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         UserEntity user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

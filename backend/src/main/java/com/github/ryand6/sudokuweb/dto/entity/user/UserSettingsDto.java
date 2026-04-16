@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.dto.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.github.ryand6.sudokuweb.enums.Theme;
 import lombok.*;
 
 @Getter
@@ -10,10 +11,20 @@ import lombok.*;
 @Builder
 public class UserSettingsDto {
 
-    @JsonProperty("isDarkModeActive")
-    private boolean isDarkModeActive;
+    private Theme theme;
 
-    @JsonProperty("isSoundActive")
-    private boolean isSoundActive;
+    private boolean opponentHighlightedSquaresEnabled;
+
+    private boolean highlightedHousesEnabled;
+
+    private boolean highlightedFirstsEnabled;
+
+    private boolean audioEnabled;
+
+    private boolean gameChatNotificationsEnabled;
+
+    private boolean scoreNotificationsEnabled;
+
+    private boolean streakNotificationsEnabled;
 
 }
