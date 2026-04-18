@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb.dto.request;
+package com.github.ryand6.sudokuweb.domain.user.settings;
 
 import lombok.*;
 
@@ -9,9 +9,8 @@ import lombok.*;
 @Builder
 public class SingleFieldPatch {
 
-    private Long userId;
-
     private String field;
 
     private Object value;
+
 }

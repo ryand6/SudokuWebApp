@@ -1,7 +1,10 @@
 package com.github.ryand6.sudokuweb.services.user;
 
+import com.github.ryand6.sudokuweb.domain.user.settings.SingleFieldPatch;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.events.types.user.ws.UserSettingsUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UserUpdateWsEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
@@ -29,10 +32,49 @@ public class UserWebSocketsService {
         simpMessagingTemplate.convertAndSendToUser(providerId, "/queue/updates", messageHeader);
     }
 
+    public void handleUserSettingsUpdate(String providerId, SingleFieldPatch singleFieldPatch) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "USER_SETTINGS_UPDATED",
+                "payload", singleFieldPatch
+        );
+        simpMessagingTemplate.convertAndSendToUser(providerId, "/queue/updates", messageHeader);
+    }
+
+    public void handleUserSettingsFieldRejected(String providerId, SingleFieldPatch singleFieldPatch) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "USER_SETTINGS_FIELD_REJECTED",
+                "payload", singleFieldPatch
+        );
+        simpMessagingTemplate.convertAndSendToUser(providerId, "/queue/updates", messageHeader);
+    }
+
+    public void handleUserSettingsValueRejected(String providerId, SingleFieldPatch singleFieldPatch) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "USER_SETTINGS_VALUE_REJECTED",
+                "payload", singleFieldPatch
+        );
+        simpMessagingTemplate.convertAndSendToUser(providerId, "/queue/updates", messageHeader);
+    }
+
     // Used for listening to user update events
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    void handleLobbyUpdateWsEvent(UserUpdateWsEvent event) {
+    void handleUserUpdateWsEvent(UserUpdateWsEvent event) {
         handleUserUpdate(event.getUserDto(), event.getProviderId());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleUserSettingsUpdateWsEvent(UserSettingsUpdatedWsEvent event) {
+        handleUserSettingsUpdate(event.getProviderId(), event.getSingleFieldPatch());
+    }
+
+    @EventListener()
+    void handleUserSettingsFieldRejectedWsEvent(UserSettingsUpdatedWsEvent event) {
+        handleUserSettingsFieldRejected(event.getProviderId(), event.getSingleFieldPatch());
+    }
+
+    @EventListener()
+    void handleUserSettingsValueRejectedWsEvent(UserSettingsUpdatedWsEvent event) {
+        handleUserSettingsValueRejected(event.getProviderId(), event.getSingleFieldPatch());
     }
 
 }

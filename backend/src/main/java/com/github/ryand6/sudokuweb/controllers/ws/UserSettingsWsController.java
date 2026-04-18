@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers.ws;
 
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.domain.user.settings.SingleFieldPatch;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import com.github.ryand6.sudokuweb.services.user.UserSettingsService;
@@ -24,11 +25,13 @@ public class UserSettingsWsController {
 
     @MessageMapping("/user/update-settings")
     public void updateUserSettings(@AuthenticationPrincipal OAuth2User principal,
-                                   OAuth2AuthenticationToken authToken) {
+                                   OAuth2AuthenticationToken authToken,
+                                   SingleFieldPatch requestDto) {
         if (principal == null || authToken == null) {
             throw new OAuth2LoginRequiredException("OAuth2 login required to carry out this action");
         }
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
+        userSettingsService.updateSettings(user.getId(), principal, authToken, requestDto);
     }
 
 }
