@@ -16,6 +16,8 @@ export async function getCurrentUser(): Promise<UserDto> {
     // Handle when a user has not been created
     } else if (response.status === 404) {
         throw new Error("UserSetupRequired");
+    } else if (response.status === 409) {
+        throw new Error("OAuthProviderNotLinked");
     } else if (!response.ok) {
         // if error message doesn't parse properly, assign null to errorData
         const errorData = await response.json().catch(() => null);

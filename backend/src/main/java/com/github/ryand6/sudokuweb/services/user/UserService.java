@@ -127,10 +127,10 @@ public class UserService {
         String provider = (String) session.getAttribute("pendingLinkProvider");
         String providerId = (String) session.getAttribute("pendingLinkProviderId");
         Long userId = (Long) session.getAttribute("pendingLinkUserId");
-        if (provider == null || providerId == null || userId == null) {
-            throw new InvalidOtpException("Session expired, please restart the account linking process");
-        }
         try {
+            if (provider == null || providerId == null || userId == null) {
+                throw new InvalidOtpException("Session expired, please restart the account linking process");
+            }
             otpService.validateOtp(userId, otp);
             UserEntity user = findUserById(userId);
             UserOAuthProviderEntity newProvider = UserOAuthProviderEntity.builder()

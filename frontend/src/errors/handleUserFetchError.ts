@@ -4,7 +4,8 @@ export function handleUserFetchError(
       error: Error,
       navigate: NavigateFunction,
       currentPath: string,
-      onUserSetupRoute?: boolean
+      onUserSetupRoute?: boolean,
+      onLinkAccountRoute?: boolean
 ) {
     if (!error) return;
     // Redirect to login
@@ -18,8 +19,13 @@ export function handleUserFetchError(
         sessionStorage.setItem("postLoginPath", currentPath);
         navigate("/user-setup", { replace: true, state: { firstTimeSetup: true } });
         return;
+    }
+    else if (error.message === "OAuthProviderNotLinked" && !onLinkAccountRoute) {
+        sessionStorage.setItem("postLoginPath", currentPath);
+        navigate("/link-account", { replace: true });
+        return;
     } 
-    else if (onUserSetupRoute) return;
+    else if (onUserSetupRoute || onLinkAccountRoute) return;
     // For other errors, you could log or handle differently
     console.error("Unhandled user fetch error:", error);
 }
