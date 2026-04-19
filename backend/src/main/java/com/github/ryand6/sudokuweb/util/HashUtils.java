@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.util;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.HexFormat;
+import java.util.Base64;
 
 public final class HashUtils {
 
@@ -11,10 +11,10 @@ public final class HashUtils {
     public static String generateHmacHash(String input, String secret) {
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), HMAC_ALGORITHM);
             mac.init(secretKey);
             byte[] hash = mac.doFinal(input.toLowerCase().trim().getBytes());
-            return HexFormat.of().formatHex(hash);
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
         } catch (Exception e) {
             throw new RuntimeException("Failed to hash input", e);
         }

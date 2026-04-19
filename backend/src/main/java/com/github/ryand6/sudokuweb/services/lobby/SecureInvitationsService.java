@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.token.TokenIdentifiers;
+import com.github.ryand6.sudokuweb.util.HashUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +22,13 @@ public class SecureInvitationsService {
         // Token available for 10 minutes
         private static final long INVITATION_VALIDITY_MINUTES = 10;
         private static final SecureRandom SECURE_RANDOM = new SecureRandom();
-        private final byte[] SECRET_KEY;
+        private final String SECRET_KEY;
         // Injectable clock, which allows testing to be carried out on time thresholds
         private final Clock clock;
 
         public SecureInvitationsService(@Value("${hmac.secret-key}") String hmacSecretKey,
                                         Clock clock) {
-            SECRET_KEY = hmacSecretKey.getBytes(StandardCharsets.UTF_8);
+            SECRET_KEY = hmacSecretKey;
             this.clock = clock;
         }
 
@@ -41,7 +42,7 @@ public class SecureInvitationsService {
             long expiryTime = Instant.now(clock).plusSeconds(INVITATION_VALIDITY_MINUTES * 60).getEpochSecond();
             String nonce = generateNonce();
             String payload = lobbyId + ":" + userId + ":" + expiryTime + ":" + nonce;
-            String signature = generateSignature(payload);
+            String signature = HashUtils.generateHmacHash(payload, SECRET_KEY);
             // Attach the HMAC signature to the token
             String token = payload + ":" + signature;
             // Return Base64 encoded token that is safe for use in lobby URL
@@ -75,7 +76,7 @@ public class SecureInvitationsService {
 
                 // Verify signature
                 String payload = lobbyId + ":" + userId + ":" + expiryTime + ":" + nonce;
-                String expectedSignature = generateSignature(payload);
+                String expectedSignature = HashUtils.generateHmacHash(payload, SECRET_KEY);
                 // Signature of received token must match the signature generated for the token to be authenticated as the same secret key is used
                 if (!signature.equals(expectedSignature)) {
                     return null;
@@ -85,26 +86,6 @@ public class SecureInvitationsService {
 
             } catch (Exception e) {
                 return null;
-            }
-        }
-
-        /**
-         * Attempt to hash a payload using HMAC algorithm and secret key
-         * @param payload The message to hash
-         * @return The hashed value of the message
-         */
-        private String generateSignature(String payload) {
-            try {
-                Mac mac = Mac.getInstance(HMAC_ALGORITHM);
-                // Create key spec to initialise mac object - key spec associating the secret key with the relevant cryptography algorithm to be applied
-                SecretKeySpec secretKeySpec = new SecretKeySpec(SECRET_KEY, HMAC_ALGORITHM);
-                mac.init(secretKeySpec);
-                // Create the HMAC signature using the payload
-                byte[] hash = mac.doFinal(payload.getBytes(StandardCharsets.UTF_8));
-                return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
-                // Caught if hashing algorithm not found or the secret key provided is invalid for that algorithm
-            } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-                throw new RuntimeException("Failed to generate signature", e);
             }
         }
 
