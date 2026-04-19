@@ -2,7 +2,7 @@ import { useState, type JSX } from "react";
 
 
 interface UserFormProps {
-    onSubmit: (username: string) => Promise<void>,
+    onSubmit: (username: string, recoveryEmail: string) => Promise<void>,
     submitLabel: string,
 }
 
@@ -11,6 +11,7 @@ export function UserForm({
     submitLabel = "Submit"
 }: UserFormProps): JSX.Element {
     const [username, setUsername] = useState("");
+    const [recoveryEmail, setRecoveryEmail] = useState("");
     const [error, setError] = useState("");
 
     // Validates username form field
@@ -22,6 +23,15 @@ export function UserForm({
             setError("Username must be between 3 and 20 characters long");
             return false;
         }
+        if (!recoveryEmail.trim()) {
+            setError("Recovery email is required");
+            return false;
+        }
+        const emailRegex: RegExp = /^.+@.+$/;
+        if (!emailRegex.test(recoveryEmail)) {
+            setError("Must be a valid email address");
+            return false;
+        }
         return true;
     }
 
@@ -31,7 +41,7 @@ export function UserForm({
         if (!validate()) return;
         setError("");
         try {
-            await onSubmit(username);
+            await onSubmit(username, recoveryEmail);
         } catch (err: any) {
             // Handle backend form validation errors
             if (err.status === 400) setError(err.message);
@@ -56,6 +66,19 @@ export function UserForm({
                 className="border border-border text-foreground font-semibold 
                             bg-input rounded-lg p-3 focus:outline-none focus:ring-2 
                             placeholder:text-muted-foreground focus:ring-ring"
+            />
+            <label htmlFor="recoveryEmail" className="font-semibold text-foreground mt-1 text-lg">Recovery email:</label>
+            <p className="text-muted-foreground text-sm -mt-2">
+                Used only for account recovery if you lose access to your login provider. We store a pseudonymised hash of this address and cannot read it.
+            </p>
+            <input
+                type="email"
+                id="recoveryEmail"
+                placeholder="your@email.com"
+                value={recoveryEmail}
+                required
+                onChange={(e) => setRecoveryEmail(e.target.value)}
+                className="border border-border text-foreground font-semibold bg-input rounded-lg p-3 focus:outline-none focus:ring-2 placeholder:text-muted-foreground focus:ring-ring"
             />
             <button 
                 type="submit"

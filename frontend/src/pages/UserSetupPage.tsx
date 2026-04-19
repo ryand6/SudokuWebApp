@@ -1,15 +1,46 @@
-import { type JSX } from "react";
+import { useState, type JSX } from "react";
 import { processUserSetup } from "../api/rest/users/mutate/processUserSetup";
 import { useNavigate } from "react-router-dom";
 import { UserForm } from "../components/users/UserForm";
 
 export function UserSetupPage(): JSX.Element {
     const navigate = useNavigate();
+    const [setupComplete, setSetupComplete] = useState(false);
 
-    async function handleSetup(username: string): Promise<void> {
-        await processUserSetup(username);
-        // Redirect to homepage when finished setting up account, which will then redirect to referrer if there is one
-        navigate("/", { replace: true });
+    async function handleSetup(username: string, recoveryEmail: string): Promise<void> {
+        await processUserSetup(username, recoveryEmail);
+        setSetupComplete(true);
+    }
+
+    if (setupComplete) {
+        return (
+            <div className="flex justify-center min-h-screen w-full">
+                <div className="flex flex-col w-full max-w-md min-h-screen p-6 gap-6">
+                    <h1 className="my-4 font-extrabold tracking-tight text-secondary">Account Created</h1>
+                    <p className="text-foreground">
+                        Your account has been created successfully. Would you like to link any other login providers now?
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                        If you skip this step, you can still link providers later from account settings — but only whilst logged in with an already linked provider. If you lose access to your only linked provider, you will need your recovery email to regain access.
+                    </p>
+                    <div className="flex flex-col gap-3">
+                        <button
+                            onClick={() => navigate("/link-account", { replace: true, state: { fromSetup: true } })}
+                            className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors cursor-pointer"
+                        >
+                            Link another provider
+                        </button>
+                        <button
+                            // Redirect to homepage when finished setting up account, which will then redirect to referrer if there is one
+                            onClick={() => navigate("/", { replace: true })}
+                            className="bg-muted text-muted-foreground font-semibold py-2 px-4 rounded-lg hover:bg-muted/80 transition-colors cursor-pointer"
+                        >
+                            Skip for now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     return (
