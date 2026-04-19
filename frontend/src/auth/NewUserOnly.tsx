@@ -13,7 +13,7 @@ export function NewUserOnly({ children }: { children : React.ReactNode }) {
     const firstTimeSetup = location.state?.firstTimeSetup ?? false;
 
     // check if the current route is the user setup page - pass flag to handleUserFetchError to prevent infinite redirects to user setup
-    const onUserSetupRoute = location.pathname === "/user-setup" ? true : false;
+    const onUserSetupRoute: boolean = location.pathname === "/user-setup";
 
     // Retrieve use auth status on mount - triggers currentUser to run which will redirect user to login page if not authenticated
     const { data: user, error, isLoading } = useGetCurrentUser();
