@@ -72,7 +72,7 @@ public class PrivateLobbyTokenService {
     }
 
     // Get list of all active tokens for a user
-    public UserActiveTokensDto  getActiveTokensForUser(Long userId) {
+    public UserActiveTokensDto getActiveTokensForUser(Long userId) {
         String userKey = "user:" + userId + ":tokens";
         cleanUpUserTokens(userKey); // remove expired tokens
 
