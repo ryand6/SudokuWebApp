@@ -54,7 +54,6 @@ public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
                 .username("testuser")
                 .isOnline(true)
                 .userStatsEntity(savedScore)
-                .providerId("iiugh3")
                 .build();
 
         UserDto dto = mapper.mapToDto(userEntity);

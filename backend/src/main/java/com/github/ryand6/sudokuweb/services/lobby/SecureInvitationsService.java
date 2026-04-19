@@ -26,7 +26,7 @@ public class SecureInvitationsService {
         // Injectable clock, which allows testing to be carried out on time thresholds
         private final Clock clock;
 
-        public SecureInvitationsService(@Value("${hmac.secret-key}") String hmacSecretKey,
+        public SecureInvitationsService(@Value("${hmac.lobby.secret-key}") String hmacSecretKey,
                                         Clock clock) {
             SECRET_KEY = hmacSecretKey;
             this.clock = clock;

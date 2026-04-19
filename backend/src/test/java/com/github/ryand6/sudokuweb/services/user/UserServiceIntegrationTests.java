@@ -51,7 +51,7 @@ class UserServiceIntegrationTests extends AbstractIntegrationTest {
         assertThat(before).isEmpty();
 
         // Create user
-        userService.createNewUser(username, provider, providerId);
+        userService.createNewUser(username, provider, providerId, "your-personal-email@gmail.com");
 
         // Verify user now exists
         Optional<UserEntity> after = userRepository.findByProviderAndProviderId(provider, providerId);
@@ -71,7 +71,7 @@ class UserServiceIntegrationTests extends AbstractIntegrationTest {
         String providerId = "google-123";
 
         // Create initial user
-        userService.createNewUser(originalUsername, provider, providerId);
+        userService.createNewUser(originalUsername, provider, providerId, "your-personal-email@gmail.com");
 
         Optional<UserEntity> userOpt = userRepository.findByProviderAndProviderId(provider, providerId);
         assertThat(userOpt).isPresent();

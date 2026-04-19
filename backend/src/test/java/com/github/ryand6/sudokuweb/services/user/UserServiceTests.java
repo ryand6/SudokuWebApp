@@ -59,8 +59,6 @@ public class UserServiceTests {
         // Persist the user entity to DB
         UserEntity user = new UserEntity();
         user.setUsername("username");
-        user.setProvider("google");
-        user.setProviderId("google-123");
         user.setOnline(true);
         user.setUserStatsEntity(score);
 
@@ -93,8 +91,6 @@ public class UserServiceTests {
         // Persist the user entity to DB
         UserEntity user = new UserEntity();
         user.setUsername("username");
-        user.setProvider("google");
-        user.setProviderId("google-123");
         user.setOnline(true);
         user.setUserStatsEntity(score);
 
@@ -124,7 +120,7 @@ public class UserServiceTests {
 
         UsernameTakenException ex = assertThrows(
                 UsernameTakenException.class,
-                () -> userService.createNewUser(username, provider, providerId)
+                () -> userService.createNewUser(username, provider, providerId, "your-personal-email@gmail.com")
         );
         assertThat(ex.getMessage()).isEqualTo("Username provided is taken, please choose another");
     }

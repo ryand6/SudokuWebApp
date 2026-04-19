@@ -39,7 +39,6 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UserOAuthProviderRepository userOAuthProviderRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final OtpService otpService;
@@ -48,14 +47,12 @@ public class UserService {
 
 
     public UserService(UserRepository userRepository,
-                       UserOAuthProviderRepository userOAuthProviderRepository,
                        UserEntityDtoMapper userEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher,
                        OtpService otpService,
                        EmailService emailService,
                        CacheManager cacheManager) {
         this.userRepository = userRepository;
-        this.userOAuthProviderRepository = userOAuthProviderRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
         this.otpService = otpService;
@@ -65,7 +62,7 @@ public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    @Value("${hmac.secret-key}")
+    @Value("${hmac.email.secret-key}")
     private String hmacSecretKey;
 
     @Cacheable(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
@@ -121,29 +118,33 @@ public class UserService {
         session.setAttribute("pendingLinkProvider", provider);
         session.setAttribute("pendingLinkProviderId", providerId);
         session.setAttribute("pendingLinkUserId", user.getId());
-        String otp = otpService.generateAndStoreOtp(session.getId());
+        String otp = otpService.generateAndStoreOtp(user.getId());
         emailService.sendOtpEmail(emailAddress, otp);
     }
 
     @Transactional
     public void verifyAccountLink(String otp, HttpSession session) {
-        otpService.validateOtp(session.getId(), otp);
         String provider = (String) session.getAttribute("pendingLinkProvider");
         String providerId = (String) session.getAttribute("pendingLinkProviderId");
         Long userId = (Long) session.getAttribute("pendingLinkUserId");
         if (provider == null || providerId == null || userId == null) {
             throw new InvalidOtpException("Session expired, please restart the account linking process");
         }
-        UserEntity user = findUserById(userId);
-        UserOAuthProviderEntity newProvider = UserOAuthProviderEntity.builder()
-                .provider(provider)
-                .providerId(providerId)
-                .userEntity(user)
-                .build();
-        userOAuthProviderRepository.save(newProvider);
-        session.removeAttribute("pendingLinkProvider");
-        session.removeAttribute("pendingLinkProviderId");
-        session.removeAttribute("pendingLinkUserId");
+        try {
+            otpService.validateOtp(userId, otp);
+            UserEntity user = findUserById(userId);
+            UserOAuthProviderEntity newProvider = UserOAuthProviderEntity.builder()
+                    .provider(provider)
+                    .providerId(providerId)
+                    .userEntity(user)
+                    .build();
+            user.getUserOAuthProviderEntities().add(newProvider);
+            userRepository.save(user);
+        } finally {
+            session.removeAttribute("pendingLinkProvider");
+            session.removeAttribute("pendingLinkProviderId");
+            session.removeAttribute("pendingLinkUserId");
+        }
     }
 
     @Transactional

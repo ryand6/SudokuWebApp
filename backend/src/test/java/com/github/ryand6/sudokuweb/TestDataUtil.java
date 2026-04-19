@@ -26,8 +26,6 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 userStatsEntity(userStatsEntity).
                 username("Henry").
-                provider("google").
-                providerId("a4ceE42GHa").
                 build();
     }
 
@@ -35,8 +33,6 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 userStatsEntity(userStatsEntity).
                 username("dk0ng").
-                provider("github").
-                providerId("34hEA3cbe").
                 build();
     }
 
@@ -44,8 +40,6 @@ public final class TestDataUtil {
         return UserEntity.builder().
                 userStatsEntity(userStatsEntity).
                 username("parf").
-                provider("facebook").
-                providerId("dA5cfB12c").
                 build();
     }
 

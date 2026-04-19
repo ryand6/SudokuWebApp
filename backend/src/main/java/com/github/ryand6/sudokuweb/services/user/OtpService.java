@@ -23,18 +23,18 @@ public class OtpService {
         this.redisTemplate = redisTemplate;
     }
 
-    public String generateAndStoreOtp(String sessionId) {
+    public String generateAndStoreOtp(Long userId) {
         String otp = OtpUtils.generateOtp();
-        redisTemplate.opsForValue().set(OTP_PREFIX + sessionId, otp, Duration.ofMinutes(otpExpiryMinutes));
+        redisTemplate.opsForValue().set(OTP_PREFIX + userId, otp, Duration.ofMinutes(otpExpiryMinutes));
         return otp;
     }
 
-    public void validateOtp(String sessionId, String otp) {
-        String retrievedOtp = redisTemplate.opsForValue().get(OTP_PREFIX + sessionId);
+    public void validateOtp(Long userId, String otp) {
+        String retrievedOtp = redisTemplate.opsForValue().get(OTP_PREFIX + userId);
         if (!otp.equals(retrievedOtp)) {
             throw new InvalidOtpException("Invalid or expired OTP");
         }
-        redisTemplate.delete(OTP_PREFIX + sessionId);
+        redisTemplate.delete(OTP_PREFIX + userId);
     }
 
 }

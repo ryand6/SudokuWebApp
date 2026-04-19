@@ -21,7 +21,6 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -143,4 +142,5 @@ public class UserRestController {
         List<UserDto> topFive = userService.getTop5PlayersTotalScore();
         return ResponseEntity.ok(new TopFivePlayersDto(topFive));
     }
+
 }

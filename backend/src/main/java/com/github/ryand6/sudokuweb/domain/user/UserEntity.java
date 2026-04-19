@@ -44,7 +44,7 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private UserSettingsEntity userSettingsEntity;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserOAuthProviderEntity> userOAuthProviderEntities;
 
     @Column(name = "recovery_email_hash")
