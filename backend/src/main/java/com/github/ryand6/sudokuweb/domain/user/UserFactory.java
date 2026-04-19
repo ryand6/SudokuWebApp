@@ -4,11 +4,12 @@ import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
 import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class UserFactory {
 
-    public static UserEntity createUser(String username, String provider, String providerId) {
+    public static UserEntity createUser(String username, String provider, String providerId, String recoveryEmailHash) {
         // Create user stats and user settings entities first, so they can be persisted when User entity is persisted
         UserStatsEntity userStats = new UserStatsEntity();
         UserSettingsEntity userSettings = new UserSettingsEntity();
@@ -27,7 +28,8 @@ public class UserFactory {
         newUser.setOnline(true);
         newUser.setUserStatsEntity(userStats);
         newUser.setUserSettingsEntity(userSettings);
-        newUser.setUserOAuthProviderEntities(Set.of(oAuthProvider));
+        newUser.setUserOAuthProviderEntities(new HashSet<>(Set.of(oAuthProvider)));
+        newUser.setRecoveryEmailHash(recoveryEmailHash);
         return newUser;
     }
 

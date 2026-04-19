@@ -62,8 +62,9 @@ public class UserRestController {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         String username = request.getUsername();
+        String recoveryEmail = request.getRecoveryEmail();
         // Create user in DB
-        userService.createNewUser(username, provider, providerId);
+        userService.createNewUser(username, provider, providerId, recoveryEmail);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(null);

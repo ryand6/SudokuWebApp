@@ -2,16 +2,24 @@ package com.github.ryand6.sudokuweb.services.user;
 
 import com.github.ryand6.sudokuweb.domain.user.UserFactory;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
+import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderRepository;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UsernameUpdatedWsEvent;
+import com.github.ryand6.sudokuweb.exceptions.auth.InvalidOtpException;
+import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
+import com.github.ryand6.sudokuweb.exceptions.auth.RecoveryEmailNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
+import com.github.ryand6.sudokuweb.util.HashUtils;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -31,21 +39,34 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserOAuthProviderRepository userOAuthProviderRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final OtpService otpService;
+    private final EmailService emailService;
     private final CacheManager cacheManager;
 
+
     public UserService(UserRepository userRepository,
+                       UserOAuthProviderRepository userOAuthProviderRepository,
                        UserEntityDtoMapper userEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher,
+                       OtpService otpService,
+                       EmailService emailService,
                        CacheManager cacheManager) {
         this.userRepository = userRepository;
+        this.userOAuthProviderRepository = userOAuthProviderRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.otpService = otpService;
+        this.emailService = emailService;
         this.cacheManager = cacheManager;
     }
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
+    @Value("${hmac.secret-key}")
+    private String hmacSecretKey;
 
     @Cacheable(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
     // Try retrieve User's OAuth provider name and ID
@@ -63,7 +84,7 @@ public class UserService {
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
 
         UserEntity user = userRepository.findByProviderAndProviderId(provider, providerId)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new OAuthProviderNotLinkedException("No account linked to this OAuth provider"));
         return userEntityDtoMapper.mapToDto(user);
     }
 
@@ -77,19 +98,56 @@ public class UserService {
 
     @Transactional
     // Create user when they log into site for the first time
-    public void createNewUser(String username, String provider, String providerId) {
+    public void createNewUser(String username, String provider, String providerId, String recoveryEmail) {
         //Check if username already exists in DB
         if (userRepository.existsByUsername(username)) {
             throw new UsernameTakenException("Username provided is taken, please choose another");
         }
-
-        UserEntity newUser = UserFactory.createUser(username, provider, providerId);
+        String recoveryEmailHash = HashUtils.generateHmacHash(recoveryEmail, hmacSecretKey);
+        UserEntity newUser = UserFactory.createUser(username, provider, providerId, recoveryEmailHash);
 
         userRepository.save(newUser);
     }
 
+    // Link a new OAuth provider to existing account - user must provide valid recovery email and verify the OTP sent
     @Transactional
-    @CacheEvict(value = "userCache", key = "#provider + '_' + #providerId")
+    public void requestAccountLink(String emailAddress, OAuth2User principal, OAuth2AuthenticationToken authToken, HttpSession session) {
+        String emailHash = HashUtils.generateHmacHash(emailAddress, hmacSecretKey);
+        UserEntity user = userRepository.findByRecoveryEmailHash(emailHash)
+                .orElseThrow(() -> new RecoveryEmailNotFoundException("No account found with that recovery email"));
+        String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
+        String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
+        // Store pending OAuth provider linking details in session in order to link provider if OTP is verified
+        session.setAttribute("pendingLinkProvider", provider);
+        session.setAttribute("pendingLinkProviderId", providerId);
+        session.setAttribute("pendingLinkUserId", user.getId());
+        String otp = otpService.generateAndStoreOtp(session.getId());
+        emailService.sendOtpEmail(emailAddress, otp);
+    }
+
+    @Transactional
+    public void verifyAccountLink(String otp, HttpSession session) {
+        otpService.validateOtp(session.getId(), otp);
+        String provider = (String) session.getAttribute("pendingLinkProvider");
+        String providerId = (String) session.getAttribute("pendingLinkProviderId");
+        Long userId = (Long) session.getAttribute("pendingLinkUserId");
+        if (provider == null || providerId == null || userId == null) {
+            throw new InvalidOtpException("Session expired, please restart the account linking process");
+        }
+        UserEntity user = findUserById(userId);
+        UserOAuthProviderEntity newProvider = UserOAuthProviderEntity.builder()
+                .provider(provider)
+                .providerId(providerId)
+                .userEntity(user)
+                .build();
+        userOAuthProviderRepository.save(newProvider);
+        session.removeAttribute("pendingLinkProvider");
+        session.removeAttribute("pendingLinkProviderId");
+        session.removeAttribute("pendingLinkUserId");
+    }
+
+    @Transactional
+    @CacheEvict(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
     // Update a user's username
     public UserDto updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
         if (userRepository.existsByUsername(username)) {
