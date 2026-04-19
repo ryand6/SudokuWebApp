@@ -1,1 +1,1 @@
-export type Theme = "DEFAULT" | "DARK";
+export type Theme = "DEFAULT" | "DARK" | "WARM" | "COOL";

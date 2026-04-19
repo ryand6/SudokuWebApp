@@ -9,6 +9,7 @@ import { HUDGameEventLog } from "./HUDGameEventLog";
 import { HUDGameChat } from "./HUDGameChat";
 import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
+import { UserSettings } from "../shared/UserSettings";
 
 export function GameHUD(
     {
@@ -75,6 +76,7 @@ export function GameHUD(
                 >
                     Game Chat   
                 </div>
+                <UserSettings settings={userSettings} />
             </div>
             <div className="flex">
                 <div className="flex flex-1">

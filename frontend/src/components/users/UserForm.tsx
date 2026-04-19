@@ -52,7 +52,10 @@ export function UserForm({
     }
 
     return (
+        
         <form onSubmit={handleSubmit} method="post" className="flex flex-col gap-4 w-full max-w-md mx-auto">
+            {/* display any errors found during attempted form submission */}
+            {error && <div className="p-2 border-red-300 border-2 rounded-xl bg-red-200 text-destructive text-lg mb-1">{error}</div>}
             <label htmlFor="username" className="font-semibold text-foreground mt-1 text-lg">Choose a username:</label>
             <input
                 type="text"
@@ -89,8 +92,6 @@ export function UserForm({
             >
                 {submitLabel}
             </button>
-            {/* display any errors found during attempted form submission */}
-            {error && <div className="error">{error}</div>}
         </form>
     );
 }
