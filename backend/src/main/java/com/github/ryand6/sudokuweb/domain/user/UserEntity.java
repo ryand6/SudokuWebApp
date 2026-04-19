@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
 import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import jakarta.persistence.*;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.Set;
 
 // Entity that maps to users db table
 @Data
@@ -29,14 +31,6 @@ public class UserEntity {
     @Column(name = "username", nullable = false)
     private String username;
 
-    // Name of OAuth2 provider User is registered using
-    @Column(name = "provider", nullable = false)
-    private String provider;
-
-    // Unique OAuth2 provider ID used to authenticate
-    @Column(name = "provider_id", nullable = false)
-    private String providerId;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Instant createdAt;
@@ -50,6 +44,12 @@ public class UserEntity {
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private UserSettingsEntity userSettingsEntity;
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    private Set<UserOAuthProviderEntity> userOAuthProviderEntities;
+
+    @Column(name = "recovery_email_hash")
+    private String recoveryEmailHash;
+
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities
     @Override
     public boolean equals(Object o) {
@@ -62,10 +62,7 @@ public class UserEntity {
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities
     @Override
     public int hashCode() {
-        int result = 1;
-        result = 31 * result + provider.hashCode();
-        result = 31 * result + providerId.hashCode();
-        return result;
+        return id.hashCode();
     }
 
 }

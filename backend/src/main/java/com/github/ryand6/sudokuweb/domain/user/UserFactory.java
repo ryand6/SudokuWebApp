@@ -1,7 +1,10 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
+import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
 import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
+
+import java.util.Set;
 
 public class UserFactory {
 
@@ -11,17 +14,20 @@ public class UserFactory {
         UserSettingsEntity userSettings = new UserSettingsEntity();
         // Persist the user entity to DB
         UserEntity newUser = new UserEntity();
+        UserOAuthProviderEntity oAuthProvider = new UserOAuthProviderEntity();
+        oAuthProvider.setProvider(provider);
+        oAuthProvider.setProviderId(providerId);
+        oAuthProvider.setUserEntity(newUser);
 
         // assign parent to children
         userStats.setUserEntity(newUser);
         userSettings.setUserEntity(newUser);
 
         newUser.setUsername(username);
-        newUser.setProvider(provider);
-        newUser.setProviderId(providerId);
         newUser.setOnline(true);
         newUser.setUserStatsEntity(userStats);
         newUser.setUserSettingsEntity(userSettings);
+        newUser.setUserOAuthProviderEntities(Set.of(oAuthProvider));
         return newUser;
     }
 

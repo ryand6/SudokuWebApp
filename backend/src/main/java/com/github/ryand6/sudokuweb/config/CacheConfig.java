@@ -23,7 +23,8 @@ public class CacheConfig {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
 
         cacheManager.setCaffeine(Caffeine.newBuilder()
-                .expireAfterWrite(Duration.ofMinutes(60)));
+                .expireAfterWrite(Duration.ofMinutes(60))
+                .recordStats());
 
         log.info("CacheManager initialised: {}", cacheManager.getClass().getName());
 

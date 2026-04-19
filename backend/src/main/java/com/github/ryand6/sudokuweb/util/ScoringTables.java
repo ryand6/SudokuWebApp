@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.util;
 
 import java.util.Map;
 
-public class ScoringTables {
+public final class ScoringTables {
 
     // STANDARD GAME MODE SCORING TABLES
 

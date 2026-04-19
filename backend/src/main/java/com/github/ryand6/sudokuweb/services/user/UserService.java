@@ -1,6 +1,5 @@
 package com.github.ryand6.sudokuweb.services.user;
 
-import com.github.ryand6.sudokuweb.config.CacheConfig;
 import com.github.ryand6.sudokuweb.domain.user.UserFactory;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
@@ -13,7 +12,10 @@ import com.github.ryand6.sudokuweb.util.OAuthUtil;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,25 +33,35 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final CacheManager cacheManager;
 
     public UserService(UserRepository userRepository,
                        UserEntityDtoMapper userEntityDtoMapper,
-                       ApplicationEventPublisher applicationEventPublisher) {
+                       ApplicationEventPublisher applicationEventPublisher,
+                       CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
+        this.cacheManager = cacheManager;
     }
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
-    @Cacheable(value = "userCache", key = "#root.methodName + '_' + T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderId(T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderName(#authToken),#principal)")
+    @Cacheable(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
     // Try retrieve User's OAuth provider name and ID
     public UserDto getCurrentUserByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
 
         log.info("Cache MISS - fetching user from DB for provider: {}", provider);
 
+        log.info("Cache key: {}_{}", authToken.getAuthorizedClientRegistrationId(), principal.getName());
+
+        Cache cache = cacheManager.getCache("userCache");
+        CaffeineCache caffeineCache = (CaffeineCache) cache;
+        log.info("Cache stats: {}", caffeineCache.getNativeCache().stats());
+
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
+
         UserEntity user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         return userEntityDtoMapper.mapToDto(user);
@@ -77,7 +89,7 @@ public class UserService {
     }
 
     @Transactional
-    @CacheEvict(value = "userCache", key = "'getCurrentUserByOAuth_' + T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderId(T(com.github.ryand6.sudokuweb.util.OAuthUtil).retrieveOAuthProviderName(#authToken), #principal)")
+    @CacheEvict(value = "userCache", key = "#provider + '_' + #providerId")
     // Update a user's username
     public UserDto updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
         if (userRepository.existsByUsername(username)) {

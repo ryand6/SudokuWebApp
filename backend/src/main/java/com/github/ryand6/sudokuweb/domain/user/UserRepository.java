@@ -13,10 +13,21 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     // Returns UserEntity if exists based on combination of OAuth2 provider and provider ID
-    Optional<UserEntity> findByProviderAndProviderId(String provider, String providerId);
+//    Optional<UserEntity> findByProviderAndProviderId(String provider, String providerId);
 
     // Checks to see if username already taken
     boolean existsByUsername(String username);
+
+    @Query(
+            value = """
+                    SELECT user
+                    FROM UserEntity user
+                    JOIN user.userOAuthProviderEntities providers
+                    WHERE providers.provider = :provider
+                    AND providers.providerId = :providerId
+                    """
+    )
+    Optional<UserEntity> findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
 
     // Returns the top Users ordered be total score descending - number of players to return is
     // defined by Pageable

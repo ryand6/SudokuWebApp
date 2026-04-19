@@ -1,6 +1,9 @@
 package com.github.ryand6.sudokuweb.controllers.handlers;
 
+import com.github.ryand6.sudokuweb.exceptions.auth.InvalidOtpException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
+import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
+import com.github.ryand6.sudokuweb.exceptions.auth.RecoveryEmailNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.InvalidCellCoordinatesException;
@@ -36,14 +39,17 @@ public class ErrorMapping {
             Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyHostNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(RecoveryEmailNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
             Map.entry(LobbySettingsLockedException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyCountdownLockedException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyOptimisticLockException.class, HttpStatus.CONFLICT),
             Map.entry(UsernameTakenException.class, HttpStatus.CONFLICT),
             Map.entry(GameCreationInterruptedException.class, HttpStatus.CONFLICT),
+            Map.entry(OAuthProviderNotLinkedException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyInactiveException.class, HttpStatus.GONE),
             Map.entry(OAuth2LoginRequiredException.class, HttpStatus.UNAUTHORIZED),
+            Map.entry(InvalidOtpException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(InvalidTokenException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(UserExistsInActiveLobbyException.class, HttpStatus.UNAUTHORIZED),
             Map.entry(InvalidLobbyPublicStatusParameterException.class, HttpStatus.BAD_REQUEST),
