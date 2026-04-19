@@ -1,12 +1,15 @@
 package com.github.ryand6.sudokuweb.controllers.rest.user;
 
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.dto.request.AccountLinkRequestDto;
+import com.github.ryand6.sudokuweb.dto.request.OtpVerificationRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.dto.response.TopFivePlayersDto;
 import com.github.ryand6.sudokuweb.dto.response.UserRankDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +71,38 @@ public class UserRestController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(null);
+    }
+
+    @PostMapping("/request-account-link")
+    public ResponseEntity<?> requestAccountLink(@AuthenticationPrincipal OAuth2User principal,
+                                                OAuth2AuthenticationToken authToken,
+                                                @Valid @RequestBody AccountLinkRequestDto request,
+                                                BindingResult bindingResult,
+                                                HttpSession session) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+        userService.requestAccountLink(request.getEmail(), principal, authToken, session);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/verify-account-link")
+    public ResponseEntity<?> verifyAccountLink(@Valid @RequestBody OtpVerificationRequestDto request,
+                                               BindingResult bindingResult,
+                                               HttpSession session) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
+            return ResponseEntity.badRequest().body(errors);
+        }
+        userService.verifyAccountLink(request.getOtp(), session);
+        return ResponseEntity.ok().build();
     }
 
     // Post update form details to amend User in DB
