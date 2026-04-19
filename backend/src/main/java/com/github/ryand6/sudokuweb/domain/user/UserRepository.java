@@ -29,6 +29,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     )
     Optional<UserEntity> findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
 
+    Optional<UserEntity> findByRecoveryEmailHash(String recoveryEmailHash);
+
     // Returns the top Users ordered be total score descending - number of players to return is
     // defined by Pageable
     Page<UserEntity> findByOrderByUserStatsEntity_TotalScoreDesc(Pageable pageable);
