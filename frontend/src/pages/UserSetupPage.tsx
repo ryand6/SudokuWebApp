@@ -21,7 +21,11 @@ export function UserSetupPage(): JSX.Element {
                         Your account has been created successfully. Would you like to link any other login providers now?
                     </p>
                     <p className="text-muted-foreground text-sm">
-                        If you skip this step, you can still link providers later from account settings — but only whilst logged in with an already linked provider. If you lose access to your only linked provider, you will need your recovery email to regain access.
+                        If you skip this step, you can still link providers later from account settings. 
+                    </p>
+                    <p className="text-muted-foreground text-sm">
+                        If you lose access to a linked provider, log in with any other provider and use your recovery email to link it to the account. 
+                        If you lose access to all linked providers, your account will be unrecoverable.
                     </p>
                     <div className="flex flex-col gap-3">
                         <button

@@ -14,6 +14,7 @@ import { PrivateLobbyJoinPage } from "./pages/PrivateLobbyJoinPage";
 import { GamePage } from "./pages/GamePage";
 import MainLayout from "./pages/MainLayout";
 import { ForegroundToastContainer } from "./components/ui/custom/ForegroundToastContainer";
+import { LinkAccountPage } from "./pages/LinkAccountPage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ function App() {
               <Route element={<MainLayout />}>
                 {/* Public routes */}
                 <Route path="/" element={<HomePage />} />
+                <Route path="/link-account" element={<LinkAccountPage />} />
                 {/* One time public routes - new users only */}
                 <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
                 {/* Protected routes */}

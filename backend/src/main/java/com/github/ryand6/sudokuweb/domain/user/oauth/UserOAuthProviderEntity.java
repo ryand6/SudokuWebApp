@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,5 +32,19 @@ public class UserOAuthProviderEntity {
     // Unique OAuth2 provider ID used to authenticate
     @Column(name = "provider_id", nullable = false)
     private String providerId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserOAuthProviderEntity that = (UserOAuthProviderEntity) o;
+        return Objects.equals(provider, that.provider) &&
+                Objects.equals(providerId, that.providerId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(provider, providerId);
+    }
 
 }
