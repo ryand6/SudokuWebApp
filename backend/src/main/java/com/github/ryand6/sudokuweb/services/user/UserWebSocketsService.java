@@ -2,7 +2,9 @@ package com.github.ryand6.sudokuweb.services.user;
 
 import com.github.ryand6.sudokuweb.domain.user.settings.SingleFieldPatch;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.events.types.user.ws.UserSettingsFieldRejectedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UserSettingsUpdatedWsEvent;
+import com.github.ryand6.sudokuweb.events.types.user.ws.UserSettingsValueRejectedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UserUpdateWsEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -68,12 +70,12 @@ public class UserWebSocketsService {
     }
 
     @EventListener()
-    void handleUserSettingsFieldRejectedWsEvent(UserSettingsUpdatedWsEvent event) {
+    void handleUserSettingsFieldRejectedWsEvent(UserSettingsFieldRejectedWsEvent event) {
         handleUserSettingsFieldRejected(event.getProviderId(), event.getSingleFieldPatch());
     }
 
     @EventListener()
-    void handleUserSettingsValueRejectedWsEvent(UserSettingsUpdatedWsEvent event) {
+    void handleUserSettingsValueRejectedWsEvent(UserSettingsValueRejectedWsEvent event) {
         handleUserSettingsValueRejected(event.getProviderId(), event.getSingleFieldPatch());
     }
 

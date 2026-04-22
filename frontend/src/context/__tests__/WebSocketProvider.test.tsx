@@ -7,8 +7,8 @@ import { QueryClient, type UseQueryResult } from "@tanstack/react-query";
 import type { UserStatsDto } from "../../types/dto/entity/user/UserStatsDto";
 import type { UserDto } from "../../types/dto/entity/user/UserDto";
 import * as currentUserHook from '../../api/rest/users/query/useGetCurrentUser';
-import * as wsUtils from '../../utils/services/initWebSocket';
-import * as stompUtils from '../../utils/services/initStompClient';
+import * as wsUtils from '../../services/websocket/initWebSocket';
+import * as stompUtils from '../../services/websocket/initStompClient';
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 
 const queryClient = new QueryClient();

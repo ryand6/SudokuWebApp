@@ -1,10 +1,10 @@
 import { Client, ReconnectionTimeMode, type IFrame } from "@stomp/stompjs";
 import type { CsrfResponseData } from "../types/dto/auth/CsrfResponseData";
+import { initWebSocket } from "@/services/websocket/initWebSocket";
 
 
 // Factory for creating StompJS client with callback functions to handle OnStompError and onConnect
 export function stompClientFactory(
-    socket: WebSocket, 
     csrfTokenData: CsrfResponseData, 
     handleStompError: (frame: IFrame) => void, 
     handleConnect: () => void,
@@ -12,8 +12,8 @@ export function stompClientFactory(
     handleWebSocketClose: () => void
 ): Client {
     return new Client({
-        // Tells STOMP to use our SockJS instance
-        webSocketFactory: () => socket,
+        // Tells STOMP to use a new SockJS instance
+        webSocketFactory: () => initWebSocket(),
         // Auto-reconnect starts at 500ms (plus jitter to hedge against thundering herd problem)
         reconnectDelay: 500 + (Math.random() * 500),
         // Each time reconnect occurs without successful connection, double the reconnectDelay

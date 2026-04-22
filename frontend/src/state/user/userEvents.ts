@@ -1,4 +1,5 @@
 import type { UserDto } from "@/types/dto/entity/user/UserDto"
+import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto"
 
 export type UserEvent = 
     | {
@@ -7,16 +8,16 @@ export type UserEvent =
       }
     | {
         type: "USER_SETTINGS_UPDATED",
-        field: string,
+        field: keyof UserSettingsDto,
         value: any
       }
     | {
         type: "USER_SETTINGS_FIELD_REJECTED",
-        field: string,
+        field: keyof UserSettingsDto,
         value: any
       }
     | {
         type: "USER_SETTINGS_VALUE_REJECTED",
-        field: string,
+        field: keyof UserSettingsDto,
         value: any
     }

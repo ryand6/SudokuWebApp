@@ -71,12 +71,6 @@ export function GamePage() {
 
     const userHighlightedCell: CellCoordinates | undefined = gameHighlightedCells?.get(currentUser.id);
 
-    console.log("PUBLIC GAME STATE", publicGameState);
-
-    console.log("PRIVATE GAME STATE", privateGameState);
-
-    console.log("BOARD STATE", boardState);
-
     return (
         <div className="flex flex-col h-screen w-full">
             <GameNotificationLayer />
@@ -90,6 +84,7 @@ export function GamePage() {
                         gameMode={publicGameState.gameMode}
                         currentStreak={privateGameState.currentStreak} 
                         userSettings={currentUser.userSettings}
+                        queryClient={queryClient}
                     />
                     <SudokuBoard 
                         gameId={publicGameState.gameId}

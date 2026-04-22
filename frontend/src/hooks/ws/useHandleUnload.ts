@@ -5,7 +5,7 @@ import { useEffect, type RefObject } from "react";
 export function useHandleUnload(clientRef: RefObject<Client | null>) {
     useEffect(() => {
         const handleUnload = () => {
-            clientRef.current?.deactivate;
+            clientRef.current?.deactivate();
             clientRef.current = null;
         }
         window.addEventListener("beforeunload", handleUnload);

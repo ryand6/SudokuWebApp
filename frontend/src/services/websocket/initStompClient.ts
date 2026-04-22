@@ -4,7 +4,6 @@ import { getCsrfToken } from "../../api/rest/csrf/query/getCsrfToken";
 import { resetWebSocketConnection } from "@/services/websocket/resetWebSocketConnection";
 
 export async function initStompClient(
-    socket: WebSocket,
     clientRef: React.RefObject<Client | null>,
     handleConnect: () => void,
     handleDisconnect: () => void,
@@ -27,7 +26,7 @@ export async function initStompClient(
     
     try {
         // Create a new STOMP client that will use the SockJS socket
-        clientRef.current = stompClientFactory(socket, csrfTokenData, handleStompError, handleConnect, handleDisconnect, handleWebSocketClose);
+        clientRef.current = stompClientFactory(csrfTokenData, handleStompError, handleConnect, handleDisconnect, handleWebSocketClose);
         
         clientRef.current.onStompError = handleStompError;
 

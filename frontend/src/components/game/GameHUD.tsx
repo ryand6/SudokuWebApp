@@ -10,6 +10,7 @@ import { HUDGameChat } from "./HUDGameChat";
 import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 import { UserSettings } from "../shared/UserSettings";
+import { QueryClient } from "@tanstack/react-query";
 
 export function GameHUD(
     {
@@ -20,6 +21,7 @@ export function GameHUD(
         gameMode,
         currentStreak,
         userSettings,
+        queryClient
     }: {
         userId: number,
         gameId: number,
@@ -27,7 +29,8 @@ export function GameHUD(
         difficulty: Difficulty, 
         gameMode: GameMode,
         currentStreak: number,
-        userSettings: UserSettingsDto
+        userSettings: UserSettingsDto,
+        queryClient: QueryClient
     }
 ) {
 
@@ -76,7 +79,7 @@ export function GameHUD(
                 >
                     Game Chat   
                 </div>
-                <UserSettings settings={userSettings} />
+                <UserSettings settings={userSettings} queryClient={queryClient} />
             </div>
             <div className="flex">
                 <div className="flex flex-1">

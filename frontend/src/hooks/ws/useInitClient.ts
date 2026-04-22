@@ -2,8 +2,8 @@ import type { StompSubscriptionDetails } from "@/context/WebSocketProvider";
 import { subscribeUserErrors } from "@/services/websocket/subscribeUserErrors";
 import { subscribeUserUpdates } from "@/services/websocket/subscribeUserUpdates";
 import type { UserDto } from "@/types/dto/entity/user/UserDto";
-import { initStompClient } from "@/utils/services/initStompClient";
-import { initWebSocket } from "@/utils/services/initWebSocket";
+import { initStompClient } from "@/services/websocket/initStompClient";
+import { initWebSocket } from "@/services/websocket/initWebSocket";
 import type { Client, IMessage } from "@stomp/stompjs";
 import type { QueryClient } from "@tanstack/react-query";
 import { useEffect, type Dispatch, type RefObject, type SetStateAction } from "react";
@@ -25,7 +25,6 @@ export function useInitClient(
         }
 
         if (clientRef.current) return;
-        const socket = initWebSocket();
 
         // NOTE:
         // - System subscriptions are recreated on every connect
@@ -54,7 +53,7 @@ export function useInitClient(
             pendingQueueRef.current = [];
         }
 
-        initStompClient(socket, clientRef, handleConnect, handleDisconnect, handleWebSocketClose);
+        initStompClient(clientRef, handleConnect, handleDisconnect, handleWebSocketClose);
 
         // Cleanup if user logs out
         return () => {

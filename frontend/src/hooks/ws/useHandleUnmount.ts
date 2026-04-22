@@ -5,7 +5,7 @@ import { useEffect, type RefObject } from "react";
 export function useHandleUnmount(clientRef: RefObject<Client | null>) {
     useEffect(() => {
         return () => {
-            clientRef.current?.deactivate;
+            clientRef.current?.deactivate();
             clientRef.current = null;
         }
     }, []);

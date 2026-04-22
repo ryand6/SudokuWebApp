@@ -7,15 +7,21 @@ import { sendUserSettingsUpdate } from "@/api/ws/user/sendUserSettingsUpdate";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from "../ui/field";
 import { Switch } from "../ui/switch";
+import { userCacheDispatcher } from "@/state/user/userCacheDispatcher";
+import type { QueryClient } from "@tanstack/react-query";
 
 export function UserSettings({
-    settings
+    settings,
+    queryClient
 }: {
-    settings: UserSettingsDto
+    settings: UserSettingsDto,
+    queryClient: QueryClient
 }) {
     const { send } = useWebSocketContext();
 
     const handleUpdate = (setting: keyof UserSettingsDto, value: any) => {
+        console.log(`Updating setting ${setting} to value ${value}`);
+        userCacheDispatcher(queryClient, {type: "USER_SETTINGS_UPDATED", field: setting, value: value});
         sendUserSettingsUpdate(send, {field: setting, value: value});
     }
 
@@ -36,11 +42,11 @@ export function UserSettings({
                     <h2>Visual</h2>
                     <div id="theme-settings">
                         <h3>Theme</h3>
-                        <RadioGroup defaultValue="DEFAULT" className="grid grid-cols-2 grid-rows-2 gap-2" onValueChange={(value: any) => handleUpdate('theme', value)}>
+                        <RadioGroup defaultValue={settings.theme} className="grid grid-cols-2 grid-rows-2 gap-2" onValueChange={(value: any) => handleUpdate('theme', value)}>
                             <FieldLabel htmlFor="default-radio">
                                 <Field orientation="horizontal" className="cursor-pointer">
                                     <FieldContent>
-                                        <FieldTitle>Theme 1</FieldTitle>
+                                        <FieldTitle>Default</FieldTitle>
                                         <FieldDescription>...Theme 1 description...</FieldDescription>
                                     </FieldContent>
                                     <RadioGroupItem value="DEFAULT" id="classic-radio" />

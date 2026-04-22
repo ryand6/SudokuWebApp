@@ -73,9 +73,9 @@ export function UserForm({
             <label htmlFor="recoveryEmail" className="font-semibold text-foreground mt-1 text-lg">Recovery email:</label>
             <p className="text-muted-foreground text-sm -mt-2">
                 Used only for account recovery if you lose access to your login provider or linking new providers to your account. We store a pseudonymised hash of this address and cannot read it. 
+            </p>
             <p className="text-red-400 text-sm mt-1">
                 Please ensure you keep it safe. If you lose access to all linked login providers and your recovery email, your account will be unrecoverable.
-            </p>
             </p>
             <input
                 type="email"

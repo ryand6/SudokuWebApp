@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.Map;
 
 @Service
@@ -47,7 +48,10 @@ public class UserSettingsService {
 
         try {
             UserSettingsEntity.class.getDeclaredField(patchUpdate.getField());
-        } catch (NoSuchFieldException e) {
+        } catch (Exception e) {
+
+            log.error("NO SUCH FIELD EXCEPTION: ", e);
+
             applicationEventPublisher.publishEvent(
                     new UserSettingsFieldRejectedWsEvent(providerId, patchUpdate)
             );
@@ -60,7 +64,10 @@ public class UserSettingsService {
             Field originalField = UserSettingsEntity.class.getDeclaredField(patchUpdate.getField());
             originalField.setAccessible(true);
             originalValue = originalField.get(userSettings);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (Exception e) {
+
+            log.error("REFLECTION ERROR: ", e);
+
             log.error("Failed to retrieve original value for field: {}", patchUpdate.getField(), e);
             return;
         }
@@ -71,12 +78,16 @@ public class UserSettingsService {
                     Map.of(patchUpdate.getField(), patchUpdate.getValue())
             );
             reader.readValue(json);
-        } catch (JsonProcessingException e) {
+        } catch (Exception e) {
+
+            log.error("JSON PROCESSING ERROR: ", e);
+
             applicationEventPublisher.publishEvent(
                     new UserSettingsValueRejectedWsEvent(
                             providerId,
                             new SingleFieldPatch(patchUpdate.getField(), originalValue))
             );
+            return;
         }
 
         // Test that individual properties are updated
