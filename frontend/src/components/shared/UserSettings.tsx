@@ -25,12 +25,34 @@ export function UserSettings({
         sendUserSettingsUpdate(send, {field: setting, value: value});
     }
 
+    type BooleanKeys<T> = {
+        [K in keyof T]: T[K] extends boolean ? K : never
+    }[keyof T]
+
+    type BooleanSettings = BooleanKeys<UserSettingsDto>
+
+    const visualSettings: { field: BooleanSettings; label: string; description: string }[] = [
+        {field: 'opponentHighlightedSquaresEnabled', label: 'Opponent Highlighted Squares', description: 'Show corner highlights on the board to indicate which squares opponents are currently focusing on.'},
+        {field: 'highlightedHousesEnabled', label: 'Highlight Houses', description: 'Highlight squares that are in the same row, column, or box as the currently highlighted square.'},
+        {field: 'highlightedFirstsEnabled', label: 'Highlight Firsts', description: 'Highlight squares with the colour of the player that was first to fill them without making a mistake.'}
+    ];
+
+    const notificationsSettings: { field: BooleanSettings; label: string; description: string }[] = [
+        {field: 'gameChatNotificationsEnabled', label: 'Game Chat Notifications', description: 'Receive notifications for game chat messages.'},
+        {field: 'scoreNotificationsEnabled', label: 'Score Notifications', description: 'Receive notifications for your score updates.'},
+        {field: 'streakNotificationsEnabled', label: 'Streak Notifications', description: 'Receive notifications for your streak updates.'}
+    ];
+
+    const audioSettings: { field: BooleanSettings; label: string; description: string }[] = [
+        {field: 'audioEnabled', label: 'Audio', description: 'Enable or disable audio.'},
+    ];
+
     return (
          <Sheet>
             <SheetTrigger asChild>
                 <Button variant="outline">Settings</Button>
             </SheetTrigger>
-            <SheetContent showCloseButton={true}>
+            <SheetContent showCloseButton={true} className="overflow-y-auto">
                 <SheetHeader>
                     <SheetTitle>Settings</SheetTitle>
                     <SheetDescription>
@@ -81,23 +103,65 @@ export function UserSettings({
                             </FieldLabel>
                         </RadioGroup>
                     </div>
-                    <div id="opponent-highlight-setting">
-                        <Field orientation="horizontal" className="max-w-sm">
-                            <FieldContent>
-                                <FieldLabel htmlFor="opponent-highlight-switch">
-                                    Opponent Highlighted Squares
-                                </FieldLabel>
-                                <FieldDescription>
-                                    Show corner highlights on the board to indicate which squares opponents are currently focusing on.
-                                </FieldDescription>
-                            </FieldContent>
-                            <Switch 
-                                id="opponent-highlight-switch" 
-                                checked={settings.opponentHighlightedSquaresEnabled}
-                                onCheckedChange={(checked) => handleUpdate('opponentHighlightedSquaresEnabled', checked)}
-                            />
-                        </Field>
-                    </div>
+                    {visualSettings.map((setting) => (
+                        <div id={`${setting.field}-setting`} key={setting.field}>
+                            <Field orientation="horizontal" className="max-w-sm">
+                                <FieldContent>
+                                    <FieldLabel htmlFor={`${setting.field}-switch`}>
+                                        {setting.label}
+                                    </FieldLabel>
+                                    <FieldDescription>
+                                        {setting.description}
+                                    </FieldDescription>
+                                </FieldContent>
+                                <Switch 
+                                    id={`${setting.field}-switch`} 
+                                    checked={settings[setting.field]}
+                                    onCheckedChange={(checked) => handleUpdate(setting.field, checked)}
+                                />
+                            </Field>
+                        </div>
+                    ))}
+                    <h2>Notifications</h2>
+                    {notificationsSettings.map((setting) => (
+                        <div id={`${setting.field}-setting`} key={setting.field}>
+                            <Field orientation="horizontal" className="max-w-sm">
+                                <FieldContent>
+                                    <FieldLabel htmlFor={`${setting.field}-switch`}>
+                                        {setting.label}
+                                    </FieldLabel>   
+                                    <FieldDescription>
+                                        {setting.description}
+                                    </FieldDescription> 
+                                </FieldContent>
+                                <Switch 
+                                    id={`${setting.field}-switch`} 
+                                    checked={settings[setting.field]}
+                                    onCheckedChange={(checked) => handleUpdate(setting.field, checked)}
+                                />
+                            </Field>
+                        </div>
+                    ))}
+                    <h2>Audio</h2>
+                    {audioSettings.map((setting) => (
+                        <div id={`${setting.field}-setting`} key={setting.field}>
+                            <Field orientation="horizontal" className="max-w-sm">           
+                                <FieldContent>
+                                    <FieldLabel htmlFor={`${setting.field}-switch`}>
+                                        {setting.label}
+                                    </FieldLabel>
+                                    <FieldDescription>
+                                        {setting.description}
+                                    </FieldDescription>
+                                </FieldContent>
+                                <Switch
+                                    id={`${setting.field}-switch`}
+                                    checked={settings[setting.field]}
+                                    onCheckedChange={(checked) => handleUpdate(setting.field, checked)} 
+                                />
+                            </Field>
+                        </div>
+                    ))}
                 </div>
             </SheetContent>
         </Sheet>
