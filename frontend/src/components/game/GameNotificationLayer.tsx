@@ -1,8 +1,16 @@
 import { useGameNotifications } from "@/hooks/notifications/useGameNotifications";
 import { notificationClassNameSelect, type GameNotification } from "@/utils/game/gameNotificationUtils";
 
-export function GameNotificationLayer() {
+export function GameNotificationLayer({
+    scoreNotificationsEnabled,
+    streakNotificationsEnabled
+}: {
+    scoreNotificationsEnabled: boolean | undefined,
+    streakNotificationsEnabled: boolean | undefined
+}) {
     const notifications = useGameNotifications();
+
+    if (scoreNotificationsEnabled === undefined || streakNotificationsEnabled === undefined) return null;
 
     return (
         <div 
@@ -11,13 +19,31 @@ export function GameNotificationLayer() {
                         pointer-events-none"
         >
             {notifications.map((n) => (
-                <NotificationBadge key={n.id} notification={n} />
+                <NotificationBadge 
+                    key={n.id} 
+                    notification={n} 
+                    scoreNotificationsEnabled={scoreNotificationsEnabled} 
+                    streakNotificationsEnabled={streakNotificationsEnabled} 
+                />
             ))}
         </div>
     )
 }
 
-function NotificationBadge({ notification }: { notification: GameNotification }) {
+function NotificationBadge({ 
+    notification,
+    scoreNotificationsEnabled,
+    streakNotificationsEnabled
+}: { 
+    notification: GameNotification,
+    scoreNotificationsEnabled: boolean,
+    streakNotificationsEnabled: boolean
+}) {
+
+    const showNotification = (notification.type === "score" && scoreNotificationsEnabled) || (notification.type === "streak" && streakNotificationsEnabled);
+
+    if (!showNotification) return null;
+
     return (
         <div 
             className={`py-2 px-5 rounded-full shadow-xl 

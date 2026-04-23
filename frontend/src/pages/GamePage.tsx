@@ -63,7 +63,7 @@ export function GamePage() {
 
     useValidateGamePlayer(publicGameState, currentUser, leaveGameHandler.isLeaving);
 
-    useHandleGameWsSubscriptions(gameId, currentUser?.id, playerColours, queryClient, navigate, setGameHighlightedCells);
+    useHandleGameWsSubscriptions(gameId, currentUser?.id, currentUser?.userSettings.gameChatNotificationsEnabled, playerColours, queryClient, navigate, setGameHighlightedCells);
 
     if (isGameLoading || isCurrentUserLoading || isGameStateLoading) return <SpinnerButton />;
     
@@ -73,7 +73,10 @@ export function GamePage() {
 
     return (
         <div className="flex flex-col h-screen w-full">
-            <GameNotificationLayer />
+            <GameNotificationLayer 
+                scoreNotificationsEnabled={currentUser.userSettings.scoreNotificationsEnabled}
+                streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
+            />
             <div className="flex justify-center items-center min-h-[500px] h-full py-[2%]">
                 <div className="flex flex-col justify-center items-center w-[80%] max-w-[1200px] h-full">
                     <GameHUD 
@@ -96,6 +99,7 @@ export function GamePage() {
                         gameHighlightedCells={gameHighlightedCells}
                         setGameHighlightedCells={setGameHighlightedCells}
                         notesModeOn={notesModeOn}
+                        userSettings={currentUser.userSettings}
                     />
                     <UserActionBar 
                         gameId={publicGameState.gameId}

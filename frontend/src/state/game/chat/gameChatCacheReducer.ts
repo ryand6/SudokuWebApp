@@ -9,6 +9,7 @@ import { toastColourMap } from "@/utils/game/gameColourUtils";
 export function gameChatCacheReducer(
     existingData: InfiniteData<GameChatMessageDto[]> | undefined,
     userId: number,
+    gameNotificationsEnabled: boolean,
     playerColours: Record<number, PlayerColour>,
     event: GameChatEvent
 ) {
@@ -17,7 +18,7 @@ export function gameChatCacheReducer(
         case "GAME_CHAT_MESSAGE": {
             const messageDto: GameChatMessageDto = event.newMessage;
 
-            if (messageDto.userId !== userId) {
+            if (messageDto.userId !== userId && gameNotificationsEnabled) {
                 toast(`${messageDto.username}: ${messageDto.message}`, {
                     containerId: "default",
                     style: {

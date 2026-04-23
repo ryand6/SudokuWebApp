@@ -13,6 +13,7 @@ export function handleGameWebSocketMessages(
     queryClient: QueryClient,
     gameId: number,
     userId: number,
+    gameNotificationsEnabled: boolean,
     playerColours: Record<number, PlayerColour>,
     navigate: NavigateFunction,
     setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>
@@ -50,7 +51,7 @@ export function handleGameWebSocketMessages(
             break;
         }
         case "GAME_CHAT_MESSAGE": {
-            gameChatCacheDispatcher(queryClient, gameId, userId, playerColours, {
+            gameChatCacheDispatcher(queryClient, gameId, userId, gameNotificationsEnabled, playerColours, {
                 type: "GAME_CHAT_MESSAGE",
                 newMessage: message.payload
             })

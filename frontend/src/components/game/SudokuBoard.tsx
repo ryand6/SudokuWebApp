@@ -5,6 +5,7 @@ import { isCellInSameBlock } from "@/utils/game/blockUtils";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { getCellIndex, updateGameHighlightedCellsAndSendWsUpdate } from "@/utils/game/cellUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
+import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 
 
 export function SudokuBoard(
@@ -16,7 +17,8 @@ export function SudokuBoard(
         cellFirstOwnership,
         gameHighlightedCells,
         setGameHighlightedCells,
-        notesModeOn
+        notesModeOn,
+        userSettings
     }: {
         gameId: number,
         userId: number,
@@ -26,7 +28,8 @@ export function SudokuBoard(
         cellFirstOwnership: Record<number, number>,
         gameHighlightedCells: Map<number, CellCoordinates> | undefined,
         setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>,
-        notesModeOn: boolean
+        notesModeOn: boolean,
+        userSettings: UserSettingsDto
     }
 ) {
     const { send } = useWebSocketContext();
@@ -78,15 +81,15 @@ export function SudokuBoard(
                                     isRejected={cell.isRejected}
                                     playerColours={playerColours}
                                     isSelected={r === playerHighlightedCell?.row && c === playerHighlightedCell?.col}
-                                    isInRow={r === playerHighlightedCell?.row}
-                                    isInCol={c === playerHighlightedCell?.col}
-                                    isInBlock={isCellInSameBlock(r, c, playerHighlightedCell)}
+                                    isInRow={userSettings.highlightedHousesEnabled && r === playerHighlightedCell?.row}
+                                    isInCol={userSettings.highlightedHousesEnabled && c === playerHighlightedCell?.col}
+                                    isInBlock={userSettings.highlightedHousesEnabled && isCellInSameBlock(r, c, playerHighlightedCell)}
                                     isSameNumber={playerHighlightedCell ? boardState[r][c].value === boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : false}
-                                    cellOwnership={cellFirstOwnership[cellIndex]}
+                                    cellOwnership={userSettings.highlightedFirstsEnabled ? cellFirstOwnership[cellIndex] : undefined}
                                     onSelect={handleCellSelect}
                                     notesModeOn={notesModeOn}
                                     highlightedCellNumber={playerHighlightedCell ? boardState[playerHighlightedCell.row][playerHighlightedCell.col].value : undefined}
-                                    opponentsHighlighted={getHighlightedOpponents(r, c)}
+                                    opponentsHighlighted={userSettings.opponentHighlightedSquaresEnabled ? getHighlightedOpponents(r, c) : []}
                                 />
                             </div> 
                         )

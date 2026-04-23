@@ -10,6 +10,7 @@ import type { NavigateFunction } from "react-router-dom";
 export function useHandleGameWsSubscriptions(
     gameId: string | null | undefined,
     userId: number | null | undefined,
+    gameNotificationsEnabled: boolean | undefined,
     playerColours: Record<number, PlayerColour> | undefined,
     queryClient: QueryClient,
     navigate: NavigateFunction,
@@ -18,10 +19,10 @@ export function useHandleGameWsSubscriptions(
     const { subscribe, unsubscribe } = useWebSocketContext();
 
     useEffect(() => {
-        if (!gameId || !userId || !playerColours) return;
+        if (!gameId || !userId || !playerColours || !gameNotificationsEnabled) return;
         const gameIdNum = parseInt(gameId);
         const gameTopic = `/topic/game/${gameId}`;
-        const gameSubscription = subscribe(gameTopic, (body: any) => handleGameWebSocketMessages(body, queryClient, gameIdNum, userId, playerColours, navigate, setGameHighlightedCells));
+        const gameSubscription = subscribe(gameTopic, (body: any) => handleGameWebSocketMessages(body, queryClient, gameIdNum, userId, gameNotificationsEnabled, playerColours, navigate, setGameHighlightedCells));
 
         const gamePlayerStateTopic = `/topic/game/${gameId}/user/${userId}`;
         const gamePlayerStateSubscription = subscribe(gamePlayerStateTopic, (body: any) => handleGamePlayerStateWebSocketMessages(body, queryClient, gameIdNum, userId));
@@ -30,5 +31,5 @@ export function useHandleGameWsSubscriptions(
             if (gameSubscription) unsubscribe(gameTopic);
             if (gamePlayerStateSubscription) unsubscribe(gamePlayerStateTopic);
         }
-    }, [gameId, userId, playerColours]);
+    }, [gameId, userId, playerColours, gameNotificationsEnabled]);
 }

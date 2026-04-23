@@ -9,10 +9,11 @@ export function gameChatCacheDispatcher(
     queryClient: QueryClient,
     gameId: number,
     userId: number,
+    gameNotificationsEnabled: boolean,
     playerColours: Record<number, PlayerColour>,
     event: GameChatEvent
 ) {
     queryClient.setQueryData<InfiniteData<GameChatMessageDto[]>>(queryKeys.gameChat(gameId), (old: InfiniteData<GameChatMessageDto[]> | undefined) => {
-        return gameChatCacheReducer(old, userId, playerColours, event) as InfiniteData<GameChatMessageDto[], unknown> | undefined;
+        return gameChatCacheReducer(old, userId, gameNotificationsEnabled, playerColours, event) as InfiniteData<GameChatMessageDto[], unknown> | undefined;
     })
 }
