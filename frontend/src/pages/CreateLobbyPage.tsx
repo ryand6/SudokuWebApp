@@ -1,5 +1,6 @@
 import { processLobbySetup } from "@/api/rest/lobby/mutate/processLobbySetup";
 import { Button } from "@/components/ui/button";
+import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -14,6 +15,7 @@ export function CreateLobbyPage() {
     const [isPublic, setIsPublic] = useState(true);
     const [gameMode, setGameMode] = useState<GameMode>("CLASSIC");
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const navigate = useNavigate();
 
@@ -34,9 +36,11 @@ export function CreateLobbyPage() {
         if (!validate()) return;
         setError("");
         try {
+            setIsLoading(true);
             const response = await processLobbySetup(lobbyName, isPublic, gameMode);
             navigate(`/lobby/${response.id}`, { replace: true });
         } catch (err: any) {
+            setIsLoading(false);
             // Display toast error message when the user is already part of an active lobby
             if (err.status === 401) toast.error(err.message, {containerId: "foreground"});
             // Handle backend form validation errors
@@ -50,6 +54,7 @@ export function CreateLobbyPage() {
             <div className="w-full max-w-[1200px] max-h-[90vh] border-border border-1 m-5 bg-card 
                             text-foreground rounded-md p-10 shadow-md overflow-y-auto min-h-0" 
             >
+                {isLoading && <SpinnerButton />}
                 <form onSubmit={handleSubmit} method="post">
                     <FieldSet>
                         <FieldLegend>Lobby Creation</FieldLegend>

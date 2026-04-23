@@ -40,13 +40,6 @@ public class UserSettingsEntity {
     private boolean highlightedFirstsEnabled = true;
 
     //#######################//
-    //    Audio Settings     //
-    //#######################//
-
-    @Column(name = "audio")
-    private boolean audioEnabled = false;
-
-    //#######################//
     // Notification Settings //
     //#######################//
 
@@ -58,5 +51,12 @@ public class UserSettingsEntity {
 
     @Column(name = "streak_notifications")
     private boolean streakNotificationsEnabled = true;
+
+    //#######################//
+    //    Audio Settings     //
+    //#######################//
+
+    @Column(name = "audio")
+    private boolean audioEnabled = false;
 
 }
