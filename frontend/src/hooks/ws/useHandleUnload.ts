@@ -5,6 +5,8 @@ import { useEffect, type RefObject } from "react";
 export function useHandleUnload(clientRef: RefObject<Client | null>) {
     useEffect(() => {
         const handleUnload = () => {
+            console.log("Unloading, disconnecting from WebSocket...");
+
             clientRef.current?.deactivate();
             clientRef.current = null;
         }

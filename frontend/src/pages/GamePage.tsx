@@ -53,9 +53,9 @@ export function GamePage() {
     const playerColours: Record<number, PlayerColour> | undefined = useMemo(() => {
         if (!publicGameState) return;
             const newObj: Record<number, PlayerColour> = {};
-            Object.keys(publicGameState.players).forEach((key) => newObj[Number(key)] = publicGameState.players[Number(key)].colour);
+            publicGameState.playerIds.forEach((key) => newObj[Number(key)] = publicGameState.players[Number(key)].colour);
             return newObj;
-    }, [publicGameState?.players]);
+    }, [publicGameState?.playerIds]);
 
     const leaveGameHandler = useLeaveGame();
 

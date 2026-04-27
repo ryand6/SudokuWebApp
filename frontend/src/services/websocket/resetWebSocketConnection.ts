@@ -9,16 +9,18 @@ export async function resetWebSocketConnection(
     handleDisconnect: () => void,
     handleWebSocketClose: () => void,
 ) {
+    console.log("Resetting WebSocket connection...");
+
     // Fetch CSRF again if needed
     const csrfTokenData = await getCsrfToken();
     if (!csrfTokenData) return;
 
     // Clean up old client
     clientRef.current?.deactivate();
+    clientRef.current = null;
 
     // Create new client
     clientRef.current = stompClientFactory(csrfTokenData, handleStompError, handleConnect, handleDisconnect, handleWebSocketClose);
-    clientRef.current.reconnectDelay = 1000;
     // will trigger handleConnect
     clientRef.current.activate(); 
 }

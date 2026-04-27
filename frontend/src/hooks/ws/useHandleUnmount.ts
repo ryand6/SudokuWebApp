@@ -5,6 +5,8 @@ import { useEffect, type RefObject } from "react";
 export function useHandleUnmount(clientRef: RefObject<Client | null>) {
     useEffect(() => {
         return () => {
+            console.log("Component unmounting, disconnecting from WebSocket...");
+
             clientRef.current?.deactivate();
             clientRef.current = null;
         }

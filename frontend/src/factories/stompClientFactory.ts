@@ -11,6 +11,9 @@ export function stompClientFactory(
     handleDisconnect: () => void,
     handleWebSocketClose: () => void
 ): Client {
+
+    console.log("Creating new STOMP client with CSRF token:", csrfTokenData.token);
+
     return new Client({
         // Tells STOMP to use a new SockJS instance
         webSocketFactory: () => initWebSocket(),
