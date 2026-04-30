@@ -11,8 +11,10 @@ import com.github.ryand6.sudokuweb.events.types.user.ws.UserSettingsUpdatedWsEve
 import com.github.ryand6.sudokuweb.events.types.user.ws.UserSettingsValueRejectedWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.user.UserSettingsNotFoundException;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -39,6 +41,8 @@ public class UserSettingsService {
 
     private static final Logger log = LoggerFactory.getLogger(UserSettingsService.class);
 
+    @Transactional
+    @CacheEvict(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
     public void updateSettings(Long userId, OAuth2User principal, OAuth2AuthenticationToken authToken, SingleFieldPatch patchUpdate) {
         UserSettingsEntity userSettings = userSettingsRepository.findByUserEntity_Id(userId)
                 .orElseThrow(() -> new UserSettingsNotFoundException("User settings for user ID " + userId + " does not exist"));
@@ -49,9 +53,6 @@ public class UserSettingsService {
         try {
             UserSettingsEntity.class.getDeclaredField(patchUpdate.getField());
         } catch (Exception e) {
-
-            log.error("NO SUCH FIELD EXCEPTION: ", e);
-
             applicationEventPublisher.publishEvent(
                     new UserSettingsFieldRejectedWsEvent(providerId, patchUpdate)
             );
@@ -65,9 +66,6 @@ public class UserSettingsService {
             originalField.setAccessible(true);
             originalValue = originalField.get(userSettings);
         } catch (Exception e) {
-
-            log.error("REFLECTION ERROR: ", e);
-
             log.error("Failed to retrieve original value for field: {}", patchUpdate.getField(), e);
             return;
         }
@@ -77,7 +75,7 @@ public class UserSettingsService {
             String json = objectMapper.writeValueAsString(
                     Map.of(patchUpdate.getField(), patchUpdate.getValue())
             );
-            reader.readValue(json);
+            userSettings = reader.readValue(json);
         } catch (Exception e) {
 
             log.error("JSON PROCESSING ERROR: ", e);
@@ -89,7 +87,6 @@ public class UserSettingsService {
             );
             return;
         }
-
         // Test that individual properties are updated
         userSettingsRepository.save(userSettings);
 
