@@ -1,6 +1,6 @@
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 import { Button } from "../ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Separator } from "../ui/separator";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { sendUserSettingsUpdate } from "@/api/ws/user/sendUserSettingsUpdate";
@@ -12,10 +12,12 @@ import type { QueryClient } from "@tanstack/react-query";
 
 export function UserSettings({
     settings,
-    queryClient
+    queryClient,
+    additionalActions
 }: {
     settings: UserSettingsDto,
-    queryClient: QueryClient
+    queryClient: QueryClient,
+    additionalActions?: React.ReactNode
 }) {
     const { send } = useWebSocketContext();
 
@@ -52,57 +54,57 @@ export function UserSettings({
             <SheetTrigger asChild>
                 <Button variant="outline">Settings</Button>
             </SheetTrigger>
-            <SheetContent showCloseButton={true} className="overflow-y-auto">
+            <SheetContent showCloseButton={true} >
                 <SheetHeader>
                     <SheetTitle>Settings</SheetTitle>
                     <SheetDescription>
                         Configure your user settings here. These will be applied across all your sessions.
                     </SheetDescription>
                 </SheetHeader>
-                <Separator />
-                <div id="user-visual-settings" className="flex flex-col gap-4 px-4">
-                    <h2>Visual</h2>
-                    <div id="theme-settings">
-                        <h3>Theme</h3>
-                        <RadioGroup defaultValue={settings.theme} className="grid grid-cols-2 grid-rows-2 gap-2" onValueChange={(value: any) => handleUpdate('theme', value)}>
-                            <FieldLabel htmlFor="default-radio">
-                                <Field orientation="horizontal" className="cursor-pointer">
-                                    <FieldContent>
-                                        <FieldTitle>Default</FieldTitle>
-                                        <FieldDescription>...Theme 1 description...</FieldDescription>
-                                    </FieldContent>
-                                    <RadioGroupItem value="DEFAULT" id="classic-radio" />
-                                </Field>
-                            </FieldLabel>
-                            <FieldLabel htmlFor="dark-radio">
-                                <Field orientation="horizontal" className="cursor-pointer">
-                                    <FieldContent>
-                                        <FieldTitle>Dark</FieldTitle>
-                                        <FieldDescription>...dark theme description...</FieldDescription>
-                                    </FieldContent>
-                                    <RadioGroupItem value="DARK" id="dark-radio" />
-                                </Field>
-                            </FieldLabel>
-                            <FieldLabel htmlFor="warm-radio">
-                                <Field orientation="horizontal" className="cursor-pointer">
-                                    <FieldContent>
-                                        <FieldTitle>Warm</FieldTitle>
-                                        <FieldDescription>...warm theme description...</FieldDescription>
-                                    </FieldContent>
-                                    <RadioGroupItem value="WARM" id="warm-radio" />
-                                </Field>
-                            </FieldLabel>
-                            <FieldLabel htmlFor="cool-radio">
-                                <Field orientation="horizontal" className="cursor-pointer">
-                                    <FieldContent>
-                                        <FieldTitle>Cool</FieldTitle>
-                                        <FieldDescription>...cool theme description...</FieldDescription>
-                                    </FieldContent>
-                                    <RadioGroupItem value="COOL" id="cool-radio" />
-                                </Field>
-                            </FieldLabel>
-                        </RadioGroup>
-                    </div>
+                <div id="user-settings-content" className="overflow-y-auto">
+                    <div id="user-visual-settings" className="flex flex-col gap-4 px-4">
+                        <h2>Visual</h2>
+                        <div id="theme-settings">
+                            <h3>Theme</h3>
+                            <RadioGroup defaultValue={settings.theme} className="grid grid-cols-2 grid-rows-2 gap-2" onValueChange={(value: any) => handleUpdate('theme', value)}>
+                                <FieldLabel htmlFor="default-radio">
+                                    <Field orientation="horizontal" className="cursor-pointer">
+                                        <FieldContent>
+                                            <FieldTitle>Default</FieldTitle>
+                                            <FieldDescription>...Theme 1 description...</FieldDescription>
+                                        </FieldContent>
+                                        <RadioGroupItem value="DEFAULT" id="classic-radio" />
+                                    </Field>
+                                </FieldLabel>
+                                <FieldLabel htmlFor="dark-radio">
+                                    <Field orientation="horizontal" className="cursor-pointer">
+                                        <FieldContent>
+                                            <FieldTitle>Dark</FieldTitle>
+                                            <FieldDescription>...dark theme description...</FieldDescription>
+                                        </FieldContent>
+                                        <RadioGroupItem value="DARK" id="dark-radio" />
+                                    </Field>
+                                </FieldLabel>
+                                <FieldLabel htmlFor="warm-radio">
+                                    <Field orientation="horizontal" className="cursor-pointer">
+                                        <FieldContent>
+                                            <FieldTitle>Warm</FieldTitle>
+                                            <FieldDescription>...warm theme description...</FieldDescription>
+                                        </FieldContent>
+                                        <RadioGroupItem value="WARM" id="warm-radio" />
+                                    </Field>
+                                </FieldLabel>
+                                <FieldLabel htmlFor="cool-radio">
+                                    <Field orientation="horizontal" className="cursor-pointer">
+                                        <FieldContent>
+                                            <FieldTitle>Cool</FieldTitle>
+                                            <FieldDescription>...cool theme description...</FieldDescription>
+                                        </FieldContent>
+                                        <RadioGroupItem value="COOL" id="cool-radio" />
+                                    </Field>
+                                </FieldLabel>
+                            </RadioGroup>
+                        </div>
                     {visualSettings.map((setting) => (
                         <div id={`${setting.field}-setting`} key={setting.field}>
                             <Field orientation="horizontal" className="max-w-sm">
@@ -122,48 +124,59 @@ export function UserSettings({
                             </Field>
                         </div>
                     ))}
-                    <h2>Notifications</h2>
-                    {notificationsSettings.map((setting) => (
-                        <div id={`${setting.field}-setting`} key={setting.field}>
-                            <Field orientation="horizontal" className="max-w-sm">
-                                <FieldContent>
-                                    <FieldLabel htmlFor={`${setting.field}-switch`}>
-                                        {setting.label}
-                                    </FieldLabel>   
-                                    <FieldDescription>
-                                        {setting.description}
-                                    </FieldDescription> 
-                                </FieldContent>
-                                <Switch 
-                                    id={`${setting.field}-switch`} 
-                                    checked={settings[setting.field]}
-                                    onCheckedChange={(checked) => handleUpdate(setting.field, checked)}
-                                />
-                            </Field>
-                        </div>
-                    ))}
-                    <h2>Audio</h2>
-                    {audioSettings.map((setting) => (
-                        <div id={`${setting.field}-setting`} key={setting.field}>
-                            <Field orientation="horizontal" className="max-w-sm">           
-                                <FieldContent>
-                                    <FieldLabel htmlFor={`${setting.field}-switch`}>
-                                        {setting.label}
-                                    </FieldLabel>
-                                    <FieldDescription>
-                                        {setting.description}
-                                    </FieldDescription>
-                                </FieldContent>
-                                <Switch
-                                    id={`${setting.field}-switch`}
-                                    checked={settings[setting.field]}
-                                    onCheckedChange={(checked) => handleUpdate(setting.field, checked)} 
-                                />
-                            </Field>
-                        </div>
-                    ))}
+                    </div>
+                    <div id="user-notifications-settings" className="flex flex-col gap-4 px-4 pt-4">
+                        <h2>Notifications</h2>
+                        {notificationsSettings.map((setting) => (
+                            <div id={`${setting.field}-setting`} key={setting.field}>
+                                <Field orientation="horizontal" className="max-w-sm">
+                                    <FieldContent>
+                                        <FieldLabel htmlFor={`${setting.field}-switch`}>
+                                            {setting.label}
+                                        </FieldLabel>   
+                                        <FieldDescription>
+                                            {setting.description}
+                                        </FieldDescription> 
+                                    </FieldContent>
+                                    <Switch 
+                                        id={`${setting.field}-switch`} 
+                                        checked={settings[setting.field]}
+                                        onCheckedChange={(checked) => handleUpdate(setting.field, checked)}
+                                    />
+                                </Field>
+                            </div>
+                        ))}
+                    </div>
+                    <div id="user-audio-settings" className="flex flex-col gap-4 px-4 pt-4">
+                        <h2>Audio</h2>
+                        {audioSettings.map((setting) => (
+                            <div id={`${setting.field}-setting`} key={setting.field}>
+                                <Field orientation="horizontal" className="max-w-sm">           
+                                    <FieldContent>
+                                        <FieldLabel htmlFor={`${setting.field}-switch`}>
+                                            {setting.label}
+                                        </FieldLabel>
+                                        <FieldDescription>
+                                            {setting.description}
+                                        </FieldDescription>
+                                    </FieldContent>
+                                    <Switch
+                                        id={`${setting.field}-switch`}
+                                        checked={settings[setting.field]}
+                                        onCheckedChange={(checked) => handleUpdate(setting.field, checked)} 
+                                    />
+                                </Field>
+                            </div>
+                        ))}
+                    </div>
                 </div>
+                {additionalActions &&
+                    <SheetFooter className="h-[10%] border-t-2 border-border">
+                        {additionalActions}
+                    </SheetFooter>
+                }
             </SheetContent>
+            
         </Sheet>
     )
 }

@@ -11,6 +11,7 @@ import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 import { UserSettings } from "../shared/UserSettings";
 import { QueryClient } from "@tanstack/react-query";
+import { Button } from "../ui/button";
 
 export function GameHUD(
     {
@@ -49,6 +50,15 @@ export function GameHUD(
         document.getElementById("root")?.classList.remove("blur-sm");
     };
 
+    const leaveGameComponent = (
+        <div className="flex justify-end h-full w-full ">
+            <Button variant="destructive" className="cursor-pointer">
+                Leave Game
+            </Button>
+        </div>
+    ) 
+
+
     return (
         <div 
             className="flex flex-col gap-4 bg-card border-border border-2 py-2 rounded-sm
@@ -79,7 +89,7 @@ export function GameHUD(
                 >
                     Game Chat   
                 </div>
-                <UserSettings settings={userSettings} queryClient={queryClient} />
+                <UserSettings settings={userSettings} queryClient={queryClient} additionalActions={leaveGameComponent} />
             </div>
             <div className="flex">
                 <div className="flex flex-1">
