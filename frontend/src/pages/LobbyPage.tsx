@@ -67,7 +67,7 @@ export function LobbyPage() {
                 {lobby.lobbyCountdown.countdownActive && lobby.lobbyCountdown.countdownEndsAt && (
                     <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.lobbyCountdown.countdownEndsAt)} />
                 )}
-                <Button className="m-2 cursor-pointer" onClick={handleLeaveLobbyClick} variant={"secondary"}>Leave Lobby</Button>
+                <Button className="m-2 cursor-pointer" onClick={handleLeaveLobbyClick} variant={"destructive"}>Leave Lobby</Button>
             </div>
             <div id="lobby-content" className="flex flex-col flex-1 gap-4 max-h-[70vh] md:max-h-[75vh]">
                 <div id="mobile-tabs" className="md:hidden">
