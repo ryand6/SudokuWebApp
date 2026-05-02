@@ -82,7 +82,7 @@ public class GameRestController {
                                        @Valid @RequestBody LeaveGameRequestDto requestDto) {
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
 
-        GameDto gameDto = gameService.removeGamePlayer(requestDto.getGameId(), currentUser.getId());
+        GameDto gameDto = gameService.forfeitGamePlayer(requestDto.getGameId(), currentUser.getId());
 
         if (gameDto == null) {
             return ResponseEntity.noContent().build();

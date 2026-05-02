@@ -68,6 +68,13 @@ public class GamePlayerEntity {
     @Column(name = "game_message_timestamp")
     private Instant lastGameMessageTimestamp = null;
 
+    // Determines when game results should be displayed to the player upon completion / game ending
+    @Column(name = "finished_game")
+    private boolean finishedGame = false;
+
+    @Column(name = "finished_game_timestamp")
+    private Instant finishedGameTimestamp = null;
+
     @Version
     private Long version;
 
@@ -100,6 +107,11 @@ public class GamePlayerEntity {
             gameLoaded = true;
             gameLoadedTimestamp = Instant.now();
         }
+    }
+
+    public void markGameFinished() {
+        finishedGame = true;
+        finishedGameTimestamp = Instant.now();
     }
 
     public void incrementFirsts() {

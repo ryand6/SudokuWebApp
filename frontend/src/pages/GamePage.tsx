@@ -21,6 +21,8 @@ import { resolveBoardState } from "@/utils/game/gameUtils";
 import { GameHUD } from "@/components/game/GameHUD";
 import { getCellState } from "@/utils/game/boardStateUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
+import { useHandleClosedGame } from "@/hooks/game/useHandleClosedGame";
+import { useSetShowGameResultsModal } from "@/hooks/game/useSetGameResultsModalState";
 
 
 export function GamePage() {
@@ -33,6 +35,7 @@ export function GamePage() {
 
     const [gameHighlightedCells, setGameHighlightedCells] = useState<Map<number, CellCoordinates> | undefined>(undefined);
     const [notesModeOn, setNotesModeOn] = useState<boolean>(false);
+    const [showGameResultsModal, setShowGameResultsModal] = useState<boolean>(false);
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -45,6 +48,13 @@ export function GamePage() {
     const {data: publicGameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
 
     const {data: privateGameState, isLoading: isGameStateLoading, isError: isGameStateError, error: gameStateError} = useGetGamePlayerState(gameIdNum, currentUser?.id);
+
+    // Redirect to lobby if game is in a closed state (closed, aborted)
+    useHandleClosedGame(publicGameState?.gameStatus, publicGameState?.lobbyId, navigate);
+
+    const playerFinishedGame = currentUser ? publicGameState?.players[currentUser.id].finishedGame : undefined;
+
+    useSetShowGameResultsModal(playerFinishedGame, setShowGameResultsModal);
 
     const boardState = useMemo(() => {
         return resolveBoardState(publicGameState?.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);

@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
@@ -13,11 +14,12 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.game.GameFactory;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
-import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.enums.GameStatus;
-import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.enums.*;
+import com.github.ryand6.sudokuweb.events.types.game.CreateGameLogEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GamePlayerForfeitEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePostGameCreationWsEvent;
@@ -27,6 +29,7 @@ import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundExce
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.game.GamePlayerEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.PrivateGamePlayerStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
@@ -44,6 +47,7 @@ public class GameService {
     private final GameRepository gameRepository;
     private final SudokuPuzzleService sudokuPuzzleService;
     private final GameEntityDtoMapper gameEntityDtoMapper;
+    private final GamePlayerEntityDtoMapper gamePlayerEntityDtoMapper;
     private final GamePlayerStateRepository gamePlayerStateRepository;
     private final PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper;
     private final LobbyRepository lobbyRepository;
@@ -54,6 +58,7 @@ public class GameService {
     public GameService(GameRepository gameRepository,
                        SudokuPuzzleService sudokuPuzzleService,
                        GameEntityDtoMapper gameEntityDtoMapper,
+                       GamePlayerEntityDtoMapper gamePlayerEntityDtoMapper,
                        GamePlayerStateRepository gamePlayerStateRepository,
                        PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper,
                        LobbyRepository lobbyRepository,
@@ -63,6 +68,7 @@ public class GameService {
         this.gameRepository = gameRepository;
         this.sudokuPuzzleService = sudokuPuzzleService;
         this.gameEntityDtoMapper = gameEntityDtoMapper;
+        this.gamePlayerEntityDtoMapper = gamePlayerEntityDtoMapper;
         this.gamePlayerStateRepository = gamePlayerStateRepository;
         this.privateGamePlayerStateEntityDtoMapper = privateGamePlayerStateEntityDtoMapper;
         this.lobbyRepository = lobbyRepository;
@@ -160,30 +166,44 @@ public class GameService {
     }
 
     @Transactional
-    public GameDto removeGamePlayer(Long gameId, Long userId) {
+    public GameDto forfeitGamePlayer(Long gameId, Long userId) {
         GameEntity game = getGameById(gameId);
-        // Retrieve GamePlayer
+
         GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
+
         if (game.isAborted(gamePlayer)) {
             abortGame(game);
         }
 
-        // CREATE GAME EVENT ENTITY
+        game.findLastRemainingOpponent(gamePlayer)
+                .ifPresent(GamePlayerEntity::markGameFinished);
 
-        game.getGamePlayerEntities().remove(gamePlayer);
+        gamePlayer.setGameResult(GameResult.FORFEIT);
 
-        if (game.getGameStatus() == GameStatus.ABORTED) {
-            return null;
-        }
+        gameRepository.save(game);
 
         // Send event to remove player from lobby and update membership/in memory caches
         applicationEventPublisher.publishEvent(
                 new GamePlayerLeftEvent(game.getId(), game.getLobbyEntity().getId(), userId)
         );
 
-        // ADD GAME UPDATE WS EVENT
-
         GameDto gameDto = gameEntityDtoMapper.mapToDto(game);
+        GamePlayerDto gamePlayerDto = gamePlayerEntityDtoMapper.mapToDto(gamePlayer);
+
+        applicationEventPublisher.publishEvent(
+                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.GAME_PLAYER_FORFEIT, "player " + gamePlayerDto.getUser().getUsername() + " has forfeit and left the game"))
+        );
+
+        applicationEventPublisher.publishEvent(
+                new GamePlayerForfeitEvent(gameId, gamePlayerDto)
+        );
+
+        // UPDATE STATS - LOSS INCURRED
+
+        if (game.getGameStatus() == GameStatus.ABORTED) {
+            return null;
+        }
+
         return gameDto;
     }
 
@@ -192,17 +212,32 @@ public class GameService {
         game.abortGame();
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
-                new GameClosedEvent(game.getId())
+                new GameClosedEvent(game.getId(), game.getLobbyEntity().getId())
         );
     }
 
+    // Mark all players as having finished the game, triggering leaderboard stats calculation
     @Transactional
     public GameDto finishGame(Long gameId) {
+        GameEntity game = getGameById(gameId);
+        game.finishGame();
+        Set<GamePlayerEntity> activePlayers = game.getRemainingActivePlayers();
+        activePlayers.forEach(GamePlayerEntity::markGameFinished);
+        gameRepository.save(game);
+        return gameEntityDtoMapper.mapToDto(game);
+    }
+
+    // Once game is closed, it cannot be navigated back to
+    @Transactional
+    public GameDto closeGame(Long gameId) {
+        GameEntity game = getGameById(gameId);
+        game.closeGame();
+
         // IMPLEMENT LOGIC
 
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
-                new GameClosedEvent(gameId)
+                new GameClosedEvent(gameId, game.getLobbyEntity().getId())
         );
 
         // ADD WS EVENTS

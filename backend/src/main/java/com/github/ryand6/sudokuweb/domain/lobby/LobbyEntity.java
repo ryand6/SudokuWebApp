@@ -155,4 +155,9 @@ public class LobbyEntity {
         currentGameId = gameId;
     }
 
+    public void handleGameFinish() {
+        inGame = false;
+        currentGameId = null;
+    }
+
 }

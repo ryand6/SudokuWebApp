@@ -23,12 +23,14 @@ export function normalisePublicGameData(
             mistakes: gp.mistakes,
             maxStreak: gp.maxStreak,
             gameLoaded: gp.gameLoaded,
-            gameResult: gp.gameResult
+            gameResult: gp.gameResult,
+            finishedGame: gp.finishedGame
         };
     });
     playerIds.sort();
     const gameState: PublicGameState = {
         gameId: gameData.gameId,
+        lobbyId: gameData.lobbyId, 
         playerIds: playerIds,
         players: players,
         sharedGameState: normaliseSharedGameStateData(gameData.sharedGameState),
@@ -67,8 +69,7 @@ export function normalisePrivateGameStateData(
         boardState: fillPrivateBoardState(normalisedGameDtoState),
         currentStreak: normalisedGameDtoState.currentStreak,
         activeMultiplier: normalisedGameDtoState.activeMultiplier,
-        multiplierEndsAt: normalisedGameDtoState.multiplierEndsAt,
-        settings: normalisedGameDtoState.gamePlayerSettings
+        multiplierEndsAt: normalisedGameDtoState.multiplierEndsAt
     }
 }
 

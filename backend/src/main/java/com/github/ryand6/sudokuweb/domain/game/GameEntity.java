@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.GameMode;
+import com.github.ryand6.sudokuweb.enums.GameResult;
 import com.github.ryand6.sudokuweb.enums.GameStatus;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import com.github.ryand6.sudokuweb.exceptions.game.IllegalGameStatusChangeException;
@@ -13,6 +14,7 @@ import lombok.*;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -132,8 +134,25 @@ public class GameEntity {
         }
     }
 
+    public Set<GamePlayerEntity> getRemainingActivePlayers() {
+        return gamePlayerEntities.stream().filter((gp) -> gp.getGameResult() == GameResult.PENDING).collect(Collectors.toSet());
+    }
+
     public boolean isAborted(GamePlayerEntity leaveRequester) {
-        return gamePlayerEntities.size() == 1 && gamePlayerEntities.contains(leaveRequester);
+        Set<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers();
+        return remainingPlayers.size() == 1 && gamePlayerEntities.contains(leaveRequester);
+    }
+
+    // Finish game early if all other players leave and game mode is competitive - remaining player can choose to finish board in casual mode
+    // Returns last player remaining
+    public Optional<GamePlayerEntity>  findLastRemainingOpponent(GamePlayerEntity leaveRequester) {
+        Set<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers();
+        if (gameMode != GameMode.TIMEATTACK && remainingPlayers.size() == 2 && remainingPlayers.contains(leaveRequester)) {
+            return remainingPlayers.stream()
+                    .filter(gp -> !gp.equals(leaveRequester))
+                    .findFirst();
+        }
+        return Optional.empty();
     }
 
     public void abortGame() {
@@ -141,7 +160,19 @@ public class GameEntity {
     }
 
     public void finishGame() {
-        gameStatus = GameStatus.FINISHED;
+        if (gameStatus == GameStatus.IN_PROGRESS) {
+            gameStatus = GameStatus.FINISHED;
+        }  else {
+            throw new IllegalGameStatusChangeException("Game status cannot be moved to finished due to illegal state change.");
+        }
+    }
+
+    public void closeGame() {
+        if (gameStatus == GameStatus.FINISHED) {
+            gameStatus = GameStatus.CLOSED;
+        }  else {
+            throw new IllegalGameStatusChangeException("Game status cannot be moved to closed due to illegal state change.");
+        }
     }
 
     private boolean checkAllPlayersLoaded() {

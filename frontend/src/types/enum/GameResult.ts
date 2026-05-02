@@ -1,1 +1,1 @@
-export type GameResult = "PENDING" | "WIN" | "LOSS" | "DRAW";
+export type GameResult = "PENDING" | "WIN" | "LOSS" | "DRAW" | "FORFEIT";

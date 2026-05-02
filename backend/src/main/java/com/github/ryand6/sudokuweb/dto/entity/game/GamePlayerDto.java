@@ -31,4 +31,6 @@ public class GamePlayerDto {
 
     private GameResult gameResult;
 
+    private boolean finishedGame;
+
 }

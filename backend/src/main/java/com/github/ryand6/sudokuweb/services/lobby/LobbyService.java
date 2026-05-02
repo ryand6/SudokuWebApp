@@ -7,6 +7,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
+import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.*;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePlayerJoinedWsEvent;
@@ -27,6 +28,8 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -278,9 +281,21 @@ public class LobbyService {
         return lobbyEntityDtoMapper.mapToDto(lobby);
     }
 
+    @Transactional
+    void handleGameFinish(Long lobbyId) {
+        LobbyEntity lobby = getLobbyById(lobbyId);
+        lobby.handleGameFinish();
+        lobbyRepository.save(lobby);
+    }
+
     @EventListener
     void handleGamePlayerLeftLobbyEvent(GamePlayerLeftEvent event) {
         removeFromLobby(event.getLobbyId(), event.getUserId());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleGameClosedEvent(GameClosedEvent event) {
+        handleGameFinish(event.getLobbyId());
     }
 
 }

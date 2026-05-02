@@ -1,1 +1,1 @@
-export type GameStatus = "LOADING" | "COUNTDOWN" | "IN_PROGRESS" | "FINISHED";
+export type GameStatus = "LOADING" | "COUNTDOWN" | "IN_PROGRESS" | "FINISHED" | "CLOSED" | "ABORTED";

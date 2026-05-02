@@ -31,6 +31,7 @@ public class GamePlayerEntityDtoMapper implements EntityDtoMapper<GamePlayerEnti
                 .maxStreak(gamePlayer.getMaxStreak())
                 .gameLoaded(gamePlayer.isGameLoaded())
                 .gameResult(gamePlayer.getGameResult())
+                .finishedGame(gamePlayer.isFinishedGame())
                 .build();
     }
 

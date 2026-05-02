@@ -12,6 +12,7 @@ import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 import { UserSettings } from "../shared/UserSettings";
 import { QueryClient } from "@tanstack/react-query";
 import { Button } from "../ui/button";
+import { LeaveGameAlertDialog } from "../ui/custom/LeaveGameAlertDialog";
 
 export function GameHUD(
     {
@@ -39,6 +40,7 @@ export function GameHUD(
     const [isHeatMapModalOpen, setHeatMapModalOpen] = useState(false);
     const [isGameLogModalOpen, setGameLogModalOpen] = useState(false);
     const [isGameChatModalOpen, setGameChatModalOpen] = useState(false);
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
 
     const openModal = (setter: Dispatch<SetStateAction<boolean>>) => {
         setter(true);
@@ -50,9 +52,12 @@ export function GameHUD(
         document.getElementById("root")?.classList.remove("blur-sm");
     };
 
+    const leaveGameHandler = 
+
     const leaveGameComponent = (
         <div className="flex justify-end h-full w-full ">
-            <Button variant="destructive" className="cursor-pointer">
+            <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => {}} setOpen={setIsAlertOpen} />
+            <Button variant="destructive" className="cursor-pointer" onClick={() => setIsAlertOpen(true)}>
                 Leave Game
             </Button>
         </div>

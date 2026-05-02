@@ -3,7 +3,9 @@ package com.github.ryand6.sudokuweb.services.game;
 import com.github.ryand6.sudokuweb.domain.game.CellAcceptedPublicUpdate;
 import com.github.ryand6.sudokuweb.domain.game.CellRejectedPublicUpdate;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
 import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.context.event.EventListener;
@@ -68,6 +70,15 @@ public class GameWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleGamePlayerForfeit(Long gameId, GamePlayerDto gamePlayerDto) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_PLAYER_FORFEIT",
+                "payload", gamePlayerDto
+        );
+        String topic = "/topic/game/" + gameId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handlePlayerHighlightedCellUpdateEvent(PlayerHighlightedCellUpdateEvent event) {
         handlePlayerHighlightedCellUpdate(event.getPlayerHighlightedCellDto());
@@ -91,6 +102,11 @@ public class GameWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleGameChatMessageSentWsEvent(GameChatMessageSentWsEvent event) {
         handleGameChatMessageSend(event.getGameChatMessageDto());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleGamePlayerForfeitEvent(GamePlayerForfeitEvent event) {
+        handleGamePlayerForfeit(event.getGameId(), event.getGamePlayerDto());
     }
 
 }

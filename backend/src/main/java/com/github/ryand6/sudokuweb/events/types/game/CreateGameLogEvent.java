@@ -4,8 +4,6 @@ import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 public class CreateGameLogEvent {

@@ -182,7 +182,7 @@ public class GamePlayerStateService {
            applicationEventPublisher.publishEvent(
                    new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.BOARD_COMPLETED, "completed the board"))
            );
-           // IMPLEMENT CALL TO GAME FINISH HANDLER (if applicable)
+           // IMPLEMENT CALL TO PLAYER FINISH HANDLER (if applicable)
        }
    }
 

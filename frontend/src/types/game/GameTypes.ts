@@ -1,4 +1,3 @@
-import type { GamePlayerSettingsDto } from "../dto/entity/game/GamePlayerSettingsDto";
 import type { CellStatus } from "../enum/CellStatus";
 import type { Difficulty } from "../enum/Difficulty";
 import type { GameMode } from "../enum/GameMode";
@@ -42,7 +41,8 @@ export type GamePlayer = {
     mistakes: number,
     maxStreak: number,
     gameLoaded: boolean,
-    gameResult: GameResult
+    gameResult: GameResult,
+    finishedGame: boolean
 };
 
 // Key represents playerId
@@ -51,6 +51,7 @@ export type GamePlayers = Record<number, GamePlayer>;
 // Public data stored in shared cache
 export type PublicGameState = {
     gameId: number,
+    lobbyId: number,
     playerIds: number[],
     players: GamePlayers,
     sharedGameState: SharedGameState,
@@ -73,6 +74,5 @@ export type PrivateGamePlayerState = {
     boardState: PrivateBoardState,
     currentStreak: number,
     activeMultiplier: number,
-    multiplierEndsAt: string | null,
-    settings: GamePlayerSettingsDto
+    multiplierEndsAt: string | null
 }
