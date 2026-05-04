@@ -1,6 +1,5 @@
-package com.github.ryand6.sudokuweb.dto.entity.lobby;
+package com.github.ryand6.sudokuweb.dto.entity.game;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameType;
@@ -12,10 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LobbySettingsDto {
-
-    @JsonProperty("isPublic")
-    private boolean isPublic;
+public class GameSettingsDto {
 
     private Difficulty difficulty;
 

@@ -15,11 +15,15 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
 
     private final GamePlayerEntityDtoMapper gamePlayerEntityDtoMapper;
     private final SharedGameStateEntityDtoMapper sharedGameStateEntityDtoMapper;
+    private final GameSettingsEntityDtoMapper gameSettingsEntityDtoMapper;
 
-    public GameEntityDtoMapper(GamePlayerEntityDtoMapper gamePlayerEntityDtoMapper, SharedGameStateEntityDtoMapper sharedGameStateEntityDtoMapper) {
+    public GameEntityDtoMapper(GamePlayerEntityDtoMapper gamePlayerEntityDtoMapper,
+                               SharedGameStateEntityDtoMapper sharedGameStateEntityDtoMapper,
+                               GameSettingsEntityDtoMapper gameSettingsEntityDtoMapper) {
 
         this.gamePlayerEntityDtoMapper = gamePlayerEntityDtoMapper;
         this.sharedGameStateEntityDtoMapper = sharedGameStateEntityDtoMapper;
+        this.gameSettingsEntityDtoMapper = gameSettingsEntityDtoMapper;
     }
 
     @Override
@@ -43,9 +47,7 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
                 )
                 .sharedGameState(sharedGameStateDto)
                 .initialBoardState(game.getSudokuPuzzleEntity().getInitialBoardState())
-                .gameMode(game.getGameMode())
-                .difficulty(lobbySettings.getDifficulty())
-                .timeLimit(lobbySettings.getTimeLimit())
+                .gameSettings(gameSettingsEntityDtoMapper.mapToDto(game.getGameSettingsEntity()))
                 .gameStatus(game.getGameStatus())
                 .gameStartsAt(game.getGameStartsAt())
                 .gameEndsAt(game.getGameEndsAt())

@@ -26,11 +26,7 @@ public class GameDto {
 
     private SharedGameStateDto sharedGameState;
 
-    private GameMode gameMode;
-
-    private Difficulty difficulty;
-
-    private TimeLimitPreset timeLimit;
+    private GameSettingsDto gameSettings;
 
     private GameStatus gameStatus;
 

@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.dto.request;
 
 import com.github.ryand6.sudokuweb.enums.GameMode;
+import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.validation.NoProfanity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,5 +26,8 @@ public class LobbySetupRequestDto {
 
     @NotNull
     private GameMode gameMode;
+
+    @NotNull
+    private GameType gameType;
 
 }

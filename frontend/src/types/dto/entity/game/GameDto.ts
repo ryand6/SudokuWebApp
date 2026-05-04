@@ -1,9 +1,7 @@
-import type { Difficulty } from '@/types/enum/Difficulty.ts';
-import type { TimeLimitPreset } from '@/types/enum/TimeLimitPreset.ts';
 import type { GameStatus } from '@/types/enum/GameStatus.ts';
-import type { GameMode } from '@/types/enum/GameMode.ts';
 import type { SharedGameStateDto } from './SharedGameStateDto';
 import type { GamePlayerDto } from './GamePlayerDto';
+import type { GameSettingsDto } from './GameSettingsDto';
 
 export type GameDto = {
     gameId: number,
@@ -11,9 +9,7 @@ export type GameDto = {
     gamePlayers: GamePlayerDto[],
     sharedGameState: SharedGameStateDto,
     initialBoardState: string,
-    gameMode: GameMode,
-    difficulty: Difficulty,
-    timeLimit: TimeLimitPreset,
+    gameSettings: GameSettingsDto,
     gameStatus: GameStatus,
     gameStartsAt: string | null,
     gameEndsAt: string | null

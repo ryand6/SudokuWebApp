@@ -1,11 +1,10 @@
-package com.github.ryand6.sudokuweb.domain.lobby.settings;
+package com.github.ryand6.sudokuweb.domain.game.settings;
 
-import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
-import com.github.ryand6.sudokuweb.exceptions.lobby.settings.LobbySettingsLockedException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,20 +14,16 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "lobby_settings")
-public class LobbySettingsEntity {
+@Table(name = "game_settings")
+public class GameSettingsEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lobby_settings_id_seq")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_settings_id_seq")
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "lobby_id", nullable = false, unique = true)
-    private LobbyEntity lobbyEntity;
-
-    // true for public lobby, false for private
-    @Column(name = "is_public")
-    private boolean isPublic;
+    @JoinColumn(name = "game_id", nullable = false, unique = true)
+    private GameEntity gameEntity;
 
     // Default difficulty = medium
     @Column(name = "difficulty")
@@ -51,15 +46,5 @@ public class LobbySettingsEntity {
 
     @Version
     private Long version;
-
-    //#######################//
-    // Domain Business Logic //
-    //#######################//
-
-    public void validateSettingsUpdates() {
-        if (lobbyEntity.getLobbyCountdownEntity().isCountdownActive()) {
-            throw new LobbySettingsLockedException("Cannot update settings whilst the countdown is active.");
-        }
-    }
 
 }

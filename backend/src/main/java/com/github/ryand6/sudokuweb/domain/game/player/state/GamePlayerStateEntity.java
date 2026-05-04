@@ -94,6 +94,11 @@ public class GamePlayerStateEntity {
         }
     }
 
+    public int getNumberOfFilledCells() {
+        String completedCells = currentBoardState.replace(".", "");
+        return completedCells.length();
+    }
+
     public boolean isBoardStateComplete() {
         return currentBoardState.indexOf('.') == -1;
     }

@@ -1,13 +1,12 @@
 package com.github.ryand6.sudokuweb.domain.game;
 
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
+import com.github.ryand6.sudokuweb.domain.game.settings.GameSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.enums.GameMode;
-import com.github.ryand6.sudokuweb.enums.GameResult;
-import com.github.ryand6.sudokuweb.enums.GameStatus;
-import com.github.ryand6.sudokuweb.enums.PlayerColour;
+import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.exceptions.game.IllegalGameStatusChangeException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,9 +48,8 @@ public class GameEntity {
     @OneToOne(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private SharedGameStateEntity sharedGameStateEntity;
 
-    @Column(name = "mode")
-    @Enumerated(EnumType.STRING)
-    private GameMode gameMode = GameMode.CLASSIC;
+    @OneToOne(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private GameSettingsEntity gameSettingsEntity;
 
     @Column(name = "game_status")
     @Enumerated(EnumType.STRING)
@@ -197,6 +195,10 @@ public class GameEntity {
         gameEndsAt = gameEndsAt.minusSeconds(seconds).isAfter(Instant.now())
                 ? gameEndsAt.minusSeconds(seconds)
                 : Instant.now();
+    }
+
+    public long getDifficultyMultiplier() {
+
     }
 
 }

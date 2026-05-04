@@ -35,9 +35,7 @@ export function normalisePublicGameData(
         players: players,
         sharedGameState: normaliseSharedGameStateData(gameData.sharedGameState),
         initialBoardState: gameData.initialBoardState,
-        gameMode: gameData.gameMode,
-        difficulty: gameData.difficulty,
-        timeLimit: gameData.timeLimit,
+        gameSettings: gameData.gameSettings,
         gameStatus: gameData.gameStatus,
         gameStartsAt: gameData.gameStartsAt,
         gameEndsAt: gameData.gameEndsAt 

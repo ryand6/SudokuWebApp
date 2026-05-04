@@ -35,7 +35,6 @@ export function GameHUD(
         queryClient: QueryClient
     }
 ) {
-
     const [isStatsModalOpen, setStatsModalOpen] = useState(false);
     const [isHeatMapModalOpen, setHeatMapModalOpen] = useState(false);
     const [isGameLogModalOpen, setGameLogModalOpen] = useState(false);
@@ -52,7 +51,10 @@ export function GameHUD(
         document.getElementById("root")?.classList.remove("blur-sm");
     };
 
-    const leaveGameHandler = 
+    const leaveGameHandler = () => {
+        
+    }
+
 
     const leaveGameComponent = (
         <div className="flex justify-end h-full w-full ">

@@ -1,10 +1,8 @@
+import type { GameSettingsDto } from "../dto/entity/game/GameSettingsDto";
 import type { CellStatus } from "../enum/CellStatus";
-import type { Difficulty } from "../enum/Difficulty";
-import type { GameMode } from "../enum/GameMode";
 import type { GameResult } from "../enum/GameResult";
 import type { GameStatus } from "../enum/GameStatus";
 import type { PlayerColour } from "../enum/PlayerColour";
-import type { TimeLimitPreset } from "../enum/TimeLimitPreset";
 
 
 export type PrivateCellState = {
@@ -56,9 +54,7 @@ export type PublicGameState = {
     players: GamePlayers,
     sharedGameState: SharedGameState,
     initialBoardState: string,
-    gameMode: GameMode,
-    difficulty: Difficulty,
-    timeLimit: TimeLimitPreset,
+    gameSettings: GameSettingsDto,
     gameStatus: GameStatus,
     gameStartsAt: string | null,
     gameEndsAt: string | null

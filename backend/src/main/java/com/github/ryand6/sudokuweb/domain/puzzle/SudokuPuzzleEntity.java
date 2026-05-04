@@ -48,4 +48,8 @@ public class SudokuPuzzleEntity {
         return initialBoardState.length() - initialBoardState.replace(".", "").length();
     }
 
+    public int getNumberOfCellsGiven() {
+        return initialBoardState.replace(".", "").length();
+    }
+
 }

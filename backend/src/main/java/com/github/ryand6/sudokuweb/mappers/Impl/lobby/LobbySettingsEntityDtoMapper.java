@@ -15,6 +15,7 @@ public class LobbySettingsEntityDtoMapper implements EntityDtoMapper<LobbySettin
                 .difficulty(lobbySettings.getDifficulty())
                 .timeLimit(lobbySettings.getTimeLimit())
                 .gameMode(lobbySettings.getGameMode())
+                .gameType(lobbySettings.getGameType())
                 .build();
     }
 

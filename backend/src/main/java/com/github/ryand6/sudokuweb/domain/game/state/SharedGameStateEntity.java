@@ -27,6 +27,7 @@ public class SharedGameStateEntity {
     private GameEntity gameEntity;
 
     // Used to provide cell highlighting in frontend representative of which players claimed which cells first
+    // ALso used to determine which player owns the cell in shared game modes where only one player can complete a cell
     @ElementCollection
     @CollectionTable(
             name = "cell_first_ownership",
@@ -121,6 +122,10 @@ public class SharedGameStateEntity {
 
     public boolean isBoardStateComplete() {
         return currentSharedBoardState.indexOf('.') == -1;
+    }
+
+    public int getPlayerCompletedCellsCount_SharedGameMode(Long userId) {
+        return (int) cellFirstOwnership.entrySet().stream().filter((k) -> k.getValue().equals(userId)).count();
     }
 
 }

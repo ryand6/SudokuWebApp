@@ -7,6 +7,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
+import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.*;
@@ -62,14 +63,14 @@ public class LobbyService {
     }
 
     @Transactional
-    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Long requesterId, GameMode gameMode) {
+    public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Long requesterId, GameMode gameMode, GameType gameType) {
         Set<LobbyEntity> activeLobbies = lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(requesterId);
         if (!activeLobbies.isEmpty()) {
             throw new UserExistsInActiveLobbyException("You are currently a player in an active lobby called " + activeLobbies.iterator().next().getLobbyName() + ". Players can only be in one active lobby at a time.");
         }
         UserEntity requester = userService.findUserById(requesterId);
 
-        LobbyEntity newLobby = LobbyFactory.createLobby(requester, lobbyName, isPublic, gameMode);
+        LobbyEntity newLobby = LobbyFactory.createLobby(requester, lobbyName, isPublic, gameMode, gameType);
 
         // Save the lobby first so that it can then be referenced by the LobbyPlayerEntity to be attached to the new lobby
         lobbyRepository.saveAndFlush(newLobby);

@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.dto.request.*;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.PublicLobbiesListDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
+import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.services.lobby.LobbyService;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.validation.Valid;
@@ -51,9 +52,10 @@ public class LobbyRestController {
         String lobbyName = lobbySetupRequestDto.getLobbyName();
         Boolean isPublic = lobbySetupRequestDto.getIsPublic();
         GameMode gameMode = lobbySetupRequestDto.getGameMode();
+        GameType gameType = lobbySetupRequestDto.getGameType();
         UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
         // Create lobby in DB then go to that corresponding lobby's view
-        LobbyDto lobbyDto = lobbyService.createNewLobby(lobbyName, isPublic, currentUser.getId(), gameMode);
+        LobbyDto lobbyDto = lobbyService.createNewLobby(lobbyName, isPublic, currentUser.getId(), gameMode, gameType);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(lobbyDto);

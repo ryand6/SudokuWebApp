@@ -1,1 +1,1 @@
-export type GameMode = "CLASSIC" | "DOMINATION" | "TIMEATTACK" | "CASUAL";
+export type GameMode = "CLASSIC" | "DOMINATION" | "TIMEATTACK";

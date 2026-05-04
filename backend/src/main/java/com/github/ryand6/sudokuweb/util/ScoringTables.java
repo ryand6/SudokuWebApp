@@ -1,5 +1,8 @@
 package com.github.ryand6.sudokuweb.util;
 
+import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
+
 import java.util.Map;
 
 public final class ScoringTables {
@@ -53,5 +56,21 @@ public final class ScoringTables {
     public static final int timeAttackGameMode_AddedSecondsOnCorrectAnswer = 5;
 
     public static final int timeAttackGameMode_RemovedSecondsOnIncorrectAnswer = -8;
+
+    // DIFFICULTY SCORE MULTIPLIER
+
+    public static final Map<Difficulty, Double> difficultyMultiplier = Map.of(
+            Difficulty.EASY, 1.0,
+            Difficulty.MEDIUM, 1.1,
+            Difficulty.HARD, 1.2,
+            Difficulty.EXTREME, 1.3
+    );
+
+    // TIME LIMIT PRESET MULTIPLIER
+    public static final Map<TimeLimitPreset, Double> timeLimitPresetMultiplier = Map.of(
+            TimeLimitPreset.MARATHON, 1.0,
+            TimeLimitPreset.STANDARD, 1.1,
+            TimeLimitPreset.QUICK, 1.2
+    );
 
 }

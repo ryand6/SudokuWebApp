@@ -4,7 +4,7 @@ import com.github.ryand6.sudokuweb.util.StringUtils;
 
 public enum GameMode {
 
-    CLASSIC, DOMINATION ,TIMEATTACK, CASUAL;
+    CLASSIC, DOMINATION ,TIMEATTACK;
 
     public String getProperCase() {
         return StringUtils.getProperCase(name());

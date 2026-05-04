@@ -77,6 +77,32 @@ public class GameService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    public GameDto getGameDtoById(Long gameId) {
+        GameEntity gameEntity = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
+        return gameEntityDtoMapper.mapToDto(gameEntity);
+    }
+
+    public GameEntity getGameById(Long gameId) {
+        return gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
+    }
+
+    public PrivateGamePlayerStateDto getGamePlayerState(Long gameId, Long userId) {
+        GamePlayerStateEntity gamePlayerState = gamePlayerStateRepository.findByCompositeId(gameId, userId)
+                .orElseThrow(
+                        () -> new GamePlayerStateNotFoundException("Game player with game ID " + gameId + " and user ID " + userId + " does not exist")
+                );
+        return privateGamePlayerStateEntityDtoMapper.mapToDto(gamePlayerState);
+    }
+
+    GamePlayerEntity findGamePlayer(GameEntity game, Long userId) {
+        return game.getGamePlayerEntities().stream()
+                .filter(gp -> gp.getUserEntity().getId().equals(userId))
+                .findFirst()
+                .orElseThrow(() -> new GamePlayerNotFoundException(
+                        "Game Player with Game ID " + game.getId() + " and User ID " + userId + " does not exist"
+                ));
+    }
+
     @Transactional
     public GameDto createGameIfNoneActive(Long lobbyId) {
         // Exit task if scheduler cancels it
@@ -106,7 +132,6 @@ public class GameService {
 
         return game;
     }
-
 
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
     active user in the lobby for the new sudokuPuzzleEntity - Transactional applied as multiple entities are
@@ -148,23 +173,6 @@ public class GameService {
         return gameEntityDtoMapper.mapToDto(newGame);
     }
 
-    public GameDto getGameDtoById(Long gameId) {
-        GameEntity gameEntity = gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
-        return gameEntityDtoMapper.mapToDto(gameEntity);
-    }
-
-    public GameEntity getGameById(Long gameId) {
-        return gameRepository.findById(gameId).orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
-    }
-
-    public PrivateGamePlayerStateDto getGamePlayerState(Long gameId, Long userId) {
-        GamePlayerStateEntity gamePlayerState = gamePlayerStateRepository.findByCompositeId(gameId, userId)
-                .orElseThrow(
-                        () -> new GamePlayerStateNotFoundException("Game player with game ID " + gameId + " and user ID " + userId + " does not exist")
-                );
-        return privateGamePlayerStateEntityDtoMapper.mapToDto(gamePlayerState);
-    }
-
     @Transactional
     public GameDto forfeitGamePlayer(Long gameId, Long userId) {
         GameEntity game = getGameById(gameId);
@@ -176,7 +184,7 @@ public class GameService {
         }
 
         game.findLastRemainingOpponent(gamePlayer)
-                .ifPresent(GamePlayerEntity::markGameFinished);
+                .ifPresent(this::handlePlayerFinish);
 
         gamePlayer.setGameResult(GameResult.FORFEIT);
 
@@ -199,6 +207,10 @@ public class GameService {
         );
 
         // UPDATE STATS - LOSS INCURRED
+        // call applyPlayerGameStats (which calls calculateLeaderboardScore)
+        applicationEventPublisher.publishEvent(
+
+        );
 
         if (game.getGameStatus() == GameStatus.ABORTED) {
             return null;
@@ -213,6 +225,16 @@ public class GameService {
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
                 new GameClosedEvent(game.getId(), game.getLobbyEntity().getId())
+        );
+    }
+
+    @Transactional
+    public void handlePlayerFinish(GamePlayerEntity gamePlayer) {
+        gamePlayer.markGameFinished();
+
+        // call applyPlayerGameStats (which calls calculateLeaderboardScore)
+        applicationEventPublisher.publishEvent(
+
         );
     }
 
@@ -246,13 +268,12 @@ public class GameService {
         return new GameDto();
     }
 
-    GamePlayerEntity findGamePlayer(GameEntity game, Long userId) {
-        return game.getGamePlayerEntities().stream()
-                .filter(gp -> gp.getUserEntity().getId().equals(userId))
-                .findFirst()
-                .orElseThrow(() -> new GamePlayerNotFoundException(
-                        "Game Player with Game ID " + game.getId() + " and User ID " + userId + " does not exist"
-                ));
+    @Transactional
+    void submitLeaderboardScore() {
+
     }
+
+    @Transactional
+    void
 
 }

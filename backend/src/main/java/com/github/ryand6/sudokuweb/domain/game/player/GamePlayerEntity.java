@@ -21,6 +21,8 @@ import java.util.Objects;
 @Table(name = "game_players")
 public class GamePlayerEntity {
 
+    private final static int NORMALISATION_RATE = 100;
+
     @EmbeddedId
     private GamePlayerId id = new GamePlayerId();
 
@@ -74,6 +76,10 @@ public class GamePlayerEntity {
 
     @Column(name = "finished_game_timestamp")
     private Instant finishedGameTimestamp = null;
+
+    // Score applied to leaderboard once player finishes game
+    @Column(name = "leaderboard_score")
+    private Integer leaderboardScore = null;
 
     @Version
     private Long version;
@@ -132,6 +138,21 @@ public class GamePlayerEntity {
 
     public void updateLastGameMessageTime() {
         lastGameMessageTimestamp = Instant.now();
+    }
+
+    public LeaderboardScoreCalculation calculateLeaderboardScore() {
+        int baseScore = score;
+        int filledCellsCount;
+        if (gameEntity.isBoardStateShared()) {
+            filledCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId());
+        } else {
+            filledCellsCount = gamePlayerStateEntity.getNumberOfFilledCells();
+        }
+        int completedCellsCount = filledCellsCount - gameEntity.getSudokuPuzzleEntity().getNumberOfCellsGiven();
+        long scoreOverCellsCompleted = baseScore / completedCellsCount;
+        long normalisedScore = scoreOverCellsCompleted * NORMALISATION_RATE;
+
+
     }
 
 }
