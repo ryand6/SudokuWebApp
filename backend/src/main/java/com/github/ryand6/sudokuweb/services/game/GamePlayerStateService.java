@@ -53,7 +53,7 @@ public class GamePlayerStateService {
 
         GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
         GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
-        GameMode gameMode = gamePlayer.getGameEntity().getGameMode();
+        GameMode gameMode = gamePlayer.getGameEntity().getGameSettingsEntity().getGameMode();
         int cellIndex = gamePlayerState.getCellIndex(row, col);
 
         if (!isCellUpdateSubmissionStructurallyValid(gamePlayer, row, col)) {
@@ -222,7 +222,8 @@ public class GamePlayerStateService {
    }
 
     private int handleTimeAttackTimerAddition(GameEntity game) {
-        int secondsToAdd = ScoringTables.timeAttackGameMode_AddedSecondsOnCorrectAnswer;
+        int percentageToSolve = game.getSharedGameStateEntity().getPercentageOfCellsLeft();
+        int secondsToAdd = ScoringTables.timeAttackGameMode_AddedSecondsOnCorrectAnswer_ByPercentageOfCellsLeft.floorEntry(percentageToSolve).getValue();
 
         game.addSecondsToGameEndTime(secondsToAdd);
 

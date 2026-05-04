@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb.domain.game.state;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.enums.Difficulty;
+import com.github.ryand6.sudokuweb.util.ScoringTables;
 import com.github.ryand6.sudokuweb.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
@@ -126,6 +128,25 @@ public class SharedGameStateEntity {
 
     public int getPlayerCompletedCellsCount_SharedGameMode(Long userId) {
         return (int) cellFirstOwnership.entrySet().stream().filter((k) -> k.getValue().equals(userId)).count();
+    }
+
+    public int getPercentageOfCellsLeft() {
+        int cellsToSolve = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsToFill();
+        int cellsGiven = 81 - cellsToSolve;
+        int cellsFilled = currentSharedBoardState.replace(".", "").length();
+        int cellsSolved = cellsFilled - cellsGiven;
+        double percentageToSolve = ((double) (cellsToSolve - cellsSolved) / cellsToSolve) * 100;
+        return (int) Math.round(percentageToSolve);
+    }
+
+    public int getTimeAttackBaseTimer() {
+        Difficulty difficulty = gameEntity.getGameSettingsEntity().getDifficulty();
+        int baseTimer = ScoringTables.timeAttackGameMode_BaseTimers.get(difficulty);
+        int cellsToSolve = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsToFill();
+        int cellsToFillMultiplier = ScoringTables.timeAttackGameMode_CellsToSolveMultiplier.get(difficulty);
+        int teamSize = gameEntity.getGamePlayerEntities().size();
+        int teamSizeBonus = ScoringTables.timeAttackGameMode_TeamSizeTimerBonus.get(teamSize);
+        return baseTimer + (cellsToSolve * cellsToFillMultiplier) + teamSizeBonus;
     }
 
 }

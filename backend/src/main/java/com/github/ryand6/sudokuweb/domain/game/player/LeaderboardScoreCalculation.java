@@ -21,13 +21,13 @@ public class LeaderboardScoreCalculation {
 
     private long normalisedScore;
 
-    private Long difficultyMultiplier;
+    private Double difficultyMultiplier;
 
-    private long scoreTimesDifficultyMultiplier;
+    private Double scoreTimesDifficultyMultiplier;
 
-    private Long timerMultiplier;
+    private Double timerMultiplier;
 
-    private long scoreTimesTimerMultiplier;
+    private Double scoreTimesTimerMultiplier;
 
     private int finalScore;
 

@@ -145,7 +145,7 @@ public class GameEntity {
     // Returns last player remaining
     public Optional<GamePlayerEntity>  findLastRemainingOpponent(GamePlayerEntity leaveRequester) {
         Set<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers();
-        if (gameMode != GameMode.TIMEATTACK && remainingPlayers.size() == 2 && remainingPlayers.contains(leaveRequester)) {
+        if (gameSettingsEntity.getGameMode() != GameMode.TIMEATTACK && remainingPlayers.size() == 2 && remainingPlayers.contains(leaveRequester)) {
             return remainingPlayers.stream()
                     .filter(gp -> !gp.equals(leaveRequester))
                     .findFirst();
@@ -195,10 +195,6 @@ public class GameEntity {
         gameEndsAt = gameEndsAt.minusSeconds(seconds).isAfter(Instant.now())
                 ? gameEndsAt.minusSeconds(seconds)
                 : Instant.now();
-    }
-
-    public long getDifficultyMultiplier() {
-
     }
 
 }

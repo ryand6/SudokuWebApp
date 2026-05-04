@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
+import com.github.ryand6.sudokuweb.util.ScoringTables;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,5 +47,17 @@ public class GameSettingsEntity {
 
     @Version
     private Long version;
+
+    //#######################//
+    // Domain Business Logic //
+    //#######################//
+
+    public Double getDifficultyMultiplier() {
+        return ScoringTables.difficultyMultiplier.get(difficulty);
+    }
+
+    public Double getTimerMultiplier() {
+        return ScoringTables.timeLimitPresetMultiplier.get(timeLimit);
+    }
 
 }

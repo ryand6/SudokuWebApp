@@ -4,6 +4,7 @@ import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 public final class ScoringTables {
 
@@ -53,9 +54,39 @@ public final class ScoringTables {
 
     public static final int timeAttackGameMode_BaseScore = 20;
 
-    public static final int timeAttackGameMode_AddedSecondsOnCorrectAnswer = 5;
+    public static final int timeAttackGameMode_TeamMemberSolvedScore = 10;
 
     public static final int timeAttackGameMode_RemovedSecondsOnIncorrectAnswer = -8;
+
+    public static final Map<Difficulty, Integer> timeAttackGameMode_BaseTimers = Map.of(
+            Difficulty.EASY, 60,
+            Difficulty.MEDIUM, 50,
+            Difficulty.HARD, 40,
+            Difficulty.EXTREME, 30
+    );
+
+    public static final Map<Difficulty, Integer> timeAttackGameMode_CellsToSolveMultiplier = Map.of(
+            Difficulty.EASY, 5,
+            Difficulty.MEDIUM, 6,
+            Difficulty.HARD, 7,
+            Difficulty.EXTREME, 8
+    );
+
+    public static final Map<Integer, Integer> timeAttackGameMode_TeamSizeTimerBonus = Map.of(
+            2, 20,
+            3, 10,
+            4, 0
+    );
+
+    public static final TreeMap<Integer, Integer> timeAttackGameMode_AddedSecondsOnCorrectAnswer_ByPercentageOfCellsLeft = new TreeMap<>();
+
+    static {
+        timeAttackGameMode_AddedSecondsOnCorrectAnswer_ByPercentageOfCellsLeft.put(80, 5);
+        timeAttackGameMode_AddedSecondsOnCorrectAnswer_ByPercentageOfCellsLeft.put(60, 9);
+        timeAttackGameMode_AddedSecondsOnCorrectAnswer_ByPercentageOfCellsLeft.put(40, 7);
+        timeAttackGameMode_AddedSecondsOnCorrectAnswer_ByPercentageOfCellsLeft.put(20, 5);
+        timeAttackGameMode_AddedSecondsOnCorrectAnswer_ByPercentageOfCellsLeft.put(0, 3);
+    }
 
     // DIFFICULTY SCORE MULTIPLIER
 
@@ -68,6 +99,7 @@ public final class ScoringTables {
 
     // TIME LIMIT PRESET MULTIPLIER
     public static final Map<TimeLimitPreset, Double> timeLimitPresetMultiplier = Map.of(
+            TimeLimitPreset.UNLIMITED, 1.0,
             TimeLimitPreset.MARATHON, 1.0,
             TimeLimitPreset.STANDARD, 1.1,
             TimeLimitPreset.QUICK, 1.2
