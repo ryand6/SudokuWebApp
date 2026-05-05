@@ -207,10 +207,7 @@ public class GameService {
         );
 
         // UPDATE STATS - LOSS INCURRED
-        // call applyPlayerGameStats (which calls calculateLeaderboardScore)
-        applicationEventPublisher.publishEvent(
-
-        );
+        // Call submitGameResult
 
         if (game.getGameStatus() == GameStatus.ABORTED) {
             return null;
@@ -230,12 +227,13 @@ public class GameService {
 
     @Transactional
     public void handlePlayerFinish(GamePlayerEntity gamePlayer) {
+        if (gamePlayer.isFinishedGame()) {
+            return;
+        }
         gamePlayer.markGameFinished();
-
-        // call applyPlayerGameStats (which calls calculateLeaderboardScore)
-        applicationEventPublisher.publishEvent(
-
-        );
+        Integer leaderboardScore = gamePlayer.getLeaderboardScore();
+        submitLeaderboardScore(leaderboardScore);
+        gamePlayer.setLeaderboardScore(leaderboardScore);
     }
 
     // Mark all players as having finished the game, triggering leaderboard stats calculation
@@ -244,7 +242,7 @@ public class GameService {
         GameEntity game = getGameById(gameId);
         game.finishGame();
         Set<GamePlayerEntity> activePlayers = game.getRemainingActivePlayers();
-        activePlayers.forEach(GamePlayerEntity::markGameFinished);
+        activePlayers.forEach(this::handlePlayerFinish);
         gameRepository.save(game);
         return gameEntityDtoMapper.mapToDto(game);
     }
@@ -254,6 +252,8 @@ public class GameService {
     public GameDto closeGame(Long gameId) {
         GameEntity game = getGameById(gameId);
         game.closeGame();
+
+        // Handle determining and persisting player results (win, lose, draw)
 
         // IMPLEMENT LOGIC
 
@@ -269,11 +269,13 @@ public class GameService {
     }
 
     @Transactional
-    void submitLeaderboardScore() {
-
+    void submitLeaderboardScore(Integer leaderboardScore) {
+        // IMPLEMENT - persists score in leaderboard entity
     }
 
+    // Update leaderboard with player's game result e.g. win/loss
     @Transactional
-    void
+    void submitGameResults(GameResult gameResult, Integer leaderboardScore) {
 
+    }
 }

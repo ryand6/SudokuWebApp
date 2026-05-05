@@ -4,12 +4,15 @@ import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.game.settings.GameSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameResult;
 import com.github.ryand6.sudokuweb.enums.GameStatus;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Objects;
@@ -145,6 +148,7 @@ public class GamePlayerEntity {
     public LeaderboardScoreCalculation calculateLeaderboardScore() {
         int baseScore = score;
         int filledCellsCount;
+        // UPDATE - consider splitting TimeAttack and Domination, since TimeAttack should take into account cells completed by all players
         if (gameEntity.isBoardStateShared()) {
             filledCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId());
         } else {
@@ -158,7 +162,12 @@ public class GamePlayerEntity {
 
         Double difficultyMultiplier = gameSettings.getDifficultyMultiplier();
         Double scoreTimesDifficultyMultiplier = normalisedScore * difficultyMultiplier;
-        Double timerMultiplier = gameSettings.getTimerMultiplier();
+        Double timerMultiplier;
+        if (gameSettings.getGameMode() == GameMode.TIMEATTACK) {
+            timerMultiplier = calculateTimeAttackMultiplier();
+        } else {
+            timerMultiplier = gameSettings.getTimerMultiplier();
+        }
         Double scoreTimesTimerMultiplier = scoreTimesDifficultyMultiplier * timerMultiplier;
         int finalScore = scoreTimesTimerMultiplier.intValue();
         return new LeaderboardScoreCalculation(
@@ -174,7 +183,7 @@ public class GamePlayerEntity {
                 finalScore);
     }
 
-    int calculateTimeAttackMultiplier() {
+    double calculateTimeAttackMultiplier() {
         int baseTimer = gameEntity.getSharedGameStateEntity().getTimeAttackBaseTimer();
         Duration difference = Duration.between(gameEntity.getGameEndsAt(), gameEntity.getGameStartsAt());
         long timerAtFinish = difference.getSeconds();
@@ -182,15 +191,16 @@ public class GamePlayerEntity {
             // If the game has already finished, set the multiplier to 1.0x
             return 1;
         }
-        double percentagePassed = ((double) timerAtFinish / baseTimer) * 100;
+        double percentagePassed = (double) timerAtFinish / baseTimer;
         // Map the percentage to a multiplier
-        double multiplier = 1.0 + (1.0 - percentagePassed / 100);
-        // Ensure that the multiplier is not less than 1.0
-        if (multiplier < 1.0) {
-            return 1;
-        }
-        // Return the calculated multiplier, rounded to an integer
-        return (int) Math.round(multiplier);
+        double multiplier = 1.0 + percentagePassed;
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        df.setRoundingMode(RoundingMode.FLOOR);
+
+        // Return the calculated multiplier, rounded to two decimal places
+        String formattedNumber = df.format(multiplier);
+        return Double.parseDouble(formattedNumber);
     }
 
 }
