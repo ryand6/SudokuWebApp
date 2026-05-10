@@ -11,7 +11,7 @@ import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
 import { useHandleGameWsSubscriptions } from "@/hooks/game/useHandleGameWsSubscriptions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHighlightedCells";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
@@ -22,7 +22,7 @@ import { GameHUD } from "@/components/game/GameHUD";
 import { getCellState } from "@/utils/game/boardStateUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { useHandleClosedGame } from "@/hooks/game/useHandleClosedGame";
-import { useSetShowGameResultsModal } from "@/hooks/game/useSetGameResultsModalState";
+import { useShowGameResults } from "@/hooks/game/useShowGameResults";
 import { Modal } from "@/components/ui/custom/Modal";
 import { GameResults } from "@/components/game/GameResults";
 
@@ -56,7 +56,7 @@ export function GamePage() {
 
     const playerFinishedGame = currentUser ? publicGameState?.players[currentUser.id].finishedGame : undefined;
 
-    useSetShowGameResultsModal(playerFinishedGame, setShowGameResultsModal);
+    useShowGameResults(playerFinishedGame, setShowGameResultsModal);
 
     const boardState = useMemo(() => {
         return resolveBoardState(publicGameState?.gameSettings.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);
@@ -131,7 +131,10 @@ export function GamePage() {
                 >
                     <GameResults
                         userId={currentUser.id}
+                        gameId={gameIdNum}
+                        leaderboardResult={privateGameState.leaderboardResult}
                         players={publicGameState.players}
+                        queryClient={queryClient}
                     />
                 </Modal>
 

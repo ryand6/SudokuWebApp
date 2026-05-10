@@ -9,6 +9,7 @@ import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.InvalidCellCoordinatesException;
 import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.game.player.PlayerNotFinishedGameException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.IllegalBoardStateException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
@@ -58,6 +59,7 @@ public class ErrorMapping {
             Map.entry(TooManyActivePlayersException.class, HttpStatus.BAD_REQUEST),
             Map.entry(LobbyPlayerAlreadyExistsException.class, HttpStatus.BAD_REQUEST),
             Map.entry(IllegalBoardStateException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(PlayerNotFinishedGameException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS)
     );
 

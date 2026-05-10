@@ -1,6 +1,6 @@
 import { useEffect, type Dispatch, type SetStateAction } from "react";
 
-export function useSetShowGameResultsModal(
+export function useShowGameResults(
     finishedGame: boolean | undefined,
     setShowGameResultsModal: Dispatch<SetStateAction<boolean>>
 ) {

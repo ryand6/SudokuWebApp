@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest.game;
 
+import com.github.ryand6.sudokuweb.domain.game.player.LeaderboardScoreCalculation;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
@@ -74,6 +75,18 @@ public class GameRestController {
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
         PrivateGamePlayerStateDto privateGamePlayerState = gameService.getGamePlayerState(gameId, user.getId());
         return ResponseEntity.ok(privateGamePlayerState);
+    }
+
+    @GetMapping("/get-leaderboard-result")
+    public ResponseEntity<?> getLeaderboardResult(@RequestParam Long gameId,
+                                                  @AuthenticationPrincipal OAuth2User principal,
+                                                  OAuth2AuthenticationToken authToken) {
+        if (principal == null || authToken == null) {
+            throw new OAuth2LoginRequiredException("OAuth2 login required to carry out this action");
+        }
+        UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
+        LeaderboardScoreCalculation leaderboardScoreCalculation = gameService.getPlayerLeaderboardResult(gameId, user.getId());
+        return ResponseEntity.ok(leaderboardScoreCalculation);
     }
 
     @PostMapping("/leave")

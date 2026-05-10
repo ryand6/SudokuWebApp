@@ -24,6 +24,7 @@ import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePostGameCrea
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
 import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.game.player.PlayerNotFinishedGameException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.GameEntityDtoMapper;
@@ -35,6 +36,7 @@ import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 import java.util.Set;
@@ -223,6 +225,16 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new GameClosedEvent(game.getId(), game.getLobbyEntity().getId())
         );
+    }
+
+    @Transactional
+    public LeaderboardScoreCalculation getPlayerLeaderboardResult(Long gameId, Long userId) {
+        GameEntity gameEntity = getGameById(gameId);
+        GamePlayerEntity gamePlayer = findGamePlayer(gameEntity, userId);
+        if (!gamePlayer.isFinishedGame()) {
+            throw new PlayerNotFinishedGameException("Unable to retrieve leaderboard score. Game not finished.");
+        }
+        return gamePlayer.calculateLeaderboardScore();
     }
 
     @Transactional
