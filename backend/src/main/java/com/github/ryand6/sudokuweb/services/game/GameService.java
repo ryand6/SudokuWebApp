@@ -6,6 +6,7 @@ import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerFactory;
+import com.github.ryand6.sudokuweb.domain.game.player.LeaderboardScoreCalculation;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
@@ -17,10 +18,7 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.*;
-import com.github.ryand6.sudokuweb.events.types.game.CreateGameLogEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GamePlayerForfeitEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
+import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePostGameCreationWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
@@ -184,7 +182,9 @@ public class GameService {
         }
 
         game.findLastRemainingOpponent(gamePlayer)
-                .ifPresent(this::handlePlayerFinish);
+                .ifPresent((player) -> {
+                    handlePlayerFinish(gameId, player);
+                });
 
         gamePlayer.setGameResult(GameResult.FORFEIT);
 
@@ -226,14 +226,19 @@ public class GameService {
     }
 
     @Transactional
-    public void handlePlayerFinish(GamePlayerEntity gamePlayer) {
+    public void handlePlayerFinish(Long gameId, GamePlayerEntity gamePlayer) {
         if (gamePlayer.isFinishedGame()) {
             return;
         }
         gamePlayer.markGameFinished();
-        Integer leaderboardScore = gamePlayer.getLeaderboardScore();
-        submitLeaderboardScore(leaderboardScore);
+        LeaderboardScoreCalculation leaderboardScoreCalculation = gamePlayer.calculateLeaderboardScore();
+        Integer leaderboardScore = leaderboardScoreCalculation.getFinalScore();
         gamePlayer.setLeaderboardScore(leaderboardScore);
+        submitLeaderboardScore(leaderboardScore);
+
+        applicationEventPublisher.publishEvent(
+                new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
+        );
     }
 
     // Mark all players as having finished the game, triggering leaderboard stats calculation
@@ -242,7 +247,9 @@ public class GameService {
         GameEntity game = getGameById(gameId);
         game.finishGame();
         Set<GamePlayerEntity> activePlayers = game.getRemainingActivePlayers();
-        activePlayers.forEach(this::handlePlayerFinish);
+        activePlayers.forEach((player) -> {
+            handlePlayerFinish(gameId, player);
+        });
         gameRepository.save(game);
         return gameEntityDtoMapper.mapToDto(game);
     }

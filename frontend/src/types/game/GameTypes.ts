@@ -65,10 +65,24 @@ export type SharedGameState = {
     currentSharedBoardState?: SharedBoardState
 }
 
+export type LeaderboardResult = {
+    score: number,
+    cellsCompleted: number,
+    scoreOverCellsCompleted: number,
+    normalisationRate: number,
+    normalisedScore: number,
+    difficultyMultiplier: number,
+    scoreTimesDifficultyMultiplier: number,
+    timerMultiplier: number,
+    scoreTimesTimerMultiplier: number,
+    finalScore: number
+}
+
 // Requested separately from backend, stored in user's personal game cache
 export type PrivateGamePlayerState = {
     boardState: PrivateBoardState,
     currentStreak: number,
     activeMultiplier: number,
-    multiplierEndsAt: string | null
+    multiplierEndsAt: string | null,
+    leaderboardResult: LeaderboardResult | undefined
 }

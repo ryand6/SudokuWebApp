@@ -4,7 +4,7 @@ import { Button } from "../button";
 
 interface ModalProps {
     isOpen: boolean,
-    onClose: () => void,
+    onClose?: () => void,
     children: React.ReactElement,
     className?: string
 }
@@ -24,13 +24,15 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
                             ${className}`}
             >
                 <div className="flex w-[100%] h-[100%] relative">
-                    <Button 
-                        className="absolute cursor-pointer text-xl px-4 top-2 right-2 bg-accent/0 text-foreground 
-                                    hover:font-extrabold hover:bg-primary/80 hover:text-primary-foreground z-[1000]"
-                        onClick={onClose}
-                    >
-                        &times;
-                    </Button>
+                    {onClose && 
+                        <Button 
+                            className="absolute cursor-pointer text-xl px-4 top-2 right-2 bg-accent/0 text-foreground 
+                                        hover:font-extrabold hover:bg-primary/80 hover:text-primary-foreground z-[1000]"
+                            onClick={onClose}
+                        >
+                            &times;
+                        </Button>
+                    }
                     {children}
                 </div>
             </div>

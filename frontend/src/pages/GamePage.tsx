@@ -11,7 +11,7 @@ import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
 import { useHandleGameWsSubscriptions } from "@/hooks/game/useHandleGameWsSubscriptions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHighlightedCells";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
@@ -23,6 +23,8 @@ import { getCellState } from "@/utils/game/boardStateUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { useHandleClosedGame } from "@/hooks/game/useHandleClosedGame";
 import { useSetShowGameResultsModal } from "@/hooks/game/useSetGameResultsModalState";
+import { Modal } from "@/components/ui/custom/Modal";
+import { GameResults } from "@/components/game/GameResults";
 
 
 export function GamePage() {
@@ -57,8 +59,8 @@ export function GamePage() {
     useSetShowGameResultsModal(playerFinishedGame, setShowGameResultsModal);
 
     const boardState = useMemo(() => {
-        return resolveBoardState(publicGameState?.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);
-    }, [publicGameState?.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState]);
+        return resolveBoardState(publicGameState?.gameSettings.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);
+    }, [publicGameState?.gameSettings.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState]);
 
     const playerColours: Record<number, PlayerColour> | undefined = useMemo(() => {
         if (!publicGameState) return;
@@ -93,8 +95,8 @@ export function GamePage() {
                         userId={currentUser.id}
                         gameId={gameIdNum}
                         gamePlayers={publicGameState.players} 
-                        difficulty={publicGameState.difficulty}
-                        gameMode={publicGameState.gameMode}
+                        difficulty={publicGameState.gameSettings.difficulty}
+                        gameMode={publicGameState.gameSettings.gameMode}
                         currentStreak={privateGameState.currentStreak} 
                         userSettings={currentUser.userSettings}
                         queryClient={queryClient}
@@ -123,7 +125,16 @@ export function GamePage() {
                         queryClient={queryClient}
                     />
                 </div>
-                
+                <Modal
+                    isOpen={showGameResultsModal}
+                    className="w-[80%]! h-[80%]! z-50"
+                >
+                    <GameResults
+                        userId={currentUser.id}
+                        players={publicGameState.players}
+                    />
+                </Modal>
+
             </div>
         </div>
     )

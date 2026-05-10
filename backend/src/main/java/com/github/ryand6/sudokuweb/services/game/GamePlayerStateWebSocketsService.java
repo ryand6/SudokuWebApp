@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services.game;
 
+import com.github.ryand6.sudokuweb.domain.game.player.LeaderboardScoreCalculation;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
@@ -75,6 +76,15 @@ public class GamePlayerStateWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handlePlayerLeaderboardScoreBroadcast(Long gameId, Long userId, LeaderboardScoreCalculation leaderboardScoreCalculation) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "LEADERBOARD_SCORE",
+                "payload", leaderboardScoreCalculation
+        );
+        String topic = "/topic/game/" + gameId + "/user/" + userId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionInvalidEvent(CellUpdateSubmissionInvalidEvent event) {
         handleCellUpdateSubmissionInvalid(event.getGameId(), event.getUserId(), event.getCellValueUpdate());
@@ -103,6 +113,11 @@ public class GamePlayerStateWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handlePlayerStreakResetEvent(PlayerStreakResetEvent event) {
         handlePlayerStreakReset(event.getGameId(), event.getUserId());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handlePlayerLeaderboardScoreBroadcastEvent(PlayerLeaderboardScoreEvent event) {
+        handlePlayerLeaderboardScoreBroadcast(event.getGameId(), event.getUserId(), event.getLeaderboardScoreCalculation());
     }
 
 }
