@@ -1,6 +1,6 @@
 import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessageDto";
 import type { GameEventDto } from "@/types/dto/entity/game/GameEventDto";
-import type { CellCoordinates } from "@/types/game/GameTypes"
+import type { CellCoordinates, LeaderboardResult } from "@/types/game/GameTypes"
 
 export type GameEvent = 
     | {
@@ -87,5 +87,6 @@ export type GamePlayerStateEvent =
         col: number
       }
     | {
-        type: "SETTINGS_UPDATED"
+        type: "LEADERBOARD_SCORE_CALCULATED",
+        leaderboardResult: LeaderboardResult
       };

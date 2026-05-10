@@ -67,7 +67,8 @@ export function normalisePrivateGameStateData(
         boardState: fillPrivateBoardState(normalisedGameDtoState),
         currentStreak: normalisedGameDtoState.currentStreak,
         activeMultiplier: normalisedGameDtoState.activeMultiplier,
-        multiplierEndsAt: normalisedGameDtoState.multiplierEndsAt
+        multiplierEndsAt: normalisedGameDtoState.multiplierEndsAt,
+        leaderboardResult: undefined
     }
 }
 

@@ -92,9 +92,12 @@ export function gamePlayerStateCacheReducer(
                 boardState: newBoard
             }
         }
-        case "SETTINGS_UPDATED": {
+        case "LEADERBOARD_SCORE_CALCULATED": {
             // IMPLEMENT
-            return existingData;
+            return {
+                ...existingData,
+                leaderboardResult: event.leaderboardResult
+            }
         }
         default: 
             return existingData;

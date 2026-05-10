@@ -5,7 +5,6 @@ import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpd
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
 import com.github.ryand6.sudokuweb.events.types.game.*;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
@@ -78,7 +77,7 @@ public class GamePlayerStateWebSocketsService {
 
     public void handlePlayerLeaderboardScoreBroadcast(Long gameId, Long userId, LeaderboardScoreCalculation leaderboardScoreCalculation) {
         Map<String, Object> messageHeader = Map.of(
-                "type", "LEADERBOARD_SCORE",
+                "type", "LEADERBOARD_SCORE_CALCULATED",
                 "payload", leaderboardScoreCalculation
         );
         String topic = "/topic/game/" + gameId + "/user/" + userId;

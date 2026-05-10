@@ -42,8 +42,11 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
             // IMPLEMENT - May not need a websocket event for this 
             break;
         }
-        case "SETTINGS_UPDATED": {
-            // IMPLEMENT
+        case "LEADERBOARD_SCORE_CALCULATED": {
+            gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
+                type: "LEADERBOARD_SCORE_CALCULATED",
+                leaderboardResult: message.payload.leaderboardResult
+            })
             break;
         }
     }
