@@ -10,9 +10,11 @@ import { HUDGameChat } from "./HUDGameChat";
 import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 import { UserSettings } from "../shared/UserSettings";
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, type UseMutateFunction } from "@tanstack/react-query";
 import { Button } from "../ui/button";
 import { LeaveGameAlertDialog } from "../ui/custom/LeaveGameAlertDialog";
+import type { GameDto } from "@/types/dto/entity/game/GameDto";
+import type { LeaveGameRequestDto } from "@/types/dto/request/LeaveGameRequestDto";
 
 export function GameHUD(
     {
@@ -23,6 +25,7 @@ export function GameHUD(
         gameMode,
         currentStreak,
         userSettings,
+        leaveGameHandler,
         queryClient
     }: {
         userId: number,
@@ -32,6 +35,10 @@ export function GameHUD(
         gameMode: GameMode,
         currentStreak: number,
         userSettings: UserSettingsDto,
+        leaveGameHandler: {
+            mutate: UseMutateFunction<GameDto | null, Error, LeaveGameRequestDto, unknown>;
+            isLeaving: boolean;
+        },
         queryClient: QueryClient
     }
 ) {
@@ -51,20 +58,14 @@ export function GameHUD(
         document.getElementById("root")?.classList.remove("blur-sm");
     };
 
-    const leaveGameHandler = () => {
-        
-    }
-
-
     const leaveGameComponent = (
         <div className="flex justify-end h-full w-full ">
-            <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => {}} setOpen={setIsAlertOpen} />
+            <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId})} setOpen={setIsAlertOpen} />
             <Button variant="destructive" className="cursor-pointer" onClick={() => setIsAlertOpen(true)}>
                 Leave Game
             </Button>
         </div>
     ) 
-
 
     return (
         <div 

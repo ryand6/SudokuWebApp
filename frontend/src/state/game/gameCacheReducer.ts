@@ -1,6 +1,7 @@
 import type { PublicGameState } from "@/types/game/GameTypes";
 import type { GameEvent } from "./gameEvents";
 import { getCellIndex } from "@/utils/game/cellUtils";
+import { normaliseGamePlayer } from "@/utils/game/normaliseGameState";
 
 export function gameCacheReducer(
     existingData: PublicGameState,
@@ -58,6 +59,15 @@ export function gameCacheReducer(
         case "GAME_TIMER_UPDATE": {
             // IMPLEMENT - gameStartsAt and gameEndsAt ?
             return existingData;
+        }
+        case "GAME_PLAYER_FORFEIT": {
+            return {
+                ...existingData,
+                players: {
+                    ...existingData.players,
+                    [event.gamePlayer.user.id]: normaliseGamePlayer(event.gamePlayer)
+                }
+            }
         }
         default: 
             return existingData;

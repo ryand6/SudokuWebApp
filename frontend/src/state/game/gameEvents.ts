@@ -1,5 +1,6 @@
 import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessageDto";
 import type { GameEventDto } from "@/types/dto/entity/game/GameEventDto";
+import type { GamePlayerDto } from "@/types/dto/entity/game/GamePlayerDto";
 import type { CellCoordinates, LeaderboardResult } from "@/types/game/GameTypes"
 
 export type GameEvent = 
@@ -31,6 +32,10 @@ export type GameEvent =
         type: "HIGHLIGHTED_CELL_UPDATE",
         userId: number,
         coordinates: CellCoordinates
+      }
+    | {
+        type: "GAME_PLAYER_FORFEIT",
+        gamePlayer: GamePlayerDto
       };
 
 export type GameEventLog = 

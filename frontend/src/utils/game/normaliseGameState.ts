@@ -5,6 +5,7 @@ import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/Priva
 import { mapGameState } from "./mapGameState";
 import type { PrivateGamePlayerStateDto } from "@/types/dto/entity/game/PrivateGamePlayerStateDto";
 import type { SharedGameStateDto } from "@/types/dto/entity/game/SharedGameStateDto";
+import type { GamePlayerDto } from "@/types/dto/entity/game/GamePlayerDto";
 
 export function normalisePublicGameData(
     gameData: GameDto
@@ -14,18 +15,7 @@ export function normalisePublicGameData(
 
     gameData.gamePlayers.forEach((gp) => {
         playerIds.push(gp.user.id);
-        players[gp.user.id] = {
-            name: gp.user.username,
-            colour: gp.playerColour,
-            boardProgress: gp.boardProgress,
-            score: gp.score,
-            firsts: gp.firsts,
-            mistakes: gp.mistakes,
-            maxStreak: gp.maxStreak,
-            gameLoaded: gp.gameLoaded,
-            gameResult: gp.gameResult,
-            finishedGame: gp.finishedGame
-        };
+        players[gp.user.id] = normaliseGamePlayer(gp);
     });
     playerIds.sort();
     const gameState: PublicGameState = {
@@ -42,6 +32,23 @@ export function normalisePublicGameData(
     };
 
     return gameState;
+}
+
+export function normaliseGamePlayer(
+    player: GamePlayerDto
+) {
+    return {
+        name: player.user.username,
+        colour: player.playerColour,
+        boardProgress: player.boardProgress,
+        score: player.score,
+        firsts: player.firsts,
+        mistakes: player.mistakes,
+        maxStreak: player.maxStreak,
+        gameLoaded: player.gameLoaded,
+        gameResult: player.gameResult,
+        finishedGame: player.finishedGame
+    }
 }
 
 function normaliseSharedGameStateData(

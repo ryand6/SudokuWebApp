@@ -7,6 +7,7 @@ import { updateGameHighlightedCells } from "@/utils/game/cellUtils";
 import type { QueryClient } from "@tanstack/react-query";
 import type { Dispatch, SetStateAction } from "react";
 import type { NavigateFunction } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export function handleGameWebSocketMessages(
     message: any, 
@@ -67,6 +68,14 @@ export function handleGameWebSocketMessages(
         }
         case "HIGHLIGHTED_CELL_UPDATE": {
             setGameHighlightedCells(prev => updateGameHighlightedCells(message.payload.userId, prev, { row: message.payload.row, col: message.payload.col }))
+            break;
+        }
+        case "GAME_PLAYER_FORFEIT": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "GAME_PLAYER_FORFEIT",
+                gamePlayer: message.payload
+            })
+            toast.info(`${message.payload.user.username} has forfeited the game`);
             break;
         }
     }

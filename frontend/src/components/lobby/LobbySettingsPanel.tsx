@@ -88,7 +88,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                     ⏱️ Game Duration
                     <span id="duration-value"> {wordToProperCase(lobby.lobbySettings.timeLimit)}</span>
                 </div>
-                {currentUser.id === lobby.host.id && 
+                {currentUser.id === lobby.host.id && lobby.lobbySettings.gameMode !== "TIMEATTACK" &&
                 <div>
                     <RadioGroup 
                         defaultValue={wordToProperCase(lobby.lobbySettings.timeLimit)} 
@@ -111,10 +111,12 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                             <RadioGroupItem value="Marathon" id="r-marathon" />
                             <Label htmlFor="r-marathon">60 min</Label>
                         </div>
-                        <div>
-                            <RadioGroupItem value="Unlimited" id="r-unlimited" />
-                            <Label htmlFor="r-unlimited">Unlimited</Label>
-                        </div>
+                        {lobby.lobbySettings.gameType === "CASUAL" && (
+                            <div>
+                                <RadioGroupItem value="Unlimited" id="r-unlimited" />
+                                <Label htmlFor="r-unlimited">Unlimited</Label>
+                            </div>
+                        )}
                     </RadioGroup>
                 </div>
                 }

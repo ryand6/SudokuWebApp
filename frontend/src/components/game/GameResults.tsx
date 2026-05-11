@@ -3,6 +3,7 @@ import { gamePlayerStateCacheDispatcher } from "@/state/game/player/gamePlayerSt
 import type { GamePlayers, LeaderboardResult } from "@/types/game/GameTypes"
 import type { QueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { SpinnerButton } from "../ui/custom/SpinnerButton";
 
 export function GameResults({
     userId,
@@ -39,6 +40,9 @@ export function GameResults({
 
     return (
         <>
+            {leaderboardResult === undefined && (
+                <SpinnerButton text="Loading leaderboard score..." />
+            )}
             {error && (
                 <div>
                     Error: {error}

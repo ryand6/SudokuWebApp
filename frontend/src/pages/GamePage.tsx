@@ -99,6 +99,7 @@ export function GamePage() {
                         gameMode={publicGameState.gameSettings.gameMode}
                         currentStreak={privateGameState.currentStreak} 
                         userSettings={currentUser.userSettings}
+                        leaveGameHandler={leaveGameHandler}
                         queryClient={queryClient}
                     />
                     <SudokuBoard 

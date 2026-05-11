@@ -5,6 +5,7 @@ import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLab
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { GameMode } from "@/types/enum/GameMode";
+import type { GameType } from "@/types/enum/GameType";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -13,6 +14,7 @@ export function CreateLobbyPage() {
 
     const [lobbyName, setLobbyName] = useState("");
     const [isPublic, setIsPublic] = useState(true);
+    const [gameType, setGameType] = useState<GameType>("RANKED");
     const [gameMode, setGameMode] = useState<GameMode>("CLASSIC");
     const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +39,7 @@ export function CreateLobbyPage() {
         setError("");
         try {
             setIsLoading(true);
-            const response = await processLobbySetup(lobbyName, isPublic, gameMode);
+            const response = await processLobbySetup(lobbyName, isPublic, gameMode, gameType);
             navigate(`/lobby/${response.id}`, { replace: true });
         } catch (err: any) {
             setIsLoading(false);
@@ -103,6 +105,33 @@ export function CreateLobbyPage() {
                                                 <FieldDescription>Lobby is only accessible to those with a valid access token and is not discoverable via the dashboard</FieldDescription>
                                             </FieldContent>
                                             <RadioGroupItem value="private" id="private-radio" />
+                                        </Field>
+                                    </FieldLabel>
+                                </RadioGroup>
+                            </FieldSet>
+                        </FieldGroup>
+                        <FieldSeparator />
+                        <FieldGroup>
+                            <FieldSet>
+                                <FieldLabel>Game Type</FieldLabel>
+                                <FieldDescription>Choose whether match results are tracked in the leaderboards or not</FieldDescription>
+                                <RadioGroup defaultValue="RANKED" className="flex flex-col gap-2" onValueChange={(value) => setGameType(value.toUpperCase() as GameType)}>
+                                    <FieldLabel htmlFor="ranked-radio">
+                                        <Field orientation="horizontal" className="cursor-pointer">
+                                            <FieldContent>
+                                                <FieldTitle>Ranked</FieldTitle>
+                                                <FieldDescription>Game results are tracked in global leaderboards</FieldDescription>
+                                            </FieldContent>
+                                            <RadioGroupItem value="RANKED" id="ranked-radio" />
+                                        </Field>
+                                    </FieldLabel>
+                                    <FieldLabel htmlFor="casual-radio">
+                                        <Field orientation="horizontal" className="cursor-pointer">
+                                            <FieldContent>
+                                                <FieldTitle>Casual</FieldTitle>
+                                                <FieldDescription>Game results are not tracked</FieldDescription>
+                                            </FieldContent>
+                                            <RadioGroupItem value="CASUAL" id="casual-radio" />
                                         </Field>
                                     </FieldLabel>
                                 </RadioGroup>
