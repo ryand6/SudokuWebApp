@@ -83,6 +83,9 @@ export function GamePage() {
 
     const userHighlightedCell: CellCoordinates | undefined = gameHighlightedCells?.get(currentUser.id);
 
+    console.log("PUBLIC GAME STATE", publicGameState);
+    console.log("PRIVATE GAME STATE", privateGameState);
+
     return (
         <div className="flex flex-col h-screen w-full">
             <GameNotificationLayer 

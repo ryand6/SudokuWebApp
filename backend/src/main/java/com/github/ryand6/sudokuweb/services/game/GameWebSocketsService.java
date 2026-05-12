@@ -72,7 +72,16 @@ public class GameWebSocketsService {
 
     public void handleGamePlayerForfeit(Long gameId, GamePlayerDto gamePlayerDto) {
         Map<String, Object> messageHeader = Map.of(
-                "type", "GAME_PLAYER_FORFEIT",
+                "type", "PLAYER_FORFEIT",
+                "payload", gamePlayerDto
+        );
+        String topic = "/topic/game/" + gameId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
+    public void handlePlayerFinishedGame(Long gameId, GamePlayerDto gamePlayerDto) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "PLAYER_FINISHED",
                 "payload", gamePlayerDto
         );
         String topic = "/topic/game/" + gameId;
@@ -107,6 +116,11 @@ public class GameWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleGamePlayerForfeitEvent(GamePlayerForfeitEvent event) {
         handleGamePlayerForfeit(event.getGameId(), event.getGamePlayerDto());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handlePlayerFinishedGameEvent(PlayerFinishedGameEvent event) {
+        handlePlayerFinishedGame(event.getGameId(), event.getGamePlayerDto());
     }
 
 }

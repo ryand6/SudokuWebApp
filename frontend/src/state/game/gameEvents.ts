@@ -34,7 +34,11 @@ export type GameEvent =
         coordinates: CellCoordinates
       }
     | {
-        type: "GAME_PLAYER_FORFEIT",
+        type: "PLAYER_FORFEIT",
+        gamePlayer: GamePlayerDto
+      }
+    | {
+        type: "PLAYER_FINISHED",
         gamePlayer: GamePlayerDto
       };
 

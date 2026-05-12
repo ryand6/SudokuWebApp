@@ -70,12 +70,21 @@ export function handleGameWebSocketMessages(
             setGameHighlightedCells(prev => updateGameHighlightedCells(message.payload.userId, prev, { row: message.payload.row, col: message.payload.col }))
             break;
         }
-        case "GAME_PLAYER_FORFEIT": {
+        case "PLAYER_FORFEIT": {
             gameCacheDispatcher(queryClient, gameId, {
-                type: "GAME_PLAYER_FORFEIT",
+                type: "PLAYER_FORFEIT",
                 gamePlayer: message.payload
             })
-            toast.info(`${message.payload.user.username} has forfeited the game`);
+            if (message.payload.user.id !== userId) {
+                toast.info(`${message.payload.user.username} has forfeited the game`, { containerId: "foreground" });
+            }
+            break;
+        }
+        case "PLAYER_FINISHED": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "PLAYER_FINISHED",
+                gamePlayer: message.payload
+            })
             break;
         }
     }

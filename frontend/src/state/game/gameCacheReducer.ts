@@ -60,7 +60,16 @@ export function gameCacheReducer(
             // IMPLEMENT - gameStartsAt and gameEndsAt ?
             return existingData;
         }
-        case "GAME_PLAYER_FORFEIT": {
+        case "PLAYER_FORFEIT": {
+            return {
+                ...existingData,
+                players: {
+                    ...existingData.players,
+                    [event.gamePlayer.user.id]: normaliseGamePlayer(event.gamePlayer)
+                }
+            }
+        }
+        case "PLAYER_FINISHED": {
             return {
                 ...existingData,
                 players: {

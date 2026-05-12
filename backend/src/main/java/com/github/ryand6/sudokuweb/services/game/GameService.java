@@ -243,6 +243,13 @@ public class GameService {
             return;
         }
         gamePlayer.markGameFinished();
+
+        GamePlayerDto gamePlayerDto = gamePlayerEntityDtoMapper.mapToDto(gamePlayer);
+
+        applicationEventPublisher.publishEvent(
+                new PlayerFinishedGameEvent(gameId, gamePlayerDto)
+        );
+
         LeaderboardScoreCalculation leaderboardScoreCalculation = gamePlayer.calculateLeaderboardScore();
         Integer leaderboardScore = leaderboardScoreCalculation.getFinalScore();
         gamePlayer.setLeaderboardScore(leaderboardScore);
