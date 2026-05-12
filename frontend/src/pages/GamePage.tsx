@@ -131,7 +131,7 @@ export function GamePage() {
                 </div>
                 <Modal
                     isOpen={showGameResultsModal}
-                    className="w-[80%]! h-[80%]! z-50"
+                    className="w-[90%]! h-[90%]! left-[5%]! top-[5%]! z-50"
                 >
                     <GameResults
                         userId={currentUser.id}

@@ -26,8 +26,6 @@ import java.util.Objects;
 @Table(name = "game_players")
 public class GamePlayerEntity {
 
-    private final static int NORMALISATION_RATE = 100;
-
     @EmbeddedId
     private GamePlayerId id = new GamePlayerId();
 
@@ -148,15 +146,19 @@ public class GamePlayerEntity {
     public LeaderboardScoreCalculation calculateLeaderboardScore() {
         int baseScore = score;
         int filledCellsCount;
+//        GameMode gameMode = gameEntity.getGameSettingsEntity().getGameMode();
         // UPDATE - consider splitting TimeAttack and Domination, since TimeAttack should take into account cells completed by all players
         if (gameEntity.isBoardStateShared()) {
             filledCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId());
         } else {
             filledCellsCount = gamePlayerStateEntity.getNumberOfFilledCells();
         }
-        int cellsCompleted = filledCellsCount - gameEntity.getSudokuPuzzleEntity().getNumberOfCellsGiven();
+        int cellsGiven = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsGiven();
+        int cellsCompleted = filledCellsCount - cellsGiven;
+        int cellsToFill = 81 - cellsGiven;
         long scoreOverCellsCompleted = baseScore != 0 ? baseScore / cellsCompleted : 0;
-        long normalisedScore = scoreOverCellsCompleted * NORMALISATION_RATE;
+        int normalisationRate = Math.round(((float) cellsCompleted / cellsToFill) * 100);
+        long normalisedScore = scoreOverCellsCompleted * normalisationRate;
 
         GameSettingsEntity gameSettings = gameEntity.getGameSettingsEntity();
 
@@ -174,7 +176,7 @@ public class GamePlayerEntity {
                 baseScore,
                 cellsCompleted,
                 scoreOverCellsCompleted,
-                NORMALISATION_RATE,
+                normalisationRate,
                 normalisedScore,
                 difficultyMultiplier,
                 scoreTimesDifficultyMultiplier,
