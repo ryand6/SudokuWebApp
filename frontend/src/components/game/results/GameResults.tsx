@@ -3,19 +3,27 @@ import { gamePlayerStateCacheDispatcher } from "@/state/game/player/gamePlayerSt
 import type { GamePlayers, LeaderboardResult } from "@/types/game/GameTypes"
 import type { QueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { SpinnerButton } from "../ui/custom/SpinnerButton";
-import { Separator } from "../ui/separator";
-import { Button } from "../ui/button";
+import { SpinnerButton } from "../../ui/custom/SpinnerButton";
+import { Separator } from "../../ui/separator";
+import { Button } from "../../ui/button";
+import { StatusPill } from "./StatusPill";
+import type { Difficulty } from "@/types/enum/Difficulty";
+import type { GameMode } from "@/types/enum/GameMode";
+import { wordToProperCase } from "@/utils/string/wordToProperCase";
 
 export function GameResults({
     userId,
     gameId,
+    difficulty,
+    gameMode,
     leaderboardResult,
     players,
     queryClient
 }: {
     userId: number,
     gameId: number,
+    difficulty: Difficulty,
+    gameMode: GameMode,
     leaderboardResult: LeaderboardResult | undefined,
     players: GamePlayers,
     queryClient: QueryClient
@@ -44,10 +52,32 @@ export function GameResults({
 
     return (
         <div 
-            className="flex flex-col p-5 w-full items-start gap-4"
-        >
-            <h1>Game Results</h1>
-            <Separator orientation="horizontal"  />
+            className="flex flex-col w-full items-start gap-4 overflow-y-scroll"
+        >   
+                <div
+                    className="rounded-t-sm w-full px-5 pt-5 pb-4 text-center bg-sidebar"
+                >
+                    <p
+                        className="text-sm tracking-wider uppercase text-sidebar-primary mb-1 font-display"
+                    >
+                        Round complete
+                    </p>
+                    <h1
+                        className="text-lg tracking-wide font-semibold text-sidebar-foreground leading-tight m-0 font-display"
+                    >
+                        Game Results
+                    </h1>
+                    {/* Hardcoded — replace with real game metadata */}
+                    <p
+                        className="text-sm text-sidebar-accent mt-1.5 font-sans"
+                    >
+                        {wordToProperCase(difficulty)} · {wordToProperCase(gameMode)}
+                    </p>
+                    
+                    <StatusPill result={players[userId].gameResult} />
+
+                    {/* <StatusPill result={"PENDING"} /> */}
+                </div>           
             <div className="flex flex-row w-full gap-[15%] items-center">
                 {
                     Object.entries(players).map(([playerId, player], index) => 

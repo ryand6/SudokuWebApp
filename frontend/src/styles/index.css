@@ -57,6 +57,23 @@
   --footer:                     #3D6B4A;
   --footer-foreground:          #FAF6EE;
 
+  /* Game Results Styles */
+  --result-win:             #DDB84A;          /* Gold — winner highlight        */
+  --result-win-foreground:  #2C2416;          /* Dark brown text on gold        */
+
+  --result-draw:            rgba(200,189,168,0.15);  /* Muted warm tint         */
+  --result-draw-border:     rgba(200,189,168,0.35);  /* Muted warm border       */
+  --result-draw-foreground: #C8BDA8;          /* Warm grey text on draw tint    */
+
+  --result-loss:            rgba(168,84,50,0.15);    /* Terracotta tint         */
+  --result-loss-border:     rgba(168,84,50,0.4);     /* Terracotta border       */
+  --result-loss-foreground: #F5C4A0;          /* Light peach text on loss tint  */
+
+  --result-pending:         rgba(200,189,168,0.12);  /* Slightly lighter draw   */
+  --result-pending-border:  rgba(200,189,168,0.35);  /* Reuses draw border      */
+  --result-pending-foreground: #C8BDA8; 
+
+  /* Player Colour Styles */
   --player-colour-one-strong: rgb(156, 186, 235);
   --player-colour-one-medium: rgb(181, 203, 238);
   --player-colour-one-light: rgb(213, 226, 247);
@@ -171,6 +188,18 @@
   --color-header-foreground: var(--header-foreground);
   --color-footer: var(--footer);
   --color-footer-foreground: var(--footer-foreground);
+
+  --color-result-win: var(--result-win);
+  --color-result-win-forefround: var(--result-win-foreground);
+  --color-result-draw: var(--result-draw);
+  --color-result-draw-border: var(--result-draw-border);
+  --color-result-draw-foreground: var(--result-draw-foreground);
+  --color-result-loss: var(--result-loss);
+  --color-result-loss-border: var(--result-loss-border);
+  --color-result-loss-foreground: var(--result-loss-foreground);
+  --color-result-pending: var(--result-pending);
+  --color-result-pending-border: var(--result-pending-border);
+  --color-result-pending-foreground: var(--result-pending-foreground);
 
   --font-sans: 'Nunito', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;

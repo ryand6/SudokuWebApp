@@ -24,7 +24,7 @@ import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { useHandleClosedGame } from "@/hooks/game/useHandleClosedGame";
 import { useShowGameResults } from "@/hooks/game/useShowGameResults";
 import { Modal } from "@/components/ui/custom/Modal";
-import { GameResults } from "@/components/game/GameResults";
+import { GameResults } from "@/components/game/results/GameResults";
 
 
 export function GamePage() {
@@ -136,6 +136,8 @@ export function GamePage() {
                     <GameResults
                         userId={currentUser.id}
                         gameId={gameIdNum}
+                        difficulty={publicGameState.gameSettings.difficulty}
+                        gameMode={publicGameState.gameSettings.gameMode}
                         leaderboardResult={privateGameState.leaderboardResult}
                         players={publicGameState.players}
                         queryClient={queryClient}
