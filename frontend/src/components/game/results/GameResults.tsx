@@ -11,6 +11,7 @@ import type { Difficulty } from "@/types/enum/Difficulty";
 import type { GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { PlayerCard } from "./PlayerCard";
+import { LeaderboardScoreBreakdownRow } from "./LeaderboardScoreBreakdownRow";
 
 export function GameResults({
     userId,
@@ -91,42 +92,72 @@ export function GameResults({
                         ))
                     }
                 </div>
-                <h2>Leaderboard Score</h2>
-                <div>
-                    {leaderboardResult === undefined ? (
-                        <SpinnerButton text="Loading leaderboard score..." />
-                    ): (
-                        <div className="flex flex-col">
-                            <div className="flex flex-col">
-                                <div>
-                                    <span>{leaderboardResult.score}</span><span>Base score</span>
-                                </div>
-                                <div>
-                                    <span>÷ {leaderboardResult.cellsCompleted}</span><span>Cells completed ({leaderboardResult.scoreOverCellsCompleted})</span>
-                                </div>
-                                <div>
-                                    <span>x {leaderboardResult.normalisationRate}</span><span>Percentage of cells completed ({leaderboardResult.normalisedScore})</span>
-                                </div>
-                                <div>
-                                    <span>x {leaderboardResult.difficultyMultiplier}</span><span>Difficulty multiplier ({leaderboardResult.scoreTimesDifficultyMultiplier})</span>
-                                </div>
-                                <div>
-                                    <span>x {leaderboardResult.timerMultiplier}</span><span>Timer multiplier ({leaderboardResult.scoreTimesTimerMultiplier})</span>
-                                </div>
-                                <Separator orientation="horizontal" />
-                            </div>
-                            <div>
-                                <span>Final Score:</span><span>{leaderboardResult.finalScore}</span>
-                            </div>
+                <Separator orientation="horizontal" className="mb-4" />
+                <p
+                    className="text-sm tracking-wide uppercase text-muted-foreground mb-2 font-display"
+                >
+                    Leaderboard score
+                </p>
+
+                {leaderboardResult === undefined ? (
+                    error ? (
+                        <div className="flex justify-center mb-4">
+                            <span
+                                className="bg-destructive-light border-2 border-destructive text-secondary-foreground text-xs font-semibold 
+                                            tracking-wider px-2.5 py-1 rounded-full font-display text-center"
+                            >
+                                {error}
+                            </span>
                         </div>
-                    )}
-                    {error && (
-                        <div>
-                            <span>{error}</span>
+                    ) : (
+                        <div className="mb-4">
+                            <SpinnerButton text="Loading leaderboard score…" />
                         </div>
-                    )}
-                </div>
-                <Button variant="destructive">Return to Lobby</Button>
+                    ) 
+                ) : (
+                    <div className="rounded-lg border-2 border-muted bg-card overflow-hidden mb-4">
+                        <LeaderboardScoreBreakdownRow
+                            operator="="
+                            label="Base score"
+                            value={leaderboardResult.score.toLocaleString()}
+                        />
+                        <LeaderboardScoreBreakdownRow
+                            operator="÷"
+                            label="Cells completed"
+                            sublabel={`${leaderboardResult.cellsCompleted} cells`}
+                            value={String(leaderboardResult.cellsCompleted)}
+                            subvalue={`→ ${leaderboardResult.scoreOverCellsCompleted.toLocaleString()}`}
+                        />
+                        <LeaderboardScoreBreakdownRow
+                            operator="x"
+                            label="Completion rate"
+                            sublabel={`${leaderboardResult.normalisationRate}% of cells to fill`}
+                            value={String(leaderboardResult.normalisationRate)}
+                            subvalue={`→ ${leaderboardResult.normalisedScore.toLocaleString()}`}
+                        />
+                        <LeaderboardScoreBreakdownRow
+                            operator="x"
+                            label="Difficulty multiplier"
+                            value={`${leaderboardResult.difficultyMultiplier}×`}
+                            subvalue={`→ ${leaderboardResult.scoreTimesDifficultyMultiplier.toLocaleString()}`}
+                        />
+                        <LeaderboardScoreBreakdownRow
+                            operator="x"
+                            label="Timer multiplier"
+                            value={`${leaderboardResult.timerMultiplier}×`}
+                            subvalue={`→ ${leaderboardResult.scoreTimesTimerMultiplier.toLocaleString()}`}
+                        />
+                        <LeaderboardScoreBreakdownRow
+                            operator="★"
+                            label="Final score"
+                            value={leaderboardResult.finalScore.toLocaleString()}
+                            isFinal
+                        />
+                    </div>
+                )}
+                <Separator orientation="horizontal" className="mb-4" />
+    
+                <Button variant="destructive" className="cursor-pointer">Return to Lobby</Button>
             </div>
         </div>
     )
