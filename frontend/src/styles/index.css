@@ -58,19 +58,19 @@
   --footer-foreground:          #FAF6EE;
 
   /* Game Results Styles */
-  --result-win:             #DDB84A;          /* Gold — winner highlight        */
-  --result-win-foreground:  #2C2416;          /* Dark brown text on gold        */
+  --result-win:             #DDB84A;
+  --result-win-foreground:  #2C2416;       
 
-  --result-draw:            rgba(200,189,168,0.15);  /* Muted warm tint         */
-  --result-draw-border:     rgba(200,189,168,0.35);  /* Muted warm border       */
-  --result-draw-foreground: #C8BDA8;          /* Warm grey text on draw tint    */
+  --result-draw:            rgba(200,189,168,0.15);  
+  --result-draw-border:     rgba(200,189,168,0.35);  
+  --result-draw-foreground: #C8BDA8;         
 
-  --result-loss:            rgba(168,84,50,0.15);    /* Terracotta tint         */
-  --result-loss-border:     rgba(168,84,50,0.4);     /* Terracotta border       */
-  --result-loss-foreground: #F5C4A0;          /* Light peach text on loss tint  */
+  --result-loss:            rgba(168,84,50,0.15);   
+  --result-loss-border:     rgba(168,84,50,0.4);    
+  --result-loss-foreground: #F5C4A0;         
 
-  --result-pending:         rgba(200,189,168,0.12);  /* Slightly lighter draw   */
-  --result-pending-border:  rgba(200,189,168,0.35);  /* Reuses draw border      */
+  --result-pending:         rgba(200,189,168,0.12);  
+  --result-pending-border:  rgba(200,189,168,0.35);  
   --result-pending-foreground: #C8BDA8; 
 
   /* Player Colour Styles */
