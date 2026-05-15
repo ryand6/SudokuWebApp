@@ -1,5 +1,5 @@
 import { CELL_COUNT, GRID_SIZE } from "./gameConstants";
-import type { PrivateCellState, PublicGameState, GamePlayers, PrivateGamePlayerState, SharedGameState, SharedCellState } from "@/types/game/GameTypes";
+import type { PrivateCellState, PublicGameState, GamePlayers, PrivateGamePlayerState, SharedGameState, SharedCellState, GamePlayer } from "@/types/game/GameTypes";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
 import { mapGameState } from "./mapGameState";
@@ -36,7 +36,7 @@ export function normalisePublicGameData(
 
 export function normaliseGamePlayer(
     player: GamePlayerDto
-) {
+): GamePlayer {
     return {
         name: player.user.username,
         colour: player.playerColour,
@@ -47,7 +47,8 @@ export function normaliseGamePlayer(
         maxStreak: player.maxStreak,
         gameLoaded: player.gameLoaded,
         gameResult: player.gameResult,
-        finishedGame: player.finishedGame
+        finishedGame: player.finishedGame,
+        finishedGameTimestamp: player.finishedGameTimestamp
     }
 }
 

@@ -40,7 +40,8 @@ export type GamePlayer = {
     maxStreak: number,
     gameLoaded: boolean,
     gameResult: GameResult,
-    finishedGame: boolean
+    finishedGame: boolean,
+    finishedGameTimestamp: string | null
 };
 
 // Key represents playerId

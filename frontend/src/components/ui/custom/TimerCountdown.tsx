@@ -1,5 +1,5 @@
 import { useTimeRemaining } from "@/hooks/global/useTimeRemaining";
-import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
+import { convertMillisecondsToMinuteClockWithMs } from "@/utils/time/convertMillisecondsToMinuteClock";
 import { IconClock } from "@tabler/icons-react";
 
 export function TimerCountdown({endTime}: {endTime: number}) {
@@ -14,7 +14,7 @@ export function TimerCountdown({endTime}: {endTime: number}) {
             <div>Game starts in:</div>
             <div className="flex flex-row">
                 <IconClock />
-                <span className="pl-1">{ convertMillisecondsToMinuteClock(timeRemaining) }</span>
+                <span className="pl-1">{ convertMillisecondsToMinuteClockWithMs(timeRemaining) }</span>
             </div>
         </div>
     );

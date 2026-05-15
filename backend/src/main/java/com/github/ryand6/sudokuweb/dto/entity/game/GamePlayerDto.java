@@ -6,6 +6,8 @@ import com.github.ryand6.sudokuweb.enums.GameResult;
 import com.github.ryand6.sudokuweb.enums.PlayerColour;
 import lombok.*;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,5 +34,7 @@ public class GamePlayerDto {
     private GameResult gameResult;
 
     private boolean finishedGame;
+
+    private Instant finishedGameTimestamp;
 
 }

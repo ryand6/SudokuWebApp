@@ -13,5 +13,6 @@ export type GamePlayerDto = {
     maxStreak: number,
     gameLoaded: boolean,
     gameResult: GameResult,
-    finishedGame: boolean
+    finishedGame: boolean,
+    finishedGameTimestamp: string | null,
 }

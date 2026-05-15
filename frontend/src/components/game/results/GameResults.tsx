@@ -12,6 +12,9 @@ import type { GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { PlayerCard } from "./PlayerCard";
 import { LeaderboardScoreBreakdownRow } from "./LeaderboardScoreBreakdownRow";
+import { StatCard } from "./StatCard";
+import { computeSecondsDifferenceBetweenTimestamps } from "@/utils/time/timeDifference";
+import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
 
 export function GameResults({
     userId,
@@ -20,6 +23,7 @@ export function GameResults({
     gameMode,
     leaderboardResult,
     players,
+    gameStartsAt,
     queryClient
 }: {
     userId: number,
@@ -28,6 +32,7 @@ export function GameResults({
     gameMode: GameMode,
     leaderboardResult: LeaderboardResult | undefined,
     players: GamePlayers,
+    gameStartsAt: string | null,
     queryClient: QueryClient
 }) {
     const [error, setError] = useState<string | null>(null);
@@ -51,6 +56,8 @@ export function GameResults({
 
         fetchLeaderboard();
     }, [gameId, userId, leaderboardResult]);
+
+    const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeSecondsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
 
     return (
         <div 
@@ -156,7 +163,17 @@ export function GameResults({
                     </div>
                 )}
                 <Separator orientation="horizontal" className="mb-4" />
-    
+                <p
+                    className="text-sm tracking-wide uppercase text-muted-foreground mb-2 font-display"
+                >
+                    Game stats
+                </p>
+                <div className="grid grid-cols-2 grid-rows-2 gap-1.5 mb-4">
+                    <StatCard value={timeTaken} label="Time taken" />
+                    <StatCard value={players[userId].mistakes.toString()} label="Mistakes" />
+                    <StatCard value={players[userId].firsts.toString()} label="Firsts" />
+                    <StatCard value="#14" label="Leaderboard rank" />
+                </div>
                 <Button variant="destructive" className="cursor-pointer">Return to Lobby</Button>
             </div>
         </div>

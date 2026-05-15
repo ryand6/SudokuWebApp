@@ -140,6 +140,7 @@ export function GamePage() {
                         gameMode={publicGameState.gameSettings.gameMode}
                         leaderboardResult={privateGameState.leaderboardResult}
                         players={publicGameState.players}
+                        gameStartsAt={publicGameState.gameStartsAt}
                         queryClient={queryClient}
                     />
                 </Modal>

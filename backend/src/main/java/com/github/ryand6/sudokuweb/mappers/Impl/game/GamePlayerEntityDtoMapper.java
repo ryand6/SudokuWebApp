@@ -32,6 +32,7 @@ public class GamePlayerEntityDtoMapper implements EntityDtoMapper<GamePlayerEnti
                 .gameLoaded(gamePlayer.isGameLoaded())
                 .gameResult(gamePlayer.getGameResult())
                 .finishedGame(gamePlayer.isFinishedGame())
+                .finishedGameTimestamp(gamePlayer.getFinishedGameTimestamp())
                 .build();
     }
 

@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "../ui/button";
 import { isCurrentUserInLobby } from "@/utils/lobby/isCurrentUserInLobby";
 import type { UserDto } from "@/types/dto/entity/user/UserDto";
-import { computeTimeDifferenceMinutes } from "@/utils/time/computeTimeDifferenceMinutes";
+import { computeTimeDifferenceMinutes } from "@/utils/time/timeDifference";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 
 export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: LobbyDto, currentUser: UserDto, handleClick: (id: number) => void }) {
