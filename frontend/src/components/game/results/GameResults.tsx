@@ -15,6 +15,8 @@ import { LeaderboardScoreBreakdownRow } from "./LeaderboardScoreBreakdownRow";
 import { StatCard } from "./StatCard";
 import { computeSecondsDifferenceBetweenTimestamps } from "@/utils/time/timeDifference";
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
+import type { UserRankDto } from "@/types/dto/response/UserRankDto";
+import { getUserRank } from "@/api/rest/users/query/getUserRank";
 
 export function GameResults({
     userId,
@@ -36,6 +38,7 @@ export function GameResults({
     queryClient: QueryClient
 }) {
     const [error, setError] = useState<string | null>(null);
+    const [userRankText, setUserRankText] = useState<string>("-");
 
     document.getElementById("root")?.classList.add("blur-sm");
 
@@ -58,6 +61,13 @@ export function GameResults({
     }, [gameId, userId, leaderboardResult]);
 
     const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeSecondsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
+
+    const resolveUserRank = async () => {
+        const userRank = await getUserRank();
+        setUserRankText("#" + userRank.userRank.toString());
+    }
+
+    resolveUserRank();
 
     return (
         <div 
@@ -172,7 +182,7 @@ export function GameResults({
                     <StatCard value={timeTaken} label="Time taken" />
                     <StatCard value={players[userId].mistakes.toString()} label="Mistakes" />
                     <StatCard value={players[userId].firsts.toString()} label="Firsts" />
-                    <StatCard value="#14" label="Leaderboard rank" />
+                    <StatCard value={userRankText} label="Leaderboard rank" />
                 </div>
                 <Button variant="destructive" className="cursor-pointer">Return to Lobby</Button>
             </div>
