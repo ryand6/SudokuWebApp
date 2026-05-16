@@ -99,6 +99,17 @@ public class GamePlayerStateEntity {
         return completedCells.length();
     }
 
+    public int getNumberOfCellsGiven() {
+        int cellsToSolve = gamePlayerEntity.getGameEntity().getSudokuPuzzleEntity().getNumberOfCellsToFill();
+        return 81 - cellsToSolve;
+    }
+
+    public int getNumberOfCompletedCells() {
+        int cellsGiven = getNumberOfCellsGiven();
+        int cellsFilled = getNumberOfFilledCells();
+        return cellsFilled - cellsGiven;
+    }
+
     public boolean isBoardStateComplete() {
         return currentBoardState.indexOf('.') == -1;
     }

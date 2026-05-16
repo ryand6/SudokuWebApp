@@ -130,10 +130,25 @@ public class SharedGameStateEntity {
         return (int) cellFirstOwnership.entrySet().stream().filter((k) -> k.getValue().equals(userId)).count();
     }
 
+    public int getNumberOfFilledCells() {
+        return currentSharedBoardState.replace(".", "").length();
+    }
+
+    public int getNumberOfCellsGiven() {
+        int cellsToSolve = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsToFill();
+        return 81 - cellsToSolve;
+    }
+
+    public int getNumberOfCompletedCells() {
+        int cellsGiven = getNumberOfCellsGiven();
+        int cellsFilled = getNumberOfFilledCells();
+        return cellsFilled - cellsGiven;
+    }
+
     public int getPercentageOfCellsLeft() {
         int cellsToSolve = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsToFill();
-        int cellsGiven = 81 - cellsToSolve;
-        int cellsFilled = currentSharedBoardState.replace(".", "").length();
+        int cellsGiven = getNumberOfCellsGiven();
+        int cellsFilled = getNumberOfFilledCells();
         int cellsSolved = cellsFilled - cellsGiven;
         double percentageToSolve = ((double) (cellsToSolve - cellsSolved) / cellsToSolve) * 100;
         return (int) Math.round(percentageToSolve);

@@ -4,7 +4,6 @@ import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.settings.GameSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.exceptions.game.IllegalGameStatusChangeException;

@@ -145,19 +145,20 @@ public class GamePlayerEntity {
 
     public LeaderboardScoreCalculation calculateLeaderboardScore() {
         int baseScore = score;
-        int filledCellsCount;
-//        GameMode gameMode = gameEntity.getGameSettingsEntity().getGameMode();
+        int completedCellsCount;
+        GameMode gameMode = gameEntity.getGameSettingsEntity().getGameMode();
         // UPDATE - consider splitting TimeAttack and Domination, since TimeAttack should take into account cells completed by all players
-        if (gameEntity.isBoardStateShared()) {
-            filledCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId());
+        if (gameMode == GameMode.DOMINATION) {
+            completedCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId())
+        } else if (gameMode == GameMode.TIMEATTACK) {
+            completedCellsCount = gameEntity.getSharedGameStateEntity().getNumberOfCompletedCells();
         } else {
-            filledCellsCount = gamePlayerStateEntity.getNumberOfFilledCells();
+            completedCellsCount = gamePlayerStateEntity.getNumberOfCompletedCells();
         }
         int cellsGiven = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsGiven();
-        int cellsCompleted = filledCellsCount - cellsGiven;
         int cellsToFill = 81 - cellsGiven;
-        long scoreOverCellsCompleted = baseScore != 0 ? baseScore / cellsCompleted : 0;
-        int normalisationRate = Math.round(((float) cellsCompleted / cellsToFill) * 100);
+        long scoreOverCellsCompleted = baseScore != 0 ? baseScore / completedCellsCount : 0;
+        int normalisationRate = Math.round(((float) completedCellsCount / cellsToFill) * 100);
         long normalisedScore = scoreOverCellsCompleted * normalisationRate;
 
         GameSettingsEntity gameSettings = gameEntity.getGameSettingsEntity();
@@ -165,7 +166,7 @@ public class GamePlayerEntity {
         Double difficultyMultiplier = gameSettings.getDifficultyMultiplier();
         Double scoreTimesDifficultyMultiplier = normalisedScore * difficultyMultiplier;
         Double timerMultiplier;
-        if (gameSettings.getGameMode() == GameMode.TIMEATTACK) {
+        if (gameMode == GameMode.TIMEATTACK) {
             timerMultiplier = calculateTimeAttackMultiplier();
         } else {
             timerMultiplier = gameSettings.getTimerMultiplier();
@@ -174,7 +175,7 @@ public class GamePlayerEntity {
         int finalScore = scoreTimesTimerMultiplier.intValue();
         return new LeaderboardScoreCalculation(
                 baseScore,
-                cellsCompleted,
+                completedCellsCount,
                 scoreOverCellsCompleted,
                 normalisationRate,
                 normalisedScore,
