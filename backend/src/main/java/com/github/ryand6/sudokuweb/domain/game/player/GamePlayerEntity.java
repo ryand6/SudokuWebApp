@@ -149,7 +149,7 @@ public class GamePlayerEntity {
         GameMode gameMode = gameEntity.getGameSettingsEntity().getGameMode();
         // UPDATE - consider splitting TimeAttack and Domination, since TimeAttack should take into account cells completed by all players
         if (gameMode == GameMode.DOMINATION) {
-            completedCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId())
+            completedCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId());
         } else if (gameMode == GameMode.TIMEATTACK) {
             completedCellsCount = gameEntity.getSharedGameStateEntity().getNumberOfCompletedCells();
         } else {

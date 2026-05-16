@@ -61,6 +61,10 @@ public class GameEntity {
     @Column(name = "game_ends_at")
     private Instant gameEndsAt = null;
 
+    // Flag to signal game ended prematurely due to other players forfeiting - allow option for remaining player to continue
+    @Column(name = "ended_prematurely")
+    private boolean endedPrematurely = false;
+
     @Version
     private Long version;
 
@@ -194,6 +198,11 @@ public class GameEntity {
         gameEndsAt = gameEndsAt.minusSeconds(seconds).isAfter(Instant.now())
                 ? gameEndsAt.minusSeconds(seconds)
                 : Instant.now();
+    }
+
+    public boolean validateGameEndedPrematurely() {
+        List<GamePlayerEntity> remainingPlayers = gamePlayerEntities.stream().filter((gp) -> gp.getGameResult() != GameResult.FORFEIT).toList();
+        return remainingPlayers.size() == 1 && gameEndsAt.compareTo(Instant.now()) > 0;
     }
 
 }

@@ -51,6 +51,7 @@ public class GameEntityDtoMapper implements EntityDtoMapper<GameEntity, GameDto>
                 .gameStatus(game.getGameStatus())
                 .gameStartsAt(game.getGameStartsAt())
                 .gameEndsAt(game.getGameEndsAt())
+                .endedPrematurely(game.isEndedPrematurely())
                 .build();
     }
 
