@@ -12,5 +12,6 @@ export type GameDto = {
     gameSettings: GameSettingsDto,
     gameStatus: GameStatus,
     gameStartsAt: string | null,
-    gameEndsAt: string | null
+    gameEndsAt: string | null,
+    endedPrematurely: boolean
 }

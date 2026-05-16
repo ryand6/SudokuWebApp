@@ -87,6 +87,14 @@ public class GameWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleGameEndedPrematurely(Long gameId) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_ENDED_PREMATURELY"
+        );
+        String topic = "/topic/game/" + gameId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handlePlayerHighlightedCellUpdateEvent(PlayerHighlightedCellUpdateEvent event) {
         handlePlayerHighlightedCellUpdate(event.getPlayerHighlightedCellDto());
@@ -120,6 +128,11 @@ public class GameWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handlePlayerFinishedGameEvent(PlayerFinishedGameEvent event) {
         handlePlayerFinishedGame(event.getGameId(), event.getGamePlayerDto());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleGameEndedPrematurelyEvent(GameEndedPrematurelyEvent event) {
+        handleGameEndedPrematurely(event.getGameId());
     }
 
 }

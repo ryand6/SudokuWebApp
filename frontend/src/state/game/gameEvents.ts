@@ -40,6 +40,9 @@ export type GameEvent =
     | {
         type: "PLAYER_FINISHED",
         gamePlayer: GamePlayerDto
+      }
+    | {
+        type: "GAME_ENDED_PREMATURELY"
       };
 
 export type GameEventLog = 

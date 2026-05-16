@@ -17,6 +17,7 @@ import { computeSecondsDifferenceBetweenTimestamps } from "@/utils/time/timeDiff
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
 import type { UserRankDto } from "@/types/dto/response/UserRankDto";
 import { getUserRank } from "@/api/rest/users/query/getUserRank";
+import { PrematureEndBanner } from "./PrematureEndBanner";
 
 export function GameResults({
     userId,
@@ -26,6 +27,7 @@ export function GameResults({
     leaderboardResult,
     players,
     gameStartsAt,
+    endedPrematurely,
     queryClient
 }: {
     userId: number,
@@ -35,6 +37,7 @@ export function GameResults({
     leaderboardResult: LeaderboardResult | undefined,
     players: GamePlayers,
     gameStartsAt: string | null,
+    endedPrematurely: boolean,
     queryClient: QueryClient
 }) {
     const [error, setError] = useState<string | null>(null);
@@ -67,11 +70,16 @@ export function GameResults({
         setUserRankText("#" + userRank.userRank.toString());
     }
 
+    // Implement
+    const onContinue = () => {
+
+    }
+
     resolveUserRank();
 
     return (
         <div 
-            className="flex flex-col w-full items-start gap-4 overflow-y-scroll"
+            className="flex flex-col w-full items-start overflow-y-scroll"
         >   
             <div
                 className="rounded-t-sm w-full px-5 pt-5 pb-4 text-center bg-sidebar"
@@ -96,6 +104,9 @@ export function GameResults({
 
                 {/* <StatusPill result={"PENDING"} /> */}
             </div>
+            {
+                endedPrematurely && <PrematureEndBanner onContinue={onContinue} />
+            }
             <div className="flex flex-col gap-0 px-4 py-4 w-full">
                 <p
                     className="text-sm tracking-wide uppercase text-muted-foreground mb-2 font-display"

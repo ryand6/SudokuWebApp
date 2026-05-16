@@ -136,7 +136,7 @@ public class GameEntity {
     }
 
     public Set<GamePlayerEntity> getRemainingActivePlayers() {
-        return gamePlayerEntities.stream().filter((gp) -> gp.getGameResult() == GameResult.PENDING).collect(Collectors.toSet());
+        return gamePlayerEntities.stream().filter((gp) -> gp.getGameResult() != GameResult.FORFEIT).collect(Collectors.toSet());
     }
 
     public boolean isAborted(GamePlayerEntity leaveRequester) {
@@ -144,16 +144,12 @@ public class GameEntity {
         return remainingPlayers.size() == 1 && gamePlayerEntities.contains(leaveRequester);
     }
 
-    // Finish game early if all other players leave and game mode is competitive - remaining player can choose to finish board in casual mode
-    // Returns last player remaining
-    public Optional<GamePlayerEntity>  findLastRemainingOpponent(GamePlayerEntity leaveRequester) {
-        Set<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers();
-        if (gameSettingsEntity.getGameMode() != GameMode.TIMEATTACK && remainingPlayers.size() == 2 && remainingPlayers.contains(leaveRequester)) {
-            return remainingPlayers.stream()
-                    .filter(gp -> !gp.equals(leaveRequester))
-                    .findFirst();
+    public GamePlayerEntity findLastRemainingPlayer() {
+        List<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers().stream().toList();
+        if (remainingPlayers.size() == 1) {
+            return remainingPlayers.get(0);
         }
-        return Optional.empty();
+        return null;
     }
 
     public void abortGame() {
@@ -201,8 +197,8 @@ public class GameEntity {
     }
 
     public boolean validateGameEndedPrematurely() {
-        List<GamePlayerEntity> remainingPlayers = gamePlayerEntities.stream().filter((gp) -> gp.getGameResult() != GameResult.FORFEIT).toList();
-        return remainingPlayers.size() == 1 && gameEndsAt.compareTo(Instant.now()) > 0;
+        Set<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers();
+        return remainingPlayers.size() == 1 && gameSettingsEntity.getGameMode() != GameMode.TIMEATTACK && gameEndsAt.compareTo(Instant.now()) > 0;
     }
 
 }

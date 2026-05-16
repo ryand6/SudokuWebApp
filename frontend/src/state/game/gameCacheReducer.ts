@@ -78,6 +78,12 @@ export function gameCacheReducer(
                 }
             }
         }
+        case "GAME_ENDED_PREMATURELY": {
+            return {
+                ...existingData,
+                endedPrematurely: true
+            }
+        }
         default: 
             return existingData;
     }

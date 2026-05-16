@@ -183,11 +183,6 @@ public class GameService {
             abortGame(game);
         }
 
-        game.findLastRemainingOpponent(gamePlayer)
-                .ifPresent((player) -> {
-                    handlePlayerFinish(gameId, player);
-                });
-
         gamePlayer.setGameResult(GameResult.FORFEIT);
 
         gameRepository.save(game);
@@ -207,6 +202,17 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new GamePlayerForfeitEvent(gameId, gamePlayerDto)
         );
+
+        if (game.validateGameEndedPrematurely()) {
+            GamePlayerEntity lastRemainingPlayer = game.findLastRemainingPlayer();
+            if (lastRemainingPlayer != null) {
+                handlePlayerFinish(gameId, lastRemainingPlayer);
+
+                applicationEventPublisher.publishEvent(
+                        new GameEndedPrematurelyEvent(gameId)
+                );
+            }
+        }
 
         // UPDATE STATS - LOSS INCURRED
         // Call submitGameResult

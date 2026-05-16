@@ -56,7 +56,7 @@ export function GamePage() {
 
     const playerFinishedGame = currentUser ? publicGameState?.players[currentUser.id].finishedGame : undefined;
 
-    useShowGameResults(playerFinishedGame, setShowGameResultsModal);
+    useShowGameResults(playerFinishedGame, publicGameState?.endedPrematurely, setShowGameResultsModal);
 
     const boardState = useMemo(() => {
         return resolveBoardState(publicGameState?.gameSettings.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);
@@ -141,6 +141,7 @@ export function GamePage() {
                         leaderboardResult={privateGameState.leaderboardResult}
                         players={publicGameState.players}
                         gameStartsAt={publicGameState.gameStartsAt}
+                        endedPrematurely={publicGameState.endedPrematurely}
                         queryClient={queryClient}
                     />
                 </Modal>

@@ -87,5 +87,11 @@ export function handleGameWebSocketMessages(
             })
             break;
         }
+        case "GAME_ENDED_PREMATURELY": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "GAME_ENDED_PREMATURELY"
+            })
+            break;
+        }
     }
 }
