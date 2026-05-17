@@ -5,12 +5,16 @@ import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationRes
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
+import com.github.ryand6.sudokuweb.events.types.game.GameStatusUpdateEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyPlayerStatusUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Service
 public class LobbyPlayerService {
@@ -63,6 +67,42 @@ public class LobbyPlayerService {
         }
 
         return lobbyDto;
+    }
+
+    @Transactional
+    public void revertAllLobbyPlayerInGameStatuses(Long lobbyId) {
+        LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
+        lobby.getLobbyPlayers().forEach(lp -> {
+            if (lp.getLobbyStatus() == LobbyStatus.INGAME) {
+                lp.setLobbyStatus(LobbyStatus.WAITING);
+
+                String message = "updated their status to " + lp.getLobbyStatus().toString().toLowerCase() + ".";
+                lobbyChatService.createInfoMessage(lobbyId, lp.getUser().getId(), message, false);
+            }
+        });
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+        applicationEventPublisher.publishEvent(
+                new LobbyPlayerStatusUpdatedWsEvent(lobbyDto)
+        );
+
+    }
+
+    @Transactional
+    public void revertLobbyPlayerInGameStatus(Long lobbyId, Long userId) {
+        LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
+        LobbyPlayerEntity lobbyPlayer = lobbyService.findLobbyPlayer(lobby, userId);
+        lobbyPlayer.setStatus(LobbyStatus.INGAME);
+
+        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+        String message = "updated their status to " + lobbyPlayer.getLobbyStatus().toString().toLowerCase() + ".";
+        lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleEndLobbyPlayerInGameStatusEvent(EndLobbyPlayerInGameStatusEvent event) {
+        revertAllLobbyPlayerInGameStatuses(event.getLobbyId());
     }
 
 

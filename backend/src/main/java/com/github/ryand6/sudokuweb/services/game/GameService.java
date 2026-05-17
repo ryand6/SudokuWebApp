@@ -20,6 +20,7 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.events.types.game.*;
+import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePostGameCreationWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
@@ -167,6 +168,7 @@ public class GameService {
             PlayerColour playerColour = colourList.get(i);
             GamePlayerEntity gamePlayer = GamePlayerFactory.createGamePlayer(newGame, lobbyPlayerEntity.getUser(), playerColour, newGame.isBoardStateShared(), newGame.getSudokuPuzzleEntity().getInitialBoardState());
             gamePlayers.add(gamePlayer);
+            lobbyPlayerEntity.setLobbyStatus(LobbyStatus.INGAME);
             i++;
         }
 
@@ -340,6 +342,10 @@ public class GameService {
 
         applicationEventPublisher.publishEvent(
                 new GameStatusUpdateEvent(gameId, GameStatus.CLOSED)
+        );
+
+        applicationEventPublisher.publishEvent(
+                new EndLobbyPlayerInGameStatusEvent(game.getLobbyEntity().getId())
         );
     }
 
