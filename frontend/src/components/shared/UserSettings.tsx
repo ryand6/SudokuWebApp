@@ -1,7 +1,6 @@
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { Separator } from "../ui/separator";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { sendUserSettingsUpdate } from "@/api/ws/user/sendUserSettingsUpdate";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";

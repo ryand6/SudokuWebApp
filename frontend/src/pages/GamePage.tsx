@@ -136,6 +136,7 @@ export function GamePage() {
                     <GameResults
                         userId={currentUser.id}
                         gameId={gameIdNum}
+                        lobbyId={publicGameState.lobbyId}
                         difficulty={publicGameState.gameSettings.difficulty}
                         gameMode={publicGameState.gameSettings.gameMode}
                         leaderboardResult={privateGameState.leaderboardResult}
@@ -143,6 +144,7 @@ export function GamePage() {
                         gameStartsAt={publicGameState.gameStartsAt}
                         endedPrematurely={publicGameState.endedPrematurely}
                         queryClient={queryClient}
+                        navigate={navigate}
                     />
                 </Modal>
 

@@ -1,9 +1,6 @@
 package com.github.ryand6.sudokuweb.dto.entity.game;
 
-import com.github.ryand6.sudokuweb.enums.Difficulty;
-import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameStatus;
-import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
 import lombok.*;
 
 import java.time.Instant;

@@ -15,35 +15,45 @@ import { LeaderboardScoreBreakdownRow } from "./LeaderboardScoreBreakdownRow";
 import { StatCard } from "./StatCard";
 import { computeSecondsDifferenceBetweenTimestamps } from "@/utils/time/timeDifference";
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
-import type { UserRankDto } from "@/types/dto/response/UserRankDto";
 import { getUserRank } from "@/api/rest/users/query/getUserRank";
 import { PrematureEndBanner } from "./PrematureEndBanner";
+import { ReturnToLobbyAlertDialog } from "@/components/ui/custom/ReturnToLobbyAlertDialog";
+import { revertInGameStatus } from "@/api/ws/game/playerstate/revertInGameStatus";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
+import type { NavigateFunction } from "react-router-dom";
 
 export function GameResults({
     userId,
     gameId,
+    lobbyId,
     difficulty,
     gameMode,
     leaderboardResult,
     players,
     gameStartsAt,
     endedPrematurely,
-    queryClient
+    queryClient,
+    navigate
 }: {
     userId: number,
     gameId: number,
+    lobbyId: number,
     difficulty: Difficulty,
     gameMode: GameMode,
     leaderboardResult: LeaderboardResult | undefined,
     players: GamePlayers,
     gameStartsAt: string | null,
     endedPrematurely: boolean,
-    queryClient: QueryClient
+    queryClient: QueryClient,
+    navigate: NavigateFunction
 }) {
     const [error, setError] = useState<string | null>(null);
     const [userRankText, setUserRankText] = useState<string>("-");
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
 
     document.getElementById("root")?.classList.add("blur-sm");
+
+    const { send } = useWebSocketContext();
 
     useEffect(() => {
         if (leaderboardResult !== undefined) return;
@@ -68,6 +78,11 @@ export function GameResults({
     const resolveUserRank = async () => {
         const userRank = await getUserRank();
         setUserRankText("#" + userRank.userRank.toString());
+    }
+
+    const returnToLobbyHandler = () => {
+        revertInGameStatus(send, gameId, userId, lobbyId);
+        navigate(`/lobby/${lobbyId}`);
     }
 
     // Implement
@@ -101,8 +116,6 @@ export function GameResults({
                 </p>
                 
                 <StatusPill result={players[userId].gameResult} />
-
-                {/* <StatusPill result={"PENDING"} /> */}
             </div>
             {
                 endedPrematurely && <PrematureEndBanner onContinue={onContinue} />
@@ -195,7 +208,8 @@ export function GameResults({
                     <StatCard value={players[userId].firsts.toString()} label="Firsts" />
                     <StatCard value={userRankText} label="Leaderboard rank" />
                 </div>
-                <Button variant="destructive" className="cursor-pointer">Return to Lobby</Button>
+                <ReturnToLobbyAlertDialog open={isAlertOpen} handleContinueClick={() => returnToLobbyHandler()} setOpen={setIsAlertOpen} />
+                <Button variant="destructive" className="cursor-pointer" onClick={() => setIsAlertOpen(true)}>Return to Lobby</Button>
             </div>
         </div>
     )

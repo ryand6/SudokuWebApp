@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "../../ui/separator";
+import { useState } from "react";
+import { CasualModeContinueAlertDialog } from "@/components/ui/custom/CasualModeContinueAlertDialog";
 
 export function PrematureEndBanner({ 
     onContinue 
 }: { 
     onContinue: () => void 
 }) {
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+
     return (
         <div className="flex flex-col border-b-2 border-border w-full bg-accent px-4 pt-3.5 pb-4 gap-2.5">
             <div className="flex gap-2.5 items-start">
@@ -28,10 +32,11 @@ export function PrematureEndBanner({
                 <span className="text-sm text-accent-foreground/70 font-sans flex-1">
                     Want to keep going and finish the board at your own pace?
                 </span>
+                <CasualModeContinueAlertDialog open={isAlertOpen} handleContinueClick={() => onContinue()} setOpen={setIsAlertOpen} />
                 <Button
                     variant="secondary"
                     className="text-sm font-display cursor-pointer"
-                    onClick={onContinue}
+                    onClick={() => setIsAlertOpen(true)}
                 >
                     Continue →
                 </Button>
