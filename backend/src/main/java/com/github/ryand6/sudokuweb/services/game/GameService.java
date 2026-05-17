@@ -216,8 +216,7 @@ public class GameService {
             }
         }
 
-        // UPDATE STATS - LOSS INCURRED
-        // Call submitGameResult
+        // IMPLEMENT - handle leaderboard entity game result update - loss
 
         if (game.getGameStatus() == GameStatus.ABORTED) {
             return null;
@@ -232,6 +231,9 @@ public class GameService {
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
                 new GameClosedEvent(game.getId(), game.getLobbyEntity().getId())
+        );
+        applicationEventPublisher.publishEvent(
+                new GameStatusUpdateEvent(game.getId(), GameStatus.ABORTED)
         );
     }
 
@@ -267,20 +269,24 @@ public class GameService {
                 new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
         );
 
+        // IMPLEMENT - handle leaderboard entity score update
+
         if (gamePlayer.getGameEntity().isGameFinished()) {
-            finishGame(gameId);
+            finishGame(gamePlayer.getGameEntity());
         }
     }
 
     // Mark game as finished and send event to determine game result of each player
     @Transactional
-    public GameDto finishGame(Long gameId) {
-        GameEntity game = getGameById(gameId);
+    void finishGame(GameEntity game) {
         game.finishGame();
-        handleGameResults(gameId);
-
+        handleGameResults(game.getId());
         gameRepository.save(game);
-        return gameEntityDtoMapper.mapToDto(game);
+
+        applicationEventPublisher.publishEvent(
+                new GameStatusUpdateEvent(game.getId(), GameStatus.FINISHED)
+        );
+
     }
 
     @Transactional
@@ -309,28 +315,25 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new GameResultsDeterminedEvent(gameId, gameResults)
         );
+
+        // IMPLEMENT - handle leaderboard entity game result updates
     }
 
 
     // Once game is closed, it cannot be navigated back to
     @Transactional
-    public GameDto closeGame(Long gameId) {
+    public void closeGame(Long gameId) {
         GameEntity game = getGameById(gameId);
         game.closeGame();
-
-        // Handle determining and persisting player results (win, lose, draw)
-
-        // IMPLEMENT LOGIC
 
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
                 new GameClosedEvent(gameId, game.getLobbyEntity().getId())
         );
 
-        // ADD WS EVENTS
-
-        // CHANGE
-        return new GameDto();
+        applicationEventPublisher.publishEvent(
+                new GameStatusUpdateEvent(gameId, GameStatus.CLOSED)
+        );
     }
 
     @Transactional
@@ -338,9 +341,4 @@ public class GameService {
         // IMPLEMENT - persists score in leaderboard entity
     }
 
-    // Update leaderboard with player's game result e.g. win/loss
-    @Transactional
-    void submitGameResults(GameResult gameResult, Integer leaderboardScore) {
-
-    }
 }

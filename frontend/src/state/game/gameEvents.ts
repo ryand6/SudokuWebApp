@@ -2,6 +2,7 @@ import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessage
 import type { GameEventDto } from "@/types/dto/entity/game/GameEventDto";
 import type { GamePlayerDto } from "@/types/dto/entity/game/GamePlayerDto";
 import type { GameResult } from "@/types/enum/GameResult";
+import type { GameStatus } from "@/types/enum/GameStatus";
 import type { CellCoordinates, LeaderboardResult } from "@/types/game/GameTypes"
 
 export type GameEvent = 
@@ -22,9 +23,6 @@ export type GameEvent =
         score: number,
         mistakes: number,
         gameEndsAt: string
-      }
-    | {
-        type: "GAME_STATUS_UPDATE"
       }
     | {
         type: "GAME_TIMER_UPDATE"
@@ -48,6 +46,10 @@ export type GameEvent =
     | {
         type: "GAME_RESULTS_DETERMINED",
         gameResults: Record<number, GameResult>
+      }
+    | {
+        type: "GAME_STATUS_UPDATE",
+        gameStatus: GameStatus
       };
 
 export type GameEventLog = 

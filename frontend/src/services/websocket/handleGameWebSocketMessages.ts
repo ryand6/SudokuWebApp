@@ -58,10 +58,6 @@ export function handleGameWebSocketMessages(
             })
             break;
         }
-        case "GAME_STATUS_UPDATE": {
-            // IMPLEMENT
-            break;
-        }
         case "GAME_TIMER_UPDATE": {
             // IMPLEMENT - gameStartsAt and gameEndsAt ?
             break;
@@ -90,6 +86,20 @@ export function handleGameWebSocketMessages(
         case "GAME_ENDED_PREMATURELY": {
             gameCacheDispatcher(queryClient, gameId, {
                 type: "GAME_ENDED_PREMATURELY"
+            })
+            break;
+        }
+        case "GAME_RESULTS_DETERMINED": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "GAME_RESULTS_DETERMINED",
+                gameResults: message.payload
+            })
+            break;
+        }
+        case "GAME_STATUS_UPDATE": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "GAME_STATUS_UPDATE",
+                gameStatus: message.payload
             })
             break;
         }
