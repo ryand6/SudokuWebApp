@@ -36,4 +36,6 @@ public class GameDto {
 
     private boolean endedPrematurely;
 
+    private Instant gameEndedAt;
+
 }

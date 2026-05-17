@@ -1,6 +1,7 @@
 import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessageDto";
 import type { GameEventDto } from "@/types/dto/entity/game/GameEventDto";
 import type { GamePlayerDto } from "@/types/dto/entity/game/GamePlayerDto";
+import type { GameResult } from "@/types/enum/GameResult";
 import type { CellCoordinates, LeaderboardResult } from "@/types/game/GameTypes"
 
 export type GameEvent = 
@@ -43,6 +44,10 @@ export type GameEvent =
       }
     | {
         type: "GAME_ENDED_PREMATURELY"
+      }
+    | {
+        type: "GAME_RESULTS_DETERMINED",
+        gameResults: Record<number, GameResult>
       };
 
 export type GameEventLog = 

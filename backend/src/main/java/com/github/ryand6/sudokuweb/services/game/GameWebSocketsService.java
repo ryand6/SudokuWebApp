@@ -6,6 +6,7 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GameChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
 import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;
+import com.github.ryand6.sudokuweb.enums.GameResult;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -95,6 +96,15 @@ public class GameWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleGameResults(Long gameId, Map<Long, GameResult> gameResults) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_RESULTS_DETERMINED",
+                "payload", gameResults
+        );
+        String topic = "/topic/game/" + gameId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handlePlayerHighlightedCellUpdateEvent(PlayerHighlightedCellUpdateEvent event) {
         handlePlayerHighlightedCellUpdate(event.getPlayerHighlightedCellDto());
@@ -133,6 +143,11 @@ public class GameWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleGameEndedPrematurelyEvent(GameEndedPrematurelyEvent event) {
         handleGameEndedPrematurely(event.getGameId());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleGameResultsEvent(GameResultsDeterminedEvent event) {
+        handleGameResults(event.getGameId(), event.getGameResults());
     }
 
 }

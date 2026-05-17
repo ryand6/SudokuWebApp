@@ -58,12 +58,17 @@ public class GameEntity {
     @Column(name = "game_starts_at")
     private Instant gameStartsAt = null;
 
+    // End of game timer
     @Column(name = "game_ends_at")
     private Instant gameEndsAt = null;
 
     // Flag to signal game ended prematurely due to other players forfeiting - allow option for remaining player to continue
     @Column(name = "ended_prematurely")
     private boolean endedPrematurely = false;
+
+    // Timestamp all players have finished
+    @Column(name = "game_ended_at")
+    private Instant gameEndedAt = null;
 
     @Version
     private Long version;
@@ -159,6 +164,7 @@ public class GameEntity {
     public void finishGame() {
         if (gameStatus == GameStatus.IN_PROGRESS) {
             gameStatus = GameStatus.FINISHED;
+            gameEndedAt = Instant.now();
         }  else {
             throw new IllegalGameStatusChangeException("Game status cannot be moved to finished due to illegal state change.");
         }
@@ -199,6 +205,23 @@ public class GameEntity {
     public boolean validateGameEndedPrematurely() {
         Set<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers();
         return remainingPlayers.size() == 1 && gameSettingsEntity.getGameMode() != GameMode.TIMEATTACK && gameEndsAt.compareTo(Instant.now()) > 0;
+    }
+
+    public boolean isGameFinished() {
+        return gamePlayerEntities.stream().allMatch(GamePlayerEntity::isFinishedGame);
+    }
+
+    public Integer determineMaxScore() {
+        return gamePlayerEntities.stream().map(GamePlayerEntity::getScore).max(Integer::compare).orElse(0);
+    }
+
+    public Set<GamePlayerEntity> determineGameWinners() {
+        int maxScore = determineMaxScore();
+        return gamePlayerEntities.stream().filter(gp -> gp.getScore() == maxScore).collect(Collectors.toSet());
+    }
+
+    public boolean determineTimeAttackVictory() {
+        return gameEndedAt.compareTo(gameEndsAt) <= 0;
     }
 
 }

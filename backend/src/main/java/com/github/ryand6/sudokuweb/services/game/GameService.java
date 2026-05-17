@@ -39,7 +39,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class GameService {
@@ -264,20 +266,51 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
         );
+
+        if (gamePlayer.getGameEntity().isGameFinished()) {
+            finishGame(gameId);
+        }
     }
 
-    // Mark all players as having finished the game, triggering leaderboard stats calculation
+    // Mark game as finished and send event to determine game result of each player
     @Transactional
     public GameDto finishGame(Long gameId) {
         GameEntity game = getGameById(gameId);
         game.finishGame();
-        Set<GamePlayerEntity> activePlayers = game.getRemainingActivePlayers();
-        activePlayers.forEach((player) -> {
-            handlePlayerFinish(gameId, player);
-        });
+        handleGameResults(gameId);
+
         gameRepository.save(game);
         return gameEntityDtoMapper.mapToDto(game);
     }
+
+    @Transactional
+    public void handleGameResults(Long gameId) {
+        GameEntity game = getGameById(gameId);
+        Set<GamePlayerEntity> gamePlayers = game.getGamePlayerEntities();
+        if (game.getGameSettingsEntity().getGameMode() == GameMode.TIMEATTACK) {
+            boolean gameWon = game.determineTimeAttackVictory();
+            GameResult gameResult = gameWon ? GameResult.WIN : GameResult.LOSS;
+            for (GamePlayerEntity gamePlayer : gamePlayers) {
+                gamePlayer.setGameResult(gameResult);
+            }
+        } else {
+            Set<GamePlayerEntity> winners = game.determineGameWinners();
+            for (GamePlayerEntity gamePlayer : gamePlayers) {
+                GameResult gameResult = !winners.contains(gamePlayer) ? GameResult.LOSS :
+                        winners.size() == 1 ? GameResult.WIN : GameResult.DRAW;
+                gamePlayer.setGameResult(gameResult);
+            }
+        }
+        Map<Long, GameResult> gameResults = gamePlayers.stream()
+                .collect(Collectors.toMap(
+                        gamePlayer -> gamePlayer.getUserEntity().getId(),
+                        GamePlayerEntity::getGameResult));
+
+        applicationEventPublisher.publishEvent(
+                new GameResultsDeterminedEvent(gameId, gameResults)
+        );
+    }
+
 
     // Once game is closed, it cannot be navigated back to
     @Transactional

@@ -1,7 +1,8 @@
-import type { PublicGameState } from "@/types/game/GameTypes";
+import type { GamePlayers, PublicGameState } from "@/types/game/GameTypes";
 import type { GameEvent } from "./gameEvents";
 import { getCellIndex } from "@/utils/game/cellUtils";
 import { normaliseGamePlayer } from "@/utils/game/normaliseGameState";
+import type { GameResult } from "@/types/enum/GameResult";
 
 export function gameCacheReducer(
     existingData: PublicGameState,
@@ -82,6 +83,19 @@ export function gameCacheReducer(
             return {
                 ...existingData,
                 endedPrematurely: true
+            }
+        }
+        case "GAME_RESULTS_DETERMINED": {
+            const gamePlayers: GamePlayers = { ...existingData.players };
+            Object.entries(event.gameResults).forEach(([userId, gameResult]: [string, GameResult]) => {
+                gamePlayers[Number(userId)] = {
+                    ...gamePlayers[Number(userId)],
+                    gameResult
+                };
+            });
+            return {
+                ...existingData,
+                players: {...gamePlayers}
             }
         }
         default: 
