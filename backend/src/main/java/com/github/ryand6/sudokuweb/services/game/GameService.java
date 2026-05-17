@@ -6,6 +6,7 @@ import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerFactory;
+import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.LeaderboardScoreCalculation;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
@@ -36,6 +37,7 @@ import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
@@ -51,6 +53,7 @@ public class GameService {
     private final GameEntityDtoMapper gameEntityDtoMapper;
     private final GamePlayerEntityDtoMapper gamePlayerEntityDtoMapper;
     private final GamePlayerStateRepository gamePlayerStateRepository;
+    private final GamePlayerRepository gamePlayerRepository;
     private final PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper;
     private final LobbyRepository lobbyRepository;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
@@ -62,6 +65,7 @@ public class GameService {
                        GameEntityDtoMapper gameEntityDtoMapper,
                        GamePlayerEntityDtoMapper gamePlayerEntityDtoMapper,
                        GamePlayerStateRepository gamePlayerStateRepository,
+                       GamePlayerRepository gamePlayerRepository,
                        PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper,
                        LobbyRepository lobbyRepository,
                        LobbyEntityDtoMapper lobbyEntityDtoMapper,
@@ -72,6 +76,7 @@ public class GameService {
         this.gameEntityDtoMapper = gameEntityDtoMapper;
         this.gamePlayerEntityDtoMapper = gamePlayerEntityDtoMapper;
         this.gamePlayerStateRepository = gamePlayerStateRepository;
+        this.gamePlayerRepository = gamePlayerRepository;
         this.privateGamePlayerStateEntityDtoMapper = privateGamePlayerStateEntityDtoMapper;
         this.lobbyRepository = lobbyRepository;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
@@ -208,7 +213,7 @@ public class GameService {
         if (game.validateGameEndedPrematurely()) {
             GamePlayerEntity lastRemainingPlayer = game.findLastRemainingPlayer();
             if (lastRemainingPlayer != null) {
-                handlePlayerFinish(gameId, lastRemainingPlayer);
+                handlePlayerFinish(gameId, lastRemainingPlayer.getUserEntity().getId());
 
                 applicationEventPublisher.publishEvent(
                         new GameEndedPrematurelyEvent(gameId)
@@ -248,7 +253,9 @@ public class GameService {
     }
 
     @Transactional
-    public void handlePlayerFinish(Long gameId, GamePlayerEntity gamePlayer) {
+    public void handlePlayerFinish(Long gameId, Long userId) {
+        GamePlayerEntity gamePlayer = gamePlayerRepository.findByCompositeId(gameId, userId).orElseThrow(() ->
+                new GamePlayerNotFoundException("Game Player with Game ID " + gameId + " and User ID " + userId + " does not exist"));
         if (gamePlayer.isFinishedGame()) {
             return;
         }
@@ -339,6 +346,11 @@ public class GameService {
     @Transactional
     void submitLeaderboardScore(Integer leaderboardScore) {
         // IMPLEMENT - persists score in leaderboard entity
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handlePlayerFinishEvent(HandlePlayerFinishEvent event) {
+        handlePlayerFinish(event.getGameId(), event.getUserId());
     }
 
 }
