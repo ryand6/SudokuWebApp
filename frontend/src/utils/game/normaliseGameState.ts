@@ -29,7 +29,8 @@ export function normalisePublicGameData(
         gameStatus: gameData.gameStatus,
         gameStartsAt: gameData.gameStartsAt,
         gameEndsAt: gameData.gameEndsAt,
-        endedPrematurely: gameData.endedPrematurely
+        endedPrematurely: gameData.endedPrematurely,
+        gameEndedAt: gameData.gameEndedAt
     };
 
     return gameState;

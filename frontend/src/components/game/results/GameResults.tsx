@@ -21,6 +21,8 @@ import { ReturnToLobbyAlertDialog } from "@/components/ui/custom/ReturnToLobbyAl
 import { revertInGameStatus } from "@/api/ws/game/playerstate/revertInGameStatus";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import type { NavigateFunction } from "react-router-dom";
+import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
+import BasicTimer from "@/components/ui/custom/BasicTimer";
 
 export function GameResults({
     userId,
@@ -32,6 +34,7 @@ export function GameResults({
     players,
     gameStartsAt,
     endedPrematurely,
+    gameEndedAt,
     queryClient,
     navigate
 }: {
@@ -44,6 +47,7 @@ export function GameResults({
     players: GamePlayers,
     gameStartsAt: string | null,
     endedPrematurely: boolean,
+    gameEndedAt: string | null,
     queryClient: QueryClient,
     navigate: NavigateFunction
 }) {
@@ -92,13 +96,27 @@ export function GameResults({
 
     resolveUserRank();
 
+    console.log(gameEndedAt);
+
     return (
         <div 
             className="flex flex-col w-full items-start overflow-y-scroll"
+            id="game-result-modal"
         >   
             <div
-                className="rounded-t-sm w-full px-5 pt-5 pb-4 text-center bg-sidebar"
-            >
+                className="rounded-t-sm w-full px-5 pt-4 pb-4 text-center bg-sidebar"
+            >   
+                <div className="mr-3 height-[14px] flex justify-end">
+                    {
+                        gameEndedAt && 
+                        <BasicTimer 
+                            endTime={getEpochTimeFromTimestamp(gameEndedAt) + 60000}
+                            className="font-sans text-[14px] font-bold"
+                            timerEndAction={returnToLobbyHandler}
+                        />
+                    }
+                </div>
+                
                 <p
                     className="text-sm tracking-widest uppercase text-sidebar-primary mb-1 font-display"
                 >
@@ -129,7 +147,7 @@ export function GameResults({
                 <div className="grid grid-cols-2 gap-2 mb-4">
                     {
                         Object.entries(players).map(([playerId, player], index) => (
-                            <PlayerCard player={player} />
+                            <PlayerCard player={player} key={index} />
                         ))
                     }
                 </div>

@@ -1,20 +1,19 @@
-import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
-import type { UserDto } from "@/types/dto/entity/user/UserDto";
-import type { PublicGameState } from "@/types/game/GameTypes";
 import { useEffect } from "react";
 import type { NavigateFunction } from "react-router-dom";
 
 export function useNavigateUserWhenInGame(
-    lobby: LobbyDto | null | undefined,
-    currentUser: UserDto | null | undefined,
-    gameQueryData: PublicGameState | undefined,
+    lobbyInGame: boolean | null | undefined,
+    currentGameId: number | null | undefined, 
+    userId: number | null | undefined,
+    playerInGame: boolean | null,
+    gameId: number | null | undefined,
     isLoadingGameData: boolean,
     navigate: NavigateFunction
 ) {
     // Handle navigation only when confirmed if user is part of current game
     useEffect(() => {
         // Ensure game is active, created and normalised before redirect
-        if (!lobby || !currentUser || !lobby.inGame || !lobby.currentGameId || isLoadingGameData || !gameQueryData || !gameQueryData.gameId) return;
-        navigate(`/game/${gameQueryData.gameId}`);
-    }, [lobby, currentUser, gameQueryData, isLoadingGameData, navigate]);
+        if (!lobbyInGame || !currentGameId || !userId || !playerInGame || !gameId || isLoadingGameData) return;
+        navigate(`/game/${gameId}`);
+    }, [lobbyInGame, currentGameId, userId, playerInGame, gameId, isLoadingGameData, navigate]);
 }

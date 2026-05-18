@@ -19,7 +19,7 @@ public class LobbyCountdownSchedulerService {
         if (countdownEvaluationResult.shouldCountdownUpdate()) {
             taskSchedulerService.scheduleGameCreationTask(lobbyId, countdownEvaluationResult.getCountdownEndsAt());
         } else if (countdownEvaluationResult.shouldCountdownCancel()) {
-            taskSchedulerService.cancelGameCreationTask(lobbyId);
+            taskSchedulerService.cancelTask("CREATE_GAME_FOR_LOBBY_" + lobbyId);
         }
     }
 

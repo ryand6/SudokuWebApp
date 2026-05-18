@@ -208,7 +208,7 @@ public class GameEntity {
     }
 
     public boolean isGameFinished() {
-        return gamePlayerEntities.stream().allMatch(GamePlayerEntity::isFinishedGame);
+        return gamePlayerEntities.stream().filter(gp -> gp.getGameResult() != GameResult.FORFEIT).allMatch(GamePlayerEntity::isFinishedGame);
     }
 
     public Integer determineMaxScore() {

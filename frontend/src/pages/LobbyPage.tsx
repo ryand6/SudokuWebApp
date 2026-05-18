@@ -17,6 +17,7 @@ import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestam
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 
 export function LobbyPage() {
     const { lobbyId } = useParams();
@@ -48,8 +49,11 @@ export function LobbyPage() {
         lobby?.currentGameId ?? -1
     );
 
+    const lobbyPlayer: LobbyPlayerDto | undefined = lobby?.lobbyPlayers.filter(player => player.id.userId === currentUser?.id).at(0);
+    const playerInGame: boolean | null = lobbyPlayer ? lobbyPlayer.lobbyStatus === "INGAME" : null;
+
     // Navigates user to game page when they are in an active game
-    useNavigateUserWhenInGame(lobby, currentUser, gameQueryData, isLoadingGame, navigate);
+    useNavigateUserWhenInGame(lobby?.inGame, lobby?.currentGameId, currentUser?.id, playerInGame, gameQueryData?.gameId, isLoadingGame, navigate);
 
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 
@@ -63,7 +67,6 @@ export function LobbyPage() {
         <div id="lobby-container" className="flex flex-col flex-1">
             <div id="lobby-header" className="flex flex-row justify-between">
                 <h1 className="text-foreground-strong font-bold text-shadow m-3">{lobby?.lobbyName}</h1>
-                {/* Show countdown timer to game start if it's running */}
                 {lobby.lobbyCountdown.countdownActive && lobby.lobbyCountdown.countdownEndsAt && (
                     <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.lobbyCountdown.countdownEndsAt)} />
                 )}

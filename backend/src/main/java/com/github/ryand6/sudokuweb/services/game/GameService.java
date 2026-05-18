@@ -193,6 +193,7 @@ public class GameService {
         }
 
         gamePlayer.setGameResult(GameResult.FORFEIT);
+        gamePlayer.setScore(0);
 
         gameRepository.save(game);
 

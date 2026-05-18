@@ -13,5 +13,6 @@ export type GameDto = {
     gameStatus: GameStatus,
     gameStartsAt: string | null,
     gameEndsAt: string | null,
-    endedPrematurely: boolean
+    endedPrematurely: boolean,
+    gameEndedAt: string | null
 }

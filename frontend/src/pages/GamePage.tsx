@@ -143,6 +143,7 @@ export function GamePage() {
                         players={publicGameState.players}
                         gameStartsAt={publicGameState.gameStartsAt}
                         endedPrematurely={publicGameState.endedPrematurely}
+                        gameEndedAt={publicGameState.gameEndedAt}
                         queryClient={queryClient}
                         navigate={navigate}
                     />
