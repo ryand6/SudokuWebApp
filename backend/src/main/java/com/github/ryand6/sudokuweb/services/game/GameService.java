@@ -264,24 +264,27 @@ public class GameService {
         }
         gamePlayer.markGameFinished();
 
+        GameEntity gameEntity = gamePlayer.getGameEntity();
+
         GamePlayerDto gamePlayerDto = gamePlayerEntityDtoMapper.mapToDto(gamePlayer);
 
         applicationEventPublisher.publishEvent(
                 new PlayerFinishedGameEvent(gameId, gamePlayerDto)
         );
 
-        LeaderboardScoreCalculation leaderboardScoreCalculation = gamePlayer.calculateLeaderboardScore();
-        Integer leaderboardScore = leaderboardScoreCalculation.getFinalScore();
-        gamePlayer.setLeaderboardScore(leaderboardScore);
-        submitLeaderboardScore(leaderboardScore);
+        if (gameEntity.getGameSettingsEntity().getGameType() == GameType.RANKED) {
+            LeaderboardScoreCalculation leaderboardScoreCalculation = gamePlayer.calculateLeaderboardScore();
+            Integer leaderboardScore = leaderboardScoreCalculation.getFinalScore();
+            gamePlayer.setLeaderboardScore(leaderboardScore);
 
-        applicationEventPublisher.publishEvent(
-                new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
-        );
+            applicationEventPublisher.publishEvent(
+                    new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
+            );
 
-        // IMPLEMENT - handle leaderboard entity score update
+            // IMPLEMENT - handle leaderboard entity score update
+        }
 
-        if (gamePlayer.getGameEntity().isGameFinished()) {
+        if (gameEntity.isGameFinished()) {
             finishGame(gamePlayer.getGameEntity());
         }
     }
@@ -290,7 +293,9 @@ public class GameService {
     @Transactional
     void finishGame(GameEntity game) {
         game.finishGame();
-        handleGameResults(game.getId());
+        if (game.getGameSettingsEntity().getGameType() == GameType.RANKED) {
+            handleGameResults(game.getId());
+        }
         gameRepository.save(game);
 
         applicationEventPublisher.publishEvent(
@@ -348,11 +353,6 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new EndLobbyPlayerInGameStatusEvent(game.getLobbyEntity().getId())
         );
-    }
-
-    @Transactional
-    void submitLeaderboardScore(Integer leaderboardScore) {
-        // IMPLEMENT - persists score in leaderboard entity
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
