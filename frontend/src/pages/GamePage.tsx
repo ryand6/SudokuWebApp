@@ -11,7 +11,7 @@ import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
 import { useHandleGameWsSubscriptions } from "@/hooks/game/useHandleGameWsSubscriptions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHighlightedCells";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
@@ -25,6 +25,8 @@ import { useHandleClosedGame } from "@/hooks/game/useHandleClosedGame";
 import { useShowGameResults } from "@/hooks/game/useShowGameResults";
 import { Modal } from "@/components/ui/custom/Modal";
 import { GameResults } from "@/components/game/results/GameResults";
+import { confirmPlayerGameLoaded } from "@/api/ws/game/confirmPlayerGameLoaded";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
 
 
 export function GamePage() {
@@ -38,6 +40,8 @@ export function GamePage() {
     const [gameHighlightedCells, setGameHighlightedCells] = useState<Map<number, CellCoordinates> | undefined>(undefined);
     const [notesModeOn, setNotesModeOn] = useState<boolean>(false);
     const [showGameResultsModal, setShowGameResultsModal] = useState<boolean>(false);
+
+    const { send } = useWebSocketContext();
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -53,6 +57,12 @@ export function GamePage() {
 
     // Redirect to lobby if game is in a closed state (closed, aborted)
     useHandleClosedGame(publicGameState?.gameStatus, publicGameState?.lobbyId, navigate);
+
+    useEffect(() => {
+        if ((publicGameState && privateGameState && currentUser) && !publicGameState.players[currentUser.id].gameLoaded) {
+            confirmPlayerGameLoaded(send, publicGameState.gameId);
+        }
+    },[publicGameState, privateGameState, currentUser]);
 
     const playerFinishedGame = currentUser ? publicGameState?.players[currentUser.id].finishedGame : undefined;
 

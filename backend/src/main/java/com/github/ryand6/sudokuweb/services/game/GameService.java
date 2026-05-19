@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameLoadEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceRepository;
@@ -184,9 +185,28 @@ public class GameService {
     }
 
     @Transactional
+    public void handlePlayerGameLoadedConfirmation(Long gameId, Long userId) {
+        GameEntity game = getGameById(gameId);
+        GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
+        gamePlayer.markGameLoaded();
+//        applicationEventPublisher.publishEvent(
+//                new PlayerGameLoadedEvent(gameId, userId)
+//        );
+        GameLoadEvaluationResult gameLoadEvaluationResult = game.updateGameClocks();
+        if (gameLoadEvaluationResult == null) {
+            return;
+        }
+        applicationEventPublisher.publishEvent(
+                new GameFinishSchedulerUpdateEvent(gameId, game.getGameEndsAt())
+        );
+        applicationEventPublisher.publishEvent(
+                new InitialiseGameClocksEvent(gameId, gameLoadEvaluationResult.getGameStartsAt(), gameLoadEvaluationResult.getGameEndsAt(), game.getGameStatus())
+        );
+    }
+
+    @Transactional
     public GameDto forfeitGamePlayer(Long gameId, Long userId) {
         GameEntity game = getGameById(gameId);
-
         GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
 
         if (game.isAborted(gamePlayer)) {

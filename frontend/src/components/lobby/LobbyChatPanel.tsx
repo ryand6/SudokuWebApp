@@ -23,7 +23,7 @@ export function LobbyChatPanel({
 
     const handleClick = () => {
         if (!inputMessage.trim()) return;
-        sendLobbyChatMessage(send, lobbyId, userId, inputMessage);
+        sendLobbyChatMessage(send, lobbyId, inputMessage);
         // Clear text area 
         setInputMessage("");
         scrollToBottom();

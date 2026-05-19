@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.CellAcceptedPublicUpdate;
 import com.github.ryand6.sudokuweb.domain.game.CellRejectedPublicUpdate;
+import com.github.ryand6.sudokuweb.domain.game.GameClocksInit;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
@@ -125,6 +126,24 @@ public class GameWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+//    public void handlePlayerGameLoaded(Long gameId, Long userId) {
+//        Map<String, Object> messageHeader = Map.of(
+//                "type", "PLAYER_GAME_LOADED",
+//                "payload", userId
+//        );
+//        String topic = "/topic/game/" + gameId;
+//        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+//    }
+
+    public void handleInitialiseGameClocks(Long gameId, GameClocksInit gameClocksInit) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_CLOCKS_INITIALISED",
+                "payload", gameClocksInit
+        );
+        String topic = "/topic/game/" + gameId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handlePlayerHighlightedCellUpdateEvent(PlayerHighlightedCellUpdateEvent event) {
         handlePlayerHighlightedCellUpdate(event.getPlayerHighlightedCellDto());
@@ -178,6 +197,16 @@ public class GameWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleGameEndsAtUpdateEvent(GameEndsAtUpdateEvent event) {
         handleGameEndsAtUpdate(event.getGameId(), event.getGameEndsAt());
+    }
+
+//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+//    void handlePlayerGameLoadedEvent(PlayerGameLoadedEvent event) {
+//        handlePlayerGameLoaded(event.getGameId(), event.getUserId());
+//    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleInitialiseGameClocksEvent(InitialiseGameClocksEvent event) {
+        handleInitialiseGameClocks(event.getGameId(), new GameClocksInit(event.getGameStartsAt(), event.getGameEndsAt(), event.getGameStatus()));
     }
 
 }

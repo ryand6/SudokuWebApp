@@ -132,6 +132,14 @@ public class GameEntity {
         return null;
     }
 
+    public void setStatusCountdown() {
+        if (gameStatus == GameStatus.LOADING) {
+            gameStatus = GameStatus.COUNTDOWN;
+        } else {
+            throw new IllegalGameStatusChangeException("Game status cannot be moved to countdown due to illegal state change.");
+        }
+    }
+
     public void setStatusInProgress() {
         if (gameStatus == GameStatus.COUNTDOWN) {
             gameStatus = GameStatus.IN_PROGRESS;

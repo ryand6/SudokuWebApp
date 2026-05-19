@@ -106,5 +106,14 @@ export function handleGameWebSocketMessages(
             })
             break;
         }
+        case "GAME_CLOCKS_INITIALISED": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "GAME_CLOCKS_INITIALISED",
+                gameStartsAt: message.payload.gameStartsAt,
+                gameEndsAt: message.payload.gameEndsAt,
+                gameStatus: message.payload.gameStatus
+            })
+            break;
+        }
     }
 }

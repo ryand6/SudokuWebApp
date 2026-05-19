@@ -13,7 +13,7 @@ export function updateGameHighlightedCellsAndSendWsUpdate(
   cellCoordinates: CellCoordinates
 ) {
   const updatedGameHighlightedCells = updateGameHighlightedCells(userId, gameHighlightedCells, cellCoordinates);
-  sendPlayerHighlightedCellUpdate(send, gameId, userId, cellCoordinates.row, cellCoordinates.col);
+  sendPlayerHighlightedCellUpdate(send, gameId, cellCoordinates.row, cellCoordinates.col);
   return updatedGameHighlightedCells;
 }
 

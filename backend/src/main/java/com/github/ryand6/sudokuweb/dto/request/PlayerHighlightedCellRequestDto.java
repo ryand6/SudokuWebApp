@@ -11,8 +11,6 @@ import lombok.*;
 @Builder
 public class PlayerHighlightedCellRequestDto {
 
-    Long userId;
-
     @Min(0)
     @Max(8)
     int row;

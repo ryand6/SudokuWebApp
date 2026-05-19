@@ -51,6 +51,12 @@ export type GameEvent =
     | {
         type: "GAME_END_TIMER_UPDATE",
         gameEndsAt: string
+      }
+    | {
+        type: "GAME_CLOCKS_INITIALISED",
+        gameStartsAt: string,
+        gameEndsAt: string,
+        gameStatus: GameStatus
       };
 
 export type GameEventLog = 

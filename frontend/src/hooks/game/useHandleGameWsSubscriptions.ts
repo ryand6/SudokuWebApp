@@ -19,7 +19,7 @@ export function useHandleGameWsSubscriptions(
     const { subscribe, unsubscribe } = useWebSocketContext();
 
     useEffect(() => {
-        if (!gameId || !userId || !playerColours || !gameNotificationsEnabled) return;
+        if (!gameId || !userId || !playerColours || gameNotificationsEnabled === undefined) return;
         const gameIdNum = parseInt(gameId);
         const gameTopic = `/topic/game/${gameId}`;
         const gameSubscription = subscribe(gameTopic, (body: any) => handleGameWebSocketMessages(body, queryClient, gameIdNum, userId, gameNotificationsEnabled, playerColours, navigate, setGameHighlightedCells));
@@ -28,9 +28,6 @@ export function useHandleGameWsSubscriptions(
         const gamePlayerStateSubscription = subscribe(gamePlayerStateTopic, (body: any) => handleGamePlayerStateWebSocketMessages(body, queryClient, gameIdNum, userId));
 
         return () => {
-
-            console.log("Cleaning up game WebSocket subscriptions...");
-
             if (gameSubscription) unsubscribe(gameTopic);
             if (gamePlayerStateSubscription) unsubscribe(gamePlayerStateTopic);
         }

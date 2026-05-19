@@ -11,8 +11,6 @@ import lombok.*;
 @Builder
 public class LobbyChatMessageRequestDto {
 
-    private Long userId;
-
     @NotBlank
     @Size(min=3, max=100, message="Messages have a 100 character limit.")
     private String message;

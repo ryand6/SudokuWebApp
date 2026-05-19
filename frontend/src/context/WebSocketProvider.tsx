@@ -34,16 +34,10 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     const queryClient = useQueryClient();
 
     const handleDisconnect = () => {
-
-        console.log("WebSocket disconnected");
-
         setIsConnected(false);
     }
 
     const handleWebSocketClose = () => {
-
-        console.log("WebSocket connection closed");
-
         setIsConnected(false);
     }
 
@@ -78,9 +72,6 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     }, []);
 
     const unsubscribe = useCallback((topic: string) => {
-
-        console.log(`Unsubscribing from topic ${topic}...`);
-
         const subscriptionDetails = subscriptionsRef.current.get(topic);
         if (subscriptionDetails) {
             subscriptionDetails.subscription.unsubscribe();

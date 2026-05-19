@@ -32,9 +32,6 @@ public class UserSettingsWsController {
         }
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
 
-        System.out.println("Field Update: " + requestDto.getField());
-        System.out.println("Value Update: " + requestDto.getValue());
-
         userSettingsService.updateSettings(user.getId(), principal, authToken, requestDto);
     }
 

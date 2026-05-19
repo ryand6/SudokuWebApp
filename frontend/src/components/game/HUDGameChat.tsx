@@ -22,7 +22,7 @@ export function HUDGameChat({
 
     const handleClick = () => {
         if (!inputMessage.trim()) return;
-        sendGameChatMessage(send, gameId, userId, inputMessage, "MESSAGE");
+        sendGameChatMessage(send, gameId, inputMessage, "MESSAGE");
         // Clear text area 
         setInputMessage("");
         scrollToBottom();

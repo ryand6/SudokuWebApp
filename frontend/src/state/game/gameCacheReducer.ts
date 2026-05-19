@@ -102,6 +102,14 @@ export function gameCacheReducer(
                 gameEndsAt: event.gameEndsAt
             }
         }
+        case "GAME_CLOCKS_INITIALISED": {
+            return {
+                ...existingData,
+                gameStartsAt: event.gameStartsAt,
+                gameEndsAt: event.gameEndsAt,
+                gameStatus: event.gameStatus
+            }
+        }
         default: 
             return existingData;
     }
