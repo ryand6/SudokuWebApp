@@ -25,9 +25,6 @@ export type GameEvent =
         gameEndsAt: string
       }
     | {
-        type: "GAME_TIMER_UPDATE"
-      }
-    | {
         type: "HIGHLIGHTED_CELL_UPDATE",
         userId: number,
         coordinates: CellCoordinates
@@ -50,6 +47,10 @@ export type GameEvent =
     | {
         type: "GAME_STATUS_UPDATE",
         gameStatus: GameStatus
+      }
+    | {
+        type: "GAME_END_TIMER_UPDATE",
+        gameEndsAt: string
       };
 
 export type GameEventLog = 

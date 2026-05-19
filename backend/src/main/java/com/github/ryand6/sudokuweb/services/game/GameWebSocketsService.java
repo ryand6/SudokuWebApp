@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.time.Instant;
 import java.util.Map;
 
 @Service
@@ -115,6 +116,15 @@ public class GameWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleGameEndsAtUpdate(Long gameId, Instant gameEndsAt) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_END_TIMER_UPDATE",
+                "payload", gameEndsAt
+        );
+        String topic = "/topic/game/" + gameId;
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @EventListener
     void handlePlayerHighlightedCellUpdateEvent(PlayerHighlightedCellUpdateEvent event) {
         handlePlayerHighlightedCellUpdate(event.getPlayerHighlightedCellDto());
@@ -163,6 +173,11 @@ public class GameWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleGameStatusUpdateEvent(GameStatusUpdateEvent event) {
         handleGameStatusUpdate(event.getGameId(), event.getGameStatus());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleGameEndsAtUpdateEvent(GameEndsAtUpdateEvent event) {
+        handleGameEndsAtUpdate(event.getGameId(), event.getGameEndsAt());
     }
 
 }

@@ -17,6 +17,7 @@ import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateOptimisticLockException;
+import com.github.ryand6.sudokuweb.services.TaskSchedulerService;
 import com.github.ryand6.sudokuweb.util.ScoringTables;
 import com.github.ryand6.sudokuweb.util.StringUtils;
 import jakarta.transaction.Transactional;
@@ -31,11 +32,14 @@ import org.springframework.stereotype.Service;
 public class GamePlayerStateService {
 
     private final GamePlayerRepository gamePlayerRepository;
+    private final TaskSchedulerService taskSchedulerService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public GamePlayerStateService(GamePlayerRepository gamePlayerRepository,
+                                  TaskSchedulerService taskSchedulerService,
                                   ApplicationEventPublisher applicationEventPublisher) {
         this.gamePlayerRepository = gamePlayerRepository;
+        this.taskSchedulerService = taskSchedulerService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -123,7 +127,7 @@ public class GamePlayerStateService {
         );
     }
 
-   private void handleCorrectSubmission(
+    private void handleCorrectSubmission(
            GamePlayerStateEntity gamePlayerState,
            GamePlayerEntity gamePlayer,
            int cellIndex,
@@ -133,7 +137,7 @@ public class GamePlayerStateService {
            int row,
            int col,
            int value
-   ) {
+    ) {
 
         if (gamePlayer.getGameEntity().isBoardStateShared()) {
             updatedSharedBoardState(gamePlayer.getGameEntity().getSharedGameStateEntity(), cellIndex, value);
@@ -187,15 +191,15 @@ public class GamePlayerStateService {
                    new HandlePlayerFinishEvent(gameId, userId)
            );
        }
-   }
+    }
 
-   private void handleStreakUpdates(
+    private void handleStreakUpdates(
            GamePlayerStateEntity gamePlayerState,
            GamePlayerEntity gamePlayer,
            CellClaimEvaluationResult cellClaimEvaluationResult,
            Long gameId,
            Long userId
-   ) {
+    ) {
        if (cellClaimEvaluationResult.getCellClaimPosition() == 1) {
            gamePlayer.incrementFirsts();
            gamePlayerState.incrementCurrentStreak();
@@ -212,17 +216,23 @@ public class GamePlayerStateService {
            }
 
        }
-   }
+    }
 
-   private int handleTimeAttackTimerDeduction(GameEntity game) {
+    private int handleTimeAttackTimerDeduction(GameEntity game) {
         int secondsToDeduct = ScoringTables.timeAttackGameMode_RemovedSecondsOnIncorrectAnswer;
 
         game.removeSecondsFromGameEndTime(secondsToDeduct);
 
-        // IMPLEMENT CALL TO SCHEDULER THAT UPDATES GAME END SCHEDULE
+       applicationEventPublisher.publishEvent(
+               new GameFinishSchedulerUpdateEvent(game.getId(), game.getGameEndsAt())
+       );
 
-       return secondsToDeduct;
-   }
+        applicationEventPublisher.publishEvent(
+               new GameEndsAtUpdateEvent(game.getId(), game.getGameEndsAt())
+        );
+
+        return secondsToDeduct;
+    }
 
     private int handleTimeAttackTimerAddition(GameEntity game) {
         int percentageToSolve = game.getSharedGameStateEntity().getPercentageOfCellsLeft();
@@ -230,7 +240,13 @@ public class GamePlayerStateService {
 
         game.addSecondsToGameEndTime(secondsToAdd);
 
-        // IMPLEMENT CALL TO SCHEDULER THAT UPDATES GAME END SCHEDULE
+        applicationEventPublisher.publishEvent(
+                new GameFinishSchedulerUpdateEvent(game.getId(), game.getGameEndsAt())
+        );
+
+        applicationEventPublisher.publishEvent(
+                new GameEndsAtUpdateEvent(game.getId(), game.getGameEndsAt())
+        );
 
         return secondsToAdd;
     }

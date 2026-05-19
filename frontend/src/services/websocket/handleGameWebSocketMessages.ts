@@ -58,10 +58,6 @@ export function handleGameWebSocketMessages(
             })
             break;
         }
-        case "GAME_TIMER_UPDATE": {
-            // IMPLEMENT - gameStartsAt and gameEndsAt ?
-            break;
-        }
         case "HIGHLIGHTED_CELL_UPDATE": {
             setGameHighlightedCells(prev => updateGameHighlightedCells(message.payload.userId, prev, { row: message.payload.row, col: message.payload.col }))
             break;
@@ -100,6 +96,13 @@ export function handleGameWebSocketMessages(
             gameCacheDispatcher(queryClient, gameId, {
                 type: "GAME_STATUS_UPDATE",
                 gameStatus: message.payload
+            })
+            break;
+        }
+        case "GAME_END_TIMER_UPDATE": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "GAME_END_TIMER_UPDATE",
+                gameEndsAt: message.payload
             })
             break;
         }

@@ -37,6 +37,7 @@ import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -266,6 +267,16 @@ public class GameService {
 
         GameEntity gameEntity = gamePlayer.getGameEntity();
 
+        if (gameEntity.isPlayerFirstToFinish(gamePlayer)) {
+            gameEntity.reduceEndTimeOnFirstPlayerCompletion();
+            applicationEventPublisher.publishEvent(
+                    new GameFinishSchedulerUpdateEvent(gameId, gameEntity.getGameEndsAt())
+            );
+            applicationEventPublisher.publishEvent(
+                    new GameEndsAtUpdateEvent(gameId, gameEntity.getGameEndsAt())
+            );
+        }
+
         GamePlayerDto gamePlayerDto = gamePlayerEntityDtoMapper.mapToDto(gamePlayer);
 
         applicationEventPublisher.publishEvent(
@@ -273,15 +284,7 @@ public class GameService {
         );
 
         if (gameEntity.getGameSettingsEntity().getGameType() == GameType.RANKED) {
-            LeaderboardScoreCalculation leaderboardScoreCalculation = gamePlayer.calculateLeaderboardScore();
-            Integer leaderboardScore = leaderboardScoreCalculation.getFinalScore();
-            gamePlayer.setLeaderboardScore(leaderboardScore);
-
-            applicationEventPublisher.publishEvent(
-                    new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
-            );
-
-            // IMPLEMENT - handle leaderboard entity score update
+            handlePlayerLeaderboardScore(gameId, gamePlayer);
         }
 
         if (gameEntity.isGameFinished()) {
@@ -289,12 +292,22 @@ public class GameService {
         }
     }
 
+    @Transactional
+    public void markAllPlayersFinished(Long gameId) {
+        GameEntity gameEntity = getGameById(gameId);
+        gameEntity.getGamePlayerEntities().forEach(gp -> {
+            if (!gp.isFinishedGame()) {
+                handlePlayerFinish(gameId, gp.getUserEntity().getId());
+            }
+        });
+    }
+
     // Mark game as finished and send event to determine game result of each player
     @Transactional
     void finishGame(GameEntity game) {
         game.finishGame();
         if (game.getGameSettingsEntity().getGameType() == GameType.RANKED) {
-            handleGameResults(game.getId());
+            handleGameResults(game);
         }
         gameRepository.save(game);
 
@@ -305,8 +318,20 @@ public class GameService {
     }
 
     @Transactional
-    public void handleGameResults(Long gameId) {
-        GameEntity game = getGameById(gameId);
+    void handlePlayerLeaderboardScore(Long gameId, GamePlayerEntity gamePlayer) {
+        LeaderboardScoreCalculation leaderboardScoreCalculation = gamePlayer.calculateLeaderboardScore();
+        Integer leaderboardScore = leaderboardScoreCalculation.getFinalScore();
+        gamePlayer.setLeaderboardScore(leaderboardScore);
+
+        applicationEventPublisher.publishEvent(
+                new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
+        );
+
+        // IMPLEMENT - handle leaderboard entity score update
+    }
+
+    @Transactional
+    void handleGameResults(GameEntity game) {
         Set<GamePlayerEntity> gamePlayers = game.getGamePlayerEntities();
         if (game.getGameSettingsEntity().getGameMode() == GameMode.TIMEATTACK) {
             boolean gameWon = game.determineTimeAttackVictory();
@@ -328,7 +353,7 @@ public class GameService {
                         GamePlayerEntity::getGameResult));
 
         applicationEventPublisher.publishEvent(
-                new GameResultsDeterminedEvent(gameId, gameResults)
+                new GameResultsDeterminedEvent(game.getId(), gameResults)
         );
 
         // IMPLEMENT - handle leaderboard entity game result updates
@@ -358,6 +383,16 @@ public class GameService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handlePlayerFinishEvent(HandlePlayerFinishEvent event) {
         handlePlayerFinish(event.getGameId(), event.getUserId());
+    }
+
+    @EventListener
+    void handleFinishGameEvent(FinishGameEvent event) {
+        markAllPlayersFinished(event.getGameId());
+    }
+
+    @EventListener
+    void handleCloseGameEvent(CloseGameEvent event) {
+        closeGame(event.getGameId());
     }
 
 }

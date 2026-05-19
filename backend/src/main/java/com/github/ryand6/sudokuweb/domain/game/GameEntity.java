@@ -202,6 +202,13 @@ public class GameEntity {
                 : Instant.now();
     }
 
+    public void reduceEndTimeOnFirstPlayerCompletion() {
+        Instant newEndTime = Instant.now().plusSeconds(60);
+        if (gameEndsAt.isAfter(newEndTime)) {
+            gameEndsAt = newEndTime;
+        }
+    }
+
     public boolean validateGameEndedPrematurely() {
         Set<GamePlayerEntity> remainingPlayers = getRemainingActivePlayers();
         return remainingPlayers.size() == 1 && gameSettingsEntity.getGameMode() != GameMode.TIMEATTACK && gameEndsAt.compareTo(Instant.now()) > 0;
@@ -222,6 +229,11 @@ public class GameEntity {
 
     public boolean determineTimeAttackVictory() {
         return gameEndedAt.compareTo(gameEndsAt) <= 0;
+    }
+
+    public boolean isPlayerFirstToFinish(GamePlayerEntity gamePlayer) {
+        Set<GamePlayerEntity> finishedPlayers = gamePlayerEntities.stream().filter(GamePlayerEntity::isFinishedGame).collect(Collectors.toSet());
+        return finishedPlayers.size() == 1 && finishedPlayers.contains(gamePlayer);
     }
 
 }

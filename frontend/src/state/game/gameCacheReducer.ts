@@ -53,10 +53,6 @@ export function gameCacheReducer(
                 gameEndsAt: event.gameEndsAt
             };
         }
-        case "GAME_TIMER_UPDATE": {
-            // IMPLEMENT - gameStartsAt and gameEndsAt ?
-            return existingData;
-        }
         case "PLAYER_FORFEIT": {
             return {
                 ...existingData,
@@ -98,6 +94,12 @@ export function gameCacheReducer(
             return {
                 ...existingData,
                 gameStatus: event.gameStatus
+            }
+        }
+        case "GAME_END_TIMER_UPDATE": {
+            return {
+                ...existingData,
+                gameEndsAt: event.gameEndsAt
             }
         }
         default: 

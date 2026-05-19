@@ -1,25 +1,34 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
+import com.github.ryand6.sudokuweb.events.types.general.CancelScheduledTaskEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.ScheduleGameCreationTaskEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
-import com.github.ryand6.sudokuweb.services.TaskSchedulerService;
+import jakarta.transaction.Transactional;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LobbyCountdownSchedulerService {
 
-    private final TaskSchedulerService taskSchedulerService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public LobbyCountdownSchedulerService(TaskSchedulerService taskSchedulerService) {
-        this.taskSchedulerService = taskSchedulerService;
+    public LobbyCountdownSchedulerService(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    @Transactional
     void handleCountdownEvaluationResult(Long lobbyId, CountdownEvaluationResult countdownEvaluationResult) {
         if (countdownEvaluationResult.shouldCountdownUpdate()) {
-            taskSchedulerService.scheduleGameCreationTask(lobbyId, countdownEvaluationResult.getCountdownEndsAt());
+            applicationEventPublisher.publishEvent(
+                    new ScheduleGameCreationTaskEvent(lobbyId, countdownEvaluationResult.getCountdownEndsAt())
+            );
         } else if (countdownEvaluationResult.shouldCountdownCancel()) {
-            taskSchedulerService.cancelTask("CREATE_GAME_FOR_LOBBY_" + lobbyId);
+            String taskId = "CREATE_GAME_FOR_LOBBY_" + lobbyId;
+            applicationEventPublisher.publishEvent(
+                    new CancelScheduledTaskEvent(taskId)
+            );
         }
     }
 
