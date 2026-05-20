@@ -13,7 +13,7 @@ import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { PlayerCard } from "./PlayerCard";
 import { LeaderboardScoreBreakdownRow } from "./LeaderboardScoreBreakdownRow";
 import { StatCard } from "./StatCard";
-import { computeSecondsDifferenceBetweenTimestamps } from "@/utils/time/timeDifference";
+import { computeMsDifferenceBetweenTimestamps } from "@/utils/time/timeDifference";
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
 import { getUserRank } from "@/api/rest/users/query/getUserRank";
 import { PrematureEndBanner } from "./PrematureEndBanner";
@@ -77,7 +77,7 @@ export function GameResults({
         fetchLeaderboard();
     }, [gameId, userId, leaderboardResult]);
 
-    const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeSecondsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
+    const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeMsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
 
     const resolveUserRank = async () => {
         const userRank = await getUserRank();

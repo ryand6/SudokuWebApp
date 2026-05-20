@@ -126,7 +126,7 @@ public class GameEntity {
             if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null) {
                 gameEndsAt = gameStartsAt.plusSeconds(lobbyEntity.getLobbySettingsEntity().getTimeLimit().getSeconds());
             }
-            gameStatus = GameStatus.COUNTDOWN;
+            setStatusCountdown();
             return new GameLoadEvaluationResult(gameStartsAt, gameEndsAt);
         }
         return null;

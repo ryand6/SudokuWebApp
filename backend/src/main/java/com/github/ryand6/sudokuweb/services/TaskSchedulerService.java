@@ -1,10 +1,7 @@
 package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
-import com.github.ryand6.sudokuweb.events.types.game.CloseGameEvent;
-import com.github.ryand6.sudokuweb.events.types.game.FinishGameEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GameEndsAtUpdateEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GameFinishSchedulerUpdateEvent;
+import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.events.types.general.CancelScheduledTaskEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ScheduleGameCreationTaskEvent;
 import com.github.ryand6.sudokuweb.services.game.GameService;
@@ -29,6 +26,7 @@ public class TaskSchedulerService {
     private final TaskScheduler taskScheduler;
 
     private final String GAME_CREATION_TASK_NAME = "CREATE_GAME_FOR_LOBBY_";
+    private final String START_GAME_TASK_NAME = "START_GAME_";
     private final String FINISH_GAME_TASK_NAME = "FINISH_GAME_";
     private final String CLOSE_GAME_TASK_NAME = "CLOSE_GAME_";
 
@@ -56,7 +54,6 @@ public class TaskSchedulerService {
 
     public void scheduleGameCreationTask(Long lobbyId, Instant countdownEndsAt) {
         String taskId = GAME_CREATION_TASK_NAME + lobbyId;
-
         cancelTask(taskId);
 
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
@@ -84,12 +81,28 @@ public class TaskSchedulerService {
     }
 
     //#######################//
+    // Start Game            //
+    //#######################//
+
+    public void scheduleGameStart(Long gameId, Instant gameStartsAt) {
+        String taskId = START_GAME_TASK_NAME + gameId;
+        cancelTask(taskId);
+
+        ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+            applicationEventPublisher.publishEvent(
+                    new StartGameEvent(gameId)
+            );
+        }, gameStartsAt);
+
+        scheduledTasks.put(taskId, future);
+    }
+
+    //#######################//
     // Finish Game           //
     //#######################//
 
     public void scheduleGameFinish(Long gameId, Instant gameEndsAt) {
         String taskId = FINISH_GAME_TASK_NAME + gameId;
-
         cancelTask(taskId);
 
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
@@ -107,7 +120,6 @@ public class TaskSchedulerService {
 
     public void scheduleGameClose(Long gameId, Instant gameEndedAt) {
         String taskId = CLOSE_GAME_TASK_NAME + gameId;
-
         cancelTask(taskId);
 
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
@@ -141,6 +153,11 @@ public class TaskSchedulerService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleGameFinishSchedulerUpdate(GameFinishSchedulerUpdateEvent event) {
         scheduleGameFinish(event.getGameId(), event.getGameEndsAt());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleScheduleGameCloseEvent(ScheduleGameCloseEvent event) {
+        scheduleGameClose(event.getGameId(), event.getGameEndedAt());
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

@@ -197,10 +197,23 @@ public class GameService {
             return;
         }
         applicationEventPublisher.publishEvent(
+                new GameStatusUpdateEvent(game.getId(), GameStatus.COUNTDOWN)
+        );
+        applicationEventPublisher.publishEvent(
                 new GameFinishSchedulerUpdateEvent(gameId, game.getGameEndsAt())
         );
         applicationEventPublisher.publishEvent(
                 new InitialiseGameClocksEvent(gameId, gameLoadEvaluationResult.getGameStartsAt(), gameLoadEvaluationResult.getGameEndsAt(), game.getGameStatus())
+        );
+    }
+
+    @Transactional
+    public void startGame(Long gameId) {
+        GameEntity game = getGameById(gameId);
+        game.setStatusInProgress();
+
+        applicationEventPublisher.publishEvent(
+                new GameStatusUpdateEvent(game.getId(), GameStatus.IN_PROGRESS)
         );
     }
 
@@ -332,6 +345,10 @@ public class GameService {
         gameRepository.save(game);
 
         applicationEventPublisher.publishEvent(
+                new ScheduleGameCloseEvent(game.getId(), game.getGameEndedAt())
+        );
+
+        applicationEventPublisher.publishEvent(
                 new GameStatusUpdateEvent(game.getId(), GameStatus.FINISHED)
         );
 
@@ -413,6 +430,11 @@ public class GameService {
     @EventListener
     void handleCloseGameEvent(CloseGameEvent event) {
         closeGame(event.getGameId());
+    }
+
+    @EventListener
+    void handleStartGameEvent(StartGameEvent event) {
+        startGame(event.getGameId());
     }
 
 }
