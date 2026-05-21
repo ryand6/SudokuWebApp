@@ -4,10 +4,8 @@ import com.github.ryand6.sudokuweb.exceptions.auth.InvalidOtpException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
 import com.github.ryand6.sudokuweb.exceptions.auth.RecoveryEmailNotFoundException;
-import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
-import com.github.ryand6.sudokuweb.exceptions.game.GameNotFoundException;
-import com.github.ryand6.sudokuweb.exceptions.game.InvalidCellCoordinatesException;
-import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
+import com.github.ryand6.sudokuweb.exceptions.game.*;
+import com.github.ryand6.sudokuweb.exceptions.game.player.GameLoadedTimestampNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.PlayerNotFinishedGameException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateNotFoundException;
@@ -41,6 +39,7 @@ public class ErrorMapping {
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyHostNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(RecoveryEmailNotFoundException.class, HttpStatus.NOT_FOUND),
+            Map.entry(GameLoadedTimestampNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
             Map.entry(LobbySettingsLockedException.class, HttpStatus.CONFLICT),
             Map.entry(LobbyCountdownLockedException.class, HttpStatus.CONFLICT),
@@ -59,6 +58,7 @@ public class ErrorMapping {
             Map.entry(TooManyActivePlayersException.class, HttpStatus.BAD_REQUEST),
             Map.entry(LobbyPlayerAlreadyExistsException.class, HttpStatus.BAD_REQUEST),
             Map.entry(IllegalBoardStateException.class, HttpStatus.BAD_REQUEST),
+            Map.entry(IllegalGameStatusChangeException.class, HttpStatus.BAD_REQUEST),
             Map.entry(PlayerNotFinishedGameException.class, HttpStatus.BAD_REQUEST),
             Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS)
     );
@@ -78,6 +78,8 @@ public class ErrorMapping {
             Map.entry(GameNotFoundException.class, "GAME_ERROR"),
             Map.entry(GamePlayerNotFoundException.class, "GAME_ERROR"),
             Map.entry(InvalidCellCoordinatesException.class, "GAME_ERROR"),
+            Map.entry(IllegalGameStatusChangeException.class, "GAME_ERROR"),
+            Map.entry(GameLoadedTimestampNotFoundException.class, "GAME_ERROR"),
             // Handle DTO field validation errors
             Map.entry(MethodArgumentNotValidException.class, "GENERAL_ERROR")
     );

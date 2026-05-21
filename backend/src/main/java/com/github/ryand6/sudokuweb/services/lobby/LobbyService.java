@@ -289,14 +289,4 @@ public class LobbyService {
         lobbyRepository.save(lobby);
     }
 
-    @EventListener
-    void handleGamePlayerLeftLobbyEvent(GamePlayerLeftEvent event) {
-        removeFromLobby(event.getLobbyId(), event.getUserId());
-    }
-
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    void handleGameClosedEvent(GameClosedEvent event) {
-        handleGameFinish(event.getLobbyId());
-    }
-
 }

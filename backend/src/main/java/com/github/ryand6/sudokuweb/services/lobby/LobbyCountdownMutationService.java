@@ -55,9 +55,9 @@ public class LobbyCountdownMutationService {
         throw new LobbyCountdownLockedException("Failed to reset countdown after retries");
     }
 
-    @EventListener
-    void handleLobbyCountdownResetEvent(LobbyCountdownResetEvent event) {
-        safeCountdownReset(event.getLobbyCountdown());
-    }
+//    @EventListener
+//    void handleLobbyCountdownResetEvent(LobbyCountdownResetEvent event) {
+//        safeCountdownReset(event.getLobbyCountdown());
+//    }
 
 }

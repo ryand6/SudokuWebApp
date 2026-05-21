@@ -78,10 +78,10 @@ public class GameEventService {
         return gameEventSequence.getCurrentSequenceNumberAndIncrement();
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    void handleCreateGameEvent(CreateGameLogEvent event) {
-        createGameEvent(event.getGameId(), event.getUserId(), event.getGameEventRequest());
-    }
+//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
+//    void handleCreateGameEvent(CreateGameLogEvent event) {
+//        createGameEvent(event.getGameId(), event.getUserId(), event.getGameEventRequest());
+//    }
 
 }

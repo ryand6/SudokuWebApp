@@ -42,6 +42,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.Map;
@@ -186,35 +187,54 @@ public class GameService {
 
     @Transactional
     public void handlePlayerGameLoadedConfirmation(Long gameId, Long userId) {
-        GameEntity game = getGameById(gameId);
+        GameEntity game = gameRepository.findByIdWithLock(gameId)
+                .orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
         GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
         gamePlayer.markGameLoaded();
 //        applicationEventPublisher.publishEvent(
 //                new PlayerGameLoadedEvent(gameId, userId)
 //        );
-        GameLoadEvaluationResult gameLoadEvaluationResult = game.updateGameClocks();
+        GameLoadEvaluationResult gameLoadEvaluationResult = game.initGameClocks();
         if (gameLoadEvaluationResult == null) {
             return;
         }
-        applicationEventPublisher.publishEvent(
-                new GameStatusUpdateEvent(game.getId(), GameStatus.COUNTDOWN)
-        );
+//        applicationEventPublisher.publishEvent(
+//                new GameStatusUpdateEvent(game.getId(), GameStatus.COUNTDOWN)
+//        );
         applicationEventPublisher.publishEvent(
                 new GameFinishSchedulerUpdateEvent(gameId, game.getGameEndsAt())
         );
         applicationEventPublisher.publishEvent(
                 new InitialiseGameClocksEvent(gameId, gameLoadEvaluationResult.getGameStartsAt(), gameLoadEvaluationResult.getGameEndsAt(), game.getGameStatus())
         );
+        applicationEventPublisher.publishEvent(
+                new ScheduleGameStartEvent(gameId, gameLoadEvaluationResult.getGameStartsAt())
+        );
     }
 
     @Transactional
     public void startGame(Long gameId) {
+
+
+        System.out.println("\n\nTransaction name: " + TransactionSynchronizationManager.getCurrentTransactionName() + "\n\n");
+        System.out.println("\n\nTransaction active: " + TransactionSynchronizationManager.isActualTransactionActive() + "\n\n");
+        System.out.println("\n\nSynchronization active: " + TransactionSynchronizationManager.isSynchronizationActive() + "\n\n");
+
+        System.out.println("\n\nstartGame called for gameId: " + gameId + "\n\n");
+
         GameEntity game = getGameById(gameId);
         game.setStatusInProgress();
+        gameRepository.save(game);
+
+        System.out.println("\n\nGame status set to IN_PROGRESS, publishing GameStatusUpdateEvent for gameId: " + gameId + "\n\n");
 
         applicationEventPublisher.publishEvent(
                 new GameStatusUpdateEvent(game.getId(), GameStatus.IN_PROGRESS)
         );
+
+
+        System.out.println("\n\nGameStatusUpdateEvent published for gameId: " + gameId + "\n\n");
+
     }
 
     @Transactional
@@ -417,24 +437,24 @@ public class GameService {
         );
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    void handlePlayerFinishEvent(HandlePlayerFinishEvent event) {
-        handlePlayerFinish(event.getGameId(), event.getUserId());
-    }
-
-    @EventListener
-    void handleFinishGameEvent(FinishGameEvent event) {
-        markAllPlayersFinished(event.getGameId());
-    }
-
-    @EventListener
-    void handleCloseGameEvent(CloseGameEvent event) {
-        closeGame(event.getGameId());
-    }
-
-    @EventListener
-    void handleStartGameEvent(StartGameEvent event) {
-        startGame(event.getGameId());
-    }
+//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+//    void handlePlayerFinishEvent(HandlePlayerFinishEvent event) {
+//        handlePlayerFinish(event.getGameId(), event.getUserId());
+//    }
+//
+//    @EventListener
+//    void handleFinishGameEvent(FinishGameEvent event) {
+//        markAllPlayersFinished(event.getGameId());
+//    }
+//
+//    @EventListener
+//    void handleCloseGameEvent(CloseGameEvent event) {
+//        closeGame(event.getGameId());
+//    }
+//
+//    @EventListener
+//    void handleStartGameEvent(StartGameEvent event) {
+//        startGame(event.getGameId());
+//    }
 
 }

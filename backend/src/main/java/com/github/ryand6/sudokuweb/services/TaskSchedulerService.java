@@ -25,10 +25,10 @@ public class TaskSchedulerService {
 
     private final TaskScheduler taskScheduler;
 
-    private final String GAME_CREATION_TASK_NAME = "CREATE_GAME_FOR_LOBBY_";
-    private final String START_GAME_TASK_NAME = "START_GAME_";
-    private final String FINISH_GAME_TASK_NAME = "FINISH_GAME_";
-    private final String CLOSE_GAME_TASK_NAME = "CLOSE_GAME_";
+    private static final String GAME_CREATION_TASK_NAME = "CREATE_GAME_FOR_LOBBY_";
+    private static final String START_GAME_TASK_NAME = "START_GAME_";
+    private static final String FINISH_GAME_TASK_NAME = "FINISH_GAME_";
+    private static final String CLOSE_GAME_TASK_NAME = "CLOSE_GAME_";
 
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
@@ -148,6 +148,11 @@ public class TaskSchedulerService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleScheduleGameCreationTaskEvent(ScheduleGameCreationTaskEvent event) {
         scheduleGameCreationTask(event.getLobbyId(), event.getCountdownEndsAt());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleScheduleGameStartEvent(ScheduleGameStartEvent event) {
+        scheduleGameStart(event.getGameId(), event.getGameStartsAt());
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

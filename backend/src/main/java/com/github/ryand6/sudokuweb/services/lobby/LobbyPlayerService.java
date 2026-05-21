@@ -100,10 +100,9 @@ public class LobbyPlayerService {
         lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    void handleEndLobbyPlayerInGameStatusEvent(EndLobbyPlayerInGameStatusEvent event) {
-        revertAllLobbyPlayerInGameStatuses(event.getLobbyId());
-    }
-
+//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+//    void handleEndLobbyPlayerInGameStatusEvent(EndLobbyPlayerInGameStatusEvent event) {
+//        revertAllLobbyPlayerInGameStatuses(event.getLobbyId());
+//    }
 
 }

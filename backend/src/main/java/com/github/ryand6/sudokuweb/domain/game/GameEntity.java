@@ -7,6 +7,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.exceptions.game.IllegalGameStatusChangeException;
+import com.github.ryand6.sudokuweb.exceptions.game.player.GameLoadedTimestampNotFoundException;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -93,20 +94,8 @@ public class GameEntity {
     //#######################//
 
     @PrePersist
-    public void initialiseGameClocks() {
+    public void initialiseCreatedAt() {
         createdAt = Instant.now();
-
-        gameStartsAt = createdAt
-                .plusSeconds(MAX_WAIT_SECONDS)
-                .plusSeconds(GAME_COUNTDOWN_SECONDS);
-
-        if (lobbyEntity != null && !lobbyEntity.getLobbySettingsEntity().getTimeLimit().isUnlimited()) {
-            gameEndsAt = gameStartsAt.plusSeconds(
-                    lobbyEntity.getLobbySettingsEntity()
-                            .getTimeLimit()
-                            .getSeconds()
-            );
-        }
     }
 
     public boolean isBoardStateShared() {
@@ -114,15 +103,28 @@ public class GameEntity {
         return gameMode == GameMode.DOMINATION || gameMode == GameMode.TIMEATTACK;
     }
 
-    public GameLoadEvaluationResult updateGameClocks() {
+    public GameLoadEvaluationResult initGameClocks() {
+
+        System.out.println("\n\ncheckAllPlayersLoaded() check: " + checkAllPlayersLoaded() + "\n\n");
+
+        System.out.println("\n\ngameStartsAt: " + gameStartsAt + "\n\n");
+
+        System.out.println("\n\ngameStatus: " + gameStatus + "\n\n");
+
         if (checkAllPlayersLoaded()
-                && Instant.now().isBefore(gameStartsAt)
+                && gameStartsAt == null
                 && gameStatus == GameStatus.LOADING) {
+
+            System.out.println("\n\nupdateGameClocks() initial validation check succeeded!\n\n");
+
             gameStartsAt = gamePlayerEntities.stream()
                     .max(Comparator.comparing(GamePlayerEntity::getGameLoadedTimestamp))
-                    .orElseThrow()
+                    .orElseThrow(() -> new GameLoadedTimestampNotFoundException("Game loaded timestamp could not be found for any of the players."))
                     .getGameLoadedTimestamp()
                     .plusSeconds(GAME_COUNTDOWN_SECONDS);
+
+            System.out.println("\n\nupdateGameClocks() max game loaded timestamp found!\n\n");
+
             if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null) {
                 gameEndsAt = gameStartsAt.plusSeconds(lobbyEntity.getLobbySettingsEntity().getTimeLimit().getSeconds());
             }
@@ -135,6 +137,8 @@ public class GameEntity {
     public void setStatusCountdown() {
         if (gameStatus == GameStatus.LOADING) {
             gameStatus = GameStatus.COUNTDOWN;
+
+            System.out.println("\n\nsetStatusCountdown() called successfully!\n\n");
         } else {
             throw new IllegalGameStatusChangeException("Game status cannot be moved to countdown due to illegal state change.");
         }

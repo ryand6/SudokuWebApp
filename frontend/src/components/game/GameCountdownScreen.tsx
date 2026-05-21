@@ -7,25 +7,37 @@ export function GameCountdownScreen({
     gameStartsAt: string | null
 }) {
 
+    if (gameStartsAt !== null) {
+        console.log("Game starts at: ", gameStartsAt);
+        console.log("Game starts at in ms: ", new Date(gameStartsAt).getTime()); 
+        console.log("Now in ms: ", Date.now());
+    }
+
     const [countdown, setCountdown] = useState(computeSecondsLeftUntilTimestamp(gameStartsAt));
 
     console.log(countdown);
     
     useEffect(() => {
+        let timerId: NodeJS.Timeout;
+
         if (countdown > 0) {
-            const timer = setTimeout(() => {
+            timerId = setTimeout(() => {
                 setCountdown(prevCountdown => prevCountdown - 1);
             }, 1000);
-
-            return () => clearTimeout(timer);
         }
+
+        return () => {
+            if (timerId) {
+                clearTimeout(timerId);
+            }
+        };
     }, [countdown]);
 
     return (
         <div className="flex flex-col items-center justify-center h-full w-full bg-background">
             {
                 countdown > 0 && (
-                    <h1 className="animate-game-start-countdown text-primary-foreground text-center">
+                    <h1 key={countdown} className="animate-game-start-countdown text-9xl font-extrabold text-primary text-center">
                         {countdown}
                     </h1>
                 )

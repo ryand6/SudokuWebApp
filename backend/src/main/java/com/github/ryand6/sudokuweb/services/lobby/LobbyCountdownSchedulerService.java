@@ -32,9 +32,9 @@ public class LobbyCountdownSchedulerService {
         }
     }
 
-    @EventListener
-    void handleUpdateLobbyCountdownSchedulerEvent(UpdateLobbyCountdownSchedulerEvent event) {
-        handleCountdownEvaluationResult(event.getLobbyId(), event.getCountdownEvaluationResult());
-    }
+//    @EventListener
+//    void handleUpdateLobbyCountdownSchedulerEvent(UpdateLobbyCountdownSchedulerEvent event) {
+//        handleCountdownEvaluationResult(event.getLobbyId(), event.getCountdownEvaluationResult());
+//    }
 
 }

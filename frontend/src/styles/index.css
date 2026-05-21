@@ -231,7 +231,7 @@
 
   --animate-float-up: float-up 5000ms ease-out forwards;
 
-  --animate-game-start-countdown: blink 1s linear infinite;
+  --animate-game-start-countdown: blink 1000ms linear forwards;
 
   @keyframes fill-cell {
     50% {
@@ -279,8 +279,7 @@
   }
   50% {
     opacity: 1;
-    transform: scale(1.5);
-    font-weight: bold;
+    transform: scale(1.25);
   }
   100% {
     opacity: 0;

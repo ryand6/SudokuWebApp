@@ -14,6 +14,12 @@ export function handleUserWebSocketErrors(message: any) {
             });
             break;
         }
+        case "GAME_ERROR": {
+            toast.error(message.payload, {
+                containerId: "foreground"
+            });
+            break;
+        }
         case "GENERAL_ERROR": {
             toast.error(message.payload, {
                 containerId: "foreground"

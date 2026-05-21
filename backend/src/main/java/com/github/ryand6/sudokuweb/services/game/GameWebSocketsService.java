@@ -110,7 +110,7 @@ public class GameWebSocketsService {
 
     public void handleGameStatusUpdate(Long gameId, GameStatus gameStatus) {
         Map<String, Object> messageHeader = Map.of(
-                "type", "GAME_RESULTS_DETERMINED",
+                "type", "GAME_STATUS_UPDATE",
                 "payload", gameStatus
         );
         String topic = "/topic/game/" + gameId;
