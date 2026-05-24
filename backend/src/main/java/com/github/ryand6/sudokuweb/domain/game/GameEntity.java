@@ -24,7 +24,8 @@ import java.util.stream.Collectors;
 @Table(name = "games")
 public class GameEntity {
 
-    public static final int GAME_COUNTDOWN_SECONDS = 5;
+    // Allow 200 ms for overhead when initialising game timers
+    public static final int GAME_COUNTDOWN_MS = 5200;
     public static final int MAX_WAIT_SECONDS = 20;
 
     @Id
@@ -104,27 +105,14 @@ public class GameEntity {
     }
 
     public GameLoadEvaluationResult initGameClocks() {
-
-        System.out.println("\n\ncheckAllPlayersLoaded() check: " + checkAllPlayersLoaded() + "\n\n");
-
-        System.out.println("\n\ngameStartsAt: " + gameStartsAt + "\n\n");
-
-        System.out.println("\n\ngameStatus: " + gameStatus + "\n\n");
-
         if (checkAllPlayersLoaded()
                 && gameStartsAt == null
                 && gameStatus == GameStatus.LOADING) {
-
-            System.out.println("\n\nupdateGameClocks() initial validation check succeeded!\n\n");
-
             gameStartsAt = gamePlayerEntities.stream()
                     .max(Comparator.comparing(GamePlayerEntity::getGameLoadedTimestamp))
                     .orElseThrow(() -> new GameLoadedTimestampNotFoundException("Game loaded timestamp could not be found for any of the players."))
                     .getGameLoadedTimestamp()
-                    .plusSeconds(GAME_COUNTDOWN_SECONDS);
-
-            System.out.println("\n\nupdateGameClocks() max game loaded timestamp found!\n\n");
-
+                    .plusMillis(GAME_COUNTDOWN_MS);
             if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null) {
                 gameEndsAt = gameStartsAt.plusSeconds(lobbyEntity.getLobbySettingsEntity().getTimeLimit().getSeconds());
             }
@@ -137,8 +125,6 @@ public class GameEntity {
     public void setStatusCountdown() {
         if (gameStatus == GameStatus.LOADING) {
             gameStatus = GameStatus.COUNTDOWN;
-
-            System.out.println("\n\nsetStatusCountdown() called successfully!\n\n");
         } else {
             throw new IllegalGameStatusChangeException("Game status cannot be moved to countdown due to illegal state change.");
         }
@@ -174,6 +160,11 @@ public class GameEntity {
     }
 
     public void finishGame() {
+
+        System.out.println("\n\nfinishGame() called!\n\n");
+
+        System.out.println("\n\nGame status before marking game as finished: " + gameStatus + "\n\n");
+
         if (gameStatus == GameStatus.IN_PROGRESS) {
             gameStatus = GameStatus.FINISHED;
             gameEndedAt = Instant.now();

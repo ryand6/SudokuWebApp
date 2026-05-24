@@ -110,6 +110,13 @@ export function gameCacheReducer(
                 gameStatus: event.gameStatus
             }
         }
+        case "GAME_FINISHED": {
+            return {
+                ...existingData,
+                gameEndedAt: event.gameEndedAt,
+                gameStatus: event.gameStatus
+            }
+        }
         default: 
             return existingData;
     }

@@ -115,5 +115,13 @@ export function handleGameWebSocketMessages(
             })
             break;
         }
+        case "GAME_FINISHED": {
+            gameCacheDispatcher(queryClient, gameId, {
+                type: "GAME_FINISHED",
+                gameEndedAt: message.payload.gameEndedAt,
+                gameStatus: message.payload.gameStatus
+            })
+            break;
+        }
     }
 }

@@ -1,12 +1,15 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
-import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GameClosedMembershipUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.GameClosedLobbyUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -38,7 +41,11 @@ public class LobbyEventListenerService {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    void handleGameClosedEvent(GameClosedEvent event) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void handleGameClosedEvent(GameClosedLobbyUpdateEvent event) {
+
+        System.out.println("\n\nGameClosedLobbyUpdateEvent listened for and handling!\n\n");
+
         lobbyService.handleGameFinish(event.getLobbyId());
     }
 
@@ -65,6 +72,7 @@ public class LobbyEventListenerService {
     //#######################//
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void handleEndLobbyPlayerInGameStatusEvent(EndLobbyPlayerInGameStatusEvent event) {
         lobbyPlayerService.revertAllLobbyPlayerInGameStatuses(event.getLobbyId());
     }

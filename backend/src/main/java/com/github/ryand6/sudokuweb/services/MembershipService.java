@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.services;
 
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
-import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
+import com.github.ryand6.sudokuweb.events.types.game.GameClosedMembershipUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyLeftMembershipEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyPlayerLeftMembershipEvent;
@@ -109,7 +109,7 @@ public class MembershipService {
     }
 
     @EventListener
-    void handleGameLeftMembershipEvent(GameClosedEvent event) {
+    void handleGameLeftMembershipEvent(GameClosedMembershipUpdateEvent event) {
         removeGame(event.getGameId());
     }
 

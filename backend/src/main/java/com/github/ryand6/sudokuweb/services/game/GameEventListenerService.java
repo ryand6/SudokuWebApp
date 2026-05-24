@@ -28,21 +28,25 @@ public class GameEventListenerService {
     //#######################//
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     void handlePlayerFinishEvent(HandlePlayerFinishEvent event) {
         gameService.handlePlayerFinish(event.getGameId(), event.getUserId());
     }
 
     @EventListener
+    @Transactional
     void handleFinishGameEvent(FinishGameEvent event) {
         gameService.markAllPlayersFinished(event.getGameId());
     }
 
     @EventListener
+    @Transactional
     void handleCloseGameEvent(CloseGameEvent event) {
         gameService.closeGame(event.getGameId());
     }
 
     @EventListener
+    @Transactional
     void handleStartGameEvent(StartGameEvent event) {
         gameService.startGame(event.getGameId());
     }
@@ -67,7 +71,7 @@ public class GameEventListenerService {
     }
 
     @EventListener
-    void handleGameLeftInMemoryStateEvent(GameClosedEvent event) {
+    void handleGameLeftInMemoryStateEvent(GameClosedMembershipUpdateEvent event) {
         gameInMemoryStateService.removeGame(event.getGameId());
     }
 

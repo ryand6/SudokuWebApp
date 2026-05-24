@@ -55,7 +55,12 @@ export function GameResults({
     const [userRankText, setUserRankText] = useState<string>("-");
     const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-    document.getElementById("root")?.classList.add("blur-sm");
+    useEffect(() => {
+        document.getElementById("root")?.classList.add("blur-sm");
+        return () => {
+            document.getElementById("root")?.classList.remove("blur-sm");
+        };
+    }, []);
 
     const { send } = useWebSocketContext();
 
@@ -86,6 +91,7 @@ export function GameResults({
 
     const returnToLobbyHandler = () => {
         revertInGameStatus(send, gameId, userId, lobbyId);
+        document.getElementById("root")?.classList.remove("blur-sm");
         navigate(`/lobby/${lobbyId}`);
     }
 
@@ -111,7 +117,7 @@ export function GameResults({
                         gameEndedAt && 
                         <BasicTimer 
                             endTime={getEpochTimeFromTimestamp(gameEndedAt) + 60000}
-                            className="font-sans text-[14px] font-bold"
+                            className="font-sans text-[14px] font-bold text-primary-foreground"
                             timerEndAction={returnToLobbyHandler}
                         />
                     }

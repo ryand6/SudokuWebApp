@@ -71,6 +71,9 @@ public class LobbyPlayerService {
 
     @Transactional
     public void revertAllLobbyPlayerInGameStatuses(Long lobbyId) {
+
+        System.out.println("\n\nrevertAllLobbyPlayerInGameStatuses() called!\n\n");
+
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
         lobby.getLobbyPlayers().forEach(lp -> {
             if (lp.getLobbyStatus() == LobbyStatus.INGAME) {
@@ -80,6 +83,7 @@ public class LobbyPlayerService {
                 lobbyChatService.createInfoMessage(lobbyId, lp.getUser().getId(), message, false);
             }
         });
+
         LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
 
         applicationEventPublisher.publishEvent(
@@ -92,12 +96,19 @@ public class LobbyPlayerService {
     public void revertLobbyPlayerInGameStatus(Long lobbyId, Long userId) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
         LobbyPlayerEntity lobbyPlayer = lobbyService.findLobbyPlayer(lobby, userId);
-        lobbyPlayer.setStatus(LobbyStatus.INGAME);
 
-        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+        if (lobbyPlayer.getLobbyStatus() == LobbyStatus.INGAME) {
+            lobbyPlayer.setStatus(LobbyStatus.WAITING);
 
-        String message = "updated their status to " + lobbyPlayer.getLobbyStatus().toString().toLowerCase() + ".";
-        lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
+            String message = "updated their status to " + lobbyPlayer.getLobbyStatus().toString().toLowerCase() + ".";
+            lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
+            LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+
+            applicationEventPublisher.publishEvent(
+                    new LobbyPlayerStatusUpdatedWsEvent(lobbyDto)
+            );
+        }
+
     }
 
 //    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

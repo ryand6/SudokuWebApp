@@ -57,6 +57,11 @@ export type GameEvent =
         gameStartsAt: string,
         gameEndsAt: string,
         gameStatus: GameStatus
+      }
+    | {
+        type: "GAME_FINISHED",
+        gameEndedAt: string,
+        gameStatus: GameStatus
       };
 
 export type GameEventLog = 

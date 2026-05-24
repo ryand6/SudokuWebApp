@@ -1,11 +1,11 @@
-package com.github.ryand6.sudokuweb.events.types.game;
+package com.github.ryand6.sudokuweb.events.types.lobby;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class GameClosedEvent {
+public class GameClosedLobbyUpdateEvent {
 
     private Long gameId;
 

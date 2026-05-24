@@ -2,14 +2,11 @@ package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;
 import com.github.ryand6.sudokuweb.dto.events.SudokuCellCoordinatesDto;
-import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.game.PlayerHighlightedCellUpdateEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.MembershipService;
 import com.github.ryand6.sudokuweb.util.GameUtils;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

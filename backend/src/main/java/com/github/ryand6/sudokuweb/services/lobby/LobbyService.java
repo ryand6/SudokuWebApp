@@ -8,8 +8,6 @@ import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameType;
-import com.github.ryand6.sudokuweb.events.types.game.GameClosedEvent;
-import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.*;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePlayerJoinedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePlayerLeftWsEvent;
@@ -20,7 +18,6 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,8 +26,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -256,14 +251,9 @@ public class LobbyService {
                 ));
     }
 
-    @Transactional
     // Register the Lobby inactive
-    void closeLobby(LobbyEntity lobby) {
+    private void closeLobby(LobbyEntity lobby) {
         lobby.setActive(false);
-
-        // CONSIDER WHETHER TO DELETE OR SOFT DELETE - want to keep game history
-        //lobbyRepository.deleteById(lobby.getId());
-
         // Update cache via synchronised event
         applicationEventPublisher.publishEvent(
                 new LobbyLeftMembershipEvent(lobby.getId())
@@ -283,7 +273,7 @@ public class LobbyService {
     }
 
     @Transactional
-    void handleGameFinish(Long lobbyId) {
+    public void handleGameFinish(Long lobbyId) {
         LobbyEntity lobby = getLobbyById(lobbyId);
         lobby.handleGameFinish();
         lobbyRepository.save(lobby);

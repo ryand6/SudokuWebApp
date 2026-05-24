@@ -32,7 +32,6 @@ import { GameCountdownScreen } from "@/components/game/GameCountdownScreen";
 
 
 export function GamePage() {
-
     const { gameId } = useParams();
 
     const gameIdNum = gameId ? Number(gameId) : NaN;

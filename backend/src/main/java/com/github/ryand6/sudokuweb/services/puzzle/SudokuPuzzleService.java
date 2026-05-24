@@ -40,10 +40,6 @@ public class SudokuPuzzleService {
 
         SudokuPuzzleEntity.verifyBoardStateAndSolutionLength(initialBoardState, solution);
 
-        // REMOVE
-//        initialBoardState = initialBoardState.replaceAll("0", ".");
-//        solution = solution.replaceAll("0", ".");
-
         // Either create a new entity or get existing if an entity already exists with the same initial board state and solution
         SudokuPuzzleEntity sudokuPuzzle = sudokuPuzzleRepository.existsByInitialBoardStateAndSolution(initialBoardState, solution)
                 ? sudokuPuzzleRepository.findByInitialBoardStateAndSolution(initialBoardState, solution)

@@ -22,6 +22,7 @@ import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
+import com.github.ryand6.sudokuweb.events.types.lobby.GameClosedLobbyUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePostGameCreationWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.game.GameCreationInterruptedException;
@@ -38,11 +39,7 @@ import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.Map;
@@ -120,53 +117,34 @@ public class GameService {
         if (Thread.currentThread().isInterrupted()) {
             throw new GameCreationInterruptedException("Game creation task for Lobby with ID " + lobbyId + " interrupted before starting DB operation");
         }
-        // Use repository to get lobby; using LobbyService creates a circular dependency
         LobbyEntity lobby = lobbyRepository.findById(lobbyId)
                 .orElseThrow(() -> new LobbyNotFoundException("Lobby with ID " + lobbyId + " does not exist"));
-
         if (lobby.isInGame()) {
             return null;
         }
-
         GameDto game = createGame(lobby);
-
         lobby.handleGameCreation(game.getGameId());
-
         applicationEventPublisher.publishEvent(
                 new LobbyCountdownResetEvent(lobby.getLobbyCountdownEntity())
         );
-
-        // Emit notification of lobby update after transaction committed
         applicationEventPublisher.publishEvent(
                 new LobbyUpdatePostGameCreationWsEvent(lobbyEntityDtoMapper.mapToDto(lobby))
         );
-
         return game;
     }
 
     /* Generate a new sudokuPuzzleEntity for the current lobby and creating lobbyState records for each
     active user in the lobby for the new sudokuPuzzleEntity - Transactional applied as multiple entities are
     saved to DB */
-    @Transactional
     private GameDto createGame(LobbyEntity lobby) {
-
         Difficulty difficulty = lobby.getLobbySettingsEntity().getDifficulty();
-
         lobby.validateGameCreation();
-
         SudokuPuzzleEntity sudokuPuzzle = sudokuPuzzleService.generatePuzzle(difficulty);
-
         GameEntity newGame = GameFactory.createGame(lobby, sudokuPuzzle);
-
         gameRepository.saveAndFlush(newGame);
-
         Set<GamePlayerEntity> gamePlayers = newGame.getGamePlayerEntities();
-
         List<PlayerColour> colourList = newGame.getShuffledPlayerColours();
-
         int i = 0;
-
-        // Create Game Players
         for (LobbyPlayerEntity lobbyPlayerEntity : lobby.getLobbyPlayers()) {
             PlayerColour playerColour = colourList.get(i);
             GamePlayerEntity gamePlayer = GamePlayerFactory.createGamePlayer(newGame, lobbyPlayerEntity.getUser(), playerColour, newGame.isBoardStateShared(), newGame.getSudokuPuzzleEntity().getInitialBoardState());
@@ -174,14 +152,10 @@ public class GameService {
             lobbyPlayerEntity.setLobbyStatus(LobbyStatus.INGAME);
             i++;
         }
-
-        // Initialise sequence entity for ordering game events
         GameEventSequenceEntity gameEventSequence = GameEventSequenceEntity.builder()
                 .gameId(newGame.getId())
                 .build();
-
         gameEventSequenceRepository.save(gameEventSequence);
-
         return gameEntityDtoMapper.mapToDto(newGame);
     }
 
@@ -191,16 +165,10 @@ public class GameService {
                 .orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
         GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
         gamePlayer.markGameLoaded();
-//        applicationEventPublisher.publishEvent(
-//                new PlayerGameLoadedEvent(gameId, userId)
-//        );
         GameLoadEvaluationResult gameLoadEvaluationResult = game.initGameClocks();
         if (gameLoadEvaluationResult == null) {
             return;
         }
-//        applicationEventPublisher.publishEvent(
-//                new GameStatusUpdateEvent(game.getId(), GameStatus.COUNTDOWN)
-//        );
         applicationEventPublisher.publishEvent(
                 new GameFinishSchedulerUpdateEvent(gameId, game.getGameEndsAt())
         );
@@ -214,27 +182,12 @@ public class GameService {
 
     @Transactional
     public void startGame(Long gameId) {
-
-
-        System.out.println("\n\nTransaction name: " + TransactionSynchronizationManager.getCurrentTransactionName() + "\n\n");
-        System.out.println("\n\nTransaction active: " + TransactionSynchronizationManager.isActualTransactionActive() + "\n\n");
-        System.out.println("\n\nSynchronization active: " + TransactionSynchronizationManager.isSynchronizationActive() + "\n\n");
-
-        System.out.println("\n\nstartGame called for gameId: " + gameId + "\n\n");
-
         GameEntity game = getGameById(gameId);
         game.setStatusInProgress();
         gameRepository.save(game);
-
-        System.out.println("\n\nGame status set to IN_PROGRESS, publishing GameStatusUpdateEvent for gameId: " + gameId + "\n\n");
-
         applicationEventPublisher.publishEvent(
                 new GameStatusUpdateEvent(game.getId(), GameStatus.IN_PROGRESS)
         );
-
-
-        System.out.println("\n\nGameStatusUpdateEvent published for gameId: " + gameId + "\n\n");
-
     }
 
     @Transactional
@@ -287,12 +240,14 @@ public class GameService {
         return gameDto;
     }
 
-    @Transactional
-    void abortGame(GameEntity game) {
+    private void abortGame(GameEntity game) {
         game.abortGame();
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
-                new GameClosedEvent(game.getId(), game.getLobbyEntity().getId())
+                new GameClosedMembershipUpdateEvent(game.getId(), game.getLobbyEntity().getId())
+        );
+        applicationEventPublisher.publishEvent(
+                new GameClosedLobbyUpdateEvent(game.getId(), game.getLobbyEntity().getId())
         );
         applicationEventPublisher.publishEvent(
                 new GameStatusUpdateEvent(game.getId(), GameStatus.ABORTED)
@@ -317,9 +272,7 @@ public class GameService {
             return;
         }
         gamePlayer.markGameFinished();
-
         GameEntity gameEntity = gamePlayer.getGameEntity();
-
         if (gameEntity.isPlayerFirstToFinish(gamePlayer)) {
             gameEntity.reduceEndTimeOnFirstPlayerCompletion();
             applicationEventPublisher.publishEvent(
@@ -329,17 +282,13 @@ public class GameService {
                     new GameEndsAtUpdateEvent(gameId, gameEntity.getGameEndsAt())
             );
         }
-
         GamePlayerDto gamePlayerDto = gamePlayerEntityDtoMapper.mapToDto(gamePlayer);
-
         applicationEventPublisher.publishEvent(
                 new PlayerFinishedGameEvent(gameId, gamePlayerDto)
         );
-
         if (gameEntity.getGameSettingsEntity().getGameType() == GameType.RANKED) {
             handlePlayerLeaderboardScore(gameId, gamePlayer);
         }
-
         if (gameEntity.isGameFinished()) {
             finishGame(gamePlayer.getGameEntity());
         }
@@ -356,30 +305,28 @@ public class GameService {
     }
 
     // Mark game as finished and send event to determine game result of each player
-    @Transactional
-    void finishGame(GameEntity game) {
+    private void finishGame(GameEntity game) {
+        GameStatus gameStatus = game.getGameStatus();
+        if (gameStatus == GameStatus.FINISHED || gameStatus == GameStatus.ABORTED || gameStatus == GameStatus.CLOSED) {
+            return;
+        }
         game.finishGame();
         if (game.getGameSettingsEntity().getGameType() == GameType.RANKED) {
             handleGameResults(game);
         }
         gameRepository.save(game);
-
         applicationEventPublisher.publishEvent(
                 new ScheduleGameCloseEvent(game.getId(), game.getGameEndedAt())
         );
-
         applicationEventPublisher.publishEvent(
-                new GameStatusUpdateEvent(game.getId(), GameStatus.FINISHED)
+                new GameFinishedEvent(game.getId(), game.getGameEndedAt(), GameStatus.FINISHED)
         );
-
     }
 
-    @Transactional
-    void handlePlayerLeaderboardScore(Long gameId, GamePlayerEntity gamePlayer) {
+    private void handlePlayerLeaderboardScore(Long gameId, GamePlayerEntity gamePlayer) {
         LeaderboardScoreCalculation leaderboardScoreCalculation = gamePlayer.calculateLeaderboardScore();
         Integer leaderboardScore = leaderboardScoreCalculation.getFinalScore();
         gamePlayer.setLeaderboardScore(leaderboardScore);
-
         applicationEventPublisher.publishEvent(
                 new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
         );
@@ -387,9 +334,8 @@ public class GameService {
         // IMPLEMENT - handle leaderboard entity score update
     }
 
-    @Transactional
-    void handleGameResults(GameEntity game) {
-        Set<GamePlayerEntity> gamePlayers = game.getGamePlayerEntities();
+    private void handleGameResults(GameEntity game) {
+        Set<GamePlayerEntity> gamePlayers = game.getRemainingActivePlayers();
         if (game.getGameSettingsEntity().getGameMode() == GameMode.TIMEATTACK) {
             boolean gameWon = game.determineTimeAttackVictory();
             GameResult gameResult = gameWon ? GameResult.WIN : GameResult.LOSS;
@@ -422,39 +368,19 @@ public class GameService {
     public void closeGame(Long gameId) {
         GameEntity game = getGameById(gameId);
         game.closeGame();
-
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
-                new GameClosedEvent(gameId, game.getLobbyEntity().getId())
+                new GameClosedMembershipUpdateEvent(gameId, game.getLobbyEntity().getId())
         );
-
-        applicationEventPublisher.publishEvent(
-                new GameStatusUpdateEvent(gameId, GameStatus.CLOSED)
-        );
-
         applicationEventPublisher.publishEvent(
                 new EndLobbyPlayerInGameStatusEvent(game.getLobbyEntity().getId())
         );
+        applicationEventPublisher.publishEvent(
+                new GameClosedLobbyUpdateEvent(gameId, game.getLobbyEntity().getId())
+        );
+        applicationEventPublisher.publishEvent(
+                new GameStatusUpdateEvent(gameId, GameStatus.CLOSED)
+        );
     }
-
-//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-//    void handlePlayerFinishEvent(HandlePlayerFinishEvent event) {
-//        handlePlayerFinish(event.getGameId(), event.getUserId());
-//    }
-//
-//    @EventListener
-//    void handleFinishGameEvent(FinishGameEvent event) {
-//        markAllPlayersFinished(event.getGameId());
-//    }
-//
-//    @EventListener
-//    void handleCloseGameEvent(CloseGameEvent event) {
-//        closeGame(event.getGameId());
-//    }
-//
-//    @EventListener
-//    void handleStartGameEvent(StartGameEvent event) {
-//        startGame(event.getGameId());
-//    }
 
 }

@@ -10,10 +10,10 @@ export function useNavigateUserWhenInGame(
     isLoadingGameData: boolean,
     navigate: NavigateFunction
 ) {
-    // Handle navigation only when confirmed if user is part of current game
     useEffect(() => {
-        // Ensure game is active, created and normalised before redirect
-        if (!lobbyInGame || !currentGameId || !userId || !playerInGame || !gameId || isLoadingGameData) return;
+        if (!lobbyInGame || !currentGameId || !userId || !playerInGame || !gameId || isLoadingGameData) {
+            return;
+        }
         navigate(`/game/${gameId}`);
     }, [lobbyInGame, currentGameId, userId, playerInGame, gameId, isLoadingGameData, navigate]);
 }

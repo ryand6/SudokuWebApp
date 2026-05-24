@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.ExistingActiveGameException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyFullException;
@@ -156,6 +157,9 @@ public class LobbyEntity {
     }
 
     public void handleGameFinish() {
+
+        System.out.println("\n\nhandleGameFinish() entity method called!\n\n");
+
         inGame = false;
         currentGameId = null;
     }

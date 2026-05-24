@@ -52,12 +52,16 @@ export function LobbyPage() {
     const lobbyPlayer: LobbyPlayerDto | undefined = lobby?.lobbyPlayers.filter(player => player.id.userId === currentUser?.id).at(0);
     const playerInGame: boolean | null = lobbyPlayer ? lobbyPlayer.lobbyStatus === "INGAME" : null;
 
+    console.log("Player in game: ", playerInGame);
+
     // Navigates user to game page when they are in an active game
     useNavigateUserWhenInGame(lobby?.inGame, lobby?.currentGameId, currentUser?.id, playerInGame, gameQueryData?.gameId, isLoadingGame, navigate);
 
     if (isLobbyLoading || isCurrentUserLoading) return <SpinnerButton />;
 
     if (!lobby || !currentUser) return null;
+
+    console.log("LOBBY DATA: ", lobby);
 
     const handleLeaveLobbyClick = () => {
         leaveLobbyHandler.mutate({ lobbyId: lobby.id });

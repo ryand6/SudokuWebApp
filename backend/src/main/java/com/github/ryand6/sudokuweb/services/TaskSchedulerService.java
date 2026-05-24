@@ -71,7 +71,6 @@ public class TaskSchedulerService {
     private void createGame(Long lobbyId) {
         try {
             GameDto gameDto = gameService.createGameIfNoneActive(lobbyId);
-
             if (gameDto != null) {
                 lobbyWebSocketsService.handleLobbyGameStart(gameDto);
             }
