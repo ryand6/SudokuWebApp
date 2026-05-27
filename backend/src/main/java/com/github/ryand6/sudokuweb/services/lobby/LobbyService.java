@@ -252,7 +252,7 @@ public class LobbyService {
     }
 
     // Register the Lobby inactive
-    private void closeLobby(LobbyEntity lobby) {
+    void closeLobby(LobbyEntity lobby) {
         lobby.setActive(false);
         // Update cache via synchronised event
         applicationEventPublisher.publishEvent(

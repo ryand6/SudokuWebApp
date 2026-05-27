@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
-import com.github.ryand6.sudokuweb.domain.game.GameLoadEvaluationResult;
+import com.github.ryand6.sudokuweb.domain.game.GameClocks;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventSequenceRepository;
@@ -21,6 +21,7 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.events.types.game.*;
+import com.github.ryand6.sudokuweb.events.types.general.CancelScheduledTaskEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.GameClosedLobbyUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
@@ -36,9 +37,11 @@ import com.github.ryand6.sudokuweb.mappers.Impl.game.GamePlayerEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.game.PrivateGamePlayerStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
+import com.github.ryand6.sudokuweb.services.TaskSchedulerService;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -130,6 +133,9 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new LobbyUpdatePostGameCreationWsEvent(lobbyEntityDtoMapper.mapToDto(lobby))
         );
+        applicationEventPublisher.publishEvent(
+                new ScheduleCountdownEvent(game.getGameId())
+        );
         return game;
     }
 
@@ -160,23 +166,48 @@ public class GameService {
     }
 
     @Transactional
+    public void forceCountdownStart(Long gameId) {
+        GameEntity game = gameRepository.findByIdWithLock(gameId)
+                .orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
+        if (game.getGameStartsAt() != null) {
+            return;
+        }
+        boolean playersLoaded = false;
+        GameClocks gameClocks = game.initGameClocks(playersLoaded);
+        applicationEventPublisher.publishEvent(
+                new GameFinishSchedulerUpdateEvent(gameId, game.getGameEndsAt())
+        );
+        applicationEventPublisher.publishEvent(
+                new InitialiseGameClocksEvent(gameId, gameClocks.getGameStartsAt(), gameClocks.getGameEndsAt(), game.getGameStatus())
+        );
+        applicationEventPublisher.publishEvent(
+                new ScheduleGameStartEvent(gameId, gameClocks.getGameStartsAt())
+        );
+    }
+
+    @Transactional
     public void handlePlayerGameLoadedConfirmation(Long gameId, Long userId) {
         GameEntity game = gameRepository.findByIdWithLock(gameId)
                 .orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
         GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
         gamePlayer.markGameLoaded();
-        GameLoadEvaluationResult gameLoadEvaluationResult = game.initGameClocks();
-        if (gameLoadEvaluationResult == null) {
+        if (!game.validateInitGameClocksOnLoadedPlayers()) {
             return;
         }
+        boolean playersLoaded = true;
+        GameClocks gameClocks = game.initGameClocks(playersLoaded);
+        game.setStatusCountdown();
+        applicationEventPublisher.publishEvent(
+                new CancelScheduledTaskEvent(TaskSchedulerService.SCHEDULE_COUNTDOWN_TASK_NAME)
+        );
         applicationEventPublisher.publishEvent(
                 new GameFinishSchedulerUpdateEvent(gameId, game.getGameEndsAt())
         );
         applicationEventPublisher.publishEvent(
-                new InitialiseGameClocksEvent(gameId, gameLoadEvaluationResult.getGameStartsAt(), gameLoadEvaluationResult.getGameEndsAt(), game.getGameStatus())
+                new InitialiseGameClocksEvent(gameId, gameClocks.getGameStartsAt(), gameClocks.getGameEndsAt(), game.getGameStatus())
         );
         applicationEventPublisher.publishEvent(
-                new ScheduleGameStartEvent(gameId, gameLoadEvaluationResult.getGameStartsAt())
+                new ScheduleGameStartEvent(gameId, gameClocks.getGameStartsAt())
         );
     }
 
@@ -194,32 +225,24 @@ public class GameService {
     public GameDto forfeitGamePlayer(Long gameId, Long userId) {
         GameEntity game = getGameById(gameId);
         GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
-
         if (game.isAborted(gamePlayer)) {
             abortGame(game);
         }
-
         gamePlayer.setGameResult(GameResult.FORFEIT);
         gamePlayer.setScore(0);
-
         gameRepository.save(game);
-
         // Send event to remove player from lobby and update membership/in memory caches
         applicationEventPublisher.publishEvent(
                 new GamePlayerLeftEvent(game.getId(), game.getLobbyEntity().getId(), userId)
         );
-
         GameDto gameDto = gameEntityDtoMapper.mapToDto(game);
         GamePlayerDto gamePlayerDto = gamePlayerEntityDtoMapper.mapToDto(gamePlayer);
-
         applicationEventPublisher.publishEvent(
                 new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.GAME_PLAYER_FORFEIT, "player " + gamePlayerDto.getUser().getUsername() + " has forfeit and left the game"))
         );
-
         applicationEventPublisher.publishEvent(
                 new GamePlayerForfeitEvent(gameId, gamePlayerDto)
         );
-
         if (game.validateGameEndedPrematurely()) {
             GamePlayerEntity lastRemainingPlayer = game.findLastRemainingPlayer();
             if (lastRemainingPlayer != null) {
@@ -236,7 +259,6 @@ public class GameService {
         if (game.getGameStatus() == GameStatus.ABORTED) {
             return null;
         }
-
         return gameDto;
     }
 

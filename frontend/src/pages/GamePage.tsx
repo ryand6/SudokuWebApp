@@ -29,6 +29,7 @@ import { confirmPlayerGameLoaded } from "@/api/ws/game/confirmPlayerGameLoaded";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { WaitingForPlayersScreen } from "@/components/game/WaitingForPlayersScreen";
 import { GameCountdownScreen } from "@/components/game/GameCountdownScreen";
+import { useConfirmPlayerGameLoaded } from "@/hooks/game/useConfirmPlayerGameLoaded";
 
 
 export function GamePage() {
@@ -59,11 +60,7 @@ export function GamePage() {
     // Redirect to lobby if game is in a closed state (closed, aborted)
     useHandleClosedGame(publicGameState?.gameStatus, publicGameState?.lobbyId, navigate);
 
-    useEffect(() => {
-        if ((publicGameState && privateGameState && currentUser) && !publicGameState.players[currentUser.id].gameLoaded) {
-            confirmPlayerGameLoaded(send, publicGameState.gameId);
-        }
-    },[publicGameState, privateGameState, currentUser]);
+    useConfirmPlayerGameLoaded(publicGameState, privateGameState, currentUser, send);
 
     const playerFinishedGame = currentUser ? publicGameState?.players[currentUser.id].finishedGame : undefined;
 

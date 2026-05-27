@@ -1,0 +1,14 @@
+package com.github.ryand6.sudokuweb.events.types.game;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class ScheduleCountdownEvent {
+
+    private Long gameId;
+
+}
+
+

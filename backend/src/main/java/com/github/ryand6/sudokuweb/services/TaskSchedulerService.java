@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services;
 
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.events.types.general.CancelScheduledTaskEvent;
@@ -25,10 +26,11 @@ public class TaskSchedulerService {
 
     private final TaskScheduler taskScheduler;
 
-    private static final String GAME_CREATION_TASK_NAME = "CREATE_GAME_FOR_LOBBY_";
-    private static final String START_GAME_TASK_NAME = "START_GAME_";
-    private static final String FINISH_GAME_TASK_NAME = "FINISH_GAME_";
-    private static final String CLOSE_GAME_TASK_NAME = "CLOSE_GAME_";
+    public static final String GAME_CREATION_TASK_NAME = "CREATE_GAME_FOR_LOBBY_";
+    public static final String SCHEDULE_COUNTDOWN_TASK_NAME = "SCHEDULE_COUNTDOWN_";
+    public static final String START_GAME_TASK_NAME = "START_GAME_";
+    public static final String FINISH_GAME_TASK_NAME = "FINISH_GAME_";
+    public static final String CLOSE_GAME_TASK_NAME = "CLOSE_GAME_";
 
     private final Map<String, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
 
@@ -77,6 +79,26 @@ public class TaskSchedulerService {
         } catch (Exception e) {
             log.error("Game creation task failed: ", e);
         }
+    }
+
+    //#######################//
+    // Start Countdown       //
+    //#######################//
+
+    public void scheduleGameCountdown(Long gameId) {
+        String taskId = SCHEDULE_COUNTDOWN_TASK_NAME + gameId;
+        cancelTask(taskId);
+
+        ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+
+            System.out.println("\n\nFiring StartCountdownEvent!\n\n");
+
+            applicationEventPublisher.publishEvent(
+                    new StartCountdownEvent(gameId)
+            );
+        }, Instant.now().plusSeconds(GameEntity.MAX_WAIT_SECONDS));
+
+        scheduledTasks.put(taskId, future);
     }
 
     //#######################//
@@ -147,6 +169,11 @@ public class TaskSchedulerService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleScheduleGameCreationTaskEvent(ScheduleGameCreationTaskEvent event) {
         scheduleGameCreationTask(event.getLobbyId(), event.getCountdownEndsAt());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleScheduleCountdown(ScheduleCountdownEvent event) {
+        scheduleGameCountdown(event.getGameId());
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

@@ -35,6 +35,12 @@ public class GameEventListenerService {
 
     @EventListener
     @Transactional
+    void handleStartCountdownEvent(StartCountdownEvent event) {
+        gameService.forceCountdownStart(event.getGameId());
+    }
+
+    @EventListener
+    @Transactional
     void handleFinishGameEvent(FinishGameEvent event) {
         gameService.markAllPlayersFinished(event.getGameId());
     }

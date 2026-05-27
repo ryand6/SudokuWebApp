@@ -104,22 +104,22 @@ public class GameEntity {
         return gameMode == GameMode.DOMINATION || gameMode == GameMode.TIMEATTACK;
     }
 
-    public GameLoadEvaluationResult initGameClocks() {
-        if (checkAllPlayersLoaded()
-                && gameStartsAt == null
-                && gameStatus == GameStatus.LOADING) {
-            gameStartsAt = gamePlayerEntities.stream()
-                    .max(Comparator.comparing(GamePlayerEntity::getGameLoadedTimestamp))
-                    .orElseThrow(() -> new GameLoadedTimestampNotFoundException("Game loaded timestamp could not be found for any of the players."))
-                    .getGameLoadedTimestamp()
-                    .plusMillis(GAME_COUNTDOWN_MS);
-            if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null) {
-                gameEndsAt = gameStartsAt.plusSeconds(lobbyEntity.getLobbySettingsEntity().getTimeLimit().getSeconds());
-            }
-            setStatusCountdown();
-            return new GameLoadEvaluationResult(gameStartsAt, gameEndsAt);
+    public boolean validateInitGameClocksOnLoadedPlayers() {
+        return checkAllPlayersLoaded() && gameStatus == GameStatus.LOADING && gameStartsAt == null;
+    }
+
+    public GameClocks initGameClocks(boolean playersLoaded) {
+        gameStartsAt = playersLoaded ? gamePlayerEntities.stream()
+                .max(Comparator.comparing(GamePlayerEntity::getGameLoadedTimestamp))
+                .orElseThrow(() -> new GameLoadedTimestampNotFoundException("Game loaded timestamp could not be found for any of the players."))
+                .getGameLoadedTimestamp()
+                .plusMillis(GAME_COUNTDOWN_MS)
+        : Instant.now().plusMillis(GAME_COUNTDOWN_MS);
+        if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null) {
+            gameEndsAt = gameStartsAt.plusSeconds(lobbyEntity.getLobbySettingsEntity().getTimeLimit().getSeconds());
         }
-        return null;
+        setStatusCountdown();
+        return new GameClocks(gameStartsAt, gameEndsAt);
     }
 
     public void setStatusCountdown() {

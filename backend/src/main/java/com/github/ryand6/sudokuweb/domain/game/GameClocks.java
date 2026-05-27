@@ -11,7 +11,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @Getter
 @Builder
-public class GameLoadEvaluationResult {
+public class GameClocks {
 
     private Instant gameStartsAt;
 
