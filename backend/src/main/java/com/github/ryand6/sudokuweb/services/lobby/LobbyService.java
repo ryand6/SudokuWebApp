@@ -277,6 +277,9 @@ public class LobbyService {
         LobbyEntity lobby = getLobbyById(lobbyId);
         lobby.handleGameFinish();
         lobbyRepository.save(lobby);
+        applicationEventPublisher.publishEvent(
+                new LobbyGameEndedEvent(lobbyId)
+        );
     }
 
 }

@@ -30,6 +30,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { WaitingForPlayersScreen } from "@/components/game/WaitingForPlayersScreen";
 import { GameCountdownScreen } from "@/components/game/GameCountdownScreen";
 import { useConfirmPlayerGameLoaded } from "@/hooks/game/useConfirmPlayerGameLoaded";
+import { PlayerStatsSummaryBar } from "@/components/game/PlayerStatsSummaryBar";
 
 
 export function GamePage() {
@@ -115,8 +116,10 @@ export function GamePage() {
                                     gamePlayers={publicGameState.players} 
                                     difficulty={publicGameState.gameSettings.difficulty}
                                     gameMode={publicGameState.gameSettings.gameMode}
+                                    gameType={publicGameState.gameSettings.gameType}
                                     currentStreak={privateGameState.currentStreak} 
                                     userSettings={currentUser.userSettings}
+                                    gameEndsAt={publicGameState.gameEndsAt}
                                     leaveGameHandler={leaveGameHandler}
                                     queryClient={queryClient}
                                 />
@@ -131,6 +134,11 @@ export function GamePage() {
                                     setGameHighlightedCells={setGameHighlightedCells}
                                     notesModeOn={notesModeOn}
                                     userSettings={currentUser.userSettings}
+                                />
+                                <PlayerStatsSummaryBar 
+                                    userId={currentUser.id}
+                                    gamePlayers={publicGameState.players}
+                                    currentStreak={privateGameState.currentStreak}
                                 />
                                 <UserActionBar 
                                     gameId={publicGameState.gameId}

@@ -10,6 +10,7 @@ export function lobbyCacheDispatcher(
     event: LobbyEvent
 ) {
     queryClient.setQueryData(queryKeys.lobby(lobbyId), (old: LobbyDto) => {
+        if (!old) return old;
         return lobbyCacheReducer(old, event);
     });
 }

@@ -7,7 +7,6 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import { HUDHeatMaps } from "./HUDHeatMaps";
 import { HUDGameEventLog } from "./HUDGameEventLog";
 import { HUDGameChat } from "./HUDGameChat";
-import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 import { UserSettings } from "../shared/UserSettings";
 import { QueryClient, type UseMutateFunction } from "@tanstack/react-query";
@@ -15,6 +14,8 @@ import { Button } from "../ui/button";
 import { LeaveGameAlertDialog } from "../ui/custom/LeaveGameAlertDialog";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { LeaveGameRequestDto } from "@/types/dto/request/LeaveGameRequestDto";
+import { GameInfoBar } from "./GameInfoBar";
+import type { GameType } from "@/types/enum/GameType";
 
 export function GameHUD(
     {
@@ -23,8 +24,10 @@ export function GameHUD(
         gamePlayers, 
         difficulty, 
         gameMode,
+        gameType,
         currentStreak,
         userSettings,
+        gameEndsAt,
         leaveGameHandler,
         queryClient
     }: {
@@ -33,8 +36,10 @@ export function GameHUD(
         gamePlayers: GamePlayers, 
         difficulty: Difficulty, 
         gameMode: GameMode,
+        gameType: GameType,
         currentStreak: number,
         userSettings: UserSettingsDto,
+        gameEndsAt: string | null,
         leaveGameHandler: {
             mutate: UseMutateFunction<GameDto | null, Error, LeaveGameRequestDto, unknown>;
             isLeaving: boolean;
@@ -99,33 +104,13 @@ export function GameHUD(
                 </div>
                 <UserSettings settings={userSettings} queryClient={queryClient} additionalActions={leaveGameComponent} />
             </div>
-            <div className="flex">
-                <div className="flex flex-1">
-                    {Object.entries(gamePlayers).map(([key, player], index) => {
-                        return (
-                            <div className="flex" key={index}>
-                                <div 
-                                    className={`flex flex-col px-2 mx-2
-                                                ${userId === Number(key) && "elevated shine "}`}
-                                >
-                                    <div className="flex gap-2">
-                                        <div>
-                                            { player.name }
-                                        </div>
-                                        <div className={`p-2 my-1 border-border border-1 ${playerColourClassNamePicker[player.colour].medium}`}></div>
-                                        { (userId === Number(key)) && currentStreak > 1 && 
-                                            (<div className="font-extrabold">x{ currentStreak }</div>)
-                                        }
-                                    </div>
-                                    <div>
-                                        Score: { player.score }
-                                    </div>
-                                </div>
-                                <div className="vertical-divider"></div>
-                            </div>
-                        );
-                    })}     
-                    </div>
+            <div>
+                <GameInfoBar
+                    difficulty={difficulty} 
+                    gameMode={gameMode}
+                    gameType={gameType}
+                    gameEndsAt={gameEndsAt}
+                />
             </div>
 
             <Modal 

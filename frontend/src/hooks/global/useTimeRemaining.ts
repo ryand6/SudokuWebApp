@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export function useTimeRemaining(endTime: number) {
+export function useTimeRemaining(endTime: number, intervalMs: number) {
      const [timeRemaining, setTimeRemaining] = useState<number>(() => endTime - performance.now());
 
     useEffect(() => {
@@ -12,7 +12,7 @@ export function useTimeRemaining(endTime: number) {
             if (remaining <= 0) {
                 clearInterval(intervalId);
             }
-        }, 50);
+        }, intervalMs);
 
         return () => clearInterval(intervalId);
     }, [endTime]);

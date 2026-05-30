@@ -57,7 +57,6 @@ public class TaskSchedulerService {
     public void scheduleGameCreationTask(Long lobbyId, Instant countdownEndsAt) {
         String taskId = GAME_CREATION_TASK_NAME + lobbyId;
         cancelTask(taskId);
-
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
             try {
                 createGame(lobbyId);
@@ -65,7 +64,6 @@ public class TaskSchedulerService {
                 scheduledTasks.remove(taskId);
             }
         }, countdownEndsAt.plusMillis(50));
-
         scheduledTasks.put(taskId, future);
     }
 
@@ -88,16 +86,11 @@ public class TaskSchedulerService {
     public void scheduleGameCountdown(Long gameId) {
         String taskId = SCHEDULE_COUNTDOWN_TASK_NAME + gameId;
         cancelTask(taskId);
-
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
-
-            System.out.println("\n\nFiring StartCountdownEvent!\n\n");
-
             applicationEventPublisher.publishEvent(
                     new StartCountdownEvent(gameId)
             );
         }, Instant.now().plusSeconds(GameEntity.MAX_WAIT_SECONDS));
-
         scheduledTasks.put(taskId, future);
     }
 
@@ -108,13 +101,11 @@ public class TaskSchedulerService {
     public void scheduleGameStart(Long gameId, Instant gameStartsAt) {
         String taskId = START_GAME_TASK_NAME + gameId;
         cancelTask(taskId);
-
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
             applicationEventPublisher.publishEvent(
                     new StartGameEvent(gameId)
             );
         }, gameStartsAt);
-
         scheduledTasks.put(taskId, future);
     }
 
@@ -125,13 +116,11 @@ public class TaskSchedulerService {
     public void scheduleGameFinish(Long gameId, Instant gameEndsAt) {
         String taskId = FINISH_GAME_TASK_NAME + gameId;
         cancelTask(taskId);
-
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
             applicationEventPublisher.publishEvent(
                     new FinishGameEvent(gameId)
             );
         }, gameEndsAt);
-
         scheduledTasks.put(taskId, future);
     }
 
@@ -142,13 +131,11 @@ public class TaskSchedulerService {
     public void scheduleGameClose(Long gameId, Instant gameEndedAt) {
         String taskId = CLOSE_GAME_TASK_NAME + gameId;
         cancelTask(taskId);
-
         ScheduledFuture<?> future = taskScheduler.schedule(() -> {
             applicationEventPublisher.publishEvent(
                     new CloseGameEvent(gameId)
             );
         }, gameEndedAt.plusMillis(60000));
-
         scheduledTasks.put(taskId, future);
     }
 
@@ -158,17 +145,19 @@ public class TaskSchedulerService {
 
     public void cancelTask(String taskId) {
         ScheduledFuture<?> oldFuture = scheduledTasks.get(taskId);
-
         if (oldFuture != null) {
             oldFuture.cancel(true);
         }
-
         scheduledTasks.remove(taskId);
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleScheduleGameCreationTaskEvent(ScheduleGameCreationTaskEvent event) {
-        scheduleGameCreationTask(event.getLobbyId(), event.getCountdownEndsAt());
+        if (event.getCountdownEndsAt() != null) {
+            scheduleGameCreationTask(event.getLobbyId(), event.getCountdownEndsAt());
+        } else {
+            log.info("countdownEndsAt for lobby with ID " + event.getLobbyId() + " is null, therefore no game creation event scheduled" );
+        }
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -178,17 +167,29 @@ public class TaskSchedulerService {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleScheduleGameStartEvent(ScheduleGameStartEvent event) {
-        scheduleGameStart(event.getGameId(), event.getGameStartsAt());
+        if (event.getGameStartsAt() != null) {
+            scheduleGameStart(event.getGameId(), event.getGameStartsAt());
+        } else {
+            log.info("gameStartsAt for game with ID " + event.getGameId() + " is null, therefore no game start event scheduled" );
+        }
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleGameFinishSchedulerUpdate(GameFinishSchedulerUpdateEvent event) {
-        scheduleGameFinish(event.getGameId(), event.getGameEndsAt());
+        if (event.getGameEndsAt() != null) {
+            scheduleGameFinish(event.getGameId(), event.getGameEndsAt());
+        } else {
+            log.info("gameEndsAt for game with ID " + event.getGameId() + " is null, therefore no game finish event scheduled" );
+        }
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleScheduleGameCloseEvent(ScheduleGameCloseEvent event) {
-        scheduleGameClose(event.getGameId(), event.getGameEndedAt());
+        if (event.getGameEndedAt() != null) {
+            scheduleGameClose(event.getGameId(), event.getGameEndedAt());
+        } else {
+            log.info("gameEndedAt for game with ID " + event.getGameId() + " is null, therefore no game close event scheduled" );
+        }
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

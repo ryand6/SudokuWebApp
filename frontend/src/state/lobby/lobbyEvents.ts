@@ -6,16 +6,21 @@ export type LobbyEvent =
     | {
         type: "LOBBY_UPDATED",
         lobbyData: LobbyDto
-      };
-
-export type LobbyChatEvent =
+      }
     | {
-        type: "LOBBY_CHAT_MESSAGE",
-        newMessage: LobbyChatMessageDto
+        type: "GAME_ENDED",
+        lobbyId: number
       };
 
 export type GameCreationEvent = 
     | {
         type: "GAME_CREATED",
         gameData: GameDto
-      };
+    };
+
+
+export type LobbyChatEvent =
+    | {
+        type: "LOBBY_CHAT_MESSAGE",
+        newMessage: LobbyChatMessageDto
+      };    

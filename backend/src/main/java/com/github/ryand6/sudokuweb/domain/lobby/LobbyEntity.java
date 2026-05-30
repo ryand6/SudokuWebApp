@@ -157,9 +157,6 @@ public class LobbyEntity {
     }
 
     public void handleGameFinish() {
-
-        System.out.println("\n\nhandleGameFinish() entity method called!\n\n");
-
         inGame = false;
         currentGameId = null;
     }

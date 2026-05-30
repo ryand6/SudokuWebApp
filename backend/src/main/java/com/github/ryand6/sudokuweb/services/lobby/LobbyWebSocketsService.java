@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.services.lobby;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyGameEndedEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyChatInfoMessageSentPreCommitWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyChatMessageSentWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdateWsEvent;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
+import java.time.Instant;
 import java.util.Map;
 
 @Service
@@ -30,9 +32,7 @@ public class LobbyWebSocketsService {
                 "type", "LOBBY_UPDATED",
                 "payload", lobbyDto
         );
-
         String topic = "/topic/lobby/" + lobbyDto.getId();
-
         // Send updated Dto over websocket to the lobby topic where all active players are subscribed to
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
@@ -54,9 +54,16 @@ public class LobbyWebSocketsService {
                 "type", "GAME_CREATED",
                 "payload", gameDto
         );
-
         String topic = "/topic/lobby/" + gameDto.getLobbyId();
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
 
+    public void handleLobbyGameEnded(LobbyGameEndedEvent event) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "GAME_ENDED",
+                "payload", event
+        );
+        String topic = "/topic/lobby/" + event.getLobbyId();
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
@@ -75,6 +82,11 @@ public class LobbyWebSocketsService {
     @EventListener
     void handleLobbyChatMessagePlayerLeftWsEvent(LobbyChatInfoMessageSentPreCommitWsEvent event) {
         handleLobbyChatMessageSend(event.getLobbyChatMessageDto());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleLobbyGameEndedEvent(LobbyGameEndedEvent event) {
+        handleLobbyGameEnded(event);
     }
 
 }

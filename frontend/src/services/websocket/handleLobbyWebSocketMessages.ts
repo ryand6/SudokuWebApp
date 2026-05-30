@@ -22,6 +22,13 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
             })
             break;
         }
+        case "GAME_ENDED": {
+            lobbyCacheDispatcher(queryClient, lobbyId, {
+                type: "GAME_ENDED",
+                lobbyId: message.payload.lobbyId
+            })
+            break;
+        }
         // Updates session storage if message is received in lobby chat
         case "LOBBY_CHAT_MESSAGE": {
             lobbyChatCacheDispatcher(queryClient, lobbyId, {

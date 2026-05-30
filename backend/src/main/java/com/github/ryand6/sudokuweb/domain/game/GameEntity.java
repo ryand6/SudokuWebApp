@@ -115,7 +115,7 @@ public class GameEntity {
                 .getGameLoadedTimestamp()
                 .plusMillis(GAME_COUNTDOWN_MS)
         : Instant.now().plusMillis(GAME_COUNTDOWN_MS);
-        if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null) {
+        if (lobbyEntity != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit() != null && lobbyEntity.getLobbySettingsEntity().getTimeLimit().getSeconds() != null) {
             gameEndsAt = gameStartsAt.plusSeconds(lobbyEntity.getLobbySettingsEntity().getTimeLimit().getSeconds());
         }
         setStatusCountdown();
@@ -123,10 +123,11 @@ public class GameEntity {
     }
 
     public void setStatusCountdown() {
+
+        System.out.println("\n\nGame Status when trying to start countdown: " + gameStatus.toString() + "\n\n");
+
         if (gameStatus == GameStatus.LOADING) {
             gameStatus = GameStatus.COUNTDOWN;
-        } else {
-            throw new IllegalGameStatusChangeException("Game status cannot be moved to countdown due to illegal state change.");
         }
     }
 
