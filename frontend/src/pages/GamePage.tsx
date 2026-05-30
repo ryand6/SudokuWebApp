@@ -1,42 +1,32 @@
-import { SudokuBoard } from "@/components/game/board/SudokuBoard";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { useHandleGetGameError } from "@/hooks/game/useHandleGetGameError";
 import { useValidateGameId } from "@/hooks/game/useValidateGameId";
 import { useGetGame } from "@/api/rest/game/query/useGetGame";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { useNavigate, useParams } from "react-router-dom";
-import type { CellCoordinates } from "@/types/game/GameTypes";
+import type { CellCoordinates, PrivateBoardState } from "@/types/game/GameTypes";
 import { useGetGamePlayerState } from "@/api/rest/game/query/useGetGamePlayerState";
 import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useValidateGamePlayer } from "@/hooks/game/useValidateGamePlayer";
 import { useHandleGameWsSubscriptions } from "@/hooks/game/useHandleGameWsSubscriptions";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHighlightedCells";
-import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
+import { useMemo, useState } from "react";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
-import { UserActionBar } from "@/components/game/actions/UserActionBar";
 import { resolveBoardState } from "@/utils/game/gameUtils";
-import { GameHUD } from "@/components/game/hud/GameHUD";
-import { getCellState } from "@/utils/game/boardStateUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { useHandleClosedGame } from "@/hooks/game/useHandleClosedGame";
 import { useShowGameResults } from "@/hooks/game/useShowGameResults";
-import { Modal } from "@/components/ui/custom/Modal";
-import { GameResults } from "@/components/game/results/GameResults";
-import { confirmPlayerGameLoaded } from "@/api/ws/game/confirmPlayerGameLoaded";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { WaitingForPlayersScreen } from "@/components/game/screens/WaitingForPlayersScreen";
 import { GameCountdownScreen } from "@/components/game/screens/GameCountdownScreen";
 import { useConfirmPlayerGameLoaded } from "@/hooks/game/useConfirmPlayerGameLoaded";
-import { GameNotificationLayer } from "@/components/game/notifications/GameNotificationLayer";
-import { PlayerStatsSummaryBar } from "@/components/game/players/PlayerStatsSummaryBar";
+import { useIsMobile } from "@/hooks/global/useIsMobile";
+import { GameMobileLayout } from "@/components/game/layouts/GameMobileLayout";
+import { GameDesktopLayout } from "@/components/game/layouts/GameDesktopLayout";
 
 export function GamePage() {
     const { gameId } = useParams();
-
     const gameIdNum = gameId ? Number(gameId) : NaN;
-
     useValidateGameId(gameIdNum);
 
     const [gameHighlightedCells, setGameHighlightedCells] = useState<Map<number, CellCoordinates> | undefined>(undefined);
@@ -47,6 +37,8 @@ export function GamePage() {
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+
+    const isMobile = useIsMobile();
 
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
 
@@ -62,11 +54,11 @@ export function GamePage() {
 
     useConfirmPlayerGameLoaded(publicGameState, privateGameState, currentUser, send);
 
-    const playerFinishedGame = currentUser ? publicGameState?.players[currentUser.id].finishedGame : undefined;
+    const playerFinishedGame: boolean | undefined = currentUser ? publicGameState?.players[currentUser.id].finishedGame : undefined;
 
     useShowGameResults(playerFinishedGame, publicGameState?.endedPrematurely, setShowGameResultsModal);
 
-    const boardState = useMemo(() => {
+    const boardState: PrivateBoardState | undefined = useMemo(() => {
         return resolveBoardState(publicGameState?.gameSettings.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState);
     }, [publicGameState?.gameSettings.gameMode, publicGameState?.sharedGameState.currentSharedBoardState, privateGameState?.boardState]);
 
@@ -95,86 +87,50 @@ export function GamePage() {
     console.log("PRIVATE GAME STATE", privateGameState);
 
     return (
-        <div className="flex flex-col h-screen w-full">
+        <div className="h-screen w-full">
             {
                 publicGameState.gameStatus === "LOADING" ? (
                     <WaitingForPlayersScreen />
                 ) : publicGameState.gameStatus === "COUNTDOWN" ? (
                     <GameCountdownScreen gameStartsAt={publicGameState.gameStartsAt} />
+                ) : isMobile ? (
+                    <GameMobileLayout
+                        currentUser={currentUser}
+                        publicGameState={publicGameState}
+                        privateGameState={privateGameState}
+                        boardState={boardState}
+                        playerColours={playerColours}
+                        userHighlightedCell={userHighlightedCell}
+                        gameHighlightedCells={gameHighlightedCells}
+                        setGameHighlightedCells={setGameHighlightedCells}
+                        notesModeOn={notesModeOn}
+                        setNotesModeOn={setNotesModeOn}
+                        showGameResultsModal={showGameResultsModal}
+                        leaveGameHandler={leaveGameHandler}
+                        isMobile={true}
+                        queryClient={queryClient}
+                        navigate={navigate}
+                    />
                 ) : (
-                    <>
-                        <GameNotificationLayer 
-                            scoreNotificationsEnabled={currentUser.userSettings.scoreNotificationsEnabled}
-                            streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
-                        />
-                        <div className="flex justify-center items-center min-h-[500px] h-full py-[2%]">
-                            <div className="flex flex-col justify-center items-center w-[80%] max-w-[1200px] h-full">
-                                <GameHUD 
-                                    userId={currentUser.id}
-                                    gameId={gameIdNum}
-                                    gamePlayers={publicGameState.players} 
-                                    difficulty={publicGameState.gameSettings.difficulty}
-                                    gameMode={publicGameState.gameSettings.gameMode}
-                                    gameType={publicGameState.gameSettings.gameType}
-                                    currentStreak={privateGameState.currentStreak} 
-                                    userSettings={currentUser.userSettings}
-                                    gameEndsAt={publicGameState.gameEndsAt}
-                                    leaveGameHandler={leaveGameHandler}
-                                    queryClient={queryClient}
-                                />
-                                <SudokuBoard 
-                                    gameId={publicGameState.gameId}
-                                    userId={currentUser.id}
-                                    boardState={boardState} 
-                                    playerColours={playerColours!}
-                                    gamePlayers={publicGameState.players}
-                                    cellFirstOwnership={publicGameState.sharedGameState.cellFirstOwnership}
-                                    gameHighlightedCells={gameHighlightedCells}
-                                    setGameHighlightedCells={setGameHighlightedCells}
-                                    notesModeOn={notesModeOn}
-                                    userSettings={currentUser.userSettings}
-                                />
-                                <PlayerStatsSummaryBar 
-                                    userId={currentUser.id}
-                                    gamePlayers={publicGameState.players}
-                                    currentStreak={privateGameState.currentStreak}
-                                />
-                                <UserActionBar 
-                                    gameId={publicGameState.gameId}
-                                    userId={currentUser.id}
-                                    initialBoardState={publicGameState.initialBoardState}
-                                    playerHighlightedCell={userHighlightedCell}
-                                    highlightedCellState={userHighlightedCell ? getCellState(privateGameState.boardState, userHighlightedCell.row, userHighlightedCell.col) : undefined}
-                                    notesModeOn={notesModeOn}
-                                    setNotesModeOn={setNotesModeOn}
-                                    playerColours={playerColours!}
-                                    queryClient={queryClient}
-                                />
-                            </div>
-                            <Modal
-                                isOpen={showGameResultsModal}
-                                className="w-[90%]! h-[90%]! left-[5%]! top-[5%]! md:w-[70%]! md:left-[15%]! lg:w-[50%]! lg:left-[25%]! z-50"
-                            >
-                                <GameResults
-                                    userId={currentUser.id}
-                                    gameId={gameIdNum}
-                                    lobbyId={publicGameState.lobbyId}
-                                    difficulty={publicGameState.gameSettings.difficulty}
-                                    gameMode={publicGameState.gameSettings.gameMode}
-                                    leaderboardResult={privateGameState.leaderboardResult}
-                                    players={publicGameState.players}
-                                    gameStartsAt={publicGameState.gameStartsAt}
-                                    endedPrematurely={publicGameState.endedPrematurely}
-                                    gameEndedAt={publicGameState.gameEndedAt}
-                                    queryClient={queryClient}
-                                    navigate={navigate}
-                                />
-                            </Modal>
-                        </div>
-                    </>
+                    <GameDesktopLayout 
+                        currentUser={currentUser}
+                        publicGameState={publicGameState}
+                        privateGameState={privateGameState}
+                        boardState={boardState}
+                        playerColours={playerColours}
+                        userHighlightedCell={userHighlightedCell}
+                        gameHighlightedCells={gameHighlightedCells}
+                        setGameHighlightedCells={setGameHighlightedCells}
+                        notesModeOn={notesModeOn}
+                        setNotesModeOn={setNotesModeOn}
+                        showGameResultsModal={showGameResultsModal}
+                        leaveGameHandler={leaveGameHandler}
+                        isMobile={false}
+                        queryClient={queryClient}
+                        navigate={navigate}
+                    />
                 )
-            }
-            
+            }            
         </div>
     )
 }

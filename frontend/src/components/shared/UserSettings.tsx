@@ -8,15 +8,14 @@ import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from ".
 import { Switch } from "../ui/switch";
 import { userCacheDispatcher } from "@/state/user/userCacheDispatcher";
 import type { QueryClient } from "@tanstack/react-query";
+import { IconSettings } from '@tabler/icons-react';
 
 export function UserSettings({
     settings,
-    queryClient,
-    additionalActions
+    queryClient
 }: {
     settings: UserSettingsDto,
-    queryClient: QueryClient,
-    additionalActions?: React.ReactNode
+    queryClient: QueryClient
 }) {
     const { send } = useWebSocketContext();
 
@@ -51,7 +50,12 @@ export function UserSettings({
     return (
          <Sheet>
             <SheetTrigger asChild>
-                <Button variant="outline">Settings</Button>
+                <div 
+                    className="flex items-center justify-center p-1.5 rounded-lg border-1
+                            bg-white/10 border-white/50 text-header-foreground cursor-pointer"
+                    >
+                    <IconSettings />
+                </div>
             </SheetTrigger>
             <SheetContent showCloseButton={true} >
                 <SheetHeader>
@@ -169,13 +173,7 @@ export function UserSettings({
                         ))}
                     </div>
                 </div>
-                {additionalActions &&
-                    <SheetFooter className="h-[10%] border-t-2 border-border">
-                        {additionalActions}
-                    </SheetFooter>
-                }
-            </SheetContent>
-            
+            </SheetContent>            
         </Sheet>
     )
 }

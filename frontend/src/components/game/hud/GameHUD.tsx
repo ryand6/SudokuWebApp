@@ -1,45 +1,40 @@
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { GameMode } from "@/types/enum/GameMode";
-import type { GamePlayer, GamePlayers } from "@/types/game/GameTypes";
+import type { GamePlayers } from "@/types/game/GameTypes";
 import { Modal } from "../../ui/custom/Modal";
 import { useState, type Dispatch, type SetStateAction } from "react";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
-import { UserSettings } from "../../shared/UserSettings";
 import { QueryClient, type UseMutateFunction } from "@tanstack/react-query";
 import { Button } from "../../ui/button";
 import { LeaveGameAlertDialog } from "../../ui/custom/LeaveGameAlertDialog";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { LeaveGameRequestDto } from "@/types/dto/request/LeaveGameRequestDto";
 import type { GameType } from "@/types/enum/GameType";
-import { GameInfoBar } from "../info/GameInfoBar";
 import { HUDStats } from "./modals/stats/HUDStats";
 import { HUDHeatMaps } from "./modals/heatmap/HUDHeatMaps";
 import { HUDGameEventLog } from "./modals/log/HUDGameEventLog";
 import { HUDGameChat } from "./modals/chat/HUDGameChat";
+import { IconChartBar } from '@tabler/icons-react';
+import { IconFlame } from '@tabler/icons-react';
+import { IconLogs } from '@tabler/icons-react';
+import { IconMessageCircle } from '@tabler/icons-react';
+import { IconDoorExit } from '@tabler/icons-react';
 
 export function GameHUD(
     {
         userId,
         gameId,
         gamePlayers, 
-        difficulty, 
-        gameMode,
-        gameType,
         currentStreak,
-        userSettings,
-        gameEndsAt,
         leaveGameHandler,
+        isMobile,
         queryClient
     }: {
         userId: number,
         gameId: number,
         gamePlayers: GamePlayers, 
-        difficulty: Difficulty, 
-        gameMode: GameMode,
-        gameType: GameType,
         currentStreak: number,
-        userSettings: UserSettingsDto,
-        gameEndsAt: string | null,
+        isMobile: boolean,
         leaveGameHandler: {
             mutate: UseMutateFunction<GameDto | null, Error, LeaveGameRequestDto, unknown>;
             isLeaving: boolean;
@@ -53,6 +48,9 @@ export function GameHUD(
     const [isGameChatModalOpen, setGameChatModalOpen] = useState(false);
     const [isAlertOpen, setIsAlertOpen] = useState(false);
 
+    const iconSize: number = isMobile ? 16 : 24;
+    const iconStroke: number = isMobile ? 2 : 3;
+
     const openModal = (setter: Dispatch<SetStateAction<boolean>>) => {
         setter(true);
         document.getElementById("root")?.classList.add("blur-sm");
@@ -63,54 +61,53 @@ export function GameHUD(
         document.getElementById("root")?.classList.remove("blur-sm");
     };
 
-    const leaveGameComponent = (
-        <div className="flex justify-end h-full w-full ">
-            <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId})} setOpen={setIsAlertOpen} />
-            <Button variant="destructive" className="cursor-pointer" onClick={() => setIsAlertOpen(true)}>
-                Leave Game
-            </Button>
-        </div>
-    ) 
-
     return (
         <div 
-            className="flex flex-col gap-4 bg-card border-border border-2 py-2 rounded-sm
-                        h-auto max-h-[200px] w-full"
+            className="border-border border-2 py-2 h-[10%] w-full"
         >   
-            <div className="flex justify-evenly">
+            <div className="flex justify-evenly h-full gap-2 px-2">
                 <div 
                     onClick={() => openModal(setStatsModalOpen)}
-                    className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
+                    className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
+                                border-1 text-accent-foreground text-md md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
-                    Game Stats    
+                    <span><IconChartBar size={iconSize} stroke={iconStroke} /></span>
+                    <span>Stats</span>   
                 </div>
                 <div 
                     onClick={() => openModal(setHeatMapModalOpen)}
-                    className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
+                    className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
+                                border-1 text-accent-foreground text-sm md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
-                    Heat Maps   
+                    <span><IconFlame size={iconSize} stroke={iconStroke} /></span>
+                    <span>Heatmaps</span>   
                 </div>
                 <div 
                     onClick={() => openModal(setGameLogModalOpen)}
-                    className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
+                    className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
+                                border-1 text-accent-foreground text-md md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
-                    Game Log   
+                    <span><IconLogs size={iconSize} stroke={iconStroke} /></span>
+                    <span>Log</span>  
                 </div>
                 <div 
                     onClick={() => openModal(setGameChatModalOpen)}
-                    className="flex justify-center items-center h-full w-[20%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated"
+                    className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
+                                border-1 text-accent-foreground text-md md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
-                    Game Chat   
+                    <span><IconMessageCircle size={iconSize} stroke={iconStroke} /></span>
+                    <span>Chat</span>
                 </div>
-                <UserSettings settings={userSettings} queryClient={queryClient} additionalActions={leaveGameComponent} />
-            </div>
-            <div>
-                <GameInfoBar
-                    difficulty={difficulty} 
-                    gameMode={gameMode}
-                    gameType={gameType}
-                    gameEndsAt={gameEndsAt}
-                />
+                <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId})} setOpen={setIsAlertOpen} />
+                <div className="flex items-center justify-center w-full rounded-md border-1
+                            bg-destructive/10 border-destructive/50 text-destructive cursor-pointer" onClick={() => setIsAlertOpen(true)}>
+                    <IconDoorExit size={iconSize} />
+                </div>
+        
             </div>
 
             <Modal 

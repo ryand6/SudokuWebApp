@@ -1,9 +1,4 @@
-import { LobbyChatPanel } from "@/components/lobby/LobbyChatPanel";
-import { LobbyPlayersPanel } from "@/components/lobby/LobbyPlayersPanel";
-import { LobbySettingsPanel } from "@/components/lobby/LobbySettingsPanel";
-import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
-import { TimerCountdown } from "@/components/ui/custom/TimerCountdown";
 import { useCheckIfUserInGame } from "@/api/rest/game/query/useCheckIfUserInGame";
 import { useGetLobby } from "@/api/rest/lobby/query/useGetLobby";
 import { useHandleGetLobbyError } from "@/hooks/lobby/useHandleGetLobbyError";
@@ -13,9 +8,7 @@ import { useNavigateUserWhenInGame } from "@/hooks/lobby/useNavigateUserWhenInGa
 import { useValidateLobbyId } from "@/hooks/lobby/useValidateLobbyId";
 import { useValidateLobbyUser } from "@/hooks/lobby/useValidateLobbyUser";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
-import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 import { useIsMobile } from "@/hooks/global/useIsMobile";
