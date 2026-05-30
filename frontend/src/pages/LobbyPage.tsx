@@ -18,11 +18,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
+import { useIsMobile } from "@/hooks/global/useIsMobile";
+import { LobbyDesktopLayout } from "@/components/lobby/LobbyDesktopLayout";
+import { LobbyMobileLayout } from "@/components/lobby/LobbyMobileLayout";
 
 export function LobbyPage() {
     const { lobbyId } = useParams();
-
-    const [activePanel, setActivePanel] = useState<"players" | "settings" | "chat">("players");
 
     const lobbyIdNum = lobbyId ? Number(lobbyId) : NaN;
 
@@ -30,6 +31,8 @@ export function LobbyPage() {
 
     const queryClient = useQueryClient();
     const navigate = useNavigate();
+
+    const isMobile = useIsMobile();
     
     const {data: lobby, isLoading: isLobbyLoading, isError: isLobbyError, error: lobbyError} = useGetLobby(lobbyIdNum);
     const {data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUser();
@@ -67,62 +70,16 @@ export function LobbyPage() {
         leaveLobbyHandler.mutate({ lobbyId: lobby.id });
     }
 
-    return (
-        <div id="lobby-container" className="flex flex-col flex-1">
-            <div id="lobby-header" className="flex flex-row justify-between">
-                <h1 className="text-foreground-strong font-bold text-shadow m-3">{lobby?.lobbyName}</h1>
-                {lobby.lobbyCountdown.countdownActive && lobby.lobbyCountdown.countdownEndsAt && (
-                    <TimerCountdown endTime={getEpochTimeFromTimestamp(lobby.lobbyCountdown.countdownEndsAt)} />
-                )}
-                <Button className="m-2 cursor-pointer" onClick={handleLeaveLobbyClick} variant={"destructive"}>Leave Lobby</Button>
-            </div>
-            <div id="lobby-content" className="flex flex-col flex-1 gap-4 max-h-[70vh] md:max-h-[75vh]">
-                <div id="mobile-tabs" className="md:hidden">
-                    <Button 
-                        onClick={() => setActivePanel("players")}
-                        className="cursor-pointer"
-                    >
-                        Players
-                    </Button>
-                    <Button 
-                        onClick={() => setActivePanel("settings")}
-                        className="cursor-pointer"
-                    >
-                        Settings
-                    </Button>
-                    <Button 
-                        onClick={() => setActivePanel("chat")}
-                        className="cursor-pointer"
-                    >
-                        Lobby Chat
-                    </Button>
-                </div>
-                <div className="flex flex-row flex-1 min-h-0">
-                    {/* Mobile only: render the active panel directly */}
-                    <div className="flex-1 flex flex-col min-h-0 max-w-[95%] md:hidden m-5">
-                        {activePanel === "players" && <LobbyPlayersPanel lobby={lobby} currentUser={currentUser} />}
-                        {activePanel === "settings" && <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />}
-                        {activePanel === "chat" && <LobbyChatPanel lobbyId={lobbyIdNum} userId={currentUser.id} />}
-                    </div>
+    return isMobile ? 
+        <LobbyMobileLayout
+            lobby={lobby}
+            currentUser={currentUser}
+            handleLeaveLobbyClick={handleLeaveLobbyClick}
+        /> : 
+        <LobbyDesktopLayout
+            lobby={lobby}
+            currentUser={currentUser}
+            handleLeaveLobbyClick={handleLeaveLobbyClick}
+        />
 
-                    {/* Desktop only: split left/right columns */}
-                    <div className="hidden md:flex flex-1 min-h-0">
-                        {/* Left column */}
-                        <div className="flex flex-col flex-1 min-h-0 max-w-[50%]">
-                            <div className="flex flex-col flex-1 min-h-0">
-                            <LobbyPlayersPanel lobby={lobby} currentUser={currentUser} />
-                            </div>
-                            <div className="flex flex-col flex-1 min-h-0">
-                            <LobbySettingsPanel lobby={lobby} currentUser={currentUser} />
-                            </div>
-                        </div>
-                        {/* Right column */}
-                        <div className="flex flex-col flex-1 min-h-0 max-w-[50%]">
-                            <LobbyChatPanel lobbyId={lobbyIdNum} userId={currentUser.id} />
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
 }

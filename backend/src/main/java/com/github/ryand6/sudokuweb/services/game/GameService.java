@@ -243,6 +243,13 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new GamePlayerForfeitEvent(gameId, gamePlayerDto)
         );
+        if (game.getGameStatus() == GameStatus.ABORTED) {
+            return null;
+        }
+        // No further validation required - casual games can be finished with one person and do not submit leaderboard data
+        if (game.getGameSettingsEntity().getGameType() == GameType.CASUAL) {
+            return null;
+        }
         if (game.validateGameEndedPrematurely()) {
             GamePlayerEntity lastRemainingPlayer = game.findLastRemainingPlayer();
             if (lastRemainingPlayer != null) {
@@ -254,11 +261,8 @@ public class GameService {
             }
         }
 
-        // IMPLEMENT - handle leaderboard entity game result update - loss
+        // IMPLEMENT - handle leaderboard entity game result update - loss + 0pts
 
-        if (game.getGameStatus() == GameStatus.ABORTED) {
-            return null;
-        }
         return gameDto;
     }
 
