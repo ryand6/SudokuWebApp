@@ -1,21 +1,21 @@
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { GameMode } from "@/types/enum/GameMode";
 import type { GamePlayer, GamePlayers } from "@/types/game/GameTypes";
-import { HUDStats } from "./HUDStats";
-import { Modal } from "../ui/custom/Modal";
+import { Modal } from "../../ui/custom/Modal";
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { HUDHeatMaps } from "./HUDHeatMaps";
-import { HUDGameEventLog } from "./HUDGameEventLog";
-import { HUDGameChat } from "./HUDGameChat";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
-import { UserSettings } from "../shared/UserSettings";
+import { UserSettings } from "../../shared/UserSettings";
 import { QueryClient, type UseMutateFunction } from "@tanstack/react-query";
-import { Button } from "../ui/button";
-import { LeaveGameAlertDialog } from "../ui/custom/LeaveGameAlertDialog";
+import { Button } from "../../ui/button";
+import { LeaveGameAlertDialog } from "../../ui/custom/LeaveGameAlertDialog";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { LeaveGameRequestDto } from "@/types/dto/request/LeaveGameRequestDto";
-import { GameInfoBar } from "./GameInfoBar";
 import type { GameType } from "@/types/enum/GameType";
+import { GameInfoBar } from "../info/GameInfoBar";
+import { HUDStats } from "./modals/stats/HUDStats";
+import { HUDHeatMaps } from "./modals/heatmap/HUDHeatMaps";
+import { HUDGameEventLog } from "./modals/log/HUDGameEventLog";
+import { HUDGameChat } from "./modals/chat/HUDGameChat";
 
 export function GameHUD(
     {

@@ -1,4 +1,4 @@
-import { SudokuBoard } from "@/components/game/SudokuBoard";
+import { SudokuBoard } from "@/components/game/board/SudokuBoard";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { useHandleGetGameError } from "@/hooks/game/useHandleGetGameError";
 import { useValidateGameId } from "@/hooks/game/useValidateGameId";
@@ -15,10 +15,9 @@ import { useEffect, useMemo, useState } from "react";
 import { getGameHighlightedCells } from "@/api/rest/game/memory/query/getGameHighlightedCells";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 import { useGetGameHighlightedCells } from "@/hooks/game/useGetGameHighlightedCells";
-import { UserActionBar } from "@/components/game/UserActionBar";
-import { GameNotificationLayer } from "@/components/game/GameNotificationLayer";
+import { UserActionBar } from "@/components/game/actions/UserActionBar";
 import { resolveBoardState } from "@/utils/game/gameUtils";
-import { GameHUD } from "@/components/game/GameHUD";
+import { GameHUD } from "@/components/game/hud/GameHUD";
 import { getCellState } from "@/utils/game/boardStateUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import { useHandleClosedGame } from "@/hooks/game/useHandleClosedGame";
@@ -27,11 +26,11 @@ import { Modal } from "@/components/ui/custom/Modal";
 import { GameResults } from "@/components/game/results/GameResults";
 import { confirmPlayerGameLoaded } from "@/api/ws/game/confirmPlayerGameLoaded";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
-import { WaitingForPlayersScreen } from "@/components/game/WaitingForPlayersScreen";
-import { GameCountdownScreen } from "@/components/game/GameCountdownScreen";
+import { WaitingForPlayersScreen } from "@/components/game/screens/WaitingForPlayersScreen";
+import { GameCountdownScreen } from "@/components/game/screens/GameCountdownScreen";
 import { useConfirmPlayerGameLoaded } from "@/hooks/game/useConfirmPlayerGameLoaded";
-import { PlayerStatsSummaryBar } from "@/components/game/PlayerStatsSummaryBar";
-
+import { GameNotificationLayer } from "@/components/game/notifications/GameNotificationLayer";
+import { PlayerStatsSummaryBar } from "@/components/game/players/PlayerStatsSummaryBar";
 
 export function GamePage() {
     const { gameId } = useParams();

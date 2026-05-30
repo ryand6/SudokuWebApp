@@ -3,10 +3,10 @@ import { sendGameChatMessage } from "@/api/ws/game/chat/sendGameChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider"
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
 import { useState } from "react";
-import { InfiniteMessageList } from "../shared/InfiniteMessageList";
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
 import { GameChatMessage } from "./GameChatMessage";
+import { InfiniteMessageList } from "@/components/shared/InfiniteMessageList";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 export function HUDGameChat({
     gameId,

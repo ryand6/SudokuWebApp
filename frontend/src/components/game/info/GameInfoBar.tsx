@@ -1,9 +1,9 @@
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
-import BasicTimer from "../ui/custom/BasicTimer";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import type { GameType } from "@/types/enum/GameType";
+import BasicTimer from "@/components/ui/custom/BasicTimer";
 
 export function GameInfoBar({
     difficulty, 
