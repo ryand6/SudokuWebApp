@@ -13,8 +13,6 @@ export function HeatMap({
 }) {
     const board = [...Array(9)].map(() => Array(9).fill(0));
 
-    console.log(board);
-
     const getCellColour = useCallback((cellIndex: number) => {
         if (boardProgress[cellIndex] === "GIVEN") {
             return 'bg-muted-foreground';

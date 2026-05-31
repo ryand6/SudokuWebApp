@@ -41,7 +41,6 @@ import com.github.ryand6.sudokuweb.services.TaskSchedulerService;
 import com.github.ryand6.sudokuweb.services.puzzle.SudokuPuzzleService;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

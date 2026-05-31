@@ -32,8 +32,8 @@ export function GameDesktopLayout({
                 scoreNotificationsEnabled={currentUser.userSettings.scoreNotificationsEnabled}
                 streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
             />
-            <div className="flex justify-center items-center min-h-[500px] h-full py-[2%]">
-                <div className="flex flex-col justify-center items-center w-[80%] max-w-[1200px] h-full">
+            <div className="flex items-center w-full h-full">
+                <div className="flex flex-col w-[25%] h-full border-border border-2 bg-card">
                     <GameHUD 
                         userId={currentUser.id}
                         gameId={publicGameState.gameId}
@@ -43,6 +43,9 @@ export function GameDesktopLayout({
                         leaveGameHandler={leaveGameHandler}
                         queryClient={queryClient}
                     />
+                </div>
+                <div className="flex flex-col justify-center items-center border-border border-2 w-[75%] max-w-[1200px] h-full">
+                    
                     <GameInfoBar
                         difficulty={publicGameState.gameSettings.difficulty} 
                         gameMode={publicGameState.gameSettings.gameMode}

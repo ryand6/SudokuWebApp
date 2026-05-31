@@ -52,7 +52,9 @@ export function UserSettings({
             <SheetTrigger asChild>
                 <div 
                     className="flex items-center justify-center p-1.5 rounded-lg border-1
-                            bg-white/10 border-white/50 text-header-foreground cursor-pointer"
+                            bg-header-foreground/10 border-header-foreground/50 text-header-foreground cursor-pointer
+                            hover:bg-primary/10"
+
                     >
                     <IconSettings />
                 </div>

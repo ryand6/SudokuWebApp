@@ -12,7 +12,8 @@ export function useInitClient(
     pendingQueueRef: RefObject<{topic: string; callback: (body: any) => void;}[]>,
     handleConnect: () => void,
     handleDisconnect: () => void,
-    handleWebSocketClose: () => void
+    handleWebSocketClose: () => void,
+    handleWebSocketError: (event: any) => void
  ) {
     // Effect handles socket lifecycle - exists whilst there is an authenticated session
     useEffect(() => {
@@ -26,6 +27,6 @@ export function useInitClient(
             return;
         }
         if (clientRef.current) return;
-        initStompClient(clientRef, initialReconnectDelay, handleConnect, handleDisconnect, handleWebSocketClose);
+        initStompClient(clientRef, initialReconnectDelay, handleConnect, handleDisconnect, handleWebSocketClose, handleWebSocketError);
     }, [currentUser]);
 }

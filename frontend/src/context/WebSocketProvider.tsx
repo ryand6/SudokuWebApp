@@ -73,6 +73,10 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
         pendingQueueRef.current = [];
     }, [queryClient]);
 
+    const handleWebSocketError = useCallback((event: any) => {
+        console.log("onWebSocketError: ", event)
+    }, []);
+
     const recordDisconnect = useCallback(() => {
         setIsConnected(false);
         const nextAttempt = Date.now() + currentDelayRef.current;
@@ -86,7 +90,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     useHandleUnmount(clientRef);
     useHandleUnload(clientRef);
 
-    useInitClient(currentUser, clientRef, initialDelayRef.current, subscriptionsRef, pendingQueueRef, handleConnect, handleDisconnect, handleWebSocketClose);
+    useInitClient(currentUser, clientRef, initialDelayRef.current, subscriptionsRef, pendingQueueRef, handleConnect, handleDisconnect, handleWebSocketClose, handleWebSocketError);
 
     const subscribe = useCallback((topic: string, onMessage: (body: any) => void) => {
         // If the user is already subscribed, return that subscription 
