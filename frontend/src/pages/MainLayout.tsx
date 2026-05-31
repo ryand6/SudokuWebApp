@@ -27,10 +27,10 @@ export default function MainLayout() {
 
 		<main className="flex-1">
 			{
-				isConnected ? 
-					<Outlet />
-				: 
+				(!isConnected && user) ? 
 					<WebSocketReconnectScreen />
+				: 
+					<Outlet />
 			}
 		</main>
 
