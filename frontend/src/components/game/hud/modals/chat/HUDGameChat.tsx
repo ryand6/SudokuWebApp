@@ -4,7 +4,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider"
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
 import { useState } from "react";
 import { GameChatMessage } from "./GameChatMessage";
-import { InfiniteMessageList } from "@/components/shared/InfiniteMessageList";
+import { InfiniteMessageList } from "@/components/global/InfiniteMessageList";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 

@@ -1,27 +1,26 @@
 import { Client, ReconnectionTimeMode, type IFrame } from "@stomp/stompjs";
 import type { CsrfResponseData } from "../types/dto/auth/CsrfResponseData";
 import { initWebSocket } from "@/services/websocket/initWebSocket";
+import { MAX_RECONNECT_DELAY } from "@/context/WebSocketProvider";
 
 
 // Factory for creating StompJS client with callback functions to handle OnStompError and onConnect
 export function stompClientFactory(
-    csrfTokenData: CsrfResponseData, 
+    csrfTokenData: CsrfResponseData,
+    initialReconnectDelay: number,
     handleStompError: (frame: IFrame) => void, 
     handleConnect: () => void,
     handleDisconnect: () => void,
     handleWebSocketClose: () => void
 ): Client {
-
-    console.log("Creating new STOMP client with CSRF token:", csrfTokenData.token);
-
     return new Client({
         // Tells STOMP to use a new SockJS instance
         webSocketFactory: () => initWebSocket(),
         // Auto-reconnect starts at 500ms (plus jitter to hedge against thundering herd problem)
-        reconnectDelay: 500 + (Math.random() * 500),
+        reconnectDelay: initialReconnectDelay,
         // Each time reconnect occurs without successful connection, double the reconnectDelay
         reconnectTimeMode: ReconnectionTimeMode.EXPONENTIAL,
-        maxReconnectDelay: 10000,
+        maxReconnectDelay: MAX_RECONNECT_DELAY,
         // Send heartbeat to backend every 10 secs to confirm connection is alive
         heartbeatOutgoing: 10000,
         // Expect to receive heartbeat from backend every 10 secs

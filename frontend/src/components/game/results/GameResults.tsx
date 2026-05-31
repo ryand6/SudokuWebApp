@@ -102,8 +102,6 @@ export function GameResults({
 
     resolveUserRank();
 
-    console.log(gameEndedAt);
-
     return (
         <div 
             className="flex flex-col w-full items-start overflow-y-scroll"
@@ -119,6 +117,7 @@ export function GameResults({
                             endTime={getEpochTimeFromTimestamp(gameEndedAt) + 60000}
                             className="font-sans text-[14px] font-bold text-primary-foreground"
                             timerEndAction={returnToLobbyHandler}
+                            unit="MINUTES"
                         />
                     }
                 </div>

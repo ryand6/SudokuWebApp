@@ -1,20 +1,23 @@
 import { useTimeRemaining } from "@/hooks/global/useTimeRemaining";
+import type { TimerUnit } from "@/types/enum/TimerUnit";
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
 import React, { useEffect } from "react";
 
 const BasicTimer = React.memo(function BasicTimer({
     endTime,
     className,
-    timerEndAction
+    timerEndAction,
+    unit
 }: {
     endTime: number,
     className?: string,
-    timerEndAction?: () => void
+    timerEndAction?: () => void,
+    unit: TimerUnit
 }) {
     // Calculate time remaining on countdown clock
-    const timeRemaining = useTimeRemaining(endTime, 50);
+    const timeRemaining = useTimeRemaining(endTime, 500);
 
-     useEffect(() => {
+    useEffect(() => {
         if (timeRemaining <= 0 && timerEndAction) {
             timerEndAction();
         }
@@ -22,8 +25,11 @@ const BasicTimer = React.memo(function BasicTimer({
 
     if (timeRemaining <= 0) return null;
 
+    const convertedTime = unit === "MINUTES" ? convertMillisecondsToMinuteClock(timeRemaining) 
+        : Math.max(0, Math.ceil(timeRemaining / 1000));
+
     return (
-        <span className={`${className}`}>{ convertMillisecondsToMinuteClock(timeRemaining) }</span>
+        <span className={`${className}`}>{ convertedTime }</span>
     );
 })
 

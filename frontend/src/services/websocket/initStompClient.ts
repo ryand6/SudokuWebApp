@@ -5,6 +5,7 @@ import { resetWebSocketConnection } from "@/services/websocket/resetWebSocketCon
 
 export async function initStompClient(
     clientRef: React.RefObject<Client | null>,
+    initialReconnectDelay: number,
     handleConnect: () => void,
     handleDisconnect: () => void,
     handleWebSocketClose: () => void,
@@ -21,15 +22,13 @@ export async function initStompClient(
     const handleStompError = (frame: IFrame) => {
         console.error('STOMP Error', frame.headers['message'], frame.body);
         // force reset to ensure reconnect is consistent and clean
-        resetWebSocketConnection(clientRef, handleConnect, handleStompError, handleDisconnect, handleWebSocketClose);
+        resetWebSocketConnection(clientRef, initialReconnectDelay, handleConnect, handleStompError, handleDisconnect, handleWebSocketClose);
     }
     
     try {
         // Create a new STOMP client that will use the SockJS socket
-        clientRef.current = stompClientFactory(csrfTokenData, handleStompError, handleConnect, handleDisconnect, handleWebSocketClose);
-        
+        clientRef.current = stompClientFactory(csrfTokenData, initialReconnectDelay, handleStompError, handleConnect, handleDisconnect, handleWebSocketClose);
         clientRef.current.onStompError = handleStompError;
-
         // Activate the STOMP client - connection is started
         clientRef.current.activate();
     } catch (error) {

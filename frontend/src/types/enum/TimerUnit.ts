@@ -1,0 +1,1 @@
+export type TimerUnit = "SECONDS" | "MINUTES";

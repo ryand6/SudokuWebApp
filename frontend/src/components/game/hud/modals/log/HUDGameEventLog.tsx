@@ -1,7 +1,7 @@
 import { useGetGameEvents } from "@/api/rest/game/events/query/useGetGameEvents";
 import { GameEventMessage } from "./GameEventMessage";
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
-import { InfiniteMessageList } from "@/components/shared/InfiniteMessageList";
+import { InfiniteMessageList } from "@/components/global/InfiniteMessageList";
 
 export function HUDGameEventLog({
     gameId

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export function useTimeRemaining(endTime: number, intervalMs: number) {
-     const [timeRemaining, setTimeRemaining] = useState<number>(() => endTime - performance.now());
+    const [timeRemaining, setTimeRemaining] = useState<number>(() => Math.max(0, endTime - Date.now()));
 
     useEffect(() => {
         // Update every 50ms

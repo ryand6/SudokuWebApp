@@ -15,6 +15,7 @@ import { GamePage } from "./pages/GamePage";
 import MainLayout from "./pages/MainLayout";
 import { ForegroundToastContainer } from "./components/ui/custom/ForegroundToastContainer";
 import { LinkAccountPage } from "./pages/LinkAccountPage";
+import { WsDevToolbar } from "./components/testing/WsDevToolBar";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ function App() {
             </Routes>
             <ToastContainer position="top-right" containerId="default" autoClose={5000} />
           </BrowserRouter>
+          {import.meta.env.DEV && <WsDevToolbar />}
         </WebSocketProvider>
       </QueryClientProvider>
       <ForegroundToastContainer />

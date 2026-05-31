@@ -104,7 +104,9 @@ export function GameHUD(
                 </div>
                 <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId})} setOpen={setIsAlertOpen} />
                 <div className="flex items-center justify-center w-full rounded-md border-1
-                            bg-destructive/10 border-destructive/50 text-destructive cursor-pointer" onClick={() => setIsAlertOpen(true)}>
+                            bg-destructive/10 border-destructive/50 text-destructive cursor-pointer
+                            hover:border-primary-foreground hover:bg-destructive/50 hover:text-primary-foreground" 
+                            onClick={() => setIsAlertOpen(true)}>
                     <IconDoorExit size={iconSize} />
                 </div>
         

@@ -1,10 +1,13 @@
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
-import { UserSettings } from "@/components/shared/UserSettings";
+import { UserSettings } from "@/components/global/UserSettings";
+import { WebSocketReconnectScreen } from "@/components/global/WebSocketReconnectScreen";
+import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useQueryClient } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
 
 export default function MainLayout() {
 	const queryClient = useQueryClient();
+	const { isConnected } = useWebSocketContext();
 	const { data: user } = useGetCurrentUser();
 
 	return (
@@ -23,7 +26,12 @@ export default function MainLayout() {
 		</header>
 
 		<main className="flex-1">
-			<Outlet />
+			{
+				isConnected ? 
+					<Outlet />
+				: 
+					<WebSocketReconnectScreen />
+			}
 		</main>
 
 		<footer className="bg-footer text-footer-foreground px-4 py-2 text-sm text-center">

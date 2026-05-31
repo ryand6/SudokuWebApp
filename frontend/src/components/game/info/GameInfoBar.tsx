@@ -27,7 +27,7 @@ export function GameInfoBar({
                 gameEndsAt && (
                     <>
                         <span>&middot;</span>
-                        <BasicTimer endTime={getEpochTimeFromTimestamp(gameEndsAt)} />
+                        <BasicTimer endTime={getEpochTimeFromTimestamp(gameEndsAt)} unit="MINUTES" />
                     </>
                 )
             }

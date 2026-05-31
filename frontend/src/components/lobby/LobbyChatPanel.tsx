@@ -5,7 +5,7 @@ import { sendLobbyChatMessage } from "@/api/ws/lobby/sendLobbyChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useGetLobbyChatMessages } from "@/api/rest/lobby/chat/query/useGetLobbyChatMessages";
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
-import { InfiniteMessageList } from "../shared/InfiniteMessageList";
+import { InfiniteMessageList } from "../global/InfiniteMessageList";
 import { LobbyChatMessage } from "./LobbyChatMessage";
 import { LobbyInfoMessage } from "./LobbyInfoMessage";
 
