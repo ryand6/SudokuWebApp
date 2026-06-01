@@ -58,13 +58,13 @@ export function GameHUD(
 
     return (
         <div 
-            className="border-border border-2 py-2 h-[10%] w-full md:border-0 md:h-[50%] md:p-4"
+            className="py-2 bg-card h-[8%] w-full md:h-[50%]"
         >   
             <div className="flex md:flex-col justify-evenly h-full gap-2 md:gap-5 px-2">
                 {
                     !isMobile && (
                         <div className="justify-start">
-                            <span className="font-display text-muted-foreground font-semibold tracking-wider text-2xl">
+                            <span className="font-display text-muted-foreground font-semibold tracking-widest text-2xl">
                                 GAME
                             </span>
                         </div>

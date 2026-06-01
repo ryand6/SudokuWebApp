@@ -60,11 +60,13 @@ export function GameMobileLayout({
                         setGameHighlightedCells={setGameHighlightedCells}
                         notesModeOn={notesModeOn}
                         userSettings={currentUser.userSettings}
+                        isMobile={isMobile}
                     />
                     <PlayerStatsSummaryBar 
                         userId={currentUser.id}
                         gamePlayers={publicGameState.players}
                         currentStreak={privateGameState.currentStreak}
+                        isMobile={isMobile}
                     />
                     <UserActionBar 
                         gameId={publicGameState.gameId}

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useEffect, useRef, type Dispatch, type SetStateAction } from "react";
 import SudokuCell from "./SudokuCell";
 import type { PrivateBoardState, CellCoordinates, GamePlayers } from "@/types/game/GameTypes";
 import { isCellInSameBlock } from "@/utils/game/blockUtils";
@@ -18,7 +18,8 @@ export function SudokuBoard(
         gameHighlightedCells,
         setGameHighlightedCells,
         notesModeOn,
-        userSettings
+        userSettings,
+        isMobile
     }: {
         gameId: number,
         userId: number,
@@ -29,10 +30,31 @@ export function SudokuBoard(
         gameHighlightedCells: Map<number, CellCoordinates> | undefined,
         setGameHighlightedCells: Dispatch<SetStateAction<Map<number, CellCoordinates> | undefined>>,
         notesModeOn: boolean,
-        userSettings: UserSettingsDto
+        userSettings: UserSettingsDto,
+        isMobile: boolean
     }
 ) {
     const { send } = useWebSocketContext();
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const gridRef = useRef<HTMLDivElement>(null);
+
+    const gridMaxPadding = isMobile ? 20 : 30;
+
+    useEffect(() => {
+        const observer = new ResizeObserver(([entry]) => {
+            const { width, height } = entry.contentRect;
+            const size = Math.min(width, height) - gridMaxPadding;
+            if (gridRef.current) {
+                gridRef.current.style.width = `${size}px`;
+                gridRef.current.style.height = `${size}px`;
+            }
+        });
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
+        } 
+        return () => observer.disconnect();
+    }, []);
 
     const playerHighlightedCell: CellCoordinates | undefined = gameHighlightedCells ? gameHighlightedCells.get(userId) : undefined;
 
@@ -54,16 +76,23 @@ export function SudokuBoard(
     }, [gameId, userId, gameHighlightedCells]);
 
     return (
-        <div className="mx-2 my-4 aspect-square w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] md:w-[600px] md:h-[600px] lg:w-[800px] lg:h-[800px] min-h-0" >
-            <div className="grid grid-cols-9 grid-rows-9 h-full w-full">
+        <div ref={containerRef} className="w-full h-full flex items-center justify-center">
+            <div ref={gridRef} className="grid grid-cols-9 grid-rows-9 h-full w-full">
                 {boardState.map((row, r) =>
                     row.map((cell, c) => {
+                        let borderTop, borderLeft, borderBottom, borderRight;
                         // Tailwind border logic
-                        const borderTop = r === 0 ? "border-t-6 border-black" : r % 3 === 0 ? "border-t-4 border-black" : "border-t border-black";
-                        const borderLeft = c === 0 ? "border-l-6 border-black" : c % 3 === 0 ? "border-l-4 border-black" : "border-l border-black";
-                        const borderBottom = r === 8 ? "border-b-6 border-black" : "border-b border-black";
-                        const borderRight = c === 8 ? "border-r-6 border-black" : "border-r border-black";
-
+                        if (isMobile) {
+                            borderTop = r === 0 ? "border-t-3 border-black" : r % 3 === 0 ? "border-t-2 border-black" : "border-t border-black";
+                            borderLeft = c === 0 ? "border-l-3 border-black" : c % 3 === 0 ? "border-l-2 border-black" : "border-l border-black";
+                            borderBottom = r === 8 ? "border-b-3 border-black" : "border-b border-black";
+                            borderRight = c === 8 ? "border-r-3 border-black" : "border-r border-black";
+                        } else {
+                            borderTop = r === 0 ? "border-t-6 border-black" : r % 3 === 0 ? "border-t-4 border-black" : "border-t border-black";
+                            borderLeft = c === 0 ? "border-l-6 border-black" : c % 3 === 0 ? "border-l-4 border-black" : "border-l border-black";
+                            borderBottom = r === 8 ? "border-b-6 border-black" : "border-b border-black";
+                            borderRight = c === 8 ? "border-r-6 border-black" : "border-r border-black";
+                        }
                         const cellIndex: number = getCellIndex(r, c);
 
                         return (
@@ -96,6 +125,7 @@ export function SudokuBoard(
                     }
                 ))}
             </div>
+            
         </div>
 
     )

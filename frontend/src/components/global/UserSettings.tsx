@@ -52,7 +52,7 @@ export function UserSettings({
             <SheetTrigger asChild>
                 <div 
                     className="flex items-center justify-center p-1.5 rounded-lg border-1
-                            bg-header-foreground/10 border-header-foreground/50 text-header-foreground cursor-pointer
+                            bg-secondary-foreground/10 border-secondary-foreground/50 text-secondary-foreground cursor-pointer
                             hover:bg-primary/10"
 
                     >

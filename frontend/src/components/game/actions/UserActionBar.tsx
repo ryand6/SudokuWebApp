@@ -8,6 +8,7 @@ import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import { hasNote } from "@/utils/game/noteUtils";
 import type { QueryClient } from "@tanstack/react-query";
 import { useCallback, type Dispatch, type SetStateAction } from "react";
+import { IconPencil, IconEraser } from '@tabler/icons-react';
 
 export function UserActionBar(
     {
@@ -91,17 +92,19 @@ export function UserActionBar(
     const noteShineClassName = playerColourClassNamePicker[playerColours[userId]].shine + " font-semibold";
 
     return (
-        <div className="flex flex-col h-auto max-h-[300px] w-full border-2 rounded-sm border-border bg-primary-foreground p-4 gap-2">
-            <div className="flex justify-evenly">
+        <div className="flex flex-col h-[20%] w-full border-t-2 md:border-t-4 border-border bg-card p-3 gap-2">
+            <div className="flex gap-2 justify-evenly">
                 <div 
                     onClick={() => setNotesModeOn(prev => !prev)}
-                    className="flex justify-center items-center h-full w-[30%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated">
-                    {notesModeOn ? "Notes (on)" : "Notes (off)"}
+                    className="flex gap-1 justify-center items-center h-full w-full text-lg md:text-xl hover:bg-sidebar-primary rounded cursor-pointer">
+                    <span><IconPencil /></span>
+                    <span>{notesModeOn ? "Notes (on)" : "Notes (off)"}</span>
                 </div>
                 <div
                     onClick={() => handleCellClear(playerHighlightedCell)}
-                    className="flex justify-center items-center h-full w-[30%] text-lg md:text-xl lg:text-2xl hover:bg-sidebar-primary rounded cursor-pointer elevated">
-                    Clear
+                    className="flex gap-1 justify-center items-center h-full w-full text-lg md:text-xl hover:bg-sidebar-primary rounded cursor-pointer">
+                    <span><IconEraser /></span>
+                    <span>Clear</span>
                 </div>
             </div>
             <div 

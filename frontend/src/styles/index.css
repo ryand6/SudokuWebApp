@@ -28,7 +28,7 @@
   --popover-foreground:         #2C2416;
   --primary:                    #A85432;
   --primary-foreground:         #FAF6EE;
-  --secondary:                  #818865;
+  --secondary:                  #3D6B4A;
   --secondary-foreground:       #FAF6EE;
   --muted:                      #D6CBAF;
   --muted-foreground:           #9B8E7A;
@@ -53,10 +53,10 @@
   --sidebar-border:             #2A1F12;
   --sidebar-ring:               #C4714A;
   --grid-line:                  #2C2416;
-  --header:                     #3D6B4A;
+  /* --header:                     #3D6B4A;
   --header-foreground:          #FAF6EE;
   --footer:                     #3D6B4A;
-  --footer-foreground:          #FAF6EE;
+  --footer-foreground:          #FAF6EE; */
 
   /* Game Results Styles */
   --result-win:             #DDB84A;

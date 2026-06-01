@@ -17,7 +17,10 @@ export function GameInfoBar({
     gameEndsAt: string | null
 }) {
     return (
-        <div className="flex gap-5 justify-center px-5 text-foreground text-lg font-bold">
+        <div 
+            className="flex h-[6%] w-full bg-sidebar text-sidebar-accent gap-3 justify-center 
+                        items-center px-5 text-md font-bold md:text-2xl"
+        >
             <span>{wordToProperCase(difficulty)}</span>
             <span>&middot;</span>
             <span>{wordToProperCase(gameMode)}</span>

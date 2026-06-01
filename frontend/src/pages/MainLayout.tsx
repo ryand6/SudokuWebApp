@@ -11,32 +11,32 @@ export default function MainLayout() {
 	const { data: user } = useGetCurrentUser();
 
 	return (
-		<div className="min-h-screen flex flex-col">
-		<header className="bg-header text-header-foreground px-4 py-3">
-			<div className="w-full mx-auto flex items-center justify-between px-5">
-				<h1 className="font-bold text-lg">
-					Tomo Sudoku
-				</h1>
+		<div className="min-h-screen h-full flex flex-col border-border border-2 md:border-4">
+			<header className="bg-secondary h-[8%] md:h-[10%] text-secondary-foreground px-4 py-3">
+				<div className="w-full h-full mx-auto flex items-center justify-between px-5">
+					<h1 className="font-bold text-lg md:text-3xl">
+						Tomo Sudoku
+					</h1>
+					{
+						user && (
+							<UserSettings settings={user.userSettings} queryClient={queryClient} />
+						)
+					}
+				</div>
+			</header>
+
+			<main className="h-[92%] md:h-[90%]">
 				{
-					user && (
-						<UserSettings settings={user.userSettings} queryClient={queryClient} />
-					)
+					(!isConnected && user) ? 
+						<WebSocketReconnectScreen />
+					: 
+						<Outlet />
 				}
-			</div>
-		</header>
+			</main>
 
-		<main className="flex-1">
-			{
-				(!isConnected && user) ? 
-					<WebSocketReconnectScreen />
-				: 
-					<Outlet />
-			}
-		</main>
-
-		<footer className="bg-footer text-footer-foreground px-4 py-2 text-sm text-center">
-			© RD
-		</footer>
+			{/* <footer className="bg-footer text-footer-foreground px-4 py-2 text-sm text-center">
+				© RD
+			</footer> */}
 
 		</div>
 	);

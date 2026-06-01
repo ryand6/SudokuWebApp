@@ -8,6 +8,7 @@ import { getCellState } from "@/utils/game/boardStateUtils";
 import { Modal } from "@/components/ui/custom/Modal";
 import { GameResults } from "../results/GameResults";
 import { GameInfoBar } from "../info/GameInfoBar";
+import { Separator } from "@/components/ui/separator";
 
 export function GameDesktopLayout({
     currentUser,
@@ -33,7 +34,7 @@ export function GameDesktopLayout({
                 streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
             />
             <div className="flex items-center w-full h-full">
-                <div className="flex flex-col w-[25%] h-full border-border border-2 bg-card">
+                <div className="flex flex-col w-[25%] h-full border-border border-r-4 p-4 bg-card">
                     <GameHUD 
                         userId={currentUser.id}
                         gameId={publicGameState.gameId}
@@ -43,8 +44,15 @@ export function GameDesktopLayout({
                         leaveGameHandler={leaveGameHandler}
                         queryClient={queryClient}
                     />
+                    <Separator className="bg-muted my-4 py-[1px]" />
+                    <PlayerStatsSummaryBar 
+                        userId={currentUser.id}
+                        gamePlayers={publicGameState.players}
+                        currentStreak={privateGameState.currentStreak}
+                        isMobile={isMobile}
+                    />
                 </div>
-                <div className="flex flex-col justify-center items-center border-border border-2 w-[75%] max-w-[1200px] h-full">
+                <div className="flex flex-col justify-center items-center w-[75%] h-full">
                     
                     <GameInfoBar
                         difficulty={publicGameState.gameSettings.difficulty} 
@@ -63,11 +71,7 @@ export function GameDesktopLayout({
                         setGameHighlightedCells={setGameHighlightedCells}
                         notesModeOn={notesModeOn}
                         userSettings={currentUser.userSettings}
-                    />
-                    <PlayerStatsSummaryBar 
-                        userId={currentUser.id}
-                        gamePlayers={publicGameState.players}
-                        currentStreak={privateGameState.currentStreak}
+                        isMobile={isMobile}
                     />
                     <UserActionBar 
                         gameId={publicGameState.gameId}
