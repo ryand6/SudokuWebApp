@@ -234,6 +234,12 @@
   --animate-game-start-countdown: blink 1000ms linear forwards;
 
   @keyframes fill-cell {
+    0% {
+      color: transparent;
+    }
+    40% {
+      color: transparent;
+    }
     50% {
       /* transform: scale(1.5); */
       z-index: 100;
@@ -246,7 +252,6 @@
     }
     100% {
       transform: none;
-      /* color: #000; */
       font-weight: normal;
     }
   }

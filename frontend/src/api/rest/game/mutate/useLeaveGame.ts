@@ -19,6 +19,7 @@ export function useLeaveGame() {
             setIsLeaving(true);
         },
         onSuccess: (updatedGame, variables) => {
+            localStorage.setItem('gameAnimationPlayed', 'false');
             unsubscribe(`/topic/game/${variables.gameId}`);
             // handles when a game is closed
             if (updatedGame === null) {

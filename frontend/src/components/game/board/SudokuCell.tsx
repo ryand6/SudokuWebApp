@@ -47,6 +47,12 @@ const SudokuCell = React.memo(function SudokuCell(
     const [isHovered, setIsHovered] = useState(false);
     const isInUnit: boolean = (isInRow || isInCol || isInBlock);
 
+    const [isAnimationPlayed, setIsAnimationPlayed] = useState(() => {
+        return localStorage.getItem('gameAnimationPlayed') === 'true';
+    });
+
+    console.log("isAnimationPlayed: ", isAnimationPlayed);
+
     const playerCornerIndex: Record<number, number> = useMemo(() => {
         return Object.keys(playerColours)
             .reduce((acc, playerId, index) => {
@@ -84,13 +90,17 @@ const SudokuCell = React.memo(function SudokuCell(
                     </div>
                 )
             })}
-            <div 
+            <div
+                onAnimationEnd={() => {
+                    localStorage.setItem('gameAnimationPlayed', 'true');
+                    setIsAnimationPlayed(true);
+                }}
                 onClick={() => {onSelect(row, col)}}
                 onMouseEnter={onHoverHandler(setIsHovered)}
                 onMouseLeave={onLeaveHandler(setIsHovered)}
                 className={`w-full h-full flex items-center justify-center 
-                            cursor-pointer box-border
-                            animate-fill-cell 
+                            cursor-pointer box-border fill-mode-backwards
+                            ${!isAnimationPlayed && "animate-fill-cell"} 
                             ${cellOwnership && !isSelected && !isHovered && !isInUnit ? playerColourClassNamePicker[playerColours[cellOwnership]].medium : "bg-primary-foreground"}
                             ${(isInUnit && !isSelected && !isHovered) && playerColourClassName.light}
                             ${(isHovered && !isSelected) && playerColourClassName.medium}
@@ -98,7 +108,7 @@ const SudokuCell = React.memo(function SudokuCell(
                             ${isSameNumber ? "font-bold md:font-extrabold text-2xl md:text-3xl" : "font-semibold text-xl md:text-2xl"}
                             ${isRejected ? "text-red-500 text-2xl" : "text-black"}
                             `}
-                style={{ animationDelay: `${((row * 3) + col) * 15}ms`}}
+                style={{animationDelay: `${((row * 3) + col) * 15}ms`}}
             >
                 <span className="font-mono">
                     {showValue ? value : null}
