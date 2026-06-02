@@ -76,7 +76,6 @@ export function GameMobileLayout({
                         highlightedCellState={userHighlightedCell ? getCellState(privateGameState.boardState, userHighlightedCell.row, userHighlightedCell.col) : undefined}
                         notesModeOn={notesModeOn}
                         setNotesModeOn={setNotesModeOn}
-                        playerColours={playerColours!}
                         queryClient={queryClient}
                     />
                 </div>

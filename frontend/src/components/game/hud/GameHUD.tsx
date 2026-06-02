@@ -73,7 +73,7 @@ export function GameHUD(
                 <div 
                     onClick={() => openModal(setStatsModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
-                                border-1 md:border-2 text-accent-foreground text-sm md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                border-1 md:border-2 text-accent-foreground text-xl rounded-md cursor-pointer
                                 hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
                     <span><IconChartBar size={iconSize} stroke={iconStroke} /></span>
@@ -82,7 +82,7 @@ export function GameHUD(
                 <div 
                     onClick={() => openModal(setHeatMapModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
-                                border-1 md:border-2  text-accent-foreground text-sm md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                border-1 md:border-2  text-accent-foreground text-xl rounded-md cursor-pointer
                                 hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
                     <span><IconFlame size={iconSize} stroke={iconStroke} /></span>
@@ -91,7 +91,7 @@ export function GameHUD(
                 <div 
                     onClick={() => openModal(setGameLogModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
-                                border-1 md:border-2  text-accent-foreground text-sm md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                border-1 md:border-2  text-accent-foreground text-xl rounded-md cursor-pointer
                                 hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
                     <span><IconLogs size={iconSize} stroke={iconStroke} /></span>
@@ -100,7 +100,7 @@ export function GameHUD(
                 <div 
                     onClick={() => openModal(setGameChatModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
-                                border-1 md:border-2 text-accent-foreground text-sm md:text-xl lg:text-2xl rounded-md cursor-pointer
+                                border-1 md:border-2 text-accent-foreground text-xl rounded-md cursor-pointer
                                 hover:border-primary hover:bg-primary/10 hover:text-primary"
                 >
                     <span><IconMessageCircle size={iconSize} stroke={iconStroke} /></span>

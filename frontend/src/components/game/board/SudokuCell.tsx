@@ -82,7 +82,7 @@ const SudokuCell = React.memo(function SudokuCell(
                 const opponentColourClassName = playerColourClassNamePicker[playerColours[opponentId]].strong;
                 return (
                     <div 
-                        className={`absolute rotate-45 z-0 h-4 w-4
+                        className={`absolute rotate-45 z-0 h-3 w-3 md:h-4 md:w-4
                                     ${cornerPosition}
                                     ${opponentColourClassName}`}
                         key={`corner-${index}`}
@@ -105,7 +105,7 @@ const SudokuCell = React.memo(function SudokuCell(
                             ${(isInUnit && !isSelected && !isHovered) && playerColourClassName.light}
                             ${(isHovered && !isSelected) && playerColourClassName.medium}
                             ${isSelected && playerColourClassName.strong}
-                            ${isSameNumber ? "font-bold md:font-extrabold text-2xl md:text-3xl" : "font-semibold text-xl md:text-2xl"}
+                            ${isSameNumber ? "font-extrabold text-3xl" : "font-semibold text-2xl"}
                             ${isRejected ? "text-red-500 text-2xl" : "text-black"}
                             `}
                 style={{animationDelay: `${((row * 3) + col) * 15}ms`}}

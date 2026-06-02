@@ -19,7 +19,7 @@ export function GameInfoBar({
     return (
         <div 
             className="flex h-[6%] w-full bg-sidebar text-sidebar-accent gap-3 justify-center 
-                        items-center px-5 text-md font-bold md:text-2xl"
+                        items-center px-5 font-bold text-2xl"
         >
             <span>{wordToProperCase(difficulty)}</span>
             <span>&middot;</span>
@@ -30,7 +30,9 @@ export function GameInfoBar({
                 gameEndsAt && (
                     <>
                         <span>&middot;</span>
-                        <BasicTimer endTime={getEpochTimeFromTimestamp(gameEndsAt)} unit="MINUTES" />
+                        <span className="px-2 py-1 border-muted border-2 rounded-lg bg-muted/10 font-mono text-xl">
+                            <BasicTimer endTime={getEpochTimeFromTimestamp(gameEndsAt)} unit="MINUTES" />
+                        </span>
                     </>
                 )
             }

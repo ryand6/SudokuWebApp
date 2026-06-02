@@ -4,7 +4,6 @@ import { gamePlayerStateCacheDispatcher } from "@/state/game/player/gamePlayerSt
 import { CellUpdateValidationError, NotesUpdateValidationError } from "@/state/game/player/gamePlayerStateCacheReducer";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import type { CellCoordinates, PrivateCellState } from "@/types/game/GameTypes";
-import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils";
 import { hasNote } from "@/utils/game/noteUtils";
 import type { QueryClient } from "@tanstack/react-query";
 import { useCallback, type Dispatch, type SetStateAction } from "react";
@@ -19,7 +18,6 @@ export function UserActionBar(
         highlightedCellState,
         notesModeOn,
         setNotesModeOn,
-        playerColours,
         queryClient
     }: {
         gameId: number,
@@ -29,7 +27,6 @@ export function UserActionBar(
         highlightedCellState: PrivateCellState | undefined,
         notesModeOn: boolean,
         setNotesModeOn: Dispatch<SetStateAction<boolean>>,
-        playerColours: Record<number, PlayerColour>,
         queryClient: QueryClient
     }
 ) {
@@ -89,20 +86,21 @@ export function UserActionBar(
         // IMPLEMENT SUBMIT NOTE UPDATE WS (0 VALUE)
     }, [gameId, userId, queryClient, send]); 
 
-    const noteShineClassName = playerColourClassNamePicker[playerColours[userId]].shine + " font-semibold";
-
     return (
         <div className="flex flex-col h-[20%] w-full border-t-2 md:border-t-4 border-border bg-card p-3 gap-2">
             <div className="flex gap-2 justify-evenly">
                 <div 
                     onClick={() => setNotesModeOn(prev => !prev)}
-                    className="flex gap-1 justify-center items-center h-full w-full text-lg md:text-xl hover:bg-sidebar-primary rounded cursor-pointer">
+                    className={`flex gap-1 justify-center items-center h-full w-full text-xl 
+                            rounded-md cursor-pointer border-2 font-display font-medium
+                            ${notesModeOn ? "border-secondary text-secondary bg-secondary/10 hover:bg-secondary/20" : "border-accent-foreground text-accent-foreground bg-accent-foreground/10 hover:bg-accent-foreground/20"}`}>
                     <span><IconPencil /></span>
                     <span>{notesModeOn ? "Notes (on)" : "Notes (off)"}</span>
                 </div>
                 <div
                     onClick={() => handleCellClear(playerHighlightedCell)}
-                    className="flex gap-1 justify-center items-center h-full w-full text-lg md:text-xl hover:bg-sidebar-primary rounded cursor-pointer">
+                    className="flex gap-1 justify-center items-center h-full w-full text-xl font-medium font-display
+                    rounded-md cursor-pointer border-2 border-destructive/70 text-destructive/70 bg-destructive/10 hover:bg-destructive/20">
                     <span><IconEraser /></span>
                     <span>Clear</span>
                 </div>
@@ -116,10 +114,9 @@ export function UserActionBar(
                     return (
                         <div 
                             onClick={() => onNumberInputClick(num, playerHighlightedCell, notesModeOn)}
-                            className={`flex h-full justify-center items-center w-[10%] py-4 md:py-5 lg:py-6 text-2xl md:3-xl lg:text-4xl 
-                                        rounded-2xl cursor-pointer elevated
-                                        ${playerColourClassNamePicker[playerColours[userId]].hover}
-                                        ${noteActive && noteShineClassName}`}
+                            className={`flex h-full justify-center items-center w-[10%] font-semibold py-4 md:py-5 lg:py-6 text-3xl
+                                        rounded-2xl cursor-pointer font-mono border-2 border-muted hover:border-primary hover:text-primary
+                                        ${noteActive && "bg-primary/20 text-primary border-primary"}`}
                             key={index}    
                         >
                             {num}

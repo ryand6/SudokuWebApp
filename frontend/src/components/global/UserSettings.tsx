@@ -59,7 +59,7 @@ export function UserSettings({
                     <IconSettings />
                 </div>
             </SheetTrigger>
-            <SheetContent showCloseButton={true} >
+            <SheetContent showCloseButton={true}>
                 <SheetHeader>
                     <SheetTitle>Settings</SheetTitle>
                     <SheetDescription>

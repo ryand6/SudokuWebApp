@@ -30,7 +30,7 @@ const NotesLayer = React.memo(function NotesLayer(
     const highlightedNumberClassName = "rounded-full " + playerColourClassNamePicker[playerColour].strong;
 
     return (
-        <div className="absolute inset-0 pointer-events-none m-2 z-10 flex items-center justify-center">
+        <div className="absolute inset-0 pointer-events-none m-1.5 z-10 flex items-center justify-center">
             <div className="grid grid-cols-3 grid-rows-3 w-full h-full">
                 {
                     notesAllowed && Array.from([0, 1, 2]).map((row, r) => 

@@ -4,30 +4,22 @@ export const playerColourClassNamePicker = {
   ONE: {
     strong: "player-colour-one-strong",
     medium: "player-colour-one-medium",
-    light: "player-colour-one-light",
-    hover: "hover-player-colour-one",
-    shine: "shine-one"
+    light: "player-colour-one-light"
   },
   TWO: {
     strong: "player-colour-two-strong",
     medium: "player-colour-two-medium",
-    light: "player-colour-two-light",
-    hover: "hover-player-colour-two",
-    shine: "shine-two"
+    light: "player-colour-two-light"
   },
   THREE: {
     strong: "player-colour-three-strong",
     medium: "player-colour-three-medium",
-    light: "player-colour-three-light",
-    hover: "hover-player-colour-three",
-    shine: "shine-three"
+    light: "player-colour-three-light"
   },
   FOUR: {
     strong: "player-colour-four-strong",
     medium: "player-colour-four-medium",
-    light: "player-colour-four-light",
-    hover: "hover-player-colour-four",
-    shine: "shine-four"
+    light: "player-colour-four-light"
   },
 };
 
