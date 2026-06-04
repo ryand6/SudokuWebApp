@@ -28,10 +28,6 @@ export function GameMobileLayout({
 }: GameLayout) {
     return (
         <div className="flex flex-col h-full w-full">
-            <GameNotificationLayer 
-                scoreNotificationsEnabled={currentUser.userSettings.scoreNotificationsEnabled}
-                streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
-            />
             <div className="flex justify-center items-center h-full w-full">
                 <div className="flex flex-col items-center w-full h-full">
                     <GameHUD 
@@ -48,6 +44,8 @@ export function GameMobileLayout({
                         gameMode={publicGameState.gameSettings.gameMode}
                         gameType={publicGameState.gameSettings.gameType}
                         gameEndsAt={publicGameState.gameEndsAt}
+                        scoreNotificationsEnabled={currentUser.userSettings.scoreNotificationsEnabled}
+                        streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
                     />
                     <SudokuBoard 
                         gameId={publicGameState.gameId}
@@ -74,6 +72,7 @@ export function GameMobileLayout({
                         initialBoardState={publicGameState.initialBoardState}
                         playerHighlightedCell={userHighlightedCell}
                         highlightedCellState={userHighlightedCell ? getCellState(privateGameState.boardState, userHighlightedCell.row, userHighlightedCell.col) : undefined}
+                        isMobile={isMobile}
                         notesModeOn={notesModeOn}
                         setNotesModeOn={setNotesModeOn}
                         queryClient={queryClient}

@@ -29,10 +29,6 @@ export function GameDesktopLayout({
 }: GameLayout) {
     return (
         <>
-            <GameNotificationLayer 
-                scoreNotificationsEnabled={currentUser.userSettings.scoreNotificationsEnabled}
-                streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
-            />
             <div className="flex items-center w-full h-full">
                 <div className="flex flex-col w-[25%] h-full border-border border-r-4 p-4 bg-card">
                     <GameHUD 
@@ -59,6 +55,8 @@ export function GameDesktopLayout({
                         gameMode={publicGameState.gameSettings.gameMode}
                         gameType={publicGameState.gameSettings.gameType}
                         gameEndsAt={publicGameState.gameEndsAt}
+                        scoreNotificationsEnabled={currentUser.userSettings.scoreNotificationsEnabled}
+                        streakNotificationsEnabled={currentUser.userSettings.streakNotificationsEnabled}
                     />
                     <SudokuBoard 
                         gameId={publicGameState.gameId}
@@ -79,6 +77,7 @@ export function GameDesktopLayout({
                         initialBoardState={publicGameState.initialBoardState}
                         playerHighlightedCell={userHighlightedCell}
                         highlightedCellState={userHighlightedCell ? getCellState(privateGameState.boardState, userHighlightedCell.row, userHighlightedCell.col) : undefined}
+                        isMobile={isMobile}
                         notesModeOn={notesModeOn}
                         setNotesModeOn={setNotesModeOn}
                         queryClient={queryClient}

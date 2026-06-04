@@ -58,9 +58,9 @@ export function GameHUD(
 
     return (
         <div 
-            className="py-2 bg-card h-[8%] w-full md:h-[50%]"
+            className="bg-card h-auto w-full md:h-[50%]"
         >   
-            <div className="flex md:flex-col justify-evenly h-full gap-2 md:gap-5 px-2">
+            <div className="flex md:flex-col justify-evenly h-full gap-2 md:gap-5 px-2 py-4">
                 {
                     !isMobile && (
                         <div className="justify-start">
@@ -74,7 +74,7 @@ export function GameHUD(
                     onClick={() => openModal(setStatsModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
                                 border-1 md:border-2 text-accent-foreground text-xl rounded-md cursor-pointer
-                                hover:border-primary hover:bg-primary/10 hover:text-primary"
+                                hover:border-primary hover:bg-primary/10 hover:text-primary py-2"
                 >
                     <span><IconChartBar size={iconSize} stroke={iconStroke} /></span>
                     <span>Stats</span>   
@@ -83,16 +83,16 @@ export function GameHUD(
                     onClick={() => openModal(setHeatMapModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
                                 border-1 md:border-2  text-accent-foreground text-xl rounded-md cursor-pointer
-                                hover:border-primary hover:bg-primary/10 hover:text-primary"
+                                hover:border-primary hover:bg-primary/10 hover:text-primary py-2"
                 >
                     <span><IconFlame size={iconSize} stroke={iconStroke} /></span>
-                    <span>Heatmaps</span>   
+                    <span>Heat Maps</span>   
                 </div>
                 <div 
                     onClick={() => openModal(setGameLogModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
                                 border-1 md:border-2  text-accent-foreground text-xl rounded-md cursor-pointer
-                                hover:border-primary hover:bg-primary/10 hover:text-primary"
+                                hover:border-primary hover:bg-primary/10 hover:text-primary py-2"
                 >
                     <span><IconLogs size={iconSize} stroke={iconStroke} /></span>
                     <span>Log</span>  
@@ -101,14 +101,14 @@ export function GameHUD(
                     onClick={() => openModal(setGameChatModalOpen)}
                     className="flex justify-center gap-1 items-center h-full w-full bg-background border-muted font-display font-medium
                                 border-1 md:border-2 text-accent-foreground text-xl rounded-md cursor-pointer
-                                hover:border-primary hover:bg-primary/10 hover:text-primary"
+                                hover:border-primary hover:bg-primary/10 hover:text-primary py-2"
                 >
                     <span><IconMessageCircle size={iconSize} stroke={iconStroke} /></span>
                     <span>Chat</span>
                 </div>
                 <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId})} setOpen={setIsAlertOpen} />
                 <div className="flex items-center justify-center w-full h-full rounded-md border-1 md:border-2 
-                            bg-background border-destructive/50 text-destructive cursor-pointer
+                            bg-background border-destructive/50 text-destructive cursor-pointer py-2
                             hover:bg-destructive/10" 
                             onClick={() => setIsAlertOpen(true)}>
                     <IconDoorExit size={iconSize} />

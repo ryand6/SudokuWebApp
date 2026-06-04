@@ -1,5 +1,6 @@
 import { useGameNotifications } from "@/hooks/notifications/useGameNotifications";
-import { notificationClassNameSelect, type GameNotification } from "@/utils/game/gameNotificationUtils";
+import { type GameNotification } from "@/utils/game/gameNotificationUtils";
+import type { JSX } from "react";
 
 export function GameNotificationLayer({
     scoreNotificationsEnabled,
@@ -14,8 +15,7 @@ export function GameNotificationLayer({
 
     return (
         <div 
-            className="fixed top-[1vh] left-[50%] translate-x-[50%] 
-                        flex flex-col items-center gap-0.5 z-50 
+            className="fixed flex flex-col items-center gap-1 z-50 
                         pointer-events-none"
         >
             {notifications.map((n) => (
@@ -38,19 +38,38 @@ function NotificationBadge({
     notification: GameNotification,
     scoreNotificationsEnabled: boolean,
     streakNotificationsEnabled: boolean
-}) {
+}): JSX.Element | null {
 
+    console.log("scoreNotificationsEnabled: ", scoreNotificationsEnabled);
+    console.log("streakNotificationsEnabled: ", streakNotificationsEnabled);
+
+
+    const isNegative = notification.message.includes("-");
+    
     const showNotification = (notification.type === "score" && scoreNotificationsEnabled) || (notification.type === "streak" && streakNotificationsEnabled);
 
     if (!showNotification) return null;
 
     return (
-        <div 
-            className={`py-2 px-5 rounded-full shadow-xl 
-                        font-bold animate-float-up
-                        ${notificationClassNameSelect[notification.type]}`}    
-        >
-            {notification.message}
+
+        <div className="py-2 px-2 font-extrabold animate-float-up text-primary font-mono">
+            <span 
+                className={`${isNegative && "text-destructive"}
+                            ${notification.type === "streak" && "animate-wiggle"}`}
+            >
+                {notification.message}
+            </span>
         </div>
+
+
+        
+        
+        // <div 
+        //     className="py-2 px-5
+        //                 font-bold animate-float-up"
+                            
+        // >
+        //     {notification.message}
+        // </div>
     )
 }

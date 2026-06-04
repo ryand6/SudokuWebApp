@@ -12,9 +12,9 @@ export default function MainLayout() {
 
 	return (
 		<div className="min-h-screen h-full flex flex-col border-border border-2 md:border-4">
-			<header className="bg-secondary h-[8%] text-secondary-foreground px-4 py-3">
+			<header className="bg-secondary h-[6%] text-secondary-foreground px-4 py-3">
 				<div className="w-full h-full mx-auto flex items-center justify-between px-5">
-					<h1 className="font-bold text-lg md:text-3xl">
+					<h1 className="font-bold text-3xl">
 						Tomo Sudoku
 					</h1>
 					{
@@ -25,7 +25,7 @@ export default function MainLayout() {
 				</div>
 			</header>
 
-			<main className="h-[92%] md:h-[90%]">
+			<main className="h-auto">
 				{
 					(!isConnected && user) ? 
 						<WebSocketReconnectScreen />

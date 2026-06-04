@@ -1,6 +1,5 @@
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
-import { Button } from "../ui/button";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { sendUserSettingsUpdate } from "@/api/ws/user/sendUserSettingsUpdate";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
@@ -9,6 +8,7 @@ import { Switch } from "../ui/switch";
 import { userCacheDispatcher } from "@/state/user/userCacheDispatcher";
 import type { QueryClient } from "@tanstack/react-query";
 import { IconSettings } from '@tabler/icons-react';
+import { useIsMobile } from "@/hooks/global/useIsMobile";
 
 export function UserSettings({
     settings,
@@ -24,6 +24,9 @@ export function UserSettings({
         userCacheDispatcher(queryClient, {type: "USER_SETTINGS_UPDATED", field: setting, value: value});
         sendUserSettingsUpdate(send, {field: setting, value: value});
     }
+
+    const isMobile = useIsMobile();
+    const iconSize: number = isMobile ? 16 : 24;
 
     type BooleanKeys<T> = {
         [K in keyof T]: T[K] extends boolean ? K : never
@@ -56,7 +59,7 @@ export function UserSettings({
                             hover:bg-primary/10"
 
                     >
-                    <IconSettings />
+                    <IconSettings size={iconSize} />
                 </div>
             </SheetTrigger>
             <SheetContent showCloseButton={true}>

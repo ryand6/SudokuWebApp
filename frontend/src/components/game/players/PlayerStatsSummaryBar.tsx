@@ -13,11 +13,8 @@ export function PlayerStatsSummaryBar({
     currentStreak: number,
     isMobile: boolean
 }) {
-
-    console.log("isMobile: ", isMobile);
-
     return (
-        <div className="flex md:flex-col md:gap-5 h-[10%] md:h-[50%] w-full border-muted border-y-2 md:border-0">
+        <div className="flex md:flex-col md:gap-5 h-auto md:h-[50%] w-full border-muted border-y-2 md:border-0">
             {
                 !isMobile && (
                     <div className="justify-start">
@@ -29,7 +26,7 @@ export function PlayerStatsSummaryBar({
             }
             {Object.entries(gamePlayers).map(([key, player], index) => {
                 return (
-                    <div className="relative flex w-full md:h-[15%] md:border-muted md:rounded-md md:border-2" key={index}>
+                    <div className="relative flex w-full h-auto md:h-[15%] md:border-muted md:rounded-md md:border-2" key={index}>
                         {
                             isMobile ? (
                                 <>
@@ -37,7 +34,7 @@ export function PlayerStatsSummaryBar({
                                         (<div className="absolute top-[5%] right-[25%] text-sm font-extrabold text-primary">x{ currentStreak }</div>)
                                     }
                                     <div 
-                                        className={`flex w-full flex-col items-center justify-center
+                                        className={`flex w-full flex-col items-center justify-center py-2
                                                     ${userId === Number(key) && "bg-sidebar-primary/20 "}`}
                                     >   
                                         <div className="flex w-auto items-center justify-center gap-2">
@@ -45,11 +42,11 @@ export function PlayerStatsSummaryBar({
                                                 className={`left-0 p-2 my-1 border-muted border-1 rounded ${playerColourClassNamePicker[player.colour].medium}`}
                                             >
                                             </div>
-                                            <span className="font-semibold text-md">{ player.name }</span>
+                                            <span className="font-semibold text-lg text-accent-foreground font-display tracking-wide overflow-ellipsis">{ player.name }</span>
                                             <div className="p-2 my-1 border-1 opacity-0 pointer-events-none" />
                                         </div>
-                                        <span className="font-bold text-primary text-md">{ player.score }</span>
-                                        <span className="text-xs text-muted-foreground">pts</span>
+                                        <span className="font-bold text-primary text-xl font-mono">{ player.score }</span>
+                                        <span className="text-sm text-muted-foreground">pts</span>
                                     </div>
                                     {
                                         index !== Object.keys(gamePlayers).length - 1 && (
@@ -71,10 +68,10 @@ export function PlayerStatsSummaryBar({
                                                 className={`left-0 p-3 my-1 border-muted border-1 rounded ${playerColourClassNamePicker[player.colour].medium}`}
                                             >
                                             </div>
-                                            <span className="font-semibold text-lg overflow-ellipsis">{ player.name }</span>
+                                            <span className="font-semibold text-lg overflow-ellipsis text-accent-foreground font-display tracking-wide">{ player.name }</span>
                                         </div>
                                         <div>
-                                            <span className="font-extrabold text-primary text-xl">{ player.score }</span>
+                                            <span className="font-extrabold text-primary text-xl font-mono">{ player.score }</span>
                                         </div>
                                     </div>
                                 </>

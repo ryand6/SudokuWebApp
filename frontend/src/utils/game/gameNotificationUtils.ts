@@ -24,9 +24,3 @@ export const notificationEmitter = {
         }
     }
 }
-
-export const notificationClassNameSelect: Record<NotificationType, string> = {
-    score: "bg-yellow-400 text-black",
-    timer: "bg-blue-400 text-white",
-    streak: "bg-orange-400 text-black"
-}

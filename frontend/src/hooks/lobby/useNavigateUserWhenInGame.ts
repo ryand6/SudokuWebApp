@@ -11,6 +11,9 @@ export function useNavigateUserWhenInGame(
     navigate: NavigateFunction
 ) {
     useEffect(() => {
+        if (!playerInGame) {
+            localStorage.setItem('gameAnimationPlayed', 'false');
+        }
         if (!lobbyInGame || !currentGameId || !userId || !playerInGame || !gameId || isLoadingGameData) {
             return;
         }

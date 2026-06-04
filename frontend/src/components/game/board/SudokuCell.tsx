@@ -51,8 +51,6 @@ const SudokuCell = React.memo(function SudokuCell(
         return localStorage.getItem('gameAnimationPlayed') === 'true';
     });
 
-    console.log("isAnimationPlayed: ", isAnimationPlayed);
-
     const playerCornerIndex: Record<number, number> = useMemo(() => {
         return Object.keys(playerColours)
             .reduce((acc, playerId, index) => {
@@ -82,7 +80,7 @@ const SudokuCell = React.memo(function SudokuCell(
                 const opponentColourClassName = playerColourClassNamePicker[playerColours[opponentId]].strong;
                 return (
                     <div 
-                        className={`absolute rotate-45 z-0 h-3 w-3 md:h-4 md:w-4
+                        className={`absolute rotate-45 z-0 h-3.5 w-3.5 md:h-4 md:w-4
                                     ${cornerPosition}
                                     ${opponentColourClassName}`}
                         key={`corner-${index}`}
