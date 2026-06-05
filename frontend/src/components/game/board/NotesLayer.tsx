@@ -40,7 +40,7 @@ const NotesLayer = React.memo(function NotesLayer(
                             return (
                                 <div 
                                     key={`${r}-${c}`}
-                                    className={`aspect-square text-xs flex items-center justify-center 
+                                    className={`aspect-square text-xs flex items-center justify-center font-mono
                                                 ${!notesModeOn && 'text-gray-500 text-opacity-50'}
                                                 ${(Number(highlightedCellNumber) === note) && notePresent && highlightedNumberClassName}`}
                                 >

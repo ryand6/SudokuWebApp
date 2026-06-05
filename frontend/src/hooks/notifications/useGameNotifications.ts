@@ -1,20 +1,19 @@
 import { notificationEmitter, type GameNotification } from "@/utils/game/gameNotificationUtils";
 import { useEffect, useState } from "react";
 
-export function useGameNotifications(dismissAfterMs = 2000) {
+export function useGameNotifications() {
     const [notifications, setNotifications] = useState<GameNotification[]>([]);
 
     useEffect(() => {
         const unsubscribe = notificationEmitter.subscribe((notification) => {
             setNotifications((prev) => [...prev, notification]);
-
-            setTimeout(() => {
-                setNotifications((prev) => prev.filter((n) => n.id !== notification.id));
-            }, dismissAfterMs);
         });
-
         return unsubscribe;
-    }, [dismissAfterMs]);
+    }, []);
 
-    return notifications;
+    const dismiss = (id: string) => {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+    };
+
+    return { notifications, dismiss };
 }

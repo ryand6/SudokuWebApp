@@ -1,6 +1,6 @@
 import { useGameNotifications } from "@/hooks/notifications/useGameNotifications";
 import { type GameNotification } from "@/utils/game/gameNotificationUtils";
-import type { JSX } from "react";
+import { useState, type Dispatch, type JSX, type SetStateAction } from "react";
 
 export function GameNotificationLayer({
     scoreNotificationsEnabled,
@@ -9,7 +9,11 @@ export function GameNotificationLayer({
     scoreNotificationsEnabled: boolean | undefined,
     streakNotificationsEnabled: boolean | undefined
 }) {
-    const notifications = useGameNotifications();
+    const { notifications, dismiss } = useGameNotifications();
+
+    const handleAnimationEnd = () => {
+        dismiss(notifications[0].id);  
+    }
 
     if (scoreNotificationsEnabled === undefined || streakNotificationsEnabled === undefined) return null;
 
@@ -18,14 +22,17 @@ export function GameNotificationLayer({
             className="fixed flex flex-col items-center gap-1 z-50 
                         pointer-events-none"
         >
-            {notifications.map((n) => (
-                <NotificationBadge 
-                    key={n.id} 
-                    notification={n} 
-                    scoreNotificationsEnabled={scoreNotificationsEnabled} 
-                    streakNotificationsEnabled={streakNotificationsEnabled} 
-                />
-            ))}
+            {
+                notifications[0] && 
+                    <NotificationBadge 
+                        key={notifications[0].id}
+                        notification={notifications[0]} 
+                        scoreNotificationsEnabled={scoreNotificationsEnabled} 
+                        streakNotificationsEnabled={streakNotificationsEnabled}
+                        handleAnimationEnd={handleAnimationEnd}
+                    />
+            }
+            
         </div>
     )
 }
@@ -33,16 +40,17 @@ export function GameNotificationLayer({
 function NotificationBadge({ 
     notification,
     scoreNotificationsEnabled,
-    streakNotificationsEnabled
+    streakNotificationsEnabled,
+    handleAnimationEnd
 }: { 
     notification: GameNotification,
     scoreNotificationsEnabled: boolean,
-    streakNotificationsEnabled: boolean
+    streakNotificationsEnabled: boolean,
+    handleAnimationEnd: () => void
 }): JSX.Element | null {
 
     console.log("scoreNotificationsEnabled: ", scoreNotificationsEnabled);
     console.log("streakNotificationsEnabled: ", streakNotificationsEnabled);
-
 
     const isNegative = notification.message.includes("-");
     
@@ -51,25 +59,18 @@ function NotificationBadge({
     if (!showNotification) return null;
 
     return (
+        <div 
+            className={`py-2 px-2 font-extrabold animate-snap-in text-primary font-mono`} 
+            onAnimationEnd={handleAnimationEnd}          
+        >
+            <div className={`${notification.type === "streak" && "animate-wiggle"}`}>
+                <span 
+                    className={`${isNegative && "text-destructive"}`}
+                >
+                    {notification.message}
+                </span>
+            </div>
 
-        <div className="py-2 px-2 font-extrabold animate-float-up text-primary font-mono">
-            <span 
-                className={`${isNegative && "text-destructive"}
-                            ${notification.type === "streak" && "animate-wiggle"}`}
-            >
-                {notification.message}
-            </span>
         </div>
-
-
-        
-        
-        // <div 
-        //     className="py-2 px-5
-        //                 font-bold animate-float-up"
-                            
-        // >
-        //     {notification.message}
-        // </div>
     )
 }

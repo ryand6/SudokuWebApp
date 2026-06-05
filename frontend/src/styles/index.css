@@ -225,54 +225,66 @@
     */ 
     --animate-fill-cell: fill-cell 1500ms ease-in-out 1;
 
-    --animate-float-up: float-up 5000ms ease-out forwards;
-
     --animate-game-start-countdown: blink 1000ms linear forwards;
 
-    --animate-wiggle: wiggle 4000ms ease-in-out infinite;
+    --animate-wiggle: wiggle 1000ms ease-in-out infinite;
+
+    --animate-snap-in: snap-in 1000ms ease-out forwards;
+
     @keyframes wiggle {
-        0%,
-        10%, 30%, 50%, 70%, 90% {
-            transform: rotate(-30deg);
+        20%, 60%, 100% {
+            transform: rotate(-15deg);
         }
-        20%, 40%, 60%, 80%, 100% {
-            transform: rotate(30deg);
+        0%, 40%, 80% {
+            transform: rotate(15deg);
+        }
+    }
+
+    @keyframes snap-in {
+        0% { 
+            opacity: 0; 
+            transform: translateY(0) scale(0.6); 
+        }
+        15% { 
+            opacity: 1; 
+            transform: translateY(-1.5rem) scale(1.15); 
+        }
+        25% { 
+            transform: translateY(-2rem) scale(1); 
+        }
+        85% { 
+            transform: translateY(-2rem) scale(1); 
+            opacity: 1; 
+        }
+        100% { 
+            transform: translateY(-3rem) scale(0.8); 
+            opacity: 0; 
         }
     }
 
     @keyframes fill-cell {
         0% {
-        color: transparent;
+            color: transparent;
         }
         40% {
-        color: transparent;
+            color: transparent;
         }
         50% {
-        /* transform: scale(1.5); */
-        z-index: 100;
-        color: #d4af37;
-        font-size: 30px;
-        font-weight: bold;
-        border-style: inset;
-        border-width: 5px;
-        border-color: #d4af37
+            /* transform: scale(1.5); */
+            z-index: 100;
+            color: #d4af37;
+            font-size: 30px;
+            font-weight: bold;
+            border-style: inset;
+            border-width: 5px;
+            border-color: #d4af37
         }
         100% {
-        transform: none;
-        font-weight: normal;
+            transform: none;
+            font-weight: normal;
         }
     }
 
-    @keyframes float-up {
-        0%, 
-        85%  { 
-            transform: translateY(-2.5rem); 
-        }
-        100% { 
-            transform: translateY(-3.5rem); 
-        }
-    }
-    }
 
     @keyframes blink {
         0% {
@@ -285,6 +297,7 @@
         100% {
             opacity: 0;
         }
+    }
 }
 
 @layer base {
