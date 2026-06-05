@@ -83,13 +83,13 @@ export function SudokuBoard(
                         let borderTop, borderLeft, borderBottom, borderRight;
                         // Tailwind border logic
                         if (isMobile) {
-                            borderTop = r === 0 ? "border-t-3 border-black" : r % 3 === 0 ? "border-t-2 border-black" : "border-t border-black";
-                            borderLeft = c === 0 ? "border-l-3 border-black" : c % 3 === 0 ? "border-l-2 border-black" : "border-l border-black";
-                            borderBottom = r === 8 ? "border-b-3 border-black" : "border-b border-black";
-                            borderRight = c === 8 ? "border-r-3 border-black" : "border-r border-black";
+                            borderTop = r === 0 ? "border-t-3 border-black" : r % 3 === 0 ? "border-t-3 border-black" : "border-t border-black";
+                            borderLeft = c === 0 ? "border-l-3 border-black" : c % 3 === 0 ? "border-l-3 border-black" : "border-l border-black";
+                            borderBottom = r === 8 ? "border-b-3 border-black" : "";
+                            borderRight = c === 8 ? "border-r-3 border-black" : "";
                         } else {
-                            borderTop = r === 0 ? "border-t-6 border-black" : r % 3 === 0 ? "border-t-4 border-black" : "border-t border-black";
-                            borderLeft = c === 0 ? "border-l-6 border-black" : c % 3 === 0 ? "border-l-4 border-black" : "border-l border-black";
+                            borderTop = r === 0 ? "border-t-6 border-black" : r % 3 === 0 ? "border-t-6 border-black" : "border-t border-black";
+                            borderLeft = c === 0 ? "border-l-6 border-black" : c % 3 === 0 ? "border-l-6 border-black" : "border-l border-black";
                             borderBottom = r === 8 ? "border-b-6 border-black" : "border-b border-black";
                             borderRight = c === 8 ? "border-r-6 border-black" : "border-r border-black";
                         }
