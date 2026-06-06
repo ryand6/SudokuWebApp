@@ -19,8 +19,7 @@ export function GameNotificationLayer({
 
     return (
         <div 
-            className="fixed flex flex-col items-center gap-1 z-50 
-                        pointer-events-none"
+            className="max-h-8 flex items-center justify-center z-50 pointer-events-none"
         >
             {
                 notifications[0] && 

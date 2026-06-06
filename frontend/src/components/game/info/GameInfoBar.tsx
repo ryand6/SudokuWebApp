@@ -26,6 +26,7 @@ export function GameInfoBar({
             className="flex h-auto py-3 w-full bg-sidebar text-sidebar-accent gap-3 justify-center 
                         items-center px-5 font-bold text-xl"
         >
+            <div className="w-40"></div>
             <span>{wordToProperCase(difficulty)}</span>
             <span>&middot;</span>
             <span>{wordToProperCase(gameMode)}</span>
@@ -41,14 +42,12 @@ export function GameInfoBar({
                     </>
                 )
             }
-
-            <div>
+            <div className="pl-1 flex justify-center items-center w-40">
                 <GameNotificationLayer 
                     scoreNotificationsEnabled={scoreNotificationsEnabled}
                     streakNotificationsEnabled={streakNotificationsEnabled}
                 />
-            </div>
-            
+            </div>    
         </div>
     )
 }
