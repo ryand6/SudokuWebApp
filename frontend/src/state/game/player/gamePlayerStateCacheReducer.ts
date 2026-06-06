@@ -60,7 +60,7 @@ export function gamePlayerStateCacheReducer(
             return existingData;
         }
         case "STREAK_RESET": {
-            notificationEmitter.emit({ type: "streak", message: "Streak Lost" });
+            notificationEmitter.emit({ type: "streak", message: "Streak lost" });
             return {
                 ...existingData,
                 currentStreak: 0
@@ -112,7 +112,7 @@ function emitStreakUpdate(prevStreak: number, currentStreak: number) {
     if (currentStreak === 0) {
         message = "Streak Lost";
     } else {
-        message = `x${currentStreak} Streak!`;
+        message = `×${currentStreak} Streak!`;
     }
 
     notificationEmitter.emit({ type: "streak", message: message });

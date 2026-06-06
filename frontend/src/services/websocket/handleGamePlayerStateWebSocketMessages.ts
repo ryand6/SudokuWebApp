@@ -55,14 +55,14 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
 function emitScoreUpdate(payload: CellUpdatePayload) {
     if (payload.scoreUpdate && payload.scoreUpdate !== 0) {
         const signToAdd = payload.scoreUpdate > 0 ? "+" : "";
-        notificationEmitter.emit({ type: "score", message: `${signToAdd}${payload.scoreUpdate} pts` });
+        notificationEmitter.emit({ type: "score", message: `${signToAdd}${payload.scoreUpdate}pts` });
     }
 }
 
 function emitTimerUpdate(payload: CellUpdatePayload) {
     if (payload.timerUpdate && payload.timerUpdate !== 0) {
         const signToAdd = payload.timerUpdate > 0 ? "+" : "";
-        notificationEmitter.emit({ type: "timer", message: `${signToAdd}${payload.timerUpdate} secs` });
+        notificationEmitter.emit({ type: "timer", message: `${signToAdd}${payload.timerUpdate}s` });
     }
 }
 
