@@ -39,7 +39,7 @@ export function LeaderboardScoreBreakdownRow({
                     </div>
                     {sublabel && (
                         <div
-                            className="text-sm text-muted-foreground font-sans"
+                            className="text-md text-muted-foreground font-sans"
                         >
                             {sublabel}
                         </div>
@@ -58,7 +58,7 @@ export function LeaderboardScoreBreakdownRow({
                 </div>
                 {subvalue && (
                     <div
-                        className="text-sm text-muted-foreground font-sans"
+                        className="text-md text-muted-foreground font-sans"
                     >
                         {subvalue}
                     </div>

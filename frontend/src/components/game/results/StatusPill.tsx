@@ -9,7 +9,7 @@ export function StatusPill({ result }: { result: GameResult }) {
             >
                 <span className="w-2 h-2 rounded-full bg-result-pending-foreground animate-pulse" />
                 <span
-                    className="font-display text-xs font-medium tracking-wide text-result-pending-foreground"
+                    className="font-display text-md font-medium tracking-wide text-result-pending-foreground"
                 >
                     Waiting for results…
                 </span>
@@ -23,7 +23,7 @@ export function StatusPill({ result }: { result: GameResult }) {
                 className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full 
                             mt-2.5 bg-result-win text-result-win-forefround font-display"
             >
-                <span className="text-xs font-medium tracking-wide">🏆 You won!</span>
+                <span className="text-md font-medium tracking-wide">🏆 You won!</span>
             </div>
         );
     }
@@ -35,7 +35,7 @@ export function StatusPill({ result }: { result: GameResult }) {
                             mt-2.5 border border-result-draw-border bg-result-draw 
                             text-result-draw-foreground font-display"
             >
-                <span className="text-xs font-medium tracking-wide">🤝 It's a draw!</span>
+                <span className="text-md font-medium tracking-wide">🤝 It's a draw!</span>
             </div>
         );
     }
@@ -47,7 +47,7 @@ export function StatusPill({ result }: { result: GameResult }) {
                             mt-2.5 border border-result-loss-border bg-result-loss 
                             text-result-loss-foreground font-display"
             >
-                <span className="text-xs font-medium tracking-wide">💢 Defeated</span>
+                <span className="text-md font-medium tracking-wide">💢 Defeated</span>
             </div>
         );
     }

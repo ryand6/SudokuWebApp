@@ -110,12 +110,12 @@ export function GameResults({
             <div
                 className="rounded-t-sm w-full px-5 pt-4 pb-4 text-center bg-sidebar"
             >   
-                <div className="mr-3 height-[14px] flex justify-end">
+                <div className="mr-3 h-auto flex justify-end">
                     {
                         gameEndedAt && 
                         <BasicTimer 
                             endTime={getEpochTimeFromTimestamp(gameEndedAt) + 60000}
-                            className="font-sans text-[14px] font-bold text-primary-foreground"
+                            className="font-sans text-md font-bold text-primary-foreground"
                             timerEndAction={returnToLobbyHandler}
                             unit="MINUTES"
                         />
@@ -123,7 +123,7 @@ export function GameResults({
                 </div>
                 
                 <p
-                    className="text-sm tracking-widest uppercase text-sidebar-primary mb-1 font-display"
+                    className="text-md tracking-widest uppercase text-sidebar-primary mb-1 font-display"
                 >
                     Round complete
                 </p>
@@ -133,7 +133,7 @@ export function GameResults({
                     Game Results
                 </h1>
                 <p
-                    className="text-sm text-sidebar-accent mt-1.5 font-sans"
+                    className="text-md text-sidebar-accent mt-1.5 font-sans"
                 >
                     {wordToProperCase(difficulty)} · {wordToProperCase(gameMode)}
                 </p>
@@ -158,7 +158,7 @@ export function GameResults({
                 </div>
                 <Separator orientation="horizontal" className="mb-4" />
                 <p
-                    className="text-sm tracking-wide uppercase text-muted-foreground mb-2 font-display"
+                    className="text-md tracking-wide uppercase text-muted-foreground mb-2 font-display"
                 >
                     Leaderboard score
                 </p>
@@ -167,7 +167,7 @@ export function GameResults({
                     error ? (
                         <div className="flex justify-center mb-4">
                             <span
-                                className="bg-destructive-light border-2 border-destructive text-secondary-foreground text-xs font-semibold 
+                                className="bg-destructive-light border-2 border-destructive text-secondary-foreground text-sm font-semibold 
                                             tracking-wider px-2.5 py-1 rounded-full font-display text-center"
                             >
                                 {error}

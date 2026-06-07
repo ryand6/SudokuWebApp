@@ -18,7 +18,7 @@ export function PlayerCard({
         >
             {player.gameResult === "WIN" && (
                 <span
-                    className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-result-win text-card-foreground text-xs font-semibold 
+                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-result-win text-card-foreground text-md font-semibold 
                                 tracking-wider px-2.5 py-0.5 rounded-full whitespace-nowrap capitalize font-display"
                 >
                     winner
@@ -26,7 +26,7 @@ export function PlayerCard({
             )}
             {player.gameResult === "DRAW" && (
                 <span
-                    className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-input text-card-foreground text-xs font-semibold 
+                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-input text-card-foreground text-md font-semibold 
                                 tracking-wider px-2.5 py-0.5 rounded-full whitespace-nowrap capitalize font-display"
                 >
                     draw
@@ -35,10 +35,10 @@ export function PlayerCard({
  
             <div className="flex items-center gap-1.5 mb-1.5">
                 <span
-                    className={`w-2.5 h-2.5 rounded-full ${playerColour}`}
+                    className={`w-3 h-3 rounded-full ${playerColour}`}
                 />
                 <span
-                    className="text-md font-bold text-foreground font-sans"
+                    className="text-lg font-bold text-foreground font-sans"
                 >
                     {player.name}
                 </span>
@@ -60,7 +60,7 @@ export function PlayerCard({
                         {player.score?.toLocaleString() ?? "—"}
                     </span>
                     <span
-                        className="text-xs text-muted-foreground mt-0.5 font-sans"
+                        className="text-sm text-muted-foreground mt-0.5 font-sans"
                     >
                         points
                     </span>
