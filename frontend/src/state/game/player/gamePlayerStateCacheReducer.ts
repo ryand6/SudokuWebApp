@@ -110,7 +110,7 @@ function emitStreakUpdate(prevStreak: number, currentStreak: number) {
     let message = "";
 
     if (currentStreak === 0) {
-        message = "Streak Lost";
+        message = "Streak lost";
     } else {
         message = `×${currentStreak} Streak!`;
     }
