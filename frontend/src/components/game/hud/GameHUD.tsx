@@ -132,11 +132,12 @@ export function GameHUD(
             <Modal 
                 isOpen={isHeatMapModalOpen} 
                 onClose={() => closeModal(setHeatMapModalOpen)}
-                className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50 overflow-scroll"
+                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! left-[10%]! !blur-none z-50"
             >
                 <HUDHeatMaps 
                     userId={userId}
                     gamePlayers={gamePlayers}
+                    isMobile={isMobile}
                 />
             </Modal>
 

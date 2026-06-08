@@ -1,5 +1,6 @@
 import type { PrivateBoardState, PrivateCellState } from "@/types/game/GameTypes";
 import { clearNote, clearNotes } from "./noteUtils";
+import type { CellStatus } from "@/types/enum/CellStatus";
 
 export function updateCellStateInBoardState(
     boardState: PrivateBoardState, 
@@ -66,4 +67,18 @@ export function updateNotesInBoardState(boardState: PrivateBoardState, rowIndex:
 
 export function getCellState(boardState: PrivateBoardState, row: number, col: number): PrivateCellState {
     return boardState[row][col];
+}
+
+export function getPercentageBoardComplete(boardProgress: CellStatus[]) {
+    let completedCells = 0;
+    let cellsGiven = 0;
+    boardProgress.forEach(cell => {
+        if (cell === "WON") {
+            completedCells++;
+        } else if (cell === "GIVEN") {
+            cellsGiven++;
+        }
+    })
+    const cellsToComplete = 81 - cellsGiven;
+    return Math.round((completedCells / cellsToComplete) * 100);
 }

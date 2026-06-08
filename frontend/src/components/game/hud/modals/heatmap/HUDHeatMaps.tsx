@@ -1,33 +1,57 @@
 import type { GamePlayers } from "@/types/game/GameTypes"
 import { HeatMap } from "./HeatMap"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { playerColourClassNamePicker } from "@/utils/game/gameColourUtils"
+import { getPercentageBoardComplete } from "@/utils/game/boardStateUtils"
 
 export function HUDHeatMaps({
     userId,
-    gamePlayers
+    gamePlayers,
+    isMobile
 }: {
     userId: number,
-    gamePlayers: GamePlayers
+    gamePlayers: GamePlayers,
+    isMobile: boolean
 }) {
     return (
-        <div className="p-4 w-full">
-            <div className="flex flex-col flex-1">
-                <h2 className="font-bold text-secondary">Heat Maps</h2>
-                {Object.values(gamePlayers).map((gp, index) => {
+        <div className="flex flex-col flex-1 bg-background rounded">
+            <div className="flex w-full h-auto py-3 bg-sidebar rounded-t justify-between px-5">
+                <h3 className="tracking-wider text-2xl font-extrabold font-display text-sidebar-foreground">
+                    Heat Maps
+                </h3>
+                <span className="text-muted-foreground font-sans text-lg pr-10">
+                    Board completion
+                </span>
+            </div>
+
+            <div className="w-full h-full grid grid-cols-2 p-8 gap-5">
+                {Object.entries(gamePlayers).map(([key, gp], index) => {
                     return (
                         <div 
-                            className="flex justify-center items-center"
+                            className={`flex h-[45%] p-4 border-2 md:border-3 border-muted rounded-md flex-col justify-center bg-muted/20 items-center ${userId === Number(key) && "bg-sidebar-primary/20 border-sidebar-primary"}`}
                             key={index}
                         >
-                            <div className="flex flex-col items-center w-full gap-2">
-                                <div>
-                                    {gp.name}
+                            <div 
+                                className="flex w-full justify-between md:px-2 items-center"
+                            >
+                                <div className="flex w-auto items-center justify-center gap-3">
+                                    <div 
+                                        className={`left-0 p-2 md:p-3 my-1 border-muted border-1 rounded ${playerColourClassNamePicker[gp.colour].medium}`}
+                                    >
+                                    </div>
+                                    <span className="font-semibold text-md overflow-ellipsis text-accent-foreground font-display tracking-wide">{ gp.name }</span>
                                 </div>
-                                <HeatMap
-                                    playerColour={gp.colour}
-                                    boardProgress={gp.boardProgress}
-                                />
-                                <div className="horizontal-divider"></div>
+                                <div>
+                                    <span className="font-extrabold text-primary text-md font-display">
+                                        {getPercentageBoardComplete(gp.boardProgress)}%
+                                    </span>
+                                </div>
                             </div>
+                            <HeatMap
+                                playerColour={gp.colour}
+                                boardProgress={gp.boardProgress}
+                                isMobile={isMobile}
+                            />
                         </div>
                     )
                 })}

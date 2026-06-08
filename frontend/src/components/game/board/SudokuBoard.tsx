@@ -6,6 +6,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { getCellIndex, updateGameHighlightedCellsAndSendWsUpdate } from "@/utils/game/cellUtils";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
+import { useResizeBoard } from "@/hooks/global/useResizeBoard";
 
 
 export function SudokuBoard(
@@ -41,20 +42,7 @@ export function SudokuBoard(
 
     const gridMaxPadding = isMobile ? 20 : 30;
 
-    useEffect(() => {
-        const observer = new ResizeObserver(([entry]) => {
-            const { width, height } = entry.contentRect;
-            const size = Math.min(width, height) - gridMaxPadding;
-            if (gridRef.current) {
-                gridRef.current.style.width = `${size}px`;
-                gridRef.current.style.height = `${size}px`;
-            }
-        });
-        if (containerRef.current) {
-            observer.observe(containerRef.current);
-        } 
-        return () => observer.disconnect();
-    }, []);
+    useResizeBoard(containerRef, gridRef, gridMaxPadding);
 
     const playerHighlightedCell: CellCoordinates | undefined = gameHighlightedCells ? gameHighlightedCells.get(userId) : undefined;
 
