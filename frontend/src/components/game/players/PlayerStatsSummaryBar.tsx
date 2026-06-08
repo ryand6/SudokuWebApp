@@ -26,7 +26,7 @@ export function PlayerStatsSummaryBar({
             }
             {Object.entries(gamePlayers).map(([key, player], index) => {
                 return (
-                    <div className="relative flex w-full h-auto md:h-[15%] md:border-muted md:rounded-md md:border-2" key={index}>
+                    <div className={`relative flex w-full h-auto md:h-[15%] md:border-muted md:rounded-md md:border-2  ${userId === Number(key) && "md:border-sidebar-primary "}`} key={index}>
                         {
                             isMobile ? (
                                 <>

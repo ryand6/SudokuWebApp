@@ -51,8 +51,6 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     // System subscriptions are recreated on every connect
     // subscriptionsRef contains only dynamic subscriptions that must survive reconnects
     const handleConnect = useCallback(() => {
-        console.log("WebSocket connected");
-
         setIsConnected(true);
         setNextReconnectAt(null);
         // System level subscriptions resubscribed every reconnect
