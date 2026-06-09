@@ -15,7 +15,7 @@ import lombok.*;
 public class UserSetupRequestDto {
 
     @NotBlank
-    @Size(min=3, max=20)
+    @Size(min=3, max=10)
     @Pattern(regexp="\\S+", message="Must not contain whitespace")
     @NoProfanity(message="Username contains inappropriate language")
     private String username;

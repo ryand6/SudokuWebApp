@@ -15,7 +15,7 @@ export function HUDHeatMaps({
 }) {
     return (
         <div className="flex flex-col flex-1 bg-background rounded">
-            <div className="flex w-full h-auto py-3 bg-sidebar rounded-t justify-between px-5">
+            <div className="flex w-full h-auto py-3 bg-sidebar rounded-t justify-between items-center px-5">
                 <h3 className="tracking-wider text-2xl font-extrabold font-display text-sidebar-foreground">
                     Heat Maps
                 </h3>
@@ -28,7 +28,7 @@ export function HUDHeatMaps({
                 {Object.entries(gamePlayers).map(([key, gp], index) => {
                     return (
                         <div 
-                            className={`flex h-[45%] p-4 border-2 md:border-3 border-muted rounded-md flex-col justify-center bg-muted/20 items-center ${userId === Number(key) && "bg-sidebar-primary/20 border-sidebar-primary"}`}
+                            className={`flex h-[45%] p-4 border-2 md:border-3 border-muted rounded-xl flex-col justify-center bg-muted/20 items-center ${userId === Number(key) && "bg-sidebar-primary/20 border-sidebar-primary"}`}
                             key={index}
                         >
                             <div 

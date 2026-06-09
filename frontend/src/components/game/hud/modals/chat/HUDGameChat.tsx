@@ -2,11 +2,13 @@ import { useGetGameChatMessages } from "@/api/rest/game/chat/query/useGetGameCha
 import { sendGameChatMessage } from "@/api/ws/game/chat/sendGameChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider"
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { GameChatMessage } from "./GameChatMessage";
 import { InfiniteMessageList } from "@/components/global/InfiniteMessageList";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { groupMessages } from "@/utils/game/infiniteDataUtils";
+import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessageDto";
 
 export function HUDGameChat({
     gameId,
@@ -27,6 +29,10 @@ export function HUDGameChat({
         setInputMessage("");
         scrollToBottom();
     };
+
+    const messageGroups = useMemo(() => {
+        groupMessages<GameChatMessageDto>(data)
+    }, [data]);
 
     return (
         <div id="game-chat-panel" className="flex flex-col justify-between gap-1 flex-1 min-h-0 m-2">

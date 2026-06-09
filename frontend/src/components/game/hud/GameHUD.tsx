@@ -1,7 +1,7 @@
 import type { GamePlayers } from "@/types/game/GameTypes";
 import { Modal } from "../../ui/custom/Modal";
-import { useState, type Dispatch, type SetStateAction } from "react";
-import { QueryClient, type UseMutateFunction } from "@tanstack/react-query";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { type UseMutateFunction } from "@tanstack/react-query";
 import { LeaveGameAlertDialog } from "../../ui/custom/LeaveGameAlertDialog";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { LeaveGameRequestDto } from "@/types/dto/request/LeaveGameRequestDto";
@@ -14,6 +14,7 @@ import { IconFlame } from '@tabler/icons-react';
 import { IconLogs } from '@tabler/icons-react';
 import { IconMessageCircle } from '@tabler/icons-react';
 import { IconDoorExit } from '@tabler/icons-react';
+import type { PlayerColour } from "@/types/enum/PlayerColour";
 
 export function GameHUD(
     {
@@ -23,7 +24,7 @@ export function GameHUD(
         currentStreak,
         leaveGameHandler,
         isMobile,
-        queryClient
+        playerColours
     }: {
         userId: number,
         gameId: number,
@@ -34,7 +35,7 @@ export function GameHUD(
             mutate: UseMutateFunction<GameDto | null, Error, LeaveGameRequestDto, unknown>;
             isLeaving: boolean;
         },
-        queryClient: QueryClient
+        playerColours: Record<number, PlayerColour> | undefined
     }
 ) {
     const [isStatsModalOpen, setStatsModalOpen] = useState(false);
@@ -45,6 +46,10 @@ export function GameHUD(
 
     const iconSize: number = isMobile ? 16 : 24;
     const iconStroke: number = isMobile ? 2 : 3;
+
+    useEffect(() => {
+        document.getElementById("root")?.classList.remove("blur-sm");
+    }, []);
 
     const openModal = (setter: Dispatch<SetStateAction<boolean>>) => {
         setter(true);
@@ -144,17 +149,19 @@ export function GameHUD(
             <Modal 
                 isOpen={isGameLogModalOpen} 
                 onClose={() => closeModal(setGameLogModalOpen)}
-                className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50 overflow-scroll"
+                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! left-[10%]! !blur-none z-50"
             >
                 <HUDGameEventLog 
                     gameId={gameId}
+                    playerColours={playerColours}
+
                 />
             </Modal>
 
             <Modal 
                 isOpen={isGameChatModalOpen} 
                 onClose={() => closeModal(setGameChatModalOpen)}
-                className="w-[60%]! h-[75%]! md:h-[60%]! top-[20%]! left-[20%]! !blur-none z-50 overflow-scroll"
+                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! left-[10%]! !blur-none z-50"
             >
                 <HUDGameChat 
                     gameId={gameId}

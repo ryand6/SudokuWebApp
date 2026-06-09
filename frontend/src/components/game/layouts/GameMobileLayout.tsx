@@ -37,7 +37,7 @@ export function GameMobileLayout({
                         currentStreak={privateGameState.currentStreak}
                         isMobile={isMobile}
                         leaveGameHandler={leaveGameHandler}
-                        queryClient={queryClient}
+                        playerColours={playerColours}
                     />
                     <GameInfoBar
                         difficulty={publicGameState.gameSettings.difficulty} 

@@ -38,7 +38,7 @@ export function GameDesktopLayout({
                         currentStreak={privateGameState.currentStreak} 
                         isMobile={isMobile}
                         leaveGameHandler={leaveGameHandler}
-                        queryClient={queryClient}
+                        playerColours={playerColours}
                     />
                     <Separator className="bg-muted my-4 py-[1px]" />
                     <PlayerStatsSummaryBar 

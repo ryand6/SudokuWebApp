@@ -4,6 +4,7 @@ export type GameEventDto = {
     gameId: number,
     userId: number,
     username: string,
+    createdAt: string,
     eventType: GameEventType,
     message: string,
     sequenceNumber: number

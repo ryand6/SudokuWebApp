@@ -19,8 +19,8 @@ export function UserForm({
         if (!username.trim()) {
             setError("Username is required");
             return false;
-        } else if (username.length < 3 || username.length > 20) {
-            setError("Username must be between 3 and 20 characters long");
+        } else if (username.length < 3 || username.length > 10) {
+            setError("Username must be between 3 and 10 characters long");
             return false;
         }
         if (!recoveryEmail.trim()) {

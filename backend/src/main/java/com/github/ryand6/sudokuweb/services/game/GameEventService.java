@@ -65,6 +65,7 @@ public class GameEventService {
                                 .build();
 
         gameEventRepository.save(gameEvent);
+        gameEventRepository.flush();
 
         // call WS to broadcast event
         applicationEventPublisher.publishEvent(
@@ -77,11 +78,5 @@ public class GameEventService {
                 .orElseThrow(() -> new GameEventSequenceNotFoundException("Game event sequence for game ID " + gameId + " does not exist."));
         return gameEventSequence.getCurrentSequenceNumberAndIncrement();
     }
-
-//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
-//    void handleCreateGameEvent(CreateGameLogEvent event) {
-//        createGameEvent(event.getGameId(), event.getUserId(), event.getGameEventRequest());
-//    }
 
 }

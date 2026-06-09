@@ -21,7 +21,7 @@ export function HUDStats(
                 </h3>
             </div>
             <ScrollArea className="flex-1 min-h-0">
-                <div className="flex flex-col gap-3 px-5 py-5 items-center">
+                <div className="flex flex-col gap-4 px-5 py-5 items-center">
                     {Object.entries(gamePlayers).map(([key, player], index) => {
                         return (
                             <div className={`flex flex-col w-full bg-muted/20 border-1 md:border-2 rounded-md border-muted justify-center items-center ${userId === Number(key) && "border-sidebar-primary bg-sidebar-primary/20"}`} key={index}>

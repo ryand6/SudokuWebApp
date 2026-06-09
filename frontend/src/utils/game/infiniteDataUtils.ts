@@ -1,15 +1,40 @@
 import type { InfiniteData } from "@tanstack/react-query"
 import { PAGE_SIZE } from "../global/globalConstants"
+import type { MessageType } from "@/types/enum/MessageType"
+import { getLocalTime } from "../time/getLocalTime"
 
 type InfiniteDataEvent<T> = {
     type: string,
     newMessage: T
 }
 
+type ChatMessage = {
+    id: number,
+    userId: number,
+    username: string, 
+    message: string,
+    messageType: MessageType;
+    createdAt: string;
+}
+
+type GroupedMessage = {
+    id: number,
+    message: string,
+    createdAt: string,
+    showTimestamp: boolean
+}
+
+type ChatMessageGroup<T extends ChatMessage> = {
+    userId: number,
+    username: string,
+    messageType: MessageType,
+    messages: GroupedMessage[]
+}
+
 export function handleNewInfiniteData<T>(
     existingData: InfiniteData<T[]> | undefined, 
     event: InfiniteDataEvent<T>,
-    getOrderKey?: (item: T) => number
+    getOrderKey?: (item: T) => number,
 ): InfiniteData<T[], unknown> | undefined {
 
     const sortPage = (page: T[]) => 
@@ -40,4 +65,68 @@ export function handleNewInfiniteData<T>(
             ],
         };
     }
+}
+
+
+export function groupMessages<T extends ChatMessage>(
+    data: InfiniteData<ChatMessage[]> | undefined
+): ChatMessageGroup<T>[] {
+    if (!data) return [];
+
+    const messages = data.pages.flat();
+
+    const groups: ChatMessageGroup<T>[] = [];
+
+    for (const message of messages) {
+        if (message.messageType === "INFO") {
+            groups.push({
+                userId: message.userId,
+                username: message.username,
+                messageType: message.messageType,
+                messages: [{
+                    id: message.id,
+                    message: message.message,
+                    createdAt: message.createdAt,
+                    showTimestamp: true
+                }]
+            })
+            continue;
+        }
+
+        const lastGroup = groups[groups.length - 1];
+        const lastMessage = lastGroup?.messages[lastGroup.messages.length - 1];
+
+        const sameUser = lastGroup?.userId === message.userId;
+        const sameTime = lastMessage ? getLocalTime(lastMessage.createdAt) === getLocalTime(message.createdAt) : false;
+
+        if (sameUser && sameTime) {
+            lastGroup.messages.push({
+                id: message.id,
+                message: message.message,
+                createdAt: message.createdAt,
+                showTimestamp: false
+            })
+        } else if (sameUser && !sameTime) {
+            lastGroup.messages.push({
+                id: message.id,
+                message: message.message,
+                createdAt: message.createdAt,
+                showTimestamp: true
+            })
+        } else {
+            // Different user — start a new group, always show timestamp
+            groups.push({
+                userId: message.userId,
+                username: message.username,
+                messageType: message.messageType,
+                messages: [{
+                    id: message.id,
+                    message: message.message,
+                    createdAt: message.createdAt,
+                    showTimestamp: true
+                }],
+            });
+        }
+    }
+    return groups;
 }

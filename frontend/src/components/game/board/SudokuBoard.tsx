@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useRef, type Dispatch, type SetStateAction } from "react";
 import SudokuCell from "./SudokuCell";
 import type { PrivateBoardState, CellCoordinates, GamePlayers } from "@/types/game/GameTypes";
 import { isCellInSameBlock } from "@/utils/game/blockUtils";
