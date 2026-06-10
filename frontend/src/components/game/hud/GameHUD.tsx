@@ -166,6 +166,7 @@ export function GameHUD(
                 <HUDGameChat 
                     gameId={gameId}
                     userId={userId}
+                    playerColours={playerColours}
                 />
             </Modal>
             

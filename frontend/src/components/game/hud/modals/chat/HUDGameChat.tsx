@@ -3,19 +3,23 @@ import { sendGameChatMessage } from "@/api/ws/game/chat/sendGameChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider"
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
 import { useMemo, useState } from "react";
-import { GameChatMessage } from "./GameChatMessage";
 import { InfiniteMessageList } from "@/components/global/InfiniteMessageList";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { groupMessages } from "@/utils/game/infiniteDataUtils";
+import { groupMessages, type ChatMessageGroup } from "@/utils/game/infiniteDataUtils";
 import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessageDto";
+import { OutgoingMessageGroup } from "./OutgoingMessageGroup";
+import { IncomingMessageGroup } from "./IncomingMessageGroup";
+import type { PlayerColour } from "@/types/enum/PlayerColour";
 
 export function HUDGameChat({
     gameId,
-    userId
+    userId,
+    playerColours
 }: {
     gameId: number,
-    userId: number
+    userId: number,
+    playerColours: Record<number, PlayerColour> | undefined
 }) {
     const { send } = useWebSocketContext();
     const [inputMessage, setInputMessage] = useState("");
@@ -30,24 +34,34 @@ export function HUDGameChat({
         scrollToBottom();
     };
 
-    const messageGroups = useMemo(() => {
-        groupMessages<GameChatMessageDto>(data)
-    }, [data]);
+    const messageGroups: ChatMessageGroup[] = useMemo(() => {
+        return groupMessages<GameChatMessageDto>(messages)
+    }, [messages]);
+
+    console.log("Message Groups: ", messageGroups);
 
     return (
-        <div id="game-chat-panel" className="flex flex-col justify-between gap-1 flex-1 min-h-0 m-2">
-            <h2 className="card-header">Game Chat</h2>
+        <div className="flex flex-col flex-1 bg-background rounded">
+            <div className="flex w-full h-auto py-3 bg-sidebar rounded-t">
+                <h3 className="pl-5 tracking-wider text-2xl font-extrabold font-display text-sidebar-foreground">
+                    Game Chat
+                </h3>
+            </div>
             <InfiniteMessageList
                 chatRef={chatRef}
                 sentinelRef={sentinelRef}
-                messages={messages}
+                messages={messageGroups}
                 isAtBottom={isAtBottom}
                 hasNewMessages={hasNewMessages}
                 onScroll={handleScroll}
                 onScrollToBottom={scrollToBottom}
-                renderMessage={(msg, index) => 
-                    <GameChatMessage key={index} msg={msg} />
-                }
+                renderMessage={(group, index) => {
+                    return group.userId === userId ? (
+                        <OutgoingMessageGroup key={index} messageGroup={group} playerColours={playerColours} />
+                    ) : (
+                        <IncomingMessageGroup key={index} messageGroup={group} playerColours={playerColours} />
+                    )
+                }}
             />
             <div className="flex flex-col justify-between gap-1">
                 <Textarea 

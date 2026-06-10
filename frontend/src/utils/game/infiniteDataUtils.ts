@@ -17,14 +17,14 @@ type ChatMessage = {
     createdAt: string;
 }
 
-type GroupedMessage = {
+export type GroupedMessage = {
     id: number,
     message: string,
     createdAt: string,
     showTimestamp: boolean
 }
 
-type ChatMessageGroup<T extends ChatMessage> = {
+export type ChatMessageGroup = {
     userId: number,
     username: string,
     messageType: MessageType,
@@ -69,13 +69,11 @@ export function handleNewInfiniteData<T>(
 
 
 export function groupMessages<T extends ChatMessage>(
-    data: InfiniteData<ChatMessage[]> | undefined
-): ChatMessageGroup<T>[] {
-    if (!data) return [];
+    messages: T[] | undefined
+): ChatMessageGroup[] {
+    if (!messages) return [];
 
-    const messages = data.pages.flat();
-
-    const groups: ChatMessageGroup<T>[] = [];
+    const groups: ChatMessageGroup[] = [];
 
     for (const message of messages) {
         if (message.messageType === "INFO") {
