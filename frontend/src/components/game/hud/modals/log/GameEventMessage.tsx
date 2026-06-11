@@ -33,7 +33,7 @@ export function GameEventMessage({
                 <span className="tracking-wide">{msg.message}</span>
             </div>
             <div className="flex justify-end w-[10%]">
-                <span className="font-mono">
+                <span className="font-mono text-muted font-semibold">
                     {getLocalTime(msg.createdAt)}
                 </span>
             </div>

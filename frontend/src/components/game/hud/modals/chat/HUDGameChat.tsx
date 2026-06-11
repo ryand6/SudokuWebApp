@@ -11,6 +11,7 @@ import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessage
 import { OutgoingMessageGroup } from "./OutgoingMessageGroup";
 import { IncomingMessageGroup } from "./IncomingMessageGroup";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
+import { InfoMessageGroup } from "./InfoMessageGroup";
 
 export function HUDGameChat({
     gameId,
@@ -56,14 +57,16 @@ export function HUDGameChat({
                 onScroll={handleScroll}
                 onScrollToBottom={scrollToBottom}
                 renderMessage={(group, index) => {
-                    return group.userId === userId ? (
+                    return group.messageType === "INFO" ? (
+                        <InfoMessageGroup key={index} messageGroup={group} />
+                    ) : group.userId === userId ? (
                         <OutgoingMessageGroup key={index} messageGroup={group} playerColours={playerColours} />
                     ) : (
                         <IncomingMessageGroup key={index} messageGroup={group} playerColours={playerColours} />
                     )
                 }}
             />
-            <div className="flex flex-col justify-between gap-1">
+            <div className="flex flex-col justify-between gap-3 py-3 px-4 border-t-1 border-muted">
                 <Textarea 
                     id="game-chat-input" 
                     placeholder="Type your message here."
@@ -78,12 +81,15 @@ export function HUDGameChat({
                         }
                     }}
                 />
-                <Button 
-                    onClick={handleClick}
-                    className="cursor-pointer"
-                >
-                    Send message
-                </Button>
+                <div className="flex justify-end">
+                    <Button 
+                        onClick={handleClick}
+                        className="cursor-pointer"
+                    >
+                        Send message
+                    </Button>
+                </div>
+                
             </div>
         </div>
     )
