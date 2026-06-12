@@ -105,6 +105,7 @@ export function GamePage() {
                         showGameResultsModal={showGameResultsModal}
                         leaveGameHandler={leaveGameHandler}
                         isMobile={true}
+                        gameMode={publicGameState.gameSettings.gameMode}
                         queryClient={queryClient}
                         navigate={navigate}
                     />
@@ -123,6 +124,7 @@ export function GamePage() {
                         showGameResultsModal={showGameResultsModal}
                         leaveGameHandler={leaveGameHandler}
                         isMobile={false}
+                        gameMode={publicGameState.gameSettings.gameMode}
                         queryClient={queryClient}
                         navigate={navigate}
                     />

@@ -23,6 +23,7 @@ export function GameMobileLayout({
     showGameResultsModal,
     leaveGameHandler,
     isMobile,
+    gameMode,
     queryClient,
     navigate
 }: GameLayout) {
@@ -38,6 +39,7 @@ export function GameMobileLayout({
                         isMobile={isMobile}
                         leaveGameHandler={leaveGameHandler}
                         playerColours={playerColours}
+                        gameMode={gameMode}
                     />
                     <GameInfoBar
                         difficulty={publicGameState.gameSettings.difficulty} 

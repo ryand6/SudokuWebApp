@@ -24,6 +24,7 @@ export function GameDesktopLayout({
     showGameResultsModal,
     leaveGameHandler,
     isMobile,
+    gameMode,
     queryClient,
     navigate
 }: GameLayout) {
@@ -39,6 +40,7 @@ export function GameDesktopLayout({
                         isMobile={isMobile}
                         leaveGameHandler={leaveGameHandler}
                         playerColours={playerColours}
+                        gameMode={gameMode}
                     />
                     <Separator className="bg-muted my-4 py-[1px]" />
                     <PlayerStatsSummaryBar 

@@ -15,6 +15,7 @@ import { IconLogs } from '@tabler/icons-react';
 import { IconMessageCircle } from '@tabler/icons-react';
 import { IconDoorExit } from '@tabler/icons-react';
 import type { PlayerColour } from "@/types/enum/PlayerColour";
+import type { GameMode } from "@/types/enum/GameMode";
 
 export function GameHUD(
     {
@@ -24,7 +25,8 @@ export function GameHUD(
         currentStreak,
         leaveGameHandler,
         isMobile,
-        playerColours
+        playerColours,
+        gameMode
     }: {
         userId: number,
         gameId: number,
@@ -35,7 +37,8 @@ export function GameHUD(
             mutate: UseMutateFunction<GameDto | null, Error, LeaveGameRequestDto, unknown>;
             isLeaving: boolean;
         },
-        playerColours: Record<number, PlayerColour> | undefined
+        playerColours: Record<number, PlayerColour> | undefined,
+        gameMode: GameMode
     }
 ) {
     const [isStatsModalOpen, setStatsModalOpen] = useState(false);

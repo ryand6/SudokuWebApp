@@ -4,7 +4,7 @@ import type { GameChatMessageDto } from "@/types/dto/entity/game/GameChatMessage
 import { handleNewInfiniteData } from "@/utils/game/infiniteDataUtils";
 import { toast } from "react-toastify";
 import type { PlayerColour } from "@/types/enum/PlayerColour";
-import { toastColourMap } from "@/utils/game/gameColourUtils";
+import { GameChatToast } from "@/components/game/hud/modals/chat/GameChatToast";
 
 export function gameChatCacheReducer(
     existingData: InfiniteData<GameChatMessageDto[]> | undefined,
@@ -19,13 +19,16 @@ export function gameChatCacheReducer(
             const messageDto: GameChatMessageDto = event.newMessage;
 
             if (messageDto.userId !== userId && gameNotificationsEnabled) {
-                toast(`${messageDto.username}: ${messageDto.message}`, {
+                toast(
+                    <GameChatToast
+                        username={messageDto.username}
+                        message={messageDto.message}
+                        playerColour={playerColours[messageDto.userId]}
+                    />, {
                     containerId: "default",
-                    style: {
-                        background: toastColourMap[playerColours[messageDto.userId]],
-                        border: "1px solid var(--border)",
-                        color: "var(--popover-foreground)"
-                    }
+                    autoClose: 1500,
+                    hideProgressBar: true,
+                    className: "!w-auto !bg-background !border !border-border !rounded-bl-xl !rounded-br-xl !rounded-tl-xl !rounded-tr-xs !shadow-lg !p-2 !min-h-0"
                 });
             }
             return handleNewInfiniteData<GameChatMessageDto>(existingData, event);

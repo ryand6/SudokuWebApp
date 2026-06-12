@@ -231,6 +231,8 @@
 
     --animate-snap-in: snap-in 1000ms linear forwards;
 
+    --animate-new-message: new-message 150ms ease-out;
+
     @keyframes wiggle {
         0%, 34%, 70%, 100% {
             transform: rotate(-10deg);
@@ -259,6 +261,21 @@
         100% { 
             transform: translateY(-0.5rem) scale(0.8); 
             opacity: 0; 
+        }
+    }
+
+    @keyframes new-message {
+        0% {
+            opacity: 0;
+            transform: translateY(-2rem) scale(0.5);
+        }
+        50% {
+            opacity: 0.5;
+            transform: translateY(-1rem) scale(0.75);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0rem) scale(1);
         }
     }
 

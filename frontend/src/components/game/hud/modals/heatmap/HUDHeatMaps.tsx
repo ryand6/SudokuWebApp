@@ -39,7 +39,7 @@ export function HUDHeatMaps({
                                         className={`left-0 p-2 md:p-3 my-1 border-muted border-1 rounded ${playerColourClassNamePicker[gp.colour].medium}`}
                                     >
                                     </div>
-                                    <span className="font-semibold text-md overflow-ellipsis text-accent-foreground font-display tracking-wide">{ gp.name }</span>
+                                    <span className="font-semibold text-md whitespace-nowrap overflow-hidden text-ellipsis text-accent-foreground font-display tracking-wide">{ gp.name }</span>
                                 </div>
                                 <div>
                                     <span className="font-extrabold text-primary text-md font-display">

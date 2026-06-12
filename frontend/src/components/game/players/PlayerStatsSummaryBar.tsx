@@ -42,7 +42,7 @@ export function PlayerStatsSummaryBar({
                                                 className={`left-0 p-2 my-1 border-muted border-1 rounded ${playerColourClassNamePicker[player.colour].medium}`}
                                             >
                                             </div>
-                                            <span className="font-semibold text-lg text-accent-foreground font-display tracking-wide overflow-ellipsis">{ player.name }</span>
+                                            <span className="font-semibold text-lg text-accent-foreground font-display tracking-wide whitespace-nowrap overflow-hidden text-ellipsis">{ player.name }</span>
                                             <div className="p-2 my-1 border-1 opacity-0 pointer-events-none" />
                                         </div>
                                         <span className="font-bold text-primary text-xl font-mono">{ player.score }</span>

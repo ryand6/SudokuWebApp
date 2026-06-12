@@ -5,10 +5,12 @@ import { getLocalTime } from "@/utils/time/getLocalTime";
 
 export function OutgoingMessageGroup({
     messageGroup,
-    playerColours
+    playerColours,
+    isLastGroup
 }: {
     messageGroup: ChatMessageGroup,
-    playerColours: Record<number, PlayerColour> | undefined
+    playerColours: Record<number, PlayerColour> | undefined,
+    isLastGroup: boolean
 }) {
 
     const playerColourStrong = playerColours ? playerColourClassNamePicker[playerColours[messageGroup.userId]].strong : "";
@@ -19,6 +21,7 @@ export function OutgoingMessageGroup({
             <div className="flex flex-col w-full items-start gap-1 pr-2">
                 {
                     messageGroup.messages.map((message, index) => {
+                        const isLastMessage: boolean = isLastGroup && index === messageGroup.messages.length - 1;
                         const groupMeta = message.showTimestamp ? (
                             <div className="flex gap-2 items-baseline">
                                 <span className="font-mono text-sm text-muted">{getLocalTime(message.createdAt)}</span>
@@ -32,7 +35,10 @@ export function OutgoingMessageGroup({
                         return (
                             <div className="flex flex-col items-end w-full gap-1">
                                 {groupMeta}
-                                <div className={`w-auto max-w-[70%] h-auto bg-muted/60 rounded-bl-xl rounded-br-xl rounded-tr-xs rounded-tl-xl px-3 py-2 ${playerColourMedium}`}>
+                                <div 
+                                    className={`w-auto max-w-[70%] h-auto bg-muted/60 rounded-bl-xl rounded-br-xl rounded-tr-xs 
+                                                rounded-tl-xl px-3 py-2 ${isLastMessage && "animate-new-message"} ${playerColourMedium}`}
+                                >
                                     <span className="text-lg">{message.message}</span>
                                 </div>
                             </div>
