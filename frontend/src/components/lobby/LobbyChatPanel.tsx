@@ -1,5 +1,3 @@
-import { Textarea } from "../ui/textarea";
-import { Button } from "../ui/button";
 import { useMemo, useState } from "react";
 import { sendLobbyChatMessage } from "@/api/ws/lobby/sendLobbyChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
@@ -12,6 +10,7 @@ import { SpinnerButton } from "../ui/custom/SpinnerButton";
 import { InfoMessageGroup } from "../chat/InfoMessageGroup";
 import { OutgoingMessageGroup } from "../chat/OutgoingMessageGroup";
 import { IncomingMessageGroup } from "../chat/IncomingMessageGroup";
+import { TypeMessageBar } from "../chat/TypeMessageBar";
 
 export function LobbyChatPanel({
     lobbyId, 
@@ -62,27 +61,8 @@ export function LobbyChatPanel({
                     )
                 }}
             />
-            <div className="flex flex-col justify-between gap-1">
-                <Textarea 
-                    id="lobby-chat-input" 
-                    placeholder="Type your message here."
-                    value={inputMessage} 
-                    onChange={(e) => {
-                        setInputMessage(e.target.value);
-                    }}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-                            handleClick();
-                        }
-                    }}
-                />
-                <Button 
-                    onClick={handleClick}
-                    className="cursor-pointer"
-                >
-                    Send message
-                </Button>
+            <div className="flex flex-col py-3 px-4 border-t-1 border-muted bg-card">
+                <TypeMessageBar inputMessage={inputMessage} setInputMessage={setInputMessage} handleClick={handleClick} />
             </div>
         </div>
     )

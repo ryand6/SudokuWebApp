@@ -42,7 +42,7 @@ export function IncomingMessageGroup({
                             </div>
                         ) : <></>
                         return (
-                            <div className="flex flex-col items-start w-full gap-1">
+                            <div key={index} className="flex flex-col items-start w-full gap-1">
                                 {groupMeta}
                                 <div 
                                     className={`w-auto max-w-[70%] h-auto bg-muted/60 rounded-bl-xl ${isLastMessage && "animate-new-message"}
