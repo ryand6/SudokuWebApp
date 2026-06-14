@@ -170,6 +170,7 @@ export function GameHUD(
                     gameId={gameId}
                     userId={userId}
                     playerColours={playerColours}
+                    gameMode={gameMode}
                 />
             </Modal>
             

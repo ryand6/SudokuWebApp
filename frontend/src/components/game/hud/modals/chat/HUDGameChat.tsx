@@ -41,9 +41,9 @@ export function HUDGameChat({
         scrollToBottom();
     };
 
-    const handleQuickClick = () => {
-        if (!inputMessage.trim()) return;
-        sendGameChatMessage(send, gameId, inputMessage, "TEMPLATE");
+    const handleQuickClick = (message: string) => {
+        if (!message.trim()) return;
+        sendGameChatMessage(send, gameId, message, "TEMPLATE");
         // Clear text area 
         setInputMessage("");
         scrollToBottom();

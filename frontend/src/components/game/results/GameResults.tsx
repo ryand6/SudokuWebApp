@@ -104,7 +104,7 @@ export function GameResults({
 
     return (
         <div 
-            className="flex flex-col w-full items-start overflow-y-scroll"
+            className="flex flex-col w-full items-start overflow-y-auto"
             id="game-result-modal"
         >   
             <div
