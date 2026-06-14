@@ -1,5 +1,3 @@
-import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
-import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
@@ -15,52 +13,65 @@ import { useRequestJoinCode } from "@/api/rest/lobby/token/mutate/useRequestJoin
 import { useGetActiveUserTokens } from "@/api/rest/lobby/token/query/useGetActiveUserTokens";
 import { useUpdateLobbyDifficulty } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyDifficulty";
 import { useUpdateLobbyTimeLimit } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyTimeLimit";
+import type { GameMode } from "@/types/enum/GameMode";
+import type { GameType } from "@/types/enum/GameType";
 
-export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, currentUser: UserDto}) {
-
-    const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
-
-    const requestJoinCodeMutation = useRequestJoinCode();
-    const queryClient = useQueryClient();
-    const { data } = useGetActiveUserTokens(currentUser.id);
-    const activeTokens = data?.activeTokens ?? [];
-
+export function LobbySettingsPanel({
+    lobbyId, 
+    userId,
+    difficulty,
+    hostId,
+    countdownActive,
+    timeLimit,
+    gameMode,
+    gameType
+}: {
+    lobbyId: number, 
+    userId: number,
+    difficulty: Difficulty,
+    hostId: number,
+    countdownActive: boolean,
+    timeLimit: TimeLimitPreset,
+    gameMode: GameMode,
+    gameType: GameType
+}) {
     const updateDifficulty = useUpdateLobbyDifficulty();
     const updateLimitLimit = useUpdateLobbyTimeLimit();
-
-    // Interval to refresh active tokens display every minute
-    useRefreshActiveTokensList(queryClient, currentUser);
-
-    const handleClick = () => {
-        if (activeTokens.length === 0) {
-            requestJoinCode();
-        } else {
-            setIsAlertOpen(true);
-        }
-    }
-
-    const requestJoinCode = async () => {
-        await requestJoinCodeMutation.mutateAsync({ lobbyId: lobby.id, userId: currentUser.id });
-    };
  
     return (
         <div id="lobby-settings-panel" className="flex flex-col flex-1 lobby-card">
-            {!lobby.lobbySettings.isPublic && <JoinCodeAlertDialog open={isAlertOpen} handleContinueClick={requestJoinCode} setOpen={setIsAlertOpen} />}
+            
             <h2 className="card-header">Game Settings</h2>
+            <div className="flex gap-2 items-center">
+                <span>
+                    Game Type:
+                </span>
+                <span className="capitalize">
+                    {wordToProperCase(gameType)}
+                </span>
+            </div>
+            <div className="flex gap-2 items-center">
+                <span>
+                    Game Mode:
+                </span>
+                <span className="capitalize">
+                    {wordToProperCase(gameMode)}
+                </span>
+            </div>
             <div>
                 <div>
                     🎯 Difficulty 
-                    <span id="difficulty-value"> {wordToProperCase(lobby.lobbySettings.difficulty)}</span>
+                    <span id="difficulty-value"> {wordToProperCase(difficulty)}</span>
                 </div>
-                {currentUser.id === lobby.host.id && 
+                {userId === hostId && 
                 <div>
                     <RadioGroup 
-                        defaultValue={wordToProperCase(lobby.lobbySettings.difficulty)} 
+                        defaultValue={wordToProperCase(difficulty)} 
                         onValueChange={(value) => {
                             let valueEnum = value.toUpperCase() as Difficulty;
-                            updateDifficulty.mutate({ lobbyId: lobby.id, userId: currentUser.id, difficulty: valueEnum });
+                            updateDifficulty.mutate({ lobbyId: lobbyId, userId: userId, difficulty: valueEnum });
                         }} 
-                        disabled={lobby.lobbyCountdown.countdownActive} 
+                        disabled={countdownActive} 
                         className="flex flex-row"
                     >
                         <div>
@@ -86,17 +97,17 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
             <div>
                 <div>
                     ⏱️ Game Duration
-                    <span id="duration-value"> {wordToProperCase(lobby.lobbySettings.timeLimit)}</span>
+                    <span id="duration-value"> {wordToProperCase(timeLimit)}</span>
                 </div>
-                {currentUser.id === lobby.host.id && lobby.lobbySettings.gameMode !== "TIMEATTACK" &&
+                {userId === hostId && gameMode !== "TIMEATTACK" &&
                 <div>
                     <RadioGroup 
-                        defaultValue={wordToProperCase(lobby.lobbySettings.timeLimit)} 
+                        defaultValue={wordToProperCase(timeLimit)} 
                         onValueChange={(value) => {
                             let valueEnum = value.toUpperCase() as TimeLimitPreset;
-                            updateLimitLimit.mutate({lobbyId: lobby.id, userId: currentUser.id, timeLimit: valueEnum});
+                            updateLimitLimit.mutate({lobbyId: lobbyId, userId: userId, timeLimit: valueEnum});
                         }} 
-                        disabled={lobby.lobbyCountdown.countdownActive} 
+                        disabled={countdownActive} 
                         className="flex flex-row"
                     >
                         <div>
@@ -111,7 +122,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                             <RadioGroupItem value="Marathon" id="r-marathon" />
                             <Label htmlFor="r-marathon">60 min</Label>
                         </div>
-                        {lobby.lobbySettings.gameType === "CASUAL" && (
+                        {gameType === "CASUAL" && (
                             <div>
                                 <RadioGroupItem value="Unlimited" id="r-unlimited" />
                                 <Label htmlFor="r-unlimited">Unlimited</Label>
@@ -121,36 +132,7 @@ export function LobbySettingsPanel({lobby, currentUser}: {lobby: LobbyDto, curre
                 </div>
                 }
             </div>
-            {!lobby.lobbySettings.isPublic && 
-            <div className="mt-2">
-                <h2>Lobby Join Code</h2>
-                <div className="flex flex-row items-center gap-4 mt-2">
-                    <div className="flex flex-row justify-between w-[75%] h-[100%] border-1 py-1 px-2 text-gray-400">
-                        <span className="truncate max-w-full">{activeTokens?.[activeTokens.length - 1]?.token || "Generated join code"}</span>
-                        <ButtonCopy text={activeTokens?.[activeTokens.length - 1]?.token || ""} className="text-black"/>
-                    </div>
-                    <Button id="join-private-btn" className="w-[20%] cursor-pointer whitespace-normal text-wrap" onClick={handleClick}>Generate Code</Button>
-                </div>
-                <div className="mt-2 max-h-40 border p-2 rounded overflow-y-auto">
-                    <h2 className="border-b mb-2 py-1">Active Join Codes:</h2>
-                    {activeTokens?.length ? (
-                        activeTokens.map((token) => {
-                            // Calculate the minutes left to expiry on the token, rounded up to the nearest minute
-                            const minutesLeft = Math.max(0, Math.ceil((token.expiresAt - Date.now()) / 60000));
-                            return (
-                                <div key={token.token} className="flex justify-between py-1 px-2 mb-2 border-b last:border-b-0">
-                                    <span className="break-all w-[70%]">{token.token}</span>
-                                    <ButtonCopy text={token.token} />
-                                    <span className="text-gray-500">{minutesLeft} min left</span>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <span className="text-gray-400">No active join codes</span>
-                    )}
-                </div>
-            </div>
-            }
+            
         </div>
     )
 }

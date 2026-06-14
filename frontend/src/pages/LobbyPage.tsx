@@ -12,8 +12,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 import { useIsMobile } from "@/hooks/global/useIsMobile";
-import { LobbyDesktopLayout } from "@/components/lobby/LobbyDesktopLayout";
-import { LobbyMobileLayout } from "@/components/lobby/LobbyMobileLayout";
+import { LobbyMobileLayout } from "@/components/lobby/layouts/LobbyMobileLayout";
+import { LobbyDesktopLayout } from "@/components/lobby/layouts/LobbyDesktopLayout";
 
 export function LobbyPage() {
     const { lobbyId } = useParams();
@@ -61,13 +61,33 @@ export function LobbyPage() {
 
     return isMobile ? 
         <LobbyMobileLayout
-            lobby={lobby}
-            currentUser={currentUser}
+            lobbyId={lobby.id}
+            lobbyName={lobby.lobbyName}
+            userId={currentUser.id}
+            difficulty={lobby.lobbySettings.difficulty}
+            isPublic={lobby.lobbySettings.isPublic}
+            hostId={lobby.host.id}
+            countdownActive={lobby.lobbyCountdown.countdownActive}
+            countdownEndsAt={lobby.lobbyCountdown.countdownEndsAt}
+            timeLimit={lobby.lobbySettings.timeLimit}
+            gameMode={lobby.lobbySettings.gameMode}
+            gameType={lobby.lobbySettings.gameType}
+            lobbyPlayers={lobby.lobbyPlayers} 
             handleLeaveLobbyClick={handleLeaveLobbyClick}
         /> : 
         <LobbyDesktopLayout
-            lobby={lobby}
-            currentUser={currentUser}
+            lobbyId={lobby.id}
+            lobbyName={lobby.lobbyName}
+            userId={currentUser.id}
+            difficulty={lobby.lobbySettings.difficulty}
+            isPublic={lobby.lobbySettings.isPublic}
+            hostId={lobby.host.id}
+            countdownActive={lobby.lobbyCountdown.countdownActive}
+            countdownEndsAt={lobby.lobbyCountdown.countdownEndsAt}
+            timeLimit={lobby.lobbySettings.timeLimit}
+            gameMode={lobby.lobbySettings.gameMode}
+            gameType={lobby.lobbySettings.gameType}
+            lobbyPlayers={lobby.lobbyPlayers} 
             handleLeaveLobbyClick={handleLeaveLobbyClick}
         />
 

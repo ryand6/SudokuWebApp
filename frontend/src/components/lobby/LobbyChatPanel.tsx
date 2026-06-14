@@ -1,13 +1,17 @@
 import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { sendLobbyChatMessage } from "@/api/ws/lobby/sendLobbyChatMessage";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useGetLobbyChatMessages } from "@/api/rest/lobby/chat/query/useGetLobbyChatMessages";
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
 import { InfiniteMessageList } from "../global/InfiniteMessageList";
-import { LobbyChatMessage } from "./LobbyChatMessage";
-import { LobbyInfoMessage } from "./LobbyInfoMessage";
+import { groupMessages, type ChatMessageGroup } from "@/utils/game/infiniteDataUtils";
+import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
+import { SpinnerButton } from "../ui/custom/SpinnerButton";
+import { InfoMessageGroup } from "../chat/InfoMessageGroup";
+import { OutgoingMessageGroup } from "../chat/OutgoingMessageGroup";
+import { IncomingMessageGroup } from "../chat/IncomingMessageGroup";
 
 export function LobbyChatPanel({
     lobbyId, 
@@ -29,22 +33,35 @@ export function LobbyChatPanel({
         scrollToBottom();
     };
 
+    const messageGroups: ChatMessageGroup[] = useMemo(() => {
+        return groupMessages<LobbyChatMessageDto>(messages)
+    }, [messages]);
+
+    console.log("lobby messageGroups: ", messageGroups);
+
     return (
         <div id="lobby-chat-panel" className="flex flex-col justify-between lobby-card flex-1 min-h-0">
             <h2 className="card-header">Lobby Chat</h2>
+            {
+                isLoading && <SpinnerButton />
+            }
             <InfiniteMessageList
                 chatRef={chatRef}
                 sentinelRef={sentinelRef}
-                messages={messages}
+                messages={messageGroups}
                 isAtBottom={isAtBottom}
                 hasNewMessages={hasNewMessages}
                 onScroll={handleScroll}
                 onScrollToBottom={scrollToBottom}
-                renderMessage={(msg, index) => {
-                    switch (msg.messageType) {
-                        case "MESSAGE": return <LobbyChatMessage key={index} msg={msg} />;
-                        case "INFO": return <LobbyInfoMessage key={index} msg={msg} />;
-                    }
+                renderMessage={(group, index) => {
+                    const isLastGroup: boolean = index === messageGroups.length - 1;
+                    return group.messageType === "INFO" ? (
+                        <InfoMessageGroup key={index} messageGroup={group} />
+                    ) : group.userId === userId ? (
+                        <OutgoingMessageGroup key={index} messageGroup={group} playerColours={undefined} isLastGroup={isLastGroup} />
+                    ) : (
+                        <IncomingMessageGroup key={index} messageGroup={group} playerColours={undefined} isLastGroup={isLastGroup} />
+                    )
                 }}
             />
             <div className="flex flex-col justify-between gap-1">

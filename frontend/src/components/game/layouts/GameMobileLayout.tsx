@@ -2,7 +2,6 @@ import { Modal } from "@/components/ui/custom/Modal";
 import { UserActionBar } from "../actions/UserActionBar";
 import { SudokuBoard } from "../board/SudokuBoard";
 import { GameHUD } from "../hud/GameHUD";
-import { GameNotificationLayer } from "../notifications/GameNotificationLayer";
 import { PlayerStatsSummaryBar } from "../players/PlayerStatsSummaryBar";
 import { GameResults } from "../results/GameResults";
 import { getCellState } from "@/utils/game/boardStateUtils";

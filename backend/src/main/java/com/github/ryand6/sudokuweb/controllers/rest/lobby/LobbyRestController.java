@@ -98,15 +98,15 @@ public class LobbyRestController {
     }
 
     // Attempt to join a private lobby by sending a token via the URL string, failures could result in lobby now being full or being inactive, token being used or invalid
-//    @PostMapping("/join/private/{token}")
-//    public ResponseEntity<?> joinPrivateLobbyViaTokenInURL(
-//            @AuthenticationPrincipal OAuth2User principal,
-//            OAuth2AuthenticationToken authToken,
-//            @PathVariable String token) {
-//        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
-//        LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
-//        return ResponseEntity.ok(lobbyDto);
-//    }
+    @PostMapping("/join/private/{token}")
+    public ResponseEntity<?> joinPrivateLobbyViaTokenInURL(
+            @AuthenticationPrincipal OAuth2User principal,
+            OAuth2AuthenticationToken authToken,
+            @PathVariable String token) {
+        UserDto currentUser = userService.getCurrentUserByOAuth(principal, authToken);
+        LobbyDto lobbyDto = lobbyService.joinLobby(currentUser.getId(), token);
+        return ResponseEntity.ok(lobbyDto);
+    }
 
     // Make a POST request to alter Lobby and LobbyPlayer DB tables when a user leaves the lobby, either through disconnecting or manually leaving
     @PostMapping("/leave")

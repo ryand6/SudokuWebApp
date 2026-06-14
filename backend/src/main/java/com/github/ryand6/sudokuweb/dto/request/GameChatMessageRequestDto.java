@@ -13,7 +13,7 @@ import lombok.*;
 public class GameChatMessageRequestDto {
 
     @NotBlank
-    @Size(min=3, max=100, message="Messages have a 100 character limit.")
+    @Size(min=1, max=100, message="Messages must be between 1 and 100 characters in length.")
     private String message;
 
     private MessageType messageType;

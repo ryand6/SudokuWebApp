@@ -1,5 +1,4 @@
 import type { GameLayout } from "@/types/layouts/GameLayout";
-import { GameNotificationLayer } from "../notifications/GameNotificationLayer";
 import { GameHUD } from "../hud/GameHUD";
 import { SudokuBoard } from "../board/SudokuBoard";
 import { PlayerStatsSummaryBar } from "../players/PlayerStatsSummaryBar";
