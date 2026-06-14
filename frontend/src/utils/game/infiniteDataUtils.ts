@@ -96,15 +96,16 @@ export function groupMessages<T extends ChatMessage>(
 
         const sameUser = lastGroup?.userId === message.userId;
         const sameTime = lastMessage ? getLocalTime(lastMessage.createdAt) === getLocalTime(message.createdAt) : false;
+        const sameGroupType = lastGroup?.messageType !== "INFO";
 
-        if (sameUser && sameTime) {
+        if (sameUser && sameTime && sameGroupType) {
             lastGroup.messages.push({
                 id: message.id,
                 message: message.message,
                 createdAt: message.createdAt,
                 showTimestamp: false
             })
-        } else if (sameUser && !sameTime) {
+        } else if (sameUser && !sameTime && sameGroupType) {
             lastGroup.messages.push({
                 id: message.id,
                 message: message.message,

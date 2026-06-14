@@ -37,8 +37,6 @@ export function LobbyChatPanel({
         return groupMessages<LobbyChatMessageDto>(messages)
     }, [messages]);
 
-    console.log("lobby messageGroups: ", messageGroups);
-
     return (
         <div id="lobby-chat-panel" className="flex flex-col justify-between lobby-card flex-1 min-h-0">
             <h2 className="card-header">Lobby Chat</h2>
