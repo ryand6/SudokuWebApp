@@ -16,7 +16,7 @@ export function TypeMessageBar({
             <Textarea 
                 id="game-chat-input" 
                 placeholder="Type your message..."
-                className="text-lg!"
+                className="text-lg! bg-background!"
                 value={inputMessage} 
                 onChange={(e) => {
                     setInputMessage(e.target.value);

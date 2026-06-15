@@ -44,7 +44,7 @@ function App() {
             </Routes>
             <ToastContainer position="top-right" containerId="default" autoClose={5000} />
           </BrowserRouter>
-          {import.meta.env.DEV && <WsDevToolbar />}
+          {/* {import.meta.env.DEV && <WsDevToolbar />} */}
         </WebSocketProvider>
       </QueryClientProvider>
       <ForegroundToastContainer />

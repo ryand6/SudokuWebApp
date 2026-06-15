@@ -10,6 +10,9 @@ import { useState } from "react";
 import { useRequestJoinCode } from "@/api/rest/lobby/token/mutate/useRequestJoinCode";
 import { useQueryClient } from "@tanstack/react-query";
 import { JoinCodeAlertDialog } from "../ui/custom/JoinCodeAlertDialog";
+import { IconCrown } from '@tabler/icons-react';
+import { IconUserPlus } from '@tabler/icons-react';
+import { Separator } from "../ui/separator";
 
 export function LobbyPlayersPanel({
     lobbyId, 
@@ -17,14 +20,16 @@ export function LobbyPlayersPanel({
     isPublic,
     hostId,
     lobbyPlayers,
-    countdownActive
+    countdownActive,
+    isMobile
 }: {
     lobbyId: number, 
     userId: number,
     isPublic: boolean,
     hostId: number,
     lobbyPlayers: LobbyPlayerDto[],
-    countdownActive: boolean
+    countdownActive: boolean,
+    isMobile: boolean
 }) {
 
     const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
@@ -78,23 +83,42 @@ export function LobbyPlayersPanel({
         : "";
 
     return (
-        <div id="lobby-player-panel" className="flex flex-col flex-1 lobby-card">
+        <div id="lobby-player-panel" className="flex flex-col flex-1 w-full gap-3 py-4 px-4 bg-background min-h-0 overflow-y-auto">
             {!isPublic && <JoinCodeAlertDialog open={isAlertOpen} handleContinueClick={requestJoinCode} setOpen={setIsAlertOpen} />}
-            <h2 className="card-header">Players ({lobbyPlayers.length}/4)</h2>
             {lobbyPlayers.sort((lobbyPlayerA, lobbyPlayerB) => lobbyPlayerA.user.username.localeCompare(lobbyPlayerB.user.username)).map((player, index) => {
                 return (
-                    <div id="player-row" key={index}>
-                        {player.user.id === hostId && <span id="host-star">★</span>}
-                        <span id="player-name">{player.user.username}</span>
-                        {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d]">Ready</span> : player.lobbyStatus === "INGAME" ? 
-                        <span className="bg-[#bee3f8] text-[#2a69ac]">In Game</span> : <span className="bg-[#fed7d7] text-[#742a2a]">Waiting</span>}
+                    <div id="player-row" 
+                        className={`flex items-center justify-between py-2 px-4 rounded-lg border-muted border-2 bg-muted/20 ${userId === Number(player.id.userId) && "bg-sidebar-primary/20! border-sidebar-primary!"}`} 
+                        key={index}
+                    >   
+                        <div className="flex gap-2 items-center">
+                            <span id="player-name" className="font-display font-semibold text-lg">{player.user.username}</span>
+                            {player.user.id === hostId && 
+                                <span id="host-star" className="text-sidebar-primary">
+                                    <IconCrown />
+                                </span>
+                            }
+                        </div>
+                        <div>
+                            {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d] px-3 py-1 rounded-full font-display">Ready</span> : player.lobbyStatus === "INGAME" ? 
+                            <span className="bg-[#bee3f8] text-[#2a69ac] px-3 py-1 rounded-full font-display">In Game</span> : <span className="bg-[#fed7d7] text-[#742a2a] px-3 py-1 rounded-full font-display">Waiting</span>}
+                        </div>
                     </div>
                 )
             })}
             {!countdownActive && playerSlotsRemaining.map((_, index) => {
                 return (
-                    <div id="empty-player-row" key={index}>
-                        <span>Waiting for player...</span>
+                    <div 
+                        id="empty-player-row"
+                        className="flex items-center gap-2 py-2 px-4 rounded-lg border-muted border-2 border-dashed"
+                        key={index}
+                    >
+                        <span className="text-muted">
+                            <IconUserPlus />
+                        </span>
+                        <span className="text-sm italic text-muted">
+                            Waiting for player...
+                        </span>
                     </div>
                 )
             })}
@@ -105,6 +129,8 @@ export function LobbyPlayersPanel({
                 Toggle Ready
             </Button>
             {!isPublic && lobbyPlayers.length < 4 &&
+            <>
+                <Separator orientation="horizontal" className="bg-muted border-1 border-muted" />
                 <div className="mt-2">
                     <div className="flex justify-between py-3">
                         <div className="font-display text-muted-foreground font-semibold tracking-widest text-lg">
@@ -154,6 +180,8 @@ export function LobbyPlayersPanel({
                         )}
                     </div>
                 </div>
+            </>
+                
             }
         </div>
     )

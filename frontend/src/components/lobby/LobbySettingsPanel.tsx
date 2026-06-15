@@ -1,16 +1,8 @@
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import { Label } from "../ui/label";
-import { useState } from "react";
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
-import { Button } from "../ui/button";
-import { ButtonCopy } from "../ui/custom/ButtonCopy";
-import { JoinCodeAlertDialog } from "../ui/custom/JoinCodeAlertDialog";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRefreshActiveTokensList } from "@/hooks/lobby/useRefreshActiveTokensList";
-import { useRequestJoinCode } from "@/api/rest/lobby/token/mutate/useRequestJoinCode";
-import { useGetActiveUserTokens } from "@/api/rest/lobby/token/query/useGetActiveUserTokens";
 import { useUpdateLobbyDifficulty } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyDifficulty";
 import { useUpdateLobbyTimeLimit } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyTimeLimit";
 import type { GameMode } from "@/types/enum/GameMode";
@@ -39,8 +31,7 @@ export function LobbySettingsPanel({
     const updateLimitLimit = useUpdateLobbyTimeLimit();
  
     return (
-        <div id="lobby-settings-panel" className="flex flex-col flex-1 lobby-card">
-            
+        <div id="lobby-settings-panel" className="flex flex-col h-full w-full">
             <h2 className="card-header">Game Settings</h2>
             <div className="flex gap-2 items-center">
                 <span>

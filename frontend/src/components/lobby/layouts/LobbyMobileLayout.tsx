@@ -24,6 +24,7 @@ export function LobbyMobileLayout({
     gameMode,
     gameType,
     lobbyPlayers,
+    isMobile,
     handleLeaveLobbyClick
 }: {
     lobbyId: number,
@@ -38,6 +39,7 @@ export function LobbyMobileLayout({
     gameMode: GameMode,
     gameType: GameType,
     lobbyPlayers: LobbyPlayerDto[],
+    isMobile: boolean,
     handleLeaveLobbyClick: () => void
 }) {
 
@@ -84,6 +86,7 @@ export function LobbyMobileLayout({
                                 hostId={hostId}
                                 lobbyPlayers={lobbyPlayers}
                                 countdownActive={countdownActive}
+                                isMobile={isMobile}
                             />
                         }
                         {activePanel === "settings" && 

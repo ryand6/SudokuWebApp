@@ -73,6 +73,7 @@ export function LobbyPage() {
             gameMode={lobby.lobbySettings.gameMode}
             gameType={lobby.lobbySettings.gameType}
             lobbyPlayers={lobby.lobbyPlayers} 
+            isMobile={isMobile}
             handleLeaveLobbyClick={handleLeaveLobbyClick}
         /> : 
         <LobbyDesktopLayout
@@ -87,7 +88,8 @@ export function LobbyPage() {
             timeLimit={lobby.lobbySettings.timeLimit}
             gameMode={lobby.lobbySettings.gameMode}
             gameType={lobby.lobbySettings.gameType}
-            lobbyPlayers={lobby.lobbyPlayers} 
+            lobbyPlayers={lobby.lobbyPlayers}
+            isMobile={isMobile}
             handleLeaveLobbyClick={handleLeaveLobbyClick}
         />
 

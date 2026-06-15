@@ -13,7 +13,7 @@ export function OutgoingMessageGroup({
     isLastGroup: boolean
 }) {
 
-    const playerColourStrong = playerColours ? playerColourClassNamePicker[playerColours[messageGroup.userId]].strong : "";
+    const playerColourStrong = playerColours ? playerColourClassNamePicker[playerColours[messageGroup.userId]].strong : "bg-secondary";
     const playerColourMedium = playerColours ? playerColourClassNamePicker[playerColours[messageGroup.userId]].medium : "bg-muted/60";
     
     return (
@@ -47,14 +47,10 @@ export function OutgoingMessageGroup({
                 )}
             </div>
             <div className="flex flex-col w-10 justify-start items-center">
-                {
-                    playerColours && (
-                        <div className="relative flex items-center justify-center w-6 h-6">
-                            <div className={`absolute inset-0 rounded-full opacity-40 animate-pulse ${playerColourStrong}`} />
-                            <div className={`w-2 h-2 rounded-full animate-pulse ${playerColourStrong}`} />
-                        </div>
-                    )
-                }
+                <div className="relative flex items-center justify-center w-6 h-6">
+                    <div className={`absolute inset-0 rounded-full opacity-40 animate-pulse ${playerColourStrong}`} />
+                    <div className={`w-2 h-2 rounded-full animate-pulse ${playerColourStrong}`} />
+                </div>
             </div>
         </div>
     )

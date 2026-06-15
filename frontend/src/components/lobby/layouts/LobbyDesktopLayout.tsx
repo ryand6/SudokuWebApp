@@ -1,6 +1,4 @@
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
-import { TimerCountdown } from "@/components/ui/custom/TimerCountdown";
-import { Button } from "@/components/ui/button";
 import { LobbyPlayersPanel } from "../LobbyPlayersPanel";
 import { LobbyChatPanel } from "../LobbyChatPanel";
 import { LobbySettingsPanel } from "../LobbySettingsPanel";
@@ -9,6 +7,13 @@ import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
 import type { GameMode } from "@/types/enum/GameMode";
 import type { GameType } from "@/types/enum/GameType";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
+import { IconDoorExit } from "@tabler/icons-react";
+import { useState } from "react";
+import { LeaveLobbyAlertDialog } from "@/components/ui/custom/LeaveLobbyAlertDialog";
+import BasicTimer from "@/components/ui/custom/BasicTimer";
+import { IconUsers } from '@tabler/icons-react';
+import { IconSettings } from '@tabler/icons-react';
+import { IconMessageCircle } from '@tabler/icons-react';
 
 export function LobbyDesktopLayout({
     lobbyId,
@@ -23,6 +28,7 @@ export function LobbyDesktopLayout({
     gameMode,
     gameType,
     lobbyPlayers,
+    isMobile,
     handleLeaveLobbyClick
 }: {
     lobbyId: number,
@@ -37,24 +43,53 @@ export function LobbyDesktopLayout({
     gameMode: GameMode,
     gameType: GameType,
     lobbyPlayers: LobbyPlayerDto[],
+    isMobile: boolean,
     handleLeaveLobbyClick: () => void
 }) {
+
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    
+    const iconSize: number = isMobile ? 16 : 24;
+    const iconStroke: number = isMobile ? 2 : 3;
+
     return (
-        <div id="lobby-container" className="flex flex-col flex-1">
-            <div id="lobby-header" className="flex flex-row justify-between">
-                <h1 className="text-foreground-strong font-bold text-shadow m-3">{lobbyName}</h1>
+        <div id="lobby-container" className="flex flex-col h-full w-full">
+            <div id="lobby-header" className="flex flex-row justify-between items-center bg-background px-8 py-2">
+                <h2 className="text-card-foreground tracking-wider font-bold text-2xl font-display">
+                    {lobbyName}
+                </h2>
                 {countdownActive && countdownEndsAt && (
-                    <TimerCountdown endTime={getEpochTimeFromTimestamp(countdownEndsAt)} />
+                    <span className="px-2 py-1 border-border border-2 rounded-lg bg-muted/10 font-mono text-xl">
+                        <BasicTimer endTime={getEpochTimeFromTimestamp(countdownEndsAt)} unit="MINUTES" />
+                    </span>
                 )}
-                <Button className="m-2 cursor-pointer" onClick={handleLeaveLobbyClick} variant={"destructive"}>Leave Lobby</Button>
+                <LeaveLobbyAlertDialog open={isAlertOpen} handleContinueClick={() => handleLeaveLobbyClick()} setOpen={setIsAlertOpen} />
+           
+                <div className="flex items-center justify-center rounded-md border-1 md:border-2
+                        bg-background border-destructive/50 text-destructive cursor-pointer py-2 px-5
+                        hover:bg-destructive/10" 
+                        onClick={() => setIsAlertOpen(true)}>
+                    <IconDoorExit size={iconSize} />
+                </div>
             </div>
-            <div id="lobby-content" className="flex flex-col flex-1 gap-4 max-h-[75vh]">
-                <div className="flex flex-row flex-1 min-h-0">
+            <div id="lobby-content" className="flex flex-col w-full flex-1 min-h-0">
+                <div className="flex flex-row w-full h-full">
                     {/* Desktop only: split left/right columns */}
-                    <div className="flex flex-1 min-h-0">
+                    <div className="flex w-full h-full">
                         {/* Left column */}
-                        <div className="flex flex-col flex-1 min-h-0 max-w-[50%]">
-                            <div className="flex flex-col flex-1 min-h-0">
+                        <div className="flex flex-col w-[40%]">
+                            <div className="flex flex-col w-full h-[60%] border-border border-r-2">
+                                <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sidebar-primary">
+                                            <IconUsers size={iconSize} />
+                                        </span>
+                                        <span className="tracking-wider font-semibold font-display text-primary-foreground">
+                                            Players
+                                        </span>
+                                    </div>
+                                    <span className="tracking-widest text-primary-foreground font-mono">{lobbyPlayers.length}/4</span>
+                                </div>
                                 <LobbyPlayersPanel 
                                     lobbyId={lobbyId} 
                                     userId={userId}
@@ -62,9 +97,21 @@ export function LobbyDesktopLayout({
                                     hostId={hostId}
                                     lobbyPlayers={lobbyPlayers}
                                     countdownActive={countdownActive}
+                                    isMobile={isMobile}
                                 />
                             </div>
-                            <div className="flex flex-col flex-1 min-h-0">
+                            <div className="flex flex-col h-[40%] border-border border-t-2 border-r-2">
+                                <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sidebar-primary">
+                                            <IconSettings size={iconSize} />
+                                        </span>
+                                        <span className="tracking-wider font-semibold font-display text-primary-foreground">
+                                            Settings
+                                        </span>
+                                    </div>
+                                    <span className="tracking-widest text-primary-foreground font-display">Host controls</span>
+                                </div>
                                 <LobbySettingsPanel 
                                     lobbyId={lobbyId} 
                                     userId={userId}
@@ -78,7 +125,17 @@ export function LobbyDesktopLayout({
                             </div>
                         </div>
                         {/* Right column */}
-                        <div className="flex flex-col flex-1 min-h-0 max-w-[50%]">
+                        <div className="flex flex-col h-full w-[60%] min-h-0">
+                            <div className="flex items-center px-4 py-2 bg-sidebar">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-sidebar-primary">
+                                        <IconMessageCircle size={iconSize} />
+                                    </span>
+                                    <span className="tracking-wider font-semibold font-display text-primary-foreground">
+                                        Chat
+                                    </span>
+                                </div>
+                            </div>
                             <LobbyChatPanel 
                                 lobbyId={lobbyId} 
                                 userId={userId} 
