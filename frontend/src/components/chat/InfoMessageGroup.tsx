@@ -11,7 +11,7 @@ export function InfoMessageGroup({
         <>
             {
                 messageGroup.messages.map((message, index) => (
-                    <div key={index} className="flex p-2 justify-stretch items-center gap-2">
+                    <div key={index} className="flex py-2 px-8 justify-stretch items-center gap-2">
                         <Separator orientation="horizontal" className="bg-muted flex-1" />
                         <span className="text-sm text-muted">{messageGroup.username} {message.message}</span>
                         <span className="font-mono text-sm text-muted">{getLocalTime(message.createdAt)}</span>

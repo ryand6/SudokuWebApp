@@ -13,6 +13,7 @@ import { JoinCodeAlertDialog } from "../ui/custom/JoinCodeAlertDialog";
 import { IconCrown } from '@tabler/icons-react';
 import { IconUserPlus } from '@tabler/icons-react';
 import { Separator } from "../ui/separator";
+import { IconLink } from '@tabler/icons-react';
 
 export function LobbyPlayersPanel({
     lobbyId, 
@@ -36,6 +37,9 @@ export function LobbyPlayersPanel({
     const [isUrlFormat, setIsUrlFormat] = useState<boolean>(true);
     const requestJoinCodeMutation = useRequestJoinCode();
     const queryClient = useQueryClient();
+
+    const iconSize: number = isMobile ? 16 : 24;
+    const iconStroke: number = isMobile ? 2 : 3;
 
     const joinUrl = window.location.origin + "/join/private/";
 
@@ -100,8 +104,8 @@ export function LobbyPlayersPanel({
                             }
                         </div>
                         <div>
-                            {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d] px-3 py-1 rounded-full font-display">Ready</span> : player.lobbyStatus === "INGAME" ? 
-                            <span className="bg-[#bee3f8] text-[#2a69ac] px-3 py-1 rounded-full font-display">In Game</span> : <span className="bg-[#fed7d7] text-[#742a2a] px-3 py-1 rounded-full font-display">Waiting</span>}
+                            {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d] px-3 py-1 rounded-full font-display font-semibold">Ready</span> : player.lobbyStatus === "INGAME" ? 
+                            <span className="bg-[#bee3f8] text-[#2a69ac] px-3 py-1 rounded-full font-display font-semibold">In Game</span> : <span className="bg-[#fed7d7] text-[#742a2a] px-3 py-1 rounded-full font-display font-semibold">Waiting</span>}
                         </div>
                     </div>
                 )
@@ -131,21 +135,26 @@ export function LobbyPlayersPanel({
             {!isPublic && lobbyPlayers.length < 4 &&
             <>
                 <Separator orientation="horizontal" className="bg-muted border-1 border-muted" />
-                <div className="mt-2">
-                    <div className="flex justify-between py-3">
-                        <div className="font-display text-muted-foreground font-semibold tracking-widest text-lg">
-                            GENERATE JOIN CODE
+                <div className="flex flex-col items-center justify-center">
+                    <div className="flex justify-between py-3 w-full">
+                        <div className="flex font-display items-center gap-2 text-muted-foreground font-semibold tracking-widest text-lg">
+                            <span>
+                                <IconLink />
+                            </span>
+                            <span>
+                                INVITE A FRIEND
+                            </span>
                         </div>
                         <div className="flex p-1 gap-1 rounded-full border-muted border-1 bg-background">
                             <div 
-                                className={`p-3 py-2 font-display rounded-full cursor-pointer text-sidebar-primary-foreground flex items-center gap-2
+                                className={`px-3 py-1 font-display rounded-full cursor-pointer text-sidebar-primary-foreground flex items-center gap-2
                                             ${!isUrlFormat && "bg-secondary! text-secondary-foreground! font-semibold!"}`}
                                 onClick={() => setIsUrlFormat(false) }
                             >
                                 <span>Code</span>
                             </div>
                             <div 
-                                className={`p-3 py-2 font-display rounded-full cursor-pointer text-sidebar-primary-foreground flex items-center gap-2
+                                className={`px-3 py-1 font-display rounded-full cursor-pointer text-sidebar-primary-foreground flex items-center gap-2
                                             ${isUrlFormat && "bg-secondary! text-secondary-foreground! font-semibold!"}`}
                                 onClick={() => setIsUrlFormat(true)} 
                             >
@@ -153,13 +162,13 @@ export function LobbyPlayersPanel({
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row items-center gap-4 mt-2">
-                        <div className="flex flex-row justify-between w-[75%] h-[100%] border-1 py-1 px-2 text-gray-400">
+                    <div className="flex flex-row items-center w-full">
+                        <div className="flex flex-row justify-between border-1 py-1 px-2 text-gray-400">
                             <span className="truncate max-w-full">{recentJoinCodeText || "Generated join code"}</span>
                             <ButtonCopy text={recentJoinCodeText} className="text-black"/>
-                        </div>
-                        <Button id="join-private-btn" className="w-[20%] cursor-pointer whitespace-normal text-wrap" onClick={handleRequestJoinCode}>Generate Code</Button>
+                        </div> 
                     </div>
+                    <Button id="join-private-btn" className="w-[20%] cursor-pointer whitespace-normal text-wrap" onClick={handleRequestJoinCode}>Generate Code</Button>
                     <div className="mt-2 max-h-40 border p-2 rounded overflow-y-auto">
                         <h2 className="border-b mb-2 py-1">Active Join Codes:</h2>
                         {activeTokens?.length ? (
