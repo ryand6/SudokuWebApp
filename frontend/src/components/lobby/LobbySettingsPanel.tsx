@@ -7,6 +7,8 @@ import { useUpdateLobbyDifficulty } from "@/api/rest/lobby/settings/mutate/useUp
 import { useUpdateLobbyTimeLimit } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyTimeLimit";
 import type { GameMode } from "@/types/enum/GameMode";
 import type { GameType } from "@/types/enum/GameType";
+import type { MouseEvent } from "react";
+
 
 export function LobbySettingsPanel({
     lobbyId, 
@@ -29,69 +31,93 @@ export function LobbySettingsPanel({
 }) {
     const updateDifficulty = useUpdateLobbyDifficulty();
     const updateLimitLimit = useUpdateLobbyTimeLimit();
+
+    const difficultyOptions = ["Easy", "Medium", "Hard", "Extreme"];
+    const durationOptions: { label: string; value: string }[] = [
+        { label: "15 min", value: "Quick" },
+        { label: "30 min", value: "Standard" },
+        { label: "60 min", value: "Marathon" },
+    ];
+
+    const handleClickDifficulty = (value: string) => {
+        if (value === wordToProperCase(difficulty)) {
+            return;
+        }
+        const valueEnum = value.toUpperCase() as Difficulty;
+        updateDifficulty.mutate({ lobbyId: lobbyId, userId: userId, difficulty: valueEnum });
+    }
+
+    const handleClickDuration = (value: string) => {
+        if (value === wordToProperCase(timeLimit)) {
+            return;
+        }
+        const valueEnum = value.toUpperCase() as TimeLimitPreset;
+        updateLimitLimit.mutate({lobbyId: lobbyId, userId: userId, timeLimit: valueEnum});
+    }
  
     return (
-        <div id="lobby-settings-panel" className="flex flex-col h-full w-full">
-            <h2 className="card-header">Game Settings</h2>
-            <div className="flex gap-2 items-center">
-                <span>
-                    Game Type:
-                </span>
-                <span className="capitalize">
-                    {wordToProperCase(gameType)}
-                </span>
-            </div>
-            <div className="flex gap-2 items-center">
-                <span>
-                    Game Mode:
-                </span>
-                <span className="capitalize">
-                    {wordToProperCase(gameMode)}
-                </span>
+        <div id="lobby-settings-panel" className="flex flex-col h-full w-full py-6 px-4 gap-3">
+            
+            <div>
+                <div>
+                    <span className="font-display text-muted-foreground font-semibold tracking-widest text-lg">DIFFICULTY</span>
+                </div>
+                {userId === hostId ? 
+                    (<div className="flex flex-wrap items-center gap-2 w-full">
+                        {
+                            difficultyOptions.map((option, index) => 
+                                <div 
+                                    key={index} 
+                                    className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
+                                                ${wordToProperCase(difficulty) === option && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}`}
+                                    onClick={() => handleClickDifficulty(option)}
+                                >
+                                    {option}
+                                </div>
+                            )
+                        }
+                    </div>)
+                : (
+                    <div>
+                        <span className="text-lg font-display text-accent-foreground">{wordToProperCase(difficulty)}</span>
+                    </div>
+                )}
             </div>
             <div>
                 <div>
-                    🎯 Difficulty 
-                    <span id="difficulty-value"> {wordToProperCase(difficulty)}</span>
+                    <span className="font-display text-muted-foreground font-semibold tracking-widest text-lg">DURATION</span>
                 </div>
-                {userId === hostId && 
-                <div>
-                    <RadioGroup 
-                        defaultValue={wordToProperCase(difficulty)} 
-                        onValueChange={(value) => {
-                            let valueEnum = value.toUpperCase() as Difficulty;
-                            updateDifficulty.mutate({ lobbyId: lobbyId, userId: userId, difficulty: valueEnum });
-                        }} 
-                        disabled={countdownActive} 
-                        className="flex flex-row"
-                    >
-                        <div>
-                            <RadioGroupItem value="Easy" id="r-easy" />
-                            <Label htmlFor="r-easy">Easy</Label>
-                        </div>
-                        <div>
-                            <RadioGroupItem value="Medium" id="r-medium" />
-                            <Label htmlFor="r-medium">Medium</Label>
-                        </div>
-                        <div>
-                            <RadioGroupItem value="Hard" id="r-hard" />
-                            <Label htmlFor="r-hard">Hard</Label>
-                        </div>
-                        <div>
-                            <RadioGroupItem value="Extreme" id="r-extreme" />
-                            <Label htmlFor="r-extreme">Extreme</Label>
-                        </div>
-                    </RadioGroup>
-                </div>
-                }
-            </div>
-            <div>
-                <div>
-                    ⏱️ Game Duration
-                    <span id="duration-value"> {wordToProperCase(timeLimit)}</span>
-                </div>
-                {userId === hostId && gameMode !== "TIMEATTACK" &&
-                <div>
+                {userId === hostId && gameMode !== "TIMEATTACK" ?
+
+                    (<div className="flex flex-wrap items-center gap-2 w-full">
+                        {
+                            durationOptions.map((option, index) => 
+                                <div 
+                                    key={index} 
+                                    className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
+                                                ${wordToProperCase(timeLimit) === option.value && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}`}
+                                    onClick={() => handleClickDuration(option.value)}
+                                >
+                                    {option.label}
+                                </div>
+                            )
+                            
+                        }
+                        {gameType === "CASUAL" && 
+                            <div className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
+                                                ${wordToProperCase(timeLimit) === "Unlimited" && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}`}
+                                    onClick={() => handleClickDuration("Unlimited")}>
+                                Unlimited
+                            </div>
+                        }
+                    </div>)
+                : (
+                    <div>
+                        <span className="text-lg font-display text-accent-foreground">{wordToProperCase(timeLimit)}</span>
+                    </div>
+                )}
+
+                {/* <div>
                     <RadioGroup 
                         defaultValue={wordToProperCase(timeLimit)} 
                         onValueChange={(value) => {
@@ -121,7 +147,24 @@ export function LobbySettingsPanel({
                         )}
                     </RadioGroup>
                 </div>
-                }
+                } */}
+            </div>
+
+            <div className="flex gap-2 items-center">
+                <span>
+                    Game Type:
+                </span>
+                <span className="capitalize">
+                    {wordToProperCase(gameType)}
+                </span>
+            </div>
+            <div className="flex gap-2 items-center">
+                <span>
+                    Game Mode:
+                </span>
+                <span className="capitalize">
+                    {wordToProperCase(gameMode)}
+                </span>
             </div>
             
         </div>

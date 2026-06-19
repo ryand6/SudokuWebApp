@@ -6,16 +6,7 @@ export function GameCountdownScreen({
 }: {
     gameStartsAt: string | null
 }) {
-
-    if (gameStartsAt !== null) {
-        console.log("Game starts at: ", gameStartsAt);
-        console.log("Game starts at in ms: ", new Date(gameStartsAt).getTime()); 
-        console.log("Now in ms: ", Date.now());
-    }
-
     const [countdown, setCountdown] = useState(computeSecondsLeftUntilTimestamp(gameStartsAt));
-
-    console.log(countdown);
     
     useEffect(() => {
         let timerId: NodeJS.Timeout;

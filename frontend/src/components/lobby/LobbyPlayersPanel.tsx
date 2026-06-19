@@ -14,6 +14,9 @@ import { IconCrown } from '@tabler/icons-react';
 import { IconUserPlus } from '@tabler/icons-react';
 import { Separator } from "../ui/separator";
 import { IconLink } from '@tabler/icons-react';
+import { IconRefresh } from '@tabler/icons-react';
+import { SpinnerButton } from "../ui/custom/SpinnerButton";
+import { useDotsAnimation } from "@/hooks/global/useDotsAnimation";
 
 export function LobbyPlayersPanel({
     lobbyId, 
@@ -50,6 +53,8 @@ export function LobbyPlayersPanel({
 
     const { data } = useGetActiveUserTokens(userId);
     const activeTokens = data?.activeTokens ?? [];
+
+    const dotsCount = useDotsAnimation();
     
     // Interval to refresh active tokens display every minute
     useRefreshActiveTokensList(queryClient, userId);
@@ -99,13 +104,19 @@ export function LobbyPlayersPanel({
                             <span id="player-name" className="font-display font-semibold text-lg">{player.user.username}</span>
                             {player.user.id === hostId && 
                                 <span id="host-star" className="text-sidebar-primary">
-                                    <IconCrown />
+                                    <IconCrown size={iconSize} stroke={iconStroke} />
                                 </span>
                             }
                         </div>
                         <div>
-                            {player.lobbyStatus === "READY" ? <span className="bg-[#c6f6d5] text-[#22543d] px-3 py-1 rounded-full font-display font-semibold">Ready</span> : player.lobbyStatus === "INGAME" ? 
-                            <span className="bg-[#bee3f8] text-[#2a69ac] px-3 py-1 rounded-full font-display font-semibold">In Game</span> : <span className="bg-[#fed7d7] text-[#742a2a] px-3 py-1 rounded-full font-display font-semibold">Waiting</span>}
+                            {
+                                player.lobbyStatus === "READY" ? 
+                                    (<span className="bg-[#c6f6d5] text-[#22543d] px-3 py-1 rounded-full font-display font-semibold">Ready</span>) 
+                                : player.lobbyStatus === "INGAME" ? 
+                                    (<span className="bg-[#bee3f8] text-[#2a69ac] px-3 py-1 rounded-full font-display font-semibold">In Game</span>) 
+                                : 
+                                    (<span className="bg-[#fed7d7] text-[#742a2a] px-3 py-1 rounded-full font-display font-semibold">Waiting</span>)
+                            }
                         </div>
                     </div>
                 )
@@ -121,25 +132,28 @@ export function LobbyPlayersPanel({
                             <IconUserPlus />
                         </span>
                         <span className="text-sm italic text-muted">
-                            Waiting for player...
+                            Waiting for player
+                            <span className={dotsCount >= 1 ? "opacity-100" : "opacity-0"}>.</span>
+                            <span className={dotsCount >= 2 ? "opacity-100" : "opacity-0"}>.</span>
+                            <span className={dotsCount >= 3 ? "opacity-100" : "opacity-0"}>.</span>
                         </span>
                     </div>
                 )
             })}
             <Button 
                 onClick={handleToggleReady} disabled={lobbyPlayers.length < 2}
-                className="cursor-pointer"
+                className="cursor-pointer font-display text-lg"
             >
                 Toggle Ready
             </Button>
             {!isPublic && lobbyPlayers.length < 4 &&
             <>
                 <Separator orientation="horizontal" className="bg-muted border-1 border-muted" />
-                <div className="flex flex-col items-center justify-center">
+                <div className="flex flex-col items-center justify-center gap-3">
                     <div className="flex justify-between py-3 w-full">
                         <div className="flex font-display items-center gap-2 text-muted-foreground font-semibold tracking-widest text-lg">
                             <span>
-                                <IconLink />
+                                <IconLink size={iconSize} stroke={iconStroke} />
                             </span>
                             <span>
                                 INVITE A FRIEND
@@ -162,30 +176,45 @@ export function LobbyPlayersPanel({
                             </div>
                         </div>
                     </div>
+                    {requestJoinCodeMutation.isPending && <SpinnerButton />}
                     <div className="flex flex-row items-center w-full">
-                        <div className="flex flex-row justify-between border-1 py-1 px-2 text-gray-400">
-                            <span className="truncate max-w-full">{recentJoinCodeText || "Generated join code"}</span>
+                        <div className="flex flex-row w-full justify-between items-center border-2 rounded-lg py-1 px-2 border-muted">
+                            <span 
+                                className={`truncate max-w-full font-display ${recentJoinCodeText ? "text-accent-foreground" : "text-muted"}`}
+                            >
+                                {recentJoinCodeText || "Generated join code"}
+                            </span>
                             <ButtonCopy text={recentJoinCodeText} className="text-black"/>
                         </div> 
                     </div>
-                    <Button id="join-private-btn" className="w-[20%] cursor-pointer whitespace-normal text-wrap" onClick={handleRequestJoinCode}>Generate Code</Button>
-                    <div className="mt-2 max-h-40 border p-2 rounded overflow-y-auto">
-                        <h2 className="border-b mb-2 py-1">Active Join Codes:</h2>
+                    <Button 
+                        id="join-private-btn" 
+                        className="w-full font-display text-lg cursor-pointer whitespace-normal text-wrap" 
+                        onClick={handleRequestJoinCode}
+                    >
+                        <span><IconRefresh size={iconSize} stroke={iconStroke} /></span>
+                        <span>Generate new code</span>
+                    </Button>
+                    <div className="w-full border-muted border-2 py-2 rounded-lg overflow-y-auto">
+                        <h2 className="border-muted border-b-2 px-2 mb-2 py-1 text-muted-foreground font-display font-semibold tracking-widest text-md">ACTIVE CODES</h2>
                         {activeTokens?.length ? (
                             activeTokens.map((token) => {
                                 // Calculate the minutes left to expiry on the token, rounded up to the nearest minute
                                 const minutesLeft = Math.max(0, Math.ceil((token.expiresAt - Date.now()) / 60000));
                                 const joinCodeText = isUrlFormat ? joinUrl + "?" + token.token : token.token;
                                 return (
-                                    <div key={token.token} className="flex justify-between py-1 px-2 mb-2 border-b last:border-b-0">
-                                        <span className="break-all w-[70%]">{joinCodeText}</span>
-                                        <ButtonCopy text={joinCodeText} />
-                                        <span className="text-gray-500">{minutesLeft} min left</span>
+                                    <div 
+                                        key={token.token} 
+                                        className="flex justify-between items-center font-display px-2 py-2 border-b last:border-b-0"
+                                    >
+                                        <span className="truncate w-[70%] text-accent-foreground">{joinCodeText}</span>
+                                        <ButtonCopy text={joinCodeText} isCompact={true} />
+                                        <span className="text-muted-foreground text-sm w-[10%]">{minutesLeft} min</span>
                                     </div>
                                 );
                             })
                         ) : (
-                            <span className="text-gray-400">No active join codes</span>
+                            <span className="px-2 text-muted font-displaye">No active join codes</span>
                         )}
                     </div>
                 </div>

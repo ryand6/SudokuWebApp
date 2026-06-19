@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react';
 
 interface ButtonCopyProps {
     text: string | null;
+    isCompact?: boolean;
     className?: string; 
 }
 
 
-export function ButtonCopy({ text, className }: ButtonCopyProps) {
+export function ButtonCopy({ text, isCompact, className }: ButtonCopyProps) {
     const [copied, setCopied] = useState(false)
 
     useEffect(() => {
@@ -29,15 +30,15 @@ export function ButtonCopy({ text, className }: ButtonCopyProps) {
 
     return (
         <Button 
-          variant="outline" 
+          variant="outline"
           size="sm" 
           onClick={() => handleCopy(text)} 
           disabled={!text} 
-          className={`flex items-center gap-1 cursor-pointer ${className || ""}`} 
+          className={`flex items-center gap-1 border-muted cursor-pointer font-display ${className || ""}`} 
         >
           {copied 
-          ? <span className="flex items-center gap-1"><IconCheck size={16} /> Copied!</span>
-          : <span className="flex items-center gap-1"><IconCopy size={16} /> Copy</span>}
+          ? <span className="flex items-center gap-1"><IconCheck size={16} /> {isCompact ? "" : "Copied!"}</span>
+          : <span className="flex items-center gap-1"><IconCopy size={16} /> {isCompact ? "" : "Copy"}</span>}
 
         </Button>
     );

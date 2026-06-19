@@ -16,7 +16,7 @@ import lombok.*;
 public class LobbySetupRequestDto {
 
     @NotBlank
-    @Size(min=3, max=20)
+    @Size(min=3, max=10)
     // Use custom profanity filter
     @NoProfanity(message="Username contains inappropriate language")
     private String lobbyName;

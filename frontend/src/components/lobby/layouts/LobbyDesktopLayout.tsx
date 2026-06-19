@@ -55,9 +55,15 @@ export function LobbyDesktopLayout({
     return (
         <div id="lobby-container" className="flex flex-col h-full w-full">
             <div id="lobby-header" className="flex flex-row justify-between items-center bg-background px-8 py-2">
-                <h2 className="text-card-foreground tracking-wider font-bold text-2xl font-display">
-                    {lobbyName}
-                </h2>
+                <div className="flex items-center gap-3">
+                    <h2 className="text-card-foreground tracking-wider font-bold text-2xl font-display">
+                        {lobbyName}
+                    </h2>
+                    <div className={`rounded-full py-1 px-3 text-white font-display text-xs ${isPublic ? "bg-[#22543d]" : "bg-[#742a2a]"}`}>
+                        {isPublic ? "Public" : "Private"}
+                    </div>
+                </div>
+                
                 {countdownActive && countdownEndsAt && (
                     <span className="px-2 py-1 border-border border-2 rounded-lg bg-muted/10 font-mono text-xl">
                         <BasicTimer endTime={getEpochTimeFromTimestamp(countdownEndsAt)} unit="MINUTES" />
