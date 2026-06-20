@@ -129,7 +129,7 @@ export function LobbyPlayersPanel({
                         key={index}
                     >
                         <span className="text-muted">
-                            <IconUserPlus />
+                            <IconUserPlus size={iconSize} />
                         </span>
                         <span className="text-sm italic text-muted">
                             Waiting for player

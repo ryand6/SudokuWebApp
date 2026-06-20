@@ -37,6 +37,15 @@ export function LobbySettingsPanel({
         { label: "60 min", value: "Marathon" },
     ];
 
+    const getDurationLabel = (value: string) => {
+        value = wordToProperCase(value);
+        if (value === "UNLIMITED") {
+            return;
+        }
+        const label = durationOptions.find(el => el.value === value)?.label;
+        return label ? `(${label})` : '';
+    }
+
     const handleClickDifficulty = (value: string) => {
         if (countdownActive || updateDifficulty.isPending || value === wordToProperCase(difficulty)) {
             return;
@@ -114,7 +123,7 @@ export function LobbySettingsPanel({
                     </div>)
                 : (
                     <div>
-                        <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(timeLimit)}</span>
+                        <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(timeLimit)} {getDurationLabel(timeLimit)}</span>
                     </div>
                 )}
             </div>
