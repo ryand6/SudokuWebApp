@@ -1,13 +1,11 @@
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Label } from "../ui/label";
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
 import { useUpdateLobbyDifficulty } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyDifficulty";
 import { useUpdateLobbyTimeLimit } from "@/api/rest/lobby/settings/mutate/useUpdateLobbyTimeLimit";
 import type { GameMode } from "@/types/enum/GameMode";
 import type { GameType } from "@/types/enum/GameType";
-import type { MouseEvent } from "react";
+import { Separator } from "../ui/separator";
 
 
 export function LobbySettingsPanel({
@@ -30,7 +28,7 @@ export function LobbySettingsPanel({
     gameType: GameType
 }) {
     const updateDifficulty = useUpdateLobbyDifficulty();
-    const updateLimitLimit = useUpdateLobbyTimeLimit();
+    const updateTimeLimit = useUpdateLobbyTimeLimit();
 
     const difficultyOptions = ["Easy", "Medium", "Hard", "Extreme"];
     const durationOptions: { label: string; value: string }[] = [
@@ -40,7 +38,7 @@ export function LobbySettingsPanel({
     ];
 
     const handleClickDifficulty = (value: string) => {
-        if (value === wordToProperCase(difficulty)) {
+        if (countdownActive || updateDifficulty.isPending || value === wordToProperCase(difficulty)) {
             return;
         }
         const valueEnum = value.toUpperCase() as Difficulty;
@@ -48,17 +46,17 @@ export function LobbySettingsPanel({
     }
 
     const handleClickDuration = (value: string) => {
-        if (value === wordToProperCase(timeLimit)) {
+        if (countdownActive || updateTimeLimit.isPending || value === wordToProperCase(timeLimit)) {
             return;
         }
         const valueEnum = value.toUpperCase() as TimeLimitPreset;
-        updateLimitLimit.mutate({lobbyId: lobbyId, userId: userId, timeLimit: valueEnum});
+        updateTimeLimit.mutate({lobbyId: lobbyId, userId: userId, timeLimit: valueEnum});
     }
  
     return (
-        <div id="lobby-settings-panel" className="flex flex-col h-full w-full py-6 px-4 gap-3">
+        <div id="lobby-settings-panel" className="flex flex-col h-full w-full py-4 px-4 gap-3 min-h-0 overflow-y-auto">
             
-            <div>
+            <div className="flex flex-col gap-2">
                 <div>
                     <span className="font-display text-muted-foreground font-semibold tracking-widest text-lg">DIFFICULTY</span>
                 </div>
@@ -69,7 +67,8 @@ export function LobbySettingsPanel({
                                 <div 
                                     key={index} 
                                     className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
-                                                ${wordToProperCase(difficulty) === option && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}`}
+                                                ${wordToProperCase(difficulty) === option && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}
+                                                ${countdownActive && "opacity-40"}`}
                                     onClick={() => handleClickDifficulty(option)}
                                 >
                                     {option}
@@ -79,11 +78,12 @@ export function LobbySettingsPanel({
                     </div>)
                 : (
                     <div>
-                        <span className="text-lg font-display text-accent-foreground">{wordToProperCase(difficulty)}</span>
+                        <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(difficulty)}</span>
                     </div>
                 )}
             </div>
-            <div>
+            <Separator orientation="horizontal" className="bg-muted" />
+            <div className="flex flex-col gap-2">
                 <div>
                     <span className="font-display text-muted-foreground font-semibold tracking-widest text-lg">DURATION</span>
                 </div>
@@ -95,7 +95,8 @@ export function LobbySettingsPanel({
                                 <div 
                                     key={index} 
                                     className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
-                                                ${wordToProperCase(timeLimit) === option.value && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}`}
+                                                ${wordToProperCase(timeLimit) === option.value && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}
+                                                ${countdownActive && "opacity-40"}`}
                                     onClick={() => handleClickDuration(option.value)}
                                 >
                                     {option.label}
@@ -113,58 +114,28 @@ export function LobbySettingsPanel({
                     </div>)
                 : (
                     <div>
-                        <span className="text-lg font-display text-accent-foreground">{wordToProperCase(timeLimit)}</span>
+                        <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(timeLimit)}</span>
                     </div>
                 )}
+            </div>
+            <Separator orientation="horizontal" className="bg-muted" />
 
-                {/* <div>
-                    <RadioGroup 
-                        defaultValue={wordToProperCase(timeLimit)} 
-                        onValueChange={(value) => {
-                            let valueEnum = value.toUpperCase() as TimeLimitPreset;
-                            updateLimitLimit.mutate({lobbyId: lobbyId, userId: userId, timeLimit: valueEnum});
-                        }} 
-                        disabled={countdownActive} 
-                        className="flex flex-row"
-                    >
-                        <div>
-                            <RadioGroupItem value="Quick" id="r-quick" />
-                            <Label htmlFor="r-quick">15 min</Label>
-                        </div>
-                        <div>
-                            <RadioGroupItem value="Standard" id="r-standard" />
-                            <Label htmlFor="r-standard">30 min</Label>
-                        </div>
-                        <div>
-                            <RadioGroupItem value="Marathon" id="r-marathon" />
-                            <Label htmlFor="r-marathon">60 min</Label>
-                        </div>
-                        {gameType === "CASUAL" && (
-                            <div>
-                                <RadioGroupItem value="Unlimited" id="r-unlimited" />
-                                <Label htmlFor="r-unlimited">Unlimited</Label>
-                            </div>
-                        )}
-                    </RadioGroup>
+            <div className="flex flex-col gap-2">
+                <div>
+                    <span className="font-display text-muted-foreground font-semibold tracking-widest text-lg">GAME TYPE</span>
                 </div>
-                } */}
+                <div>
+                    <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(gameType)}</span>
+                </div>
             </div>
-
-            <div className="flex gap-2 items-center">
-                <span>
-                    Game Type:
-                </span>
-                <span className="capitalize">
-                    {wordToProperCase(gameType)}
-                </span>
-            </div>
-            <div className="flex gap-2 items-center">
-                <span>
-                    Game Mode:
-                </span>
-                <span className="capitalize">
-                    {wordToProperCase(gameMode)}
-                </span>
+            <Separator orientation="horizontal" className="bg-muted" />
+            <div className="flex flex-col gap-2">
+                <div>
+                    <span className="font-display text-muted-foreground font-semibold tracking-widest text-lg">GAME MODE</span>
+                </div>
+                <div>
+                    <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(gameMode)}</span>
+                </div>
             </div>
             
         </div>

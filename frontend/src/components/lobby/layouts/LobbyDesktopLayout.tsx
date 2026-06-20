@@ -56,7 +56,7 @@ export function LobbyDesktopLayout({
         <div id="lobby-container" className="flex flex-col h-full w-full">
             <div id="lobby-header" className="flex flex-row justify-between items-center bg-background px-8 py-2">
                 <div className="flex items-center gap-3">
-                    <h2 className="text-card-foreground tracking-wider font-bold text-2xl font-display">
+                    <h2 className="text-accent-foreground tracking-wider font-bold text-2xl font-display">
                         {lobbyName}
                     </h2>
                     <div className={`rounded-full py-1 px-3 text-white font-display text-xs ${isPublic ? "bg-[#22543d]" : "bg-[#742a2a]"}`}>
@@ -84,7 +84,7 @@ export function LobbyDesktopLayout({
                     <div className="flex w-full h-full">
                         {/* Left column */}
                         <div className="flex flex-col w-[40%]">
-                            <div className="flex flex-col w-full h-[60%] border-border border-r-2">
+                            <div className="flex flex-col w-full h-[55%] border-border border-r-2">
                                 <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
                                     <div className="flex items-center gap-2">
                                         <span className="text-sidebar-primary">
@@ -106,7 +106,7 @@ export function LobbyDesktopLayout({
                                     isMobile={isMobile}
                                 />
                             </div>
-                            <div className="flex flex-col h-[40%] border-border border-t-2 border-r-2">
+                            <div className="flex flex-col h-[45%] border-border border-t-2 border-r-2">
                                 <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
                                     <div className="flex items-center gap-2">
                                         <span className="text-sidebar-primary">
