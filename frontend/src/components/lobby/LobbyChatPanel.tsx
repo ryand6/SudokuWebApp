@@ -37,7 +37,7 @@ export function LobbyChatPanel({
     }, [messages]);
 
     return (
-        <div id="lobby-chat-panel" className="flex flex-col justify-between h-full min-h-0">
+        <div id="lobby-chat-panel" className="flex flex-col justify-between h-full min-h-0 pt-3">
             {
                 isLoading && <SpinnerButton />
             }

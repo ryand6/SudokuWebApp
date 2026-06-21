@@ -26,8 +26,8 @@ export function CreateLobbyPage() {
         if (!lobbyName.trim()) {
             setError("Lobby name is required");
             return false;
-        } else if (lobbyName.length < 3 || lobbyName.length > 15) {
-            setError("Lobby name must be between 3 and 15 characters long");
+        } else if (lobbyName.length < 3 || lobbyName.length > 12) {
+            setError("Lobby name must be between 3 and 12 characters long");
             return false;
         }
         return true;

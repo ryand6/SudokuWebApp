@@ -23,26 +23,30 @@ export function GameInfoBar({
 }) {
     return (
         <div 
-            className="flex h-auto py-3 w-full bg-sidebar text-sidebar-accent gap-3 justify-center 
-                        items-center px-5 font-bold text-xl"
+            className="grid grid-cols-[1fr_auto_1fr] h-auto py-3 w-full bg-sidebar text-sidebar-accent justify-center 
+                        items-center md:px-5 font-bold text-md md:text-lg"
         >
-            <div className="w-40"></div>
-            <span>{wordToProperCase(difficulty)}</span>
-            <span>&middot;</span>
-            <span>{wordToProperCase(gameMode)}</span>
-            <span>&middot;</span>
-            <span>{wordToProperCase(gameType)}</span>
-            {
-                gameEndsAt && (
-                    <>
-                        <span>&middot;</span>
-                        <span className="px-2 py-1 border-muted border-2 rounded-lg bg-muted/10 font-mono text-xl">
-                            <BasicTimer endTime={getEpochTimeFromTimestamp(gameEndsAt)} unit="MINUTES" />
-                        </span>
-                    </>
-                )
-            }
-            <div className="pl-1 flex justify-center items-center w-40">
+            <div />
+
+            <div className="flex items-center gap-2 md:gap-3 justify-self-center">
+                <span>{wordToProperCase(difficulty)}</span>
+                <span>&middot;</span>
+                <span>{wordToProperCase(gameMode)}</span>
+                <span>&middot;</span>
+                <span>{wordToProperCase(gameType)}</span>
+                {
+                    gameEndsAt && (
+                        <>
+                            <span>&middot;</span>
+                            <span className="px-1 md:px-2 py-1 border-muted border-1 md:border-2 rounded-lg bg-muted/10 font-mono text-md md:text-lg">
+                                <BasicTimer endTime={getEpochTimeFromTimestamp(gameEndsAt)} unit="MINUTES" />
+                            </span>
+                        </>
+                    )
+                }
+            </div>
+            
+            <div className="pl-1 flex justify-center items-center">
                 <GameNotificationLayer 
                     scoreNotificationsEnabled={scoreNotificationsEnabled}
                     streakNotificationsEnabled={streakNotificationsEnabled}

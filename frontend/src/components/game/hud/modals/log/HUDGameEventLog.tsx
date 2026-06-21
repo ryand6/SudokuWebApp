@@ -19,8 +19,8 @@ export function HUDGameEventLog({
     return (
         <div className="flex flex-col flex-1 bg-background rounded">
             <div className="flex w-full h-auto py-3 bg-sidebar rounded-t justify-between items-center px-5">
-                <h3 className="tracking-wider text-2xl font-extrabold font-display text-sidebar-foreground">
-                    Game Event Log
+                <h3 className="tracking-wider text-2xl font-semibold font-display text-sidebar-foreground">
+                    Event Log
                 </h3>
                 <span className="text-muted-foreground font-sans text-md pr-10">
                     {totalEvents} events

@@ -102,7 +102,7 @@ function NotificationBadge({
         const tier = getStreakTier(notification.message);
         return (
             <div
-                className={`px-2 font-extrabold text-xl font-mono ${isNegative ? "animate-snap-in" : "animate-wiggle"}`}
+                className={`px-2 font-bold text-md md:font-extrabold md:text-xl font-mono ${isNegative ? "animate-snap-in" : "animate-wiggle"}`}
                 style={STREAK_STYLES[tier]}
                 onAnimationEnd={handleAnimationEnd}
             >
@@ -119,7 +119,7 @@ function NotificationBadge({
 
     return (
         <div
-            className="px-2 font-extrabold text-xl font-mono animate-snap-in"
+            className="px-2 font-bold text-md md:font-extrabold md:text-xl font-mono animate-snap-in"
             style={textStyle}
             onAnimationEnd={handleAnimationEnd}
         >

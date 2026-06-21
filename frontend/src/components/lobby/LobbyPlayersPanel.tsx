@@ -178,7 +178,7 @@ export function LobbyPlayersPanel({
                     </div>
                     {requestJoinCodeMutation.isPending && <SpinnerButton />}
                     <div className="flex flex-row items-center w-full">
-                        <div className="flex flex-row w-full justify-between items-center border-2 rounded-lg py-1 px-2 border-muted">
+                        <div className="flex flex-row w-full gap-2 justify-between items-center border-2 rounded-lg py-1 px-2 border-muted">
                             <span 
                                 className={`truncate max-w-full font-display ${recentJoinCodeText ? "text-accent-foreground" : "text-muted"}`}
                             >

@@ -20,12 +20,14 @@ export function HUDGameChat({
     gameId,
     userId,
     playerColours,
-    gameMode
+    gameMode,
+    isMobile
 }: {
     gameId: number,
     userId: number,
     playerColours: Record<number, PlayerColour> | undefined,
-    gameMode: GameMode
+    gameMode: GameMode,
+    isMobile: boolean
 }) {
     const { send } = useWebSocketContext();
     const [inputMessage, setInputMessage] = useState("");
@@ -92,7 +94,7 @@ export function HUDGameChat({
     return (
         <div className="flex flex-col flex-1 bg-background rounded">
             <div className="flex w-full h-auto py-3 bg-sidebar rounded-t">
-                <h3 className="pl-5 tracking-wider text-2xl font-extrabold font-display text-sidebar-foreground">
+                <h3 className="pl-5 tracking-wider text-2xl font-semibold font-display text-sidebar-foreground">
                     Game Chat
                 </h3>
             </div>
@@ -118,8 +120,12 @@ export function HUDGameChat({
                     )
                 }}
             />
-            <div className="flex flex-col py-3 px-4 border-t-1 border-muted bg-card">
-                <MessageTypeSelectorRow isQuickMessage={isQuickMessage} setIsQuickMessage={setIsQuickMessage} />
+            <div className="flex flex-col py-3 px-4 border-t-1 border-muted bg-card max-h-[40%]">
+                <MessageTypeSelectorRow 
+                    isQuickMessage={isQuickMessage} 
+                    setIsQuickMessage={setIsQuickMessage}
+                    isMobile={isMobile}
+                />
                 {
                     isQuickMessage ? (
                         <QuickMessageBar messageTemplates={messagingTemplate} setInputMessage={setInputMessage} handleClick={handleQuickClick} />

@@ -171,6 +171,7 @@ export function GameHUD(
                     userId={userId}
                     playerColours={playerColours}
                     gameMode={gameMode}
+                    isMobile={isMobile}
                 />
             </Modal>
             

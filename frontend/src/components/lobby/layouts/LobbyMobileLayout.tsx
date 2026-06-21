@@ -52,16 +52,14 @@ export function LobbyMobileLayout({
     const iconSize: number = isMobile ? 16 : 24;
     const iconStroke: number = isMobile ? 2 : 3;
 
-    const [activePanel, setActivePanel] = useState<"players" | "settings" | "chat">("players");
-
     return (
         <div id="lobby-container" className="flex flex-col flex-1">
-            <div id="lobby-header" className="flex flex-row justify-between items-center bg-background px-8 py-2">
-                <div className="flex items-center gap-3">
-                    <h2 className="text-accent-foreground tracking-wider font-bold text-3xl font-display">
+            <div id="lobby-header" className="flex flex-row justify-between items-center bg-background px-4 py-2">
+                <div className="flex items-center gap-2">
+                    <h2 className="text-accent-foreground tracking-wider font-bold text-2xl font-display">
                         {lobbyName}
                     </h2>
-                    <div className={`rounded-full py-1 px-3 text-white font-display text-xs ${isPublic ? "bg-[#22543d]" : "bg-[#742a2a]"}`}>
+                    <div className={`rounded-full py-1 px-2 text-white font-display text-xs ${isPublic ? "bg-[#22543d]" : "bg-[#742a2a]"}`}>
                         {isPublic ? "Public" : "Private"}
                     </div>
                 </div>
@@ -74,7 +72,7 @@ export function LobbyMobileLayout({
                 <LeaveLobbyAlertDialog open={isAlertOpen} handleContinueClick={() => handleLeaveLobbyClick()} setOpen={setIsAlertOpen} />
            
                 <div className="flex items-center justify-center rounded-md border-1 md:border-2
-                        bg-background border-destructive/50 text-destructive cursor-pointer py-2 px-5
+                        bg-background border-destructive/50 text-destructive cursor-pointer py-2 px-4
                         hover:bg-destructive/10" 
                         onClick={() => setIsAlertOpen(true)}>
                     <IconDoorExit size={iconSize} />
@@ -82,7 +80,7 @@ export function LobbyMobileLayout({
             </div>
             <div id="lobby-content" className="flex flex-col flex-1 gap-4">
 
-                <div className="flex flex-col flex-1 min-h-0 p-2.5">
+                <div className="flex flex-col flex-1 p-2.5">
                     <Accordion
                         type="single"
                         collapsible
@@ -185,7 +183,7 @@ export function LobbyMobileLayout({
                                     </div>
                                 </div>
                             </AccordionTrigger>
-                            <AccordionContent className="bg-background border-t-1 border-border px-3 pt-3 pb-3.5">
+                            <AccordionContent className="bg-background border-t-1 border-border pb-0!">
                                 <div className="h-[360px] flex flex-col">
                                     <LobbyChatPanel lobbyId={lobbyId} userId={userId} />
                                 </div>

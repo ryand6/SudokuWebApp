@@ -43,6 +43,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -297,7 +298,8 @@ public class GameService {
             return;
         }
         gamePlayer.markGameFinished();
-        GameEntity gameEntity = gamePlayer.getGameEntity();
+        GameEntity gameEntity = gameRepository.findByIdWithLock(gameId)
+                .orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
         if (gameEntity.isPlayerFirstToFinish(gamePlayer)) {
             gameEntity.reduceEndTimeOnFirstPlayerCompletion();
             applicationEventPublisher.publishEvent(
@@ -321,8 +323,10 @@ public class GameService {
 
     @Transactional
     public void markAllPlayersFinished(Long gameId) {
-        GameEntity gameEntity = getGameById(gameId);
-        gameEntity.getGamePlayerEntities().forEach(gp -> {
+        GameEntity gameEntity = gameRepository.findByIdWithLock(gameId)
+                .orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
+        List<GamePlayerEntity> players = new ArrayList<>(gameEntity.getGamePlayerEntities());
+        players.forEach(gp -> {
             if (!gp.isFinishedGame()) {
                 handlePlayerFinish(gameId, gp.getUserEntity().getId());
             }

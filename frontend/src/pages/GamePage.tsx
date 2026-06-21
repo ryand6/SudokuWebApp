@@ -84,7 +84,8 @@ export function GamePage() {
     const userHighlightedCell: CellCoordinates | undefined = gameHighlightedCells?.get(currentUser.id);
 
     return (
-        <div className="h-screen w-full">
+        // make game page size of remaining screen minus header height and outer borders
+        <div className="h-[calc(100dvh-4rem-4px)] md:h-[calc(100dvh-4rem-8px)] w-full">
             {
                 publicGameState.gameStatus === "LOADING" ? (
                     <WaitingForPlayersScreen />

@@ -16,7 +16,7 @@ export function HUDStats(
     return (
         <div className="flex flex-col flex-1 bg-background rounded">
             <div className="flex w-full h-auto py-3 bg-sidebar rounded-t">
-                <h3 className="pl-5 tracking-wider text-2xl font-extrabold font-display text-sidebar-foreground">
+                <h3 className="pl-5 tracking-wider text-2xl font-semibold font-display text-sidebar-foreground">
                     Game Stats
                 </h3>
             </div>

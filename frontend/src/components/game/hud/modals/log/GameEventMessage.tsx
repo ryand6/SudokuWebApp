@@ -28,7 +28,7 @@ export function GameEventMessage({
                 }
                 <span className="font-semibold text-lg overflow-ellipsis text-accent-foreground font-display tracking-wide">{ msg.username }</span>
             </div>
-            <div className="flex w-[70%] whitespace-pre-line gap-2 font-sans text-accent-foreground">
+            <div className="flex items-center w-[70%] whitespace-pre-line gap-2 font-sans text-accent-foreground">
                 <span>—</span>
                 <span className="tracking-wide">{msg.message}</span>
             </div>
