@@ -1,7 +1,7 @@
 import { processLobbySetup } from "@/api/rest/lobby/mutate/processLobbySetup";
 import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
-import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSeparator, FieldSet, FieldTitle } from "@/components/ui/field";
+import { Field, FieldContent, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet, FieldTitle } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { GameMode } from "@/types/enum/GameMode";
@@ -88,13 +88,13 @@ export function CreateLobbyPage() {
             >
                 <form onSubmit={handleSubmit} method="post">
                     <FieldSet>
-                        <div className="bg-sidebar w-full p-5">
+                        <div className="bg-sidebar w-full p-5 sticky top-0 z-10">
                             <FieldLegend className="font-display text-xl! tracking-wide font-bold text-primary-foreground">Lobby Creation</FieldLegend>
                             <FieldDescription className="font-display">Set up a new lobby. You can only be part of one active lobby at a time.</FieldDescription>
                         </div>
+                        {isLoading && <SpinnerButton />}
                         <div className="flex pt-5 px-5">
                             <div className="flex flex-col items-center">
-                                {isLoading && <SpinnerButton />}
                                 <div 
                                     className={`rounded-full w-7 h-7 flex items-center justify-center text-sm font-display font-semibold 
                                                 ${stepStates[1] === "completed" && "bg-sidebar-primary text-sidebar-primary-foreground"}

@@ -6,12 +6,14 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/custom/Modal";
 import { JoinLobbyModal } from "@/components/dashboard/JoinLobbyModal";
+import { useIsMobile } from "@/hooks/global/useIsMobile";
 
 export function DashboardPage() {
 
     const { data: currentUser } = useGetCurrentUser();
     const { data: userRankDto } = useGetUserRank();
     const { data: topFivePlayersDto } = useGetTopFivePlayers();
+    const isMobile = useIsMobile();
 
     const [isModalOpen, setModalOpen] = useState(false);
 
@@ -36,7 +38,7 @@ export function DashboardPage() {
                         )}
                     </ol>
                 </div>
-                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}><JoinLobbyModal /></Modal>
+                <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}><JoinLobbyModal isMobile={isMobile} /></Modal>
 
             </div>
         </div>
