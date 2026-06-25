@@ -1,11 +1,10 @@
-import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
-import type { UserDto } from "@/types/dto/entity/user/UserDto";
+import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 
 export function isCurrentUserInLobby(
-    lobby: LobbyDto,
-    currentUser: UserDto
+    lobbyPlayers: LobbyPlayerDto[],
+    userId: number
 ): boolean {
-    return lobby.lobbyPlayers.some(
-        (player) => player.user.id === currentUser.id
+    return lobbyPlayers.some(
+        (player) => player.user.id === userId
     );
 }

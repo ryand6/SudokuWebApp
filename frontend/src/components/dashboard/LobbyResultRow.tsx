@@ -1,35 +1,80 @@
-import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { isCurrentUserInLobby } from "@/utils/lobby/isCurrentUserInLobby";
-import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { computeTimeDifferenceMinutes } from "@/utils/time/timeDifference";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
+import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
+import type { Difficulty } from "@/types/enum/Difficulty";
+import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
+import type { GameMode } from "@/types/enum/GameMode";
+import type { GameType } from "@/types/enum/GameType";
+import { getDurationValue } from "@/utils/time/gameDurationUtils";
 
-export function LobbyResultRow({ lobby, currentUser, handleClick }: { lobby: LobbyDto, currentUser: UserDto, handleClick: (id: number) => void }) {
+export function LobbyResultRow({ 
+    lobbyId,
+    userId,
+    lobbyName,
+    lobbyPlayers,
+    hostName,
+    inGame,
+    difficulty,
+    timeLimit,
+    gameMode,
+    gameType,
+    createdAt,
+    handleClick 
+}: { 
+    lobbyId: number,
+    userId: number,
+    lobbyName: string,
+    lobbyPlayers: LobbyPlayerDto[],
+    hostName: string,
+    inGame: boolean,
+    difficulty: Difficulty,
+    timeLimit: TimeLimitPreset,
+    gameMode: GameMode,
+    gameType: GameType,
+    createdAt: string,
+    handleClick: (id: number) => void 
+}) {
+
     return (
-        <div className="flex w-full p-2" >
-            <Card className="w-full gap-2 p-2 text-sm hover:ring-4 hover:ring-ring/50">
-                <CardHeader className="flex justify-between items-center">
-                    <CardTitle className="font-bold text-xl">{lobby.lobbyName}</CardTitle>
-                    {lobby.inGame && <CardDescription>Lobby is currently in game</CardDescription>}
-                    <CardDescription>Created {computeTimeDifferenceMinutes(lobby.createdAt)} minutes ago</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex gap-4 text-xs sm:text-sm md:text-base">
-                        <div className="flex-1 text-left">Difficulty: {wordToProperCase(lobby.lobbySettings.difficulty)}</div>
-                        <div className="flex-1 text-left">Time limit: {wordToProperCase(lobby.lobbySettings.timeLimit)}</div>
-                        <div className="flex-1 text-left">Game mode: {wordToProperCase(lobby.lobbySettings.gameMode)}</div>
-                        <div className="flex-1 text-left">Host: {lobby.host.username}</div>
+        <div className="flex flex-col gap-3 w-full rounded-lg border-muted border-2 py-3 px-4 text-sm hover:ring-4 hover:ring-ring/50">
+            <div className="flex justify-between items-start">
+                <div className="flex flex-col items-start">
+                    <div className="font-semibold font-display text-foreground text-2xl">
+                        {lobbyName}
                     </div>
-                </CardContent>
-                <CardFooter className="items-stretch">
-                    <div className="flex w-full text-xs sm:text-sm md:text-base">
-                        <div className="flex-1">{lobby.lobbyPlayers.length} / 4 Players</div>
-                        {!isCurrentUserInLobby(lobby, currentUser) && <Button className="justify-self-end cursor-pointer bg-primary" onClick={() => handleClick(lobby.id)} >Join Lobby</Button>}
+                    <div className="text-md font-display text-muted-foreground">
+                        Hosted by {hostName}
                     </div>
-                </CardFooter>
-            </Card>
+                </div>
+                <div className="text-sm font-display text-muted-foreground">{computeTimeDifferenceMinutes(createdAt)} mins ago</div>
+            </div>
+            <div className="flex justify-start items-center gap-2">
+                <div className={`py-1 px-2 rounded-full font-display ${gameType === "RANKED" ? "bg-sidebar-primary/30 text-sidebar-primary" : "bg-secondary/30 text-secondary"}`}>
+                    {wordToProperCase(gameType)}
+                </div>
+                <div className="py-1 px-2 rounded-full font-display bg-muted/50 text-muted-foreground">
+                    {wordToProperCase(gameMode)}
+                </div>
+                <div className="py-1 px-2 rounded-full font-display bg-muted/50 text-muted-foreground">
+                    {wordToProperCase(difficulty)}
+                </div>
+                <div className="py-1 px-2 rounded-full font-display bg-muted/50 text-muted-foreground">
+                    {wordToProperCase(getDurationValue(timeLimit))}
+                </div>
+                {inGame && 
+                    <div className="py-1 px-2 rounded-full font-display bg-[#bee3f8] text-[#2a69ac]">
+                        In Game
+                    </div>
+                }
+            </div>
+            <div className="items-stretch pt-2">
+                <div className="flex w-full text-xs items-end">
+                    <div className="flex-1 font-display text-muted-foreground">{lobbyPlayers.length} / 4 Players</div>
+                    {!isCurrentUserInLobby(lobbyPlayers, userId) && <Button className="justify-self-end cursor-pointer bg-primary font-display" onClick={() => handleClick(lobbyId)} >Join Lobby</Button>}
+                </div>
+            </div>
         </div>
     )
 }

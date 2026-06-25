@@ -6,6 +6,7 @@ import { useUpdateLobbyTimeLimit } from "@/api/rest/lobby/settings/mutate/useUpd
 import type { GameMode } from "@/types/enum/GameMode";
 import type { GameType } from "@/types/enum/GameType";
 import { Separator } from "../ui/separator";
+import { durationOptions, getDurationValue } from "@/utils/time/gameDurationUtils";
 
 
 export function LobbySettingsPanel({
@@ -31,20 +32,6 @@ export function LobbySettingsPanel({
     const updateTimeLimit = useUpdateLobbyTimeLimit();
 
     const difficultyOptions = ["Easy", "Medium", "Hard", "Extreme"];
-    const durationOptions: { label: string; value: string }[] = [
-        { label: "15 min", value: "Quick" },
-        { label: "30 min", value: "Standard" },
-        { label: "60 min", value: "Marathon" },
-    ];
-
-    const getDurationLabel = (value: string) => {
-        value = wordToProperCase(value);
-        if (value === "UNLIMITED") {
-            return;
-        }
-        const label = durationOptions.find(el => el.value === value)?.label;
-        return label ? `(${label})` : '';
-    }
 
     const handleClickDifficulty = (value: string) => {
         if (countdownActive || updateDifficulty.isPending || value === wordToProperCase(difficulty)) {
@@ -104,11 +91,11 @@ export function LobbySettingsPanel({
                                 <div 
                                     key={index} 
                                     className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
-                                                ${wordToProperCase(timeLimit) === option.value && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}
+                                                ${wordToProperCase(timeLimit) === option.label && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}
                                                 ${countdownActive && "opacity-40"}`}
                                     onClick={() => handleClickDuration(option.value)}
                                 >
-                                    {option.label}
+                                    {option.value}
                                 </div>
                             )
                             
@@ -123,7 +110,7 @@ export function LobbySettingsPanel({
                     </div>)
                 : (
                     <div>
-                        <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(timeLimit)} {getDurationLabel(timeLimit)}</span>
+                        <span className="text-xl font-display text-accent-foreground font-semibold">{wordToProperCase(timeLimit)} ({getDurationValue(timeLimit)})</span>
                     </div>
                 )}
             </div>

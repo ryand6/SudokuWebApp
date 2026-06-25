@@ -43,13 +43,27 @@ export function PublicLobbyList() {
     };
 
     return (
-        <div>
+        <div className="flex flex-col items-center min-h-0 overflow-y-auto px-5 pb-5 gap-2">
             <div className="flex justify-center">
-                <Button className="rounded-3xl cursor-pointer" onClick={() => refetch()} variant={"secondary"}>⭯ Refresh</Button>
+                <Button className="rounded-3xl text-xs! cursor-pointer" onClick={() => refetch()} variant={"secondary"}>⭯ Refresh</Button>
             </div>
-            <div className="flex flex-col scroll-auto" >
+            <div className="flex flex-col w-full gap-2">
                 {lobbies.map((lobby, key) => (
-                    <LobbyResultRow lobby={lobby} currentUser={currentUser} handleClick={handleClick} key={key}></LobbyResultRow>
+                    <LobbyResultRow 
+                        lobbyId={lobby.id}
+                        userId={currentUser.id}
+                        lobbyName={lobby.lobbyName}
+                        lobbyPlayers={lobby.lobbyPlayers}
+                        hostName={lobby.host.username}
+                        inGame={lobby.inGame}
+                        difficulty={lobby.lobbySettings.difficulty}
+                        timeLimit={lobby.lobbySettings.timeLimit}
+                        gameMode={lobby.lobbySettings.gameMode}
+                        gameType={lobby.lobbySettings.gameType}
+                        createdAt={lobby.createdAt}
+                        handleClick={handleClick} 
+                        key={key}
+                    ></LobbyResultRow>
                 ))}
                 <div ref={ref} className="h-5" />
             </div>

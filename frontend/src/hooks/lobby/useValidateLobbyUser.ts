@@ -15,7 +15,7 @@ export function useValidateLobbyUser(
     useEffect(() => {
         if (!lobby || !currentUser || isLeaving) return;
 
-        const isUserInLobby = isCurrentUserInLobby(lobby, currentUser);
+        const isUserInLobby = isCurrentUserInLobby(lobby.lobbyPlayers, currentUser.id);
         
         if (!isUserInLobby) {
             toast.error("You are not an active player in this lobby", {containerId: "foreground"});
