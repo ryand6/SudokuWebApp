@@ -51,7 +51,7 @@ export function LobbyResultRow({
                 <div className="text-sm font-display text-muted-foreground">{computeTimeDifferenceMinutes(createdAt)} mins ago</div>
             </div>
             <div className="flex justify-start items-center gap-2">
-                <div className={`py-1 px-2 rounded-full font-display ${gameType === "RANKED" ? "bg-sidebar-primary/30 text-sidebar-primary" : "bg-secondary/30 text-secondary"}`}>
+                <div className={`py-1 px-2 rounded-full font-display ${gameType === "RANKED" ? "bg-sidebar-primary/30 text-sidebar" : "bg-secondary/30 text-secondary"}`}>
                     {wordToProperCase(gameType)}
                 </div>
                 <div className="py-1 px-2 rounded-full font-display bg-muted/50 text-muted-foreground">

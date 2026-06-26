@@ -14,18 +14,14 @@ export function UserSetupPage(): JSX.Element {
 
     if (setupComplete) {
         return (
-            <div className="flex justify-center min-h-screen w-full">
-                <div className="flex flex-col w-full max-w-md min-h-screen p-6 gap-6">
-                    <h1 className="my-4 font-extrabold tracking-tight text-secondary">Account Created</h1>
+            <div className="flex justify-center min-h-screen w-full font-display">
+                <div className="flex flex-col w-full max-w-lg min-h-screen p-6 gap-6">
+                    <h1 className="my-4 font-extrabold tracking-tight text-foreground">Account Created</h1>
                     <p className="text-foreground">
                         Your account has been created successfully. Would you like to link any other login providers now?
                     </p>
                     <p className="text-muted-foreground text-sm">
                         If you skip this step, you can still link providers later from account settings. 
-                    </p>
-                    <p className="text-muted-foreground text-sm">
-                        If you lose access to a linked provider, log in with any other provider and use your recovery email to link it to the account. 
-                        If you lose access to all linked providers, your account will be unrecoverable.
                     </p>
                     <div className="flex flex-col gap-3">
                         <button
@@ -48,9 +44,9 @@ export function UserSetupPage(): JSX.Element {
     }
 
     return (
-        <div className="flex justify-center min-h-screen w-full">
-            <div className="flex flex-col w-full max-w-md min-h-screen p-6">
-                <h1 className="my-4 font-extrabold tracking-tight text-secondary">User Setup</h1>
+        <div className="flex justify-center min-h-screen w-full font-display">
+            <div className="flex flex-col w-full max-w-lg min-h-screen p-6">
+                <h1 className="my-4 font-extrabold tracking-tight text-foreground">User Setup</h1>
                 <UserForm onSubmit={handleSetup} submitLabel="Create Account"/>
             </div>
         </div>

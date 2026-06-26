@@ -2,6 +2,8 @@ import { useState, type JSX } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { requestAccountLink } from "../api/rest/users/mutate/requestAccountLink";
 import { verifyAccountLink } from "../api/rest/users/mutate/verifyAccountLink";
+import { Button } from "@/components/ui/button";
+import { IconArrowBigRight } from "@tabler/icons-react";
 
 export function LinkAccountPage(): JSX.Element {
     const navigate = useNavigate();
@@ -63,9 +65,9 @@ export function LinkAccountPage(): JSX.Element {
     }
 
     return (
-        <div className="flex justify-center min-h-screen w-full">
-            <div className="flex flex-col w-full max-w-md min-h-screen p-6 gap-6">
-                <h1 className="my-4 font-extrabold tracking-tight text-secondary">
+        <div className="flex justify-center min-h-screen w-full font-display">
+            <div className="flex flex-col w-full max-w-lg min-h-screen p-6 gap-6">
+                <h1 className="my-4 font-extrabold tracking-tight text-foreground">
                     {fromSetup ? "Link Another Provider" : "Link Account"}
                 </h1>
 
@@ -73,12 +75,12 @@ export function LinkAccountPage(): JSX.Element {
                     <>
                         <p className="text-foreground">
                             {fromSetup
-                                ? "To link this new login provider to your account, enter the recovery email you just registered with."
-                                : "This login provider isn't linked to any account yet. If you have an existing account, enter your recovery email to link it."}
+                                ? "To link this new login provider to your account, enter the recovery email you registered with."
+                                : "This login provider isn't linked to an account yet. If you have an existing account, enter your recovery email and send verification code to link it."}
                         </p>
                         {!fromSetup && (
                             <p className="text-muted-foreground text-sm">
-                                Alternatively, log in with an already linked provider and visit account settings to link providers manually.
+                                Alternatively, log in with an already linked provider then visit account settings to link providers manually.
                             </p>
                         )}
                         <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
@@ -115,7 +117,7 @@ export function LinkAccountPage(): JSX.Element {
                 {step === "otp" && (
                     <>
                         <p className="text-foreground">
-                            A 6 digit verification code has been sent to your recovery email. Enter it below. The code expires in 10 minutes.
+                            A 6 digit verification code has been sent to your recovery email. The code expires in 10 minutes. Please check your junk and spam folders if not received.
                         </p>
                         <form onSubmit={handleOtpSubmit} className="flex flex-col gap-4">
                             <label htmlFor="otp" className="font-semibold text-foreground text-lg">Verification code:</label>
@@ -148,7 +150,22 @@ export function LinkAccountPage(): JSX.Element {
                     </>
                 )}
 
-                {error && <div className="error">{error}</div>}
+                {error && <div className="text-destructive">{error}</div>}
+                {
+                    fromSetup && (
+                        <div className="flex justify-end items-center">
+                            <Button
+                                variant="outline"
+                                className="border-muted-foreground text-muted-foreground font-semibold py-2 cursor-pointer"
+                                onClick={() => navigate("/dashboard", {replace: true})}
+                            >
+                                Go to Dashboard
+                                <IconArrowBigRight />
+                            </Button>
+                        </div>
+                        
+                    )
+                }
             </div>
         </div>
     );

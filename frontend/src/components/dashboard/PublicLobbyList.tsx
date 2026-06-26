@@ -8,8 +8,13 @@ import { Button } from "../ui/button";
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { toast } from "react-toastify";
 import { useHandleFetchNextLobbyListPage } from "@/hooks/lobby/useHandleFetchNextLobbyListPage";
+import { useMemo } from "react";
 
-export function PublicLobbyList() {
+export function PublicLobbyList({
+    gameType
+}: {
+    gameType: string
+}) {
 
     const {data: publicLobbies, isLoading: isLoadingLobbies, isError: isLobbiesError, error: lobbyError, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetTenPublicLobbies();
     const {data: currentUser, isLoading: isLoadingUser, isError: isUserError, error: userError} = useGetCurrentUser();
@@ -38,6 +43,11 @@ export function PublicLobbyList() {
 
     const lobbies = publicLobbies?.pages.flat() ?? [];
 
+    const filteredLobbies = useMemo(() => {
+        if (lobbies.length === 0) return [];
+        return lobbies.filter((lobby) => lobby.lobbySettings.gameType === gameType.toUpperCase());
+    }, [gameType])
+
     const handleClick = (lobbyId: number) => {
         joinPublicLobby.mutate(lobbyId);
     };
@@ -45,10 +55,10 @@ export function PublicLobbyList() {
     return (
         <div className="flex flex-col items-center min-h-0 overflow-y-auto px-5 pb-5 gap-2">
             <div className="flex justify-center">
-                <Button className="rounded-3xl text-xs! cursor-pointer" onClick={() => refetch()} variant={"secondary"}>⭯ Refresh</Button>
+                <Button className="rounded-3xl text-xs! cursor-pointer bg-secondary/70 hover:bg-secondary" onClick={() => refetch()} variant={"secondary"}>⭯ Refresh</Button>
             </div>
             <div className="flex flex-col w-full gap-2">
-                {lobbies.map((lobby, key) => (
+                {filteredLobbies.map((lobby, key) => (
                     <LobbyResultRow 
                         lobbyId={lobby.id}
                         userId={currentUser.id}

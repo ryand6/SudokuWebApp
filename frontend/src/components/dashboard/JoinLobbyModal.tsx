@@ -89,7 +89,7 @@ export function JoinLobbyModal({
                 </div>
             </div>
             <div id="modal-right-pane" className="flex flex-col p-2 overflow-y-auto">
-                {pane === "public" ? <PublicLobbyList /> : <PrivateLobbyJoinModalPane isMobile={isMobile} />}
+                {pane === "public" ? <PublicLobbyList gameType={gameType} /> : <PrivateLobbyJoinModalPane isMobile={isMobile} />}
             </div>
         </div>
     )

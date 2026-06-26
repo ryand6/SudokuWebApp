@@ -84,8 +84,15 @@ export function CreateLobbyPage() {
     return (
         <div className="flex flex-1 justify-center items-center min-h-0 w-full">
             <div className="w-full md:max-w-[1200px] md:max-h-[90vh] border-border md:border-1 md:bg-card 
-                            md:mt-5 text-foreground md:rounded-md shadow-md overflow-y-auto min-h-0" 
+                            md:mt-5 text-foreground md:rounded-md shadow-md overflow-y-auto min-h-0 relative" 
             >
+                <Button 
+                    className="absolute cursor-pointer text-xl px-4 top-2 right-2 bg-accent/0 
+                                hover:font-extrabold hover:bg-primary/80 text-primary-foreground z-[1000]"
+                    onClick={() => navigate("/dashboard")}
+                >
+                    &times;
+                </Button>
                 <form onSubmit={handleSubmit} method="post">
                     <FieldSet>
                         <div className="bg-sidebar w-full p-5 sticky top-0 z-10">
