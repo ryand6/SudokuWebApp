@@ -44,7 +44,7 @@ export function LobbyPlayersPanel({
     const iconSize: number = isMobile ? 16 : 24;
     const iconStroke: number = isMobile ? 2 : 3;
 
-    const joinUrl = window.location.origin + "/join/private/";
+    const joinUrl = window.location.origin + "/lobby/private/";
 
     const currentLobbyPlayer: LobbyPlayerDto | undefined = lobbyPlayers.find((lp) => lp.id.userId === userId);
 
