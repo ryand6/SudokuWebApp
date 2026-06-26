@@ -5,7 +5,6 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.game.GameEntity;
-import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.exceptions.game.TooManyActivePlayersException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.ExistingActiveGameException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyFullException;
@@ -86,9 +85,8 @@ public class LobbyEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LobbyEntity lobbyEntity = (LobbyEntity) o;
-        return id != null && id.equals(lobbyEntity.id);
+        if (!(o instanceof LobbyEntity lobbyEntity)) return false;
+        return id != null && id.equals(lobbyEntity.getId());
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced entities e.g. Users

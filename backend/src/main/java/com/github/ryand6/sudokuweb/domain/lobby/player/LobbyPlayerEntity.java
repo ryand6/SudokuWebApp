@@ -57,12 +57,10 @@ public class LobbyPlayerEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof LobbyPlayerEntity)) return false;
-        LobbyPlayerEntity lobbyPlayerEntity = (LobbyPlayerEntity) o;
-
+        if (!(o instanceof LobbyPlayerEntity lobbyPlayerEntity)) return false;
         // Compare using the two linked entities that make up the unique identifier
-        return Objects.equals(lobby, lobbyPlayerEntity.lobby) &&
-                Objects.equals(user, lobbyPlayerEntity.user);
+        return Objects.equals(lobby, lobbyPlayerEntity.getLobby()) &&
+                Objects.equals(user, lobbyPlayerEntity.getUser());
     }
 
     @Override

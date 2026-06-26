@@ -64,7 +64,11 @@ public class LobbySettingsService {
 
     // Fallback if retries fail for updateLobbyDifficulty
     @Recover
-    public LobbyDto updateLobbyDifficultyRecover(ObjectOptimisticLockingFailureException ex, Long lobbyId, Difficulty difficulty) {
+    public LobbyDto updateLobbyDifficultyRecover(Throwable ex, Long lobbyId, Difficulty difficulty) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
         throw new LobbySettingsLockedException("Cannot update settings currently due to a conflict. Please try again shortly.");
     }
 
@@ -96,7 +100,11 @@ public class LobbySettingsService {
 
     // Fallback if retries fail for updateLobbyTimeLimit
     @Recover
-    public LobbyDto updateLobbyTimeLimitRecover(ObjectOptimisticLockingFailureException ex, Long lobbyId, TimeLimitPreset timeLimit) {
+    public LobbyDto updateLobbyTimeLimitRecover(Throwable ex, Long lobbyId, TimeLimitPreset timeLimit) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
         throw new LobbySettingsLockedException("Cannot update settings currently due to a conflict. Please try again shortly.");
     }
 

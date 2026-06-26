@@ -82,7 +82,7 @@ export function CreateLobbyPage() {
     }
 
     return (
-        <div className="flex flex-1 justify-center items-center min-h-0 w-full">
+        <div className="flex flex-1 justify-center items-center min-h-0 w-full font-display">
             <div className="w-full md:max-w-[1200px] md:max-h-[90vh] border-border md:border-1 md:bg-card 
                             md:mt-5 text-foreground md:rounded-md shadow-md overflow-y-auto min-h-0 relative" 
             >

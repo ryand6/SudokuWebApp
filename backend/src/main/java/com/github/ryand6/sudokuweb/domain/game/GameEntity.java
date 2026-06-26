@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.game.settings.GameSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.exceptions.game.IllegalGameStatusChangeException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GameLoadedTimestampNotFoundException;
@@ -79,9 +80,8 @@ public class GameEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GameEntity gameEntity = (GameEntity) o;
-        return id != null && id.equals(gameEntity.id);
+        if (!(o instanceof GameEntity gameEntity)) return false;
+        return id != null && id.equals(gameEntity.getId());
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities

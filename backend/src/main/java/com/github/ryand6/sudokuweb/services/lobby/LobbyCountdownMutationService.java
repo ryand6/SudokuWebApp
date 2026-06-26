@@ -2,10 +2,8 @@ package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
-import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
 import com.github.ryand6.sudokuweb.exceptions.lobby.countdown.LobbyCountdownLockedException;
 import jakarta.transaction.Transactional;
-import org.springframework.context.event.EventListener;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -54,10 +52,5 @@ public class LobbyCountdownMutationService {
     public void recoverFromSafeCountdownReset(ObjectOptimisticLockingFailureException ex, LobbyCountdownEntity countdown) {
         throw new LobbyCountdownLockedException("Failed to reset countdown after retries");
     }
-
-//    @EventListener
-//    void handleLobbyCountdownResetEvent(LobbyCountdownResetEvent event) {
-//        safeCountdownReset(event.getLobbyCountdown());
-//    }
 
 }

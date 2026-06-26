@@ -5,7 +5,6 @@ import com.github.ryand6.sudokuweb.domain.game.chat.GameChatMessageFactory;
 import com.github.ryand6.sudokuweb.domain.game.chat.GameChatMessageRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
-import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameChatMessageDto;
 import com.github.ryand6.sudokuweb.enums.MessageType;
 import com.github.ryand6.sudokuweb.events.types.game.GameChatMessageSentWsEvent;

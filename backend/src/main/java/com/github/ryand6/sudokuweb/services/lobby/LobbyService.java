@@ -17,6 +17,8 @@ import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +59,8 @@ public class LobbyService {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    private static final Logger log = LoggerFactory.getLogger(LobbyService.class);
+
     @Transactional
     public LobbyDto createNewLobby(String lobbyName, Boolean isPublic, Long requesterId, GameMode gameMode, GameType gameType) {
         Set<LobbyEntity> activeLobbies = lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(requesterId);
@@ -85,6 +89,11 @@ public class LobbyService {
     // Overloaded method, used to join public lobby when lobby ID is provided
     @Retryable(
             retryFor = ObjectOptimisticLockingFailureException.class,
+            notRecoverable = {
+                    IllegalArgumentException.class,
+                    UserExistsInActiveLobbyException.class,
+
+            },
             maxAttempts = 3,
             backoff = @Backoff(delay = 50, multiplier = 2)
     )
@@ -118,7 +127,12 @@ public class LobbyService {
 
     // Fallback if retries fail for join lobby
     @Recover
-    public LobbyDto joinLobbyRecover(ObjectOptimisticLockingFailureException ex, Long userId, Long publicLobbyId) {
+    public LobbyDto joinLobbyRecover(Throwable ex, Long userId, Long publicLobbyId) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
+        log.error("Recovering from {}", ex.getClass().getName(), ex);
         throw new LobbyOptimisticLockException("Unable to join lobby with due to a conflict. Please try again shortly.");
     }
 
@@ -160,7 +174,11 @@ public class LobbyService {
 
     // Fallback if retries fail for join lobby
     @Recover
-    public LobbyDto joinLobbyRecover(ObjectOptimisticLockingFailureException ex, Long userId, String token) {
+    public LobbyDto joinLobbyRecover(Throwable ex, Long userId, String token) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
         throw new LobbyOptimisticLockException("Unable to join lobby due to a conflict. Please try again shortly.");
     }
 
@@ -184,9 +202,8 @@ public class LobbyService {
     // Removes a player from the lobby either due to disconnecting or manual leave, re-orders host if the host left
     public LobbyDto removeFromLobby(Long lobbyId, Long userId) {
         LobbyEntity lobby = getLobbyById(lobbyId);
-        // Retrieve LobbyPlayer
         LobbyPlayerEntity lobbyPlayer = findLobbyPlayer(lobby, userId);
-        UserEntity requesterEntity = userService.findUserById(userId);
+        UserEntity requesterEntity = lobbyPlayer.getUser();
 
         // If host has left, update the host to the player that joined first after the host
         if (requesterEntity.equals(lobby.getHost())) {
@@ -198,6 +215,8 @@ public class LobbyService {
 
         // Remove the lobby player from the lobby - hibernate will clean up by removing the lobby player from the DB due to orphan removal
         lobby.getLobbyPlayers().remove(lobbyPlayer);
+
+        lobbyRepository.flush();
 
         // If lobby has been closed
         if (!lobby.isActive()) {
@@ -229,7 +248,11 @@ public class LobbyService {
 
     // Fallback if retries fail for leaving lobby
     @Recover
-    public LobbyDto removeFromLobbyRecover(ObjectOptimisticLockingFailureException ex, Long lobbyId, Long userId) {
+    public LobbyDto removeFromLobbyRecover(Throwable ex, Long lobbyId, Long userId) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
         throw new LobbyOptimisticLockException("Unable to leave lobby due to a conflict. Please try again shortly.");
     }
 
@@ -254,7 +277,6 @@ public class LobbyService {
     // Register the Lobby inactive
     void closeLobby(LobbyEntity lobby) {
         lobby.setActive(false);
-        // Update cache via synchronised event
         applicationEventPublisher.publishEvent(
                 new LobbyLeftMembershipEvent(lobby.getId())
         );

@@ -1,21 +1,18 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
-import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
 import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.Set;
 
 // Entity that maps to users db table
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -54,9 +51,8 @@ public class UserEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEntity userEntity = (UserEntity) o;
-        return id != null && id.equals(userEntity.id);
+        if (!(o instanceof UserEntity userEntity)) return false;
+        return id != null && id.equals(userEntity.getId());
     }
 
     // Overwrite to prevent circular referencing/lazy loading of referenced/nested entities

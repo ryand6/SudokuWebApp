@@ -32,14 +32,11 @@ import org.springframework.stereotype.Service;
 public class GamePlayerStateService {
 
     private final GamePlayerRepository gamePlayerRepository;
-    private final TaskSchedulerService taskSchedulerService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public GamePlayerStateService(GamePlayerRepository gamePlayerRepository,
-                                  TaskSchedulerService taskSchedulerService,
                                   ApplicationEventPublisher applicationEventPublisher) {
         this.gamePlayerRepository = gamePlayerRepository;
-        this.taskSchedulerService = taskSchedulerService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -79,7 +76,11 @@ public class GamePlayerStateService {
     }
 
     @Recover
-    public void handleCellUpdateSubmissionRecover(ObjectOptimisticLockingFailureException ex, Long gameId, Long userId, int row, int col, int value) {
+    public void handleCellUpdateSubmissionRecover(Throwable ex, Long gameId, Long userId, int row, int col, int value) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
         throw new GamePlayerStateOptimisticLockException("Unable to apply cell update due to a conflict.");
     }
 

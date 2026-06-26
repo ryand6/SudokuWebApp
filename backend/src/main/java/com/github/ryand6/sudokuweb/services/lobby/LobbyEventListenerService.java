@@ -1,6 +1,5 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
-import com.github.ryand6.sudokuweb.events.types.game.GameClosedMembershipUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.game.GamePlayerLeftEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.GameClosedLobbyUpdateEvent;
@@ -43,9 +42,6 @@ public class LobbyEventListenerService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     void handleGameClosedEvent(GameClosedLobbyUpdateEvent event) {
-
-        System.out.println("\n\nGameClosedLobbyUpdateEvent listened for and handling!\n\n");
-
         lobbyService.handleGameFinish(event.getLobbyId());
     }
 

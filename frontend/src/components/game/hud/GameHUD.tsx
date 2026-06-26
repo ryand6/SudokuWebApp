@@ -21,6 +21,7 @@ export function GameHUD(
     {
         userId,
         gameId,
+        lobbyId,
         gamePlayers, 
         currentStreak,
         leaveGameHandler,
@@ -30,6 +31,7 @@ export function GameHUD(
     }: {
         userId: number,
         gameId: number,
+        lobbyId: number,
         gamePlayers: GamePlayers, 
         currentStreak: number,
         isMobile: boolean,
@@ -114,7 +116,7 @@ export function GameHUD(
                     <span><IconMessageCircle size={iconSize} stroke={iconStroke} /></span>
                     <span>Chat</span>
                 </div>
-                <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId})} setOpen={setIsAlertOpen} />
+                <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId, lobbyId})} setOpen={setIsAlertOpen} />
                 <div className="flex items-center justify-center w-full h-full rounded-md border-1 md:border-2 
                             bg-background border-destructive/50 text-destructive cursor-pointer py-2
                             hover:bg-destructive/10" 

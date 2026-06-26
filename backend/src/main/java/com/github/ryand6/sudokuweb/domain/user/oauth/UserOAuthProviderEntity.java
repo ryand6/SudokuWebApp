@@ -2,14 +2,12 @@ package com.github.ryand6.sudokuweb.domain.user.oauth;
 
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Objects;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -36,10 +34,9 @@ public class UserOAuthProviderEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserOAuthProviderEntity that = (UserOAuthProviderEntity) o;
-        return Objects.equals(provider, that.provider) &&
-                Objects.equals(providerId, that.providerId);
+        if (!(o instanceof UserOAuthProviderEntity that)) return false;
+        return Objects.equals(provider, that.getProvider()) &&
+                Objects.equals(providerId, that.getProviderId());
     }
 
     @Override

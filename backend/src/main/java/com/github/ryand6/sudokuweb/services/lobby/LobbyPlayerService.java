@@ -5,16 +5,13 @@ import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationRes
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
-import com.github.ryand6.sudokuweb.events.types.game.GameStatusUpdateEvent;
-import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyPlayerStatusUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
+
 
 @Service
 public class LobbyPlayerService {
@@ -71,9 +68,6 @@ public class LobbyPlayerService {
 
     @Transactional
     public void revertAllLobbyPlayerInGameStatuses(Long lobbyId) {
-
-        System.out.println("\n\nrevertAllLobbyPlayerInGameStatuses() called!\n\n");
-
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
         lobby.getLobbyPlayers().forEach(lp -> {
             if (lp.getLobbyStatus() == LobbyStatus.INGAME) {
@@ -110,10 +104,5 @@ public class LobbyPlayerService {
         }
 
     }
-
-//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-//    void handleEndLobbyPlayerInGameStatusEvent(EndLobbyPlayerInGameStatusEvent event) {
-//        revertAllLobbyPlayerInGameStatuses(event.getLobbyId());
-//    }
 
 }

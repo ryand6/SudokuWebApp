@@ -33,6 +33,7 @@ export function GameMobileLayout({
                     <GameHUD 
                         userId={currentUser.id}
                         gameId={publicGameState.gameId}
+                        lobbyId={publicGameState.lobbyId}
                         gamePlayers={publicGameState.players} 
                         currentStreak={privateGameState.currentStreak}
                         isMobile={isMobile}

@@ -64,14 +64,4 @@ public class GameInMemoryStateService {
         }
     }
 
-//    @EventListener
-//    void handleGamePlayerLeftInMemoryStateEvent(GamePlayerLeftEvent event) {
-//        removeGamePlayer(event.getGameId(), event.getUserId());
-//    }
-//
-//    @EventListener
-//    void handleGameLeftInMemoryStateEvent(GameClosedEvent event) {
-//        removeGame(event.getGameId());
-//    }
-
 }

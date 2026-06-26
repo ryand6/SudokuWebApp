@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.domain.game.player.state;
 
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerId;
+import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,9 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -74,9 +73,8 @@ public class GamePlayerStateEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GamePlayerStateEntity gamePlayerStateEntity = (GamePlayerStateEntity) o;
-        return id != null && id.equals(gamePlayerStateEntity.id);
+        if (!(o instanceof GamePlayerStateEntity gamePlayerStateEntity)) return false;
+        return id != null && id.equals(gamePlayerStateEntity.getId());
     }
 
     @Override

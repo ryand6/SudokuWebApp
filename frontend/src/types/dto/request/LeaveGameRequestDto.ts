@@ -1,4 +1,5 @@
 export type LeaveGameRequestDto = {
     gameId: number,
-    userId: number
+    userId: number,
+    lobbyId: number
 }

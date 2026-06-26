@@ -90,12 +90,10 @@ public class GamePlayerEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GamePlayerEntity)) return false;
-        GamePlayerEntity gamePlayerEntity = (GamePlayerEntity) o;
-
+        if (!(o instanceof GamePlayerEntity gamePlayerEntity)) return false;
         // Compare using the two linked entities that make up the unique identifier
-        return Objects.equals(gameEntity, gamePlayerEntity.gameEntity) &&
-                Objects.equals(userEntity, gamePlayerEntity.userEntity);
+        return Objects.equals(gameEntity, gamePlayerEntity.getGameEntity()) &&
+                Objects.equals(userEntity, gamePlayerEntity.getUserEntity());
     }
 
     @Override

@@ -28,6 +28,13 @@ export function PublicLobbyList({
     // custom hook used to handle fetching next lobby list page
     useHandleFetchNextLobbyListPage(inView, hasNextPage, isFetchingNextPage, fetchNextPage);
 
+    const lobbies = publicLobbies?.pages.flat() ?? [];
+
+    const filteredLobbies = useMemo(() => {
+        if (lobbies.length === 0) return [];
+        return lobbies.filter((lobby) => lobby.lobbySettings.gameType === gameType.toUpperCase());
+    }, [lobbies, gameType])
+
     if (isLobbiesError || isUserError) {
         if (isLobbiesError) console.log(lobbyError);
         else console.log(userError);
@@ -41,13 +48,6 @@ export function PublicLobbyList({
         return null;
     }
 
-    const lobbies = publicLobbies?.pages.flat() ?? [];
-
-    const filteredLobbies = useMemo(() => {
-        if (lobbies.length === 0) return [];
-        return lobbies.filter((lobby) => lobby.lobbySettings.gameType === gameType.toUpperCase());
-    }, [gameType])
-
     const handleClick = (lobbyId: number) => {
         joinPublicLobby.mutate(lobbyId);
     };
@@ -57,6 +57,7 @@ export function PublicLobbyList({
             <div className="flex justify-center">
                 <Button className="rounded-3xl text-xs! cursor-pointer bg-secondary/70 hover:bg-secondary" onClick={() => refetch()} variant={"secondary"}>⭯ Refresh</Button>
             </div>
+            { isLoadingLobbies && <SpinnerButton /> }
             <div className="flex flex-col w-full gap-2">
                 {filteredLobbies.map((lobby, key) => (
                     <LobbyResultRow 

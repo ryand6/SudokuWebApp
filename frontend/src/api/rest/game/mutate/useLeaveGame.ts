@@ -20,6 +20,8 @@ export function useLeaveGame() {
         },
         onSuccess: (updatedGame, variables) => {
             unsubscribe(`/topic/game/${variables.gameId}`);
+            unsubscribe(`/topic/game/${variables.gameId}/user/${variables.userId}`);
+            unsubscribe(`/topic/lobby/${variables.lobbyId}`);
             // handles when a game is closed
             if (updatedGame === null) {
                 // Remove game and game player state caches
