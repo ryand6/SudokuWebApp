@@ -7,15 +7,16 @@ export function redirectPostLogin(navigate: NavigateFunction) {
     if (!referrer) return;
     // Check for potential harmful redirect URLs - referrer URLs should only be local page paths
     if (!referrer.startsWith("/")) {
-        localStorage.removeItem("postLoginPath"); 
+        sessionStorage.removeItem("postLoginPath"); 
         return;
     }
     // Don't bounce back to login/account setup flows
     const pathnameOnly = referrer.split("?")[0];
     if (pathnameOnly === "/login" || pathnameOnly === "/user-setup") {
-        localStorage.removeItem("postLoginPath");
+        sessionStorage.removeItem("postLoginPath");
         return;
-    }
+    }    
+
     sessionStorage.removeItem("postLoginPath");
     navigate(referrer, { replace: true });
 }
