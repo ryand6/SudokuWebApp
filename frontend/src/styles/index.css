@@ -19,6 +19,12 @@
     --text-shadow-default: 2px 2px 4px rgba(0,0,0,0.3);
     --box-shadow-default: 0px 2px 5px rgba(0,0,0,0.3);
 
+    --app-gradient: linear-gradient(
+        135deg,
+        var(--secondary),
+        var(--sidebar)
+    );
+
     --radius: 0.65rem;
     --background:                 #FAF6EE;
     --foreground:                 #2C2416;
@@ -397,6 +403,10 @@
         width: calc(100% - 8px);
         align-self: center;
         background: #333;
+    }
+
+    .bg-app-gradient {
+        background-image: var(--app-gradient);
     }
 
 }

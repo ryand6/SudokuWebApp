@@ -1,9 +1,11 @@
 package com.github.ryand6.sudokuweb.controllers.rest.user;
 
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.AccountLinkRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.OtpVerificationRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
+import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
 import com.github.ryand6.sudokuweb.dto.response.TopFivePlayersDto;
 import com.github.ryand6.sudokuweb.dto.response.UserRankDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
@@ -129,18 +131,27 @@ public class UserRestController {
                 .body(null);
     }
 
-    @GetMapping("/get-user-rank")
-    public ResponseEntity<?> getUserRank(@AuthenticationPrincipal OAuth2User principal,
+    @GetMapping("/get-active-lobby")
+    public ResponseEntity<?> getActiveLobby(@AuthenticationPrincipal OAuth2User principal,
                                            OAuth2AuthenticationToken authToken) {
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
-        Long playerRank = userService.getPlayerRank(user.getId());
-        return ResponseEntity.ok(new UserRankDto(playerRank));
+        LobbyDetailsDto activeLobby = userService.getUserActiveLobbyIfExists(user.getId());
+        return ResponseEntity.ok(activeLobby);
     }
 
-    @GetMapping("/get-top-five-players")
-    public ResponseEntity<?> getTopFivePlayers() {
-        List<UserDto> topFive = userService.getTop5PlayersTotalScore();
-        return ResponseEntity.ok(new TopFivePlayersDto(topFive));
-    }
+
+//    @GetMapping("/get-user-rank")
+//    public ResponseEntity<?> getUserRank(@AuthenticationPrincipal OAuth2User principal,
+//                                           OAuth2AuthenticationToken authToken) {
+//        UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
+//        Long playerRank = userService.getPlayerRank(user.getId());
+//        return ResponseEntity.ok(new UserRankDto(playerRank));
+//    }
+//
+//    @GetMapping("/get-top-five-players")
+//    public ResponseEntity<?> getTopFivePlayers() {
+//        List<UserDto> topFive = userService.getTop5PlayersTotalScore();
+//        return ResponseEntity.ok(new TopFivePlayersDto(topFive));
+//    }
 
 }

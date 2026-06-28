@@ -1,16 +1,21 @@
 package com.github.ryand6.sudokuweb.services.user;
 
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserFactory;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
-import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderRepository;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
+import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UsernameUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.auth.InvalidOtpException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
 import com.github.ryand6.sudokuweb.exceptions.auth.RecoveryEmailNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.util.HashUtils;
@@ -34,12 +39,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final LobbyRepository lobbyRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
+    private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final OtpService otpService;
     private final EmailService emailService;
@@ -47,13 +56,17 @@ public class UserService {
 
 
     public UserService(UserRepository userRepository,
+                       LobbyRepository lobbyRepository,
                        UserEntityDtoMapper userEntityDtoMapper,
+                       LobbyEntityDtoMapper lobbyEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher,
                        OtpService otpService,
                        EmailService emailService,
                        CacheManager cacheManager) {
         this.userRepository = userRepository;
+        this.lobbyRepository = lobbyRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
+        this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
         this.otpService = otpService;
         this.emailService = emailService;
@@ -172,26 +185,47 @@ public class UserService {
         return userDto;
     }
 
-    // Get top 5 players based on their total score
-    public List<UserDto> getTop5PlayersTotalScore() {
-        // Return the top 5
-        Pageable topFive = PageRequest.of(0, 5);
-        Page<UserEntity> topFivePage = userRepository.findByOrderByUserStatsEntity_TotalScoreDesc(topFive);
-        return topFivePage.getContent()
-                .stream()
-                .map(userEntityDtoMapper::mapToDto)
-                .toList();
-    }
-
-    // Gets the players rank based on their total_score when compared to all other players
-    public Long getPlayerRank(Long userId) {
-        return userRepository.getUserRankById(userId);
-    }
-
     // Get user entity from DB via their id
     public UserEntity findUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
     }
+
+    public LobbyDetailsDto getUserActiveLobbyIfExists(Long userId) {
+        Set<LobbyEntity> activeLobbies = lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(userId);
+        Optional<LobbyEntity> activeLobbyOptional = activeLobbies.stream().findFirst();
+        if (activeLobbyOptional.isEmpty()) {
+            return null;
+        }
+        LobbyEntity activeLobby = activeLobbyOptional.get();
+        LobbySettingsEntity activeLobbySettings = activeLobby.getLobbySettingsEntity();
+        return LobbyDetailsDto.builder()
+                .id(activeLobby.getId())
+                .lobbyName(activeLobby.getLobbyName())
+                .isActive(activeLobby.isActive())
+                .inGame(activeLobby.isInGame())
+                .currentGameId(activeLobby.getCurrentGameId())
+                .gameType(activeLobbySettings.getGameType())
+                .gameMode(activeLobbySettings.getGameMode())
+                .difficulty(activeLobbySettings.getDifficulty())
+                .timeLimitPreset(activeLobbySettings.getTimeLimit())
+                .build();
+    }
+
+//    // Get top 5 players based on their total score
+//    public List<UserDto> getTop5PlayersTotalScore() {
+//        // Return the top 5
+//        Pageable topFive = PageRequest.of(0, 5);
+//        Page<UserEntity> topFivePage = userRepository.findByOrderByUserStatsEntity_TotalScoreDesc(topFive);
+//        return topFivePage.getContent()
+//                .stream()
+//                .map(userEntityDtoMapper::mapToDto)
+//                .toList();
+//    }
+//
+//    // Gets the players rank based on their total_score when compared to all other players
+//    public Long getPlayerRank(Long userId) {
+//        return userRepository.getUserRankById(userId);
+//    }
 
 }

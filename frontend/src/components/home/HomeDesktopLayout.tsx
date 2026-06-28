@@ -5,7 +5,6 @@ import { ClassicModeCard } from "../game/modes/ClassicModeCard"
 import { DominationModeCard } from "../game/modes/DominationModeCard"
 import { TimeAttackModeCard } from "../game/modes/TimeAttackModeCard"
 import { useEffect, useState } from "react"
-import { SpinnerButton } from "../ui/custom/SpinnerButton"
 import { Spinner } from "../ui/spinner"
 
 export function HomeDesktopLayout({
