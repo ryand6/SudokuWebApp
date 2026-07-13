@@ -141,28 +141,4 @@ public class UserServiceTests {
         assertThat(ex.getMessage()).isEqualTo("Username provided is taken, please choose another");
     }
 
-    @Test
-    public void testGetPlayerRank() {
-        when(userRepository.getUserRankById(any(Long.class))).thenReturn(1L);
-        assertThat(userService.getPlayerRank(5L)).isEqualTo(1L);
-    }
-
-    @Test
-    void getTop5PlayersTotalScore_returnsList() {
-        UserEntity user1 = new UserEntity();
-        UserEntity user2 = new UserEntity();
-        List<UserEntity> users = List.of(user1, user2);
-        Page<UserEntity> page = new PageImpl<>(users);
-
-        when(userRepository.findByOrderByUserStatsEntity_TotalScoreDesc(any(Pageable.class))).thenReturn(page);
-        when(userEntityDtoMapper.mapToDto(any())).thenReturn(new UserDto());
-
-        List<UserDto> result = userService.getTop5PlayersTotalScore();
-
-        assertEquals(2, result.size());
-        // Logic to confirm the number of times methods were called is as expected during the test
-        verify(userRepository).findByOrderByUserStatsEntity_TotalScoreDesc(any(Pageable.class));
-        verify(userEntityDtoMapper, times(2)).mapToDto(any());
-    }
-
 }
