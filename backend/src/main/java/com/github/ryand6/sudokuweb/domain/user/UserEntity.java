@@ -2,7 +2,6 @@ package com.github.ryand6.sudokuweb.domain.user;
 
 import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
 import com.github.ryand6.sudokuweb.domain.user.settings.UserSettingsEntity;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -34,9 +33,6 @@ public class UserEntity {
 
     @Column(name = "is_online")
     private boolean isOnline;
-
-    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private UserStatsEntity userStatsEntity;
 
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserSettingsEntity userSettingsEntity;

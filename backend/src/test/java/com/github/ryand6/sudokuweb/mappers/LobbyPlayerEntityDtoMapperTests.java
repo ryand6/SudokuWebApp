@@ -3,7 +3,6 @@ package com.github.ryand6.sudokuweb.mappers;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyPlayerEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserSettingsEntityDtoMapper;
-import com.github.ryand6.sudokuweb.mappers.Impl.user.UserStatsEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
@@ -19,15 +18,13 @@ public class LobbyPlayerEntityDtoMapperTests extends AbstractIntegrationTest {
     private LobbyRepository lobbyRepository;
     private LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
     private UserEntityDtoMapper userEntityDtoMapper;
-    private UserStatsEntityDtoMapper userStatsEntityDtoMapper;
     private UserSettingsEntityDtoMapper userSettingsEntityDtoMapper;
 
     @BeforeEach
     public void setup() {
         userRepository = mock(UserRepository.class);
         lobbyRepository = mock(LobbyRepository.class);
-        userStatsEntityDtoMapper = new UserStatsEntityDtoMapper();
-        userEntityDtoMapper = new UserEntityDtoMapper(userStatsEntityDtoMapper, userSettingsEntityDtoMapper);
+        userEntityDtoMapper = new UserEntityDtoMapper(userSettingsEntityDtoMapper);
         lobbyPlayerEntityDtoMapper = new LobbyPlayerEntityDtoMapper(userEntityDtoMapper);
     }
 

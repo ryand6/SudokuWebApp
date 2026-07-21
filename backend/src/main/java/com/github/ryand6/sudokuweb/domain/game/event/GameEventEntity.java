@@ -21,7 +21,7 @@ import java.time.Instant;
                 @Index(name = "idx_game_id_sequence_number", columnList = "game_id, sequence_number")
         },
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"game_id", "sequence_number"})
+                @UniqueConstraint(name="uc_game_sequence_number", columnNames = {"game_id", "sequence_number"})
         }
 )
 public class GameEventEntity {

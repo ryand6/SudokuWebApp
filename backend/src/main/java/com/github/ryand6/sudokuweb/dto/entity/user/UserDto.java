@@ -18,8 +18,6 @@ public class UserDto {
     @JsonProperty("isOnline")
     private boolean isOnline;
 
-    private UserStatsDto userStats;
-
     private UserSettingsDto userSettings;
 
 }

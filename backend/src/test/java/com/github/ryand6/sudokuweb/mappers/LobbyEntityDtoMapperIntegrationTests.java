@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers;
 
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
@@ -35,7 +34,6 @@ public class LobbyEntityDtoMapperIntegrationTests extends AbstractIntegrationTes
         this.lobbyPlayerRepository = lobbyPlayerRepository;
     }
 
-    private UserStatsEntity savedScore;
     private UserEntity savedUser;
     private LobbyEntity savedLobby;
 

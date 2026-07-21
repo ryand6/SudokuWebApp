@@ -3,7 +3,6 @@ package com.github.ryand6.sudokuweb.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
@@ -29,15 +28,13 @@ public class GameRestControllerIntegrationTests extends AbstractControllerIntegr
         this.lobbyRepository = lobbyRepository;
     }
 
-    private UserStatsEntity score;
     private UserEntity user;
     private LobbyEntity lobby;
 
     @BeforeEach
     public void setUp() {
         // Lobby needs to exist for generateSudokuBoard() to work
-        score = TestDataUtil.createTestScoreA();
-        user = TestDataUtil.createTestUserA(score);
+        user = TestDataUtil.createTestUserA();
         userRepository.save(user);
         lobby = lobbyRepository.save(TestDataUtil.createTestLobbyA(user, null));
     }

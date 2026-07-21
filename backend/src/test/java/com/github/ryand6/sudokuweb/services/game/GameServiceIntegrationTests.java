@@ -8,7 +8,6 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
@@ -54,19 +53,13 @@ public class GameServiceIntegrationTests extends AbstractIntegrationTest {
     private LobbySettingsEntity lobbySettings;
     private UserEntity user1;
     private UserEntity user2;
-    private UserStatsEntity score1;
-    private UserStatsEntity score2;
     private Set<UserEntity> users;
 
     @BeforeEach
     void setup() {
-        // Setup Score entities to insert into users
-        score1 = TestDataUtil.createTestScoreA();
-        score2 = TestDataUtil.createTestScoreB();
-
         // Setup Lobby with Users
-        user1 = TestDataUtil.createTestUserA(score1);
-        user2 = TestDataUtil.createTestUserB(score2);
+        user1 = TestDataUtil.createTestUserA();
+        user2 = TestDataUtil.createTestUserB();
 
         userRepository.save(user1);
         userRepository.save(user2);

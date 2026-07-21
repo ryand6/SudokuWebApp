@@ -9,7 +9,6 @@ import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerId;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
@@ -22,45 +21,21 @@ public final class TestDataUtil {
 
     }
 
-    public static UserEntity createTestUserA(final UserStatsEntity userStatsEntity) {
+    public static UserEntity createTestUserA() {
         return UserEntity.builder().
-                userStatsEntity(userStatsEntity).
                 username("Henry").
                 build();
     }
 
-    public static UserEntity createTestUserB(final UserStatsEntity userStatsEntity) {
+    public static UserEntity createTestUserB() {
         return UserEntity.builder().
-                userStatsEntity(userStatsEntity).
                 username("dk0ng").
                 build();
     }
 
-    public static UserEntity createTestUserC(final UserStatsEntity userStatsEntity) {
+    public static UserEntity createTestUserC() {
         return UserEntity.builder().
-                userStatsEntity(userStatsEntity).
                 username("parf").
-                build();
-    }
-
-    public static UserStatsEntity createTestScoreA() {
-        return UserStatsEntity.builder().
-                totalScore(150).
-                gamesPlayed(1).
-                build();
-    }
-
-    public static UserStatsEntity createTestScoreB() {
-        return UserStatsEntity.builder().
-                totalScore(450).
-                gamesPlayed(5).
-                build();
-    }
-
-    public static UserStatsEntity createTestScoreC() {
-        return UserStatsEntity.builder().
-                totalScore(50).
-                gamesPlayed(2).
                 build();
     }
 

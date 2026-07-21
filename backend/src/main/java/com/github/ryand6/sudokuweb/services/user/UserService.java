@@ -6,7 +6,6 @@ import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserFactory;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
-import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UsernameUpdatedWsEvent;
@@ -15,7 +14,6 @@ import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedExcepti
 import com.github.ryand6.sudokuweb.exceptions.auth.RecoveryEmailNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
-import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.util.HashUtils;
@@ -30,15 +28,11 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,7 +42,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final LobbyRepository lobbyRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
-    private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final OtpService otpService;
     private final EmailService emailService;
@@ -58,7 +51,6 @@ public class UserService {
     public UserService(UserRepository userRepository,
                        LobbyRepository lobbyRepository,
                        UserEntityDtoMapper userEntityDtoMapper,
-                       LobbyEntityDtoMapper lobbyEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher,
                        OtpService otpService,
                        EmailService emailService,
@@ -66,7 +58,6 @@ public class UserService {
         this.userRepository = userRepository;
         this.lobbyRepository = lobbyRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
-        this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
         this.otpService = otpService;
         this.emailService = emailService;

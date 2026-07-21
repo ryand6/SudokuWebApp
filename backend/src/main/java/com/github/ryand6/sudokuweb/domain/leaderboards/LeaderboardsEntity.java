@@ -14,7 +14,15 @@ import java.time.Instant;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "leaderboards")
+@Table(
+        name = "leaderboards",
+        indexes = {
+                @Index(name = "idx_game_mode_total_score_desc", columnList = "game_mode, total_score DESC")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uc_user_game_mode", columnNames = {"user_id", "game_mode"})
+        }
+)
 public class LeaderboardsEntity {
 
     @Id
@@ -29,7 +37,7 @@ public class LeaderboardsEntity {
     private GameMode gameMode;
 
     @Column(name = "total_score")
-    private int totalScore = 0;
+    private long totalScore = 0;
 
     @Column(name = "games_played")
     private int gamesPlayed = 0;
@@ -74,6 +82,13 @@ public class LeaderboardsEntity {
         draws++;
         gamesPlayed++;
         currentWinStreak = 0;
+    }
+
+    public void applyScore(Integer score) {
+        if (score == null) {
+            score = 0;
+        }
+        totalScore += score;
     }
 
 }

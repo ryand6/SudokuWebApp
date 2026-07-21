@@ -1,12 +1,9 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
-import com.github.ryand6.sudokuweb.mappers.Impl.user.UserStatsEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,32 +16,18 @@ Integration tests for UserEntityDtoMapper
 */
 public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest {
 
-    private final UserStatsRepository userStatsRepository;
-    private final UserStatsEntityDtoMapper userStatsEntityDtoMapper;
     private final UserEntityDtoMapper mapper;
 
     // Autowired handles mapper dependency injection - required for integration tests
     @Autowired
     public UserEntityDtoMapperIntegrationTests(
-            UserStatsRepository userStatsRepository,
-            UserStatsEntityDtoMapper userStatsEntityDtoMapper,
             UserEntityDtoMapper mapper
     ) {
-        this.userStatsRepository = userStatsRepository;
-        this.userStatsEntityDtoMapper = userStatsEntityDtoMapper;
         this.mapper = mapper;
     }
 
-    private UserStatsEntity savedScore;
-
     @BeforeEach
     public void setUp() {
-        // Setup test score data in the test DB
-        savedScore = UserStatsEntity.builder()
-                .totalScore(100)
-                .gamesPlayed(5)
-                .build();
-        userStatsRepository.save(savedScore);
     }
 
     @Test
@@ -53,7 +36,6 @@ public class UserEntityDtoMapperIntegrationTests extends AbstractIntegrationTest
                 .id(123L)
                 .username("testuser")
                 .isOnline(true)
-                .userStatsEntity(savedScore)
                 .build();
 
         UserDto dto = mapper.mapToDto(userEntity);

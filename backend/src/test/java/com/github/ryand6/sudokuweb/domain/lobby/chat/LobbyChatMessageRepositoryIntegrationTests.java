@@ -3,8 +3,6 @@ package com.github.ryand6.sudokuweb.domain.lobby.chat;
 import com.github.ryand6.sudokuweb.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsRepository;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.enums.MessageType;
@@ -36,18 +34,13 @@ public class LobbyChatMessageRepositoryIntegrationTests extends AbstractIntegrat
     @Autowired
     private LobbyRepository lobbyRepository;
 
-    @Autowired
-    private UserStatsRepository userStatsRepository;
-
     private UserEntity testUser;
     private LobbyEntity testLobby;
 
     @BeforeEach
     public void setUp() {
-        // Create and persist base entities for message relations
-        UserStatsEntity userStatsEntity = TestDataUtil.createTestScoreA();
 
-        testUser = TestDataUtil.createTestUserA(userStatsEntity);
+        testUser = TestDataUtil.createTestUserA();
         userRepository.save(testUser);
 
         testLobby = TestDataUtil.createTestLobbyA(testUser, null);

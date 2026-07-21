@@ -11,6 +11,7 @@ import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.LeaderboardScoreCalculation;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
+import com.github.ryand6.sudokuweb.domain.game.settings.GameSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
@@ -22,6 +23,7 @@ import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.*;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.events.types.general.CancelScheduledTaskEvent;
+import com.github.ryand6.sudokuweb.events.types.leaderboards.LeaderboardUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.EndLobbyPlayerInGameStatusEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.GameClosedLobbyUpdateEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.LobbyCountdownResetEvent;
@@ -225,11 +227,13 @@ public class GameService {
     public GameDto forfeitGamePlayer(Long gameId, Long userId) {
         GameEntity game = getGameById(gameId);
         GamePlayerEntity gamePlayer = findGamePlayer(game, userId);
+        GameSettingsEntity gameSettings = game.getGameSettingsEntity();
         if (game.isAborted(gamePlayer)) {
             abortGame(game);
         }
         gamePlayer.setGameResult(GameResult.FORFEIT);
         gamePlayer.setScore(0);
+        gamePlayer.setLeaderboardScore(0);
         gameRepository.save(game);
         // Send event to remove player from lobby and update membership/in memory caches
         applicationEventPublisher.publishEvent(
@@ -247,7 +251,7 @@ public class GameService {
             return null;
         }
         // No further validation required - casual games can be finished with one person and do not submit leaderboard data
-        if (game.getGameSettingsEntity().getGameType() == GameType.CASUAL) {
+        if (gameSettings.getGameType() == GameType.CASUAL) {
             return null;
         }
         if (game.validateGameEndedPrematurely()) {
@@ -262,6 +266,9 @@ public class GameService {
         }
 
         // IMPLEMENT - handle leaderboard entity game result update - loss + 0pts
+        applicationEventPublisher.publishEvent(
+                new LeaderboardUpdateEvent(gamePlayer.getGameResult(), gameSettings.getGameMode(), gamePlayer.getUserEntity().getId(), 0)
+        );
 
         return gameDto;
     }
@@ -359,13 +366,12 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new PlayerLeaderboardScoreEvent(gameId, gamePlayer.getUserEntity().getId(), leaderboardScoreCalculation)
         );
-
-        // IMPLEMENT - handle leaderboard entity score update
     }
 
     private void handleGameResults(GameEntity game) {
         Set<GamePlayerEntity> gamePlayers = game.getRemainingActivePlayers();
-        if (game.getGameSettingsEntity().getGameMode() == GameMode.TIMEATTACK) {
+        GameSettingsEntity gameSettings = game.getGameSettingsEntity();
+        if (gameSettings.getGameMode() == GameMode.TIMEATTACK) {
             boolean gameWon = game.determineTimeAttackVictory();
             GameResult gameResult = gameWon ? GameResult.WIN : GameResult.LOSS;
             for (GamePlayerEntity gamePlayer : gamePlayers) {
@@ -389,6 +395,12 @@ public class GameService {
         );
 
         // IMPLEMENT - handle leaderboard entity game result updates
+        for (GamePlayerEntity player : game.getGamePlayerEntities()) {
+            applicationEventPublisher.publishEvent(
+                    new LeaderboardUpdateEvent(player.getGameResult(), gameSettings.getGameMode(), player.getUserEntity().getId(), player.getLeaderboardScore())
+            );
+        }
+
     }
 
 

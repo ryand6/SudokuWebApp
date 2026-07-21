@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
 import com.github.ryand6.sudokuweb.TestDataUtil;
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,7 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
     @Test
     public void testUserCreationAndRecall() {
         // Create score object in the db because user relies on a score foreign key
-        // DB updates aren't persistent so this is required
-        UserStatsEntity userStatsEntity = TestDataUtil.createTestScoreA();
-        UserEntity userEntity = TestDataUtil.createTestUserA(userStatsEntity);
+        UserEntity userEntity = TestDataUtil.createTestUserA();
         underTest.save(userEntity);
         Optional<UserEntity> result = underTest.findById(userEntity.getId());
         assertThat(result).isPresent();
@@ -39,14 +36,12 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testMultipleUsersCreatedAndRecalled() {
-        UserStatsEntity userStatsEntityA = TestDataUtil.createTestScoreA();
-        UserStatsEntity userStatsEntityB = TestDataUtil.createTestScoreB();
-        UserStatsEntity userStatsEntityC = TestDataUtil.createTestScoreC();
-        UserEntity userEntityA = TestDataUtil.createTestUserA(userStatsEntityA);
+
+        UserEntity userEntityA = TestDataUtil.createTestUserA();
         underTest.save(userEntityA);
-        UserEntity userEntityB = TestDataUtil.createTestUserB(userStatsEntityB);
+        UserEntity userEntityB = TestDataUtil.createTestUserB();
         underTest.save(userEntityB);
-        UserEntity userEntityC = TestDataUtil.createTestUserC(userStatsEntityC);
+        UserEntity userEntityC = TestDataUtil.createTestUserC();
         underTest.save(userEntityC);
 
         Iterable<UserEntity> result = underTest.findAll();
@@ -58,8 +53,7 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testUserFullUpdate() {
-        UserStatsEntity userStatsEntityA = TestDataUtil.createTestScoreA();
-        UserEntity userEntityA = TestDataUtil.createTestUserA(userStatsEntityA);
+        UserEntity userEntityA = TestDataUtil.createTestUserA();
         underTest.save(userEntityA);
         userEntityA.setUsername("UPDATED");
         underTest.save(userEntityA);
@@ -71,8 +65,7 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testUserDeletion() {
-        UserStatsEntity userStatsEntityA = TestDataUtil.createTestScoreA();
-        UserEntity userEntityA = TestDataUtil.createTestUserA(userStatsEntityA);
+        UserEntity userEntityA = TestDataUtil.createTestUserA();
         underTest.save(userEntityA);
         underTest.deleteById(userEntityA.getId());
         Optional<UserEntity> result = underTest.findById(userEntityA.getId());
@@ -81,8 +74,7 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testFindByProviderAndProviderId() {
-        UserStatsEntity userStatsEntityA = TestDataUtil.createTestScoreA();
-        UserEntity user = TestDataUtil.createTestUserA(userStatsEntityA);
+        UserEntity user = TestDataUtil.createTestUserA();
         underTest.save(user);
 
         String provider = "google";
@@ -96,8 +88,7 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testExistsByUsername() {
-        UserStatsEntity userStatsEntityA = TestDataUtil.createTestScoreA();
-        UserEntity user = TestDataUtil.createTestUserA(userStatsEntityA);
+        UserEntity user = TestDataUtil.createTestUserA();
         underTest.save(user);
 
         boolean exists = underTest.existsByUsername("Henry");
@@ -109,14 +100,11 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void test_findByOrderByScoreEntity_TotalScoreDesc() {
-        UserStatsEntity userStatsEntityA = TestDataUtil.createTestScoreA();
-        UserEntity userA = TestDataUtil.createTestUserA(userStatsEntityA);
+        UserEntity userA = TestDataUtil.createTestUserA();
 
-        UserStatsEntity userStatsEntityB = TestDataUtil.createTestScoreB();
-        UserEntity userB = TestDataUtil.createTestUserB(userStatsEntityB);
+        UserEntity userB = TestDataUtil.createTestUserB();
 
-        UserStatsEntity userStatsEntityC = TestDataUtil.createTestScoreC();
-        UserEntity userC = TestDataUtil.createTestUserC(userStatsEntityC);
+        UserEntity userC = TestDataUtil.createTestUserC();
 
         underTest.save(userA);
         underTest.save(userB);
@@ -132,14 +120,9 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
 
     @Test
     public void testGetUserRankById() {
-        UserStatsEntity userStatsEntityA = TestDataUtil.createTestScoreA();
-        UserEntity userA = TestDataUtil.createTestUserA(userStatsEntityA);
-
-        UserStatsEntity userStatsEntityB = TestDataUtil.createTestScoreB();
-        UserEntity userB = TestDataUtil.createTestUserB(userStatsEntityB);
-
-        UserStatsEntity userStatsEntityC = TestDataUtil.createTestScoreC();
-        UserEntity userC = TestDataUtil.createTestUserC(userStatsEntityC);
+        UserEntity userA = TestDataUtil.createTestUserA();
+        UserEntity userB = TestDataUtil.createTestUserB();
+        UserEntity userC = TestDataUtil.createTestUserC();
 
         underTest.save(userA);
         underTest.save(userB);

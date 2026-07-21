@@ -1,8 +1,6 @@
 package com.github.ryand6.sudokuweb.services.user;
 
-import com.github.ryand6.sudokuweb.domain.user.stats.UserStatsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
-import com.github.ryand6.sudokuweb.dto.entity.user.UserStatsDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
@@ -14,13 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,23 +47,16 @@ public class UserServiceTests {
         when(authToken.getAuthorizedClientRegistrationId()).thenReturn("google");
         when(principal.getName()).thenReturn("google-123");
 
-        UserStatsEntity score = new UserStatsEntity();
-        score.setTotalScore(0);
-        score.setGamesPlayed(0);
         // Persist the user entity to DB
         UserEntity user = new UserEntity();
         user.setUsername("username");
         user.setOnline(true);
-        user.setUserStatsEntity(score);
 
         when(userRepository.findByProviderAndProviderId(any(String.class), any(String.class))).thenReturn(Optional.of(user));
 
         UserDto mockDto = new UserDto();
         mockDto.setUsername("username");
         mockDto.setOnline(true);
-        UserStatsDto userStatsDto = new UserStatsDto();
-        userStatsDto.setTotalScore(0);
-        userStatsDto.setGamesPlayed(0);
 
         when(userEntityDtoMapper.mapToDto(any(UserEntity.class))).thenReturn(mockDto);
 
@@ -85,23 +72,16 @@ public class UserServiceTests {
         when(authToken.getAuthorizedClientRegistrationId()).thenReturn("google");
         when(principal.getName()).thenReturn("google-123");
 
-        UserStatsEntity score = new UserStatsEntity();
-        score.setTotalScore(0);
-        score.setGamesPlayed(0);
         // Persist the user entity to DB
         UserEntity user = new UserEntity();
         user.setUsername("username");
         user.setOnline(true);
-        user.setUserStatsEntity(score);
 
         when(userRepository.findByProviderAndProviderId(any(String.class), any(String.class))).thenReturn(Optional.empty());
 
         UserDto mockDto = new UserDto();
         mockDto.setUsername("username");
         mockDto.setOnline(true);
-        UserStatsDto userStatsDto = new UserStatsDto();
-        userStatsDto.setTotalScore(0);
-        userStatsDto.setGamesPlayed(0);
 
         UserNotFoundException ex = assertThrows(
                 UserNotFoundException.class,

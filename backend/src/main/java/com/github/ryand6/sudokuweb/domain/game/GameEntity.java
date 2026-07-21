@@ -123,9 +123,6 @@ public class GameEntity {
     }
 
     public void setStatusCountdown() {
-
-        System.out.println("\n\nGame Status when trying to start countdown: " + gameStatus.toString() + "\n\n");
-
         if (gameStatus == GameStatus.LOADING) {
             gameStatus = GameStatus.COUNTDOWN;
         }
@@ -161,11 +158,6 @@ public class GameEntity {
     }
 
     public void finishGame() {
-
-        System.out.println("\n\nfinishGame() called!\n\n");
-
-        System.out.println("\n\nGame status before marking game as finished: " + gameStatus + "\n\n");
-
         if (gameStatus == GameStatus.IN_PROGRESS) {
             gameStatus = GameStatus.FINISHED;
             gameEndedAt = Instant.now();
@@ -228,7 +220,7 @@ public class GameEntity {
 
     public Set<GamePlayerEntity> determineGameWinners() {
         int maxScore = determineMaxScore();
-        return gamePlayerEntities.stream().filter(gp -> gp.getScore() == maxScore).collect(Collectors.toSet());
+        return gamePlayerEntities.stream().filter(gp -> gp.getGameResult() != GameResult.FORFEIT && gp.getScore() == maxScore).collect(Collectors.toSet());
     }
 
     public boolean determineTimeAttackVictory() {
