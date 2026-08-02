@@ -1,8 +1,9 @@
+import type { GameMode } from "@/types/enum/GameMode";
+
 export const queryKeys = {
     user: ["currentUser"] as const,
-    userRank: ["userRank"] as const,
     userTokens: (userId: number) => ["user", userId, "tokens"] as const,
-    topFivePlayers: ["topFivePlayers"] as const,
+    topTenWithUserRank: (gameMode: GameMode) => ["topTenWithUserRank", gameMode] as const,
     publicLobbies: ["publicLobbiesList"] as const,
     userActiveLobby: ["userActiveLobby"] as const,
     lobby: (lobbyId: number) => ["lobby", lobbyId] as const,

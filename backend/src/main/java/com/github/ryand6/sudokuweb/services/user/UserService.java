@@ -203,20 +203,4 @@ public class UserService {
                 .build();
     }
 
-//    // Get top 5 players based on their total score
-//    public List<UserDto> getTop5PlayersTotalScore() {
-//        // Return the top 5
-//        Pageable topFive = PageRequest.of(0, 5);
-//        Page<UserEntity> topFivePage = userRepository.findByOrderByUserStatsEntity_TotalScoreDesc(topFive);
-//        return topFivePage.getContent()
-//                .stream()
-//                .map(userEntityDtoMapper::mapToDto)
-//                .toList();
-//    }
-//
-//    // Gets the players rank based on their total_score when compared to all other players
-//    public Long getPlayerRank(Long userId) {
-//        return userRepository.getUserRankById(userId);
-//    }
-
 }

@@ -1,7 +1,5 @@
 package com.github.ryand6.sudokuweb.domain.user;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,23 +28,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
 
     Optional<UserEntity> findByRecoveryEmailHash(String recoveryEmailHash);
-
-    // Returns the top Users ordered be total score descending - number of players to return is
-    // defined by Pageable
-    Page<UserEntity> findByOrderByUserStatsEntity_TotalScoreDesc(Pageable pageable);
-
-    // Gets the players rank based on their total_score when compared to all other players
-    // Using nativeQuery due to use of window function RANK()
-    @Query(
-        value = """
-            SELECT user_rank FROM (
-                SELECT u.id AS user_id,
-                       RANK() OVER (ORDER BY s.total_score DESC) AS user_rank
-                FROM users u
-                JOIN user_stats s ON u.id = s.user_id
-            ) ranked
-            WHERE user_id = :userId
-        """, nativeQuery = true)
-    Long getUserRankById(@Param("userId") Long userId);
 
 }

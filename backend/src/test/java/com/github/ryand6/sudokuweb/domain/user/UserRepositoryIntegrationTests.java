@@ -98,44 +98,4 @@ public class UserRepositoryIntegrationTests extends AbstractIntegrationTest {
         assertThat(notExists).isFalse();
     }
 
-    @Test
-    public void test_findByOrderByScoreEntity_TotalScoreDesc() {
-        UserEntity userA = TestDataUtil.createTestUserA();
-
-        UserEntity userB = TestDataUtil.createTestUserB();
-
-        UserEntity userC = TestDataUtil.createTestUserC();
-
-        underTest.save(userA);
-        underTest.save(userB);
-        underTest.save(userC);
-
-        Pageable pageable = PageRequest.of(0, 2);
-        Page<UserEntity> top2Pages = underTest.findByOrderByUserStatsEntity_TotalScoreDesc(pageable);
-
-        List<UserEntity> top2PagesList = top2Pages.stream().toList();
-        assertThat(top2PagesList.get(0).getUsername()).isEqualTo("dk0ng");
-        assertThat(top2PagesList.get(1).getUsername()).isEqualTo("Henry");
-    }
-
-    @Test
-    public void testGetUserRankById() {
-        UserEntity userA = TestDataUtil.createTestUserA();
-        UserEntity userB = TestDataUtil.createTestUserB();
-        UserEntity userC = TestDataUtil.createTestUserC();
-
-        underTest.save(userA);
-        underTest.save(userB);
-        underTest.save(userC);
-
-        Long rank = underTest.getUserRankById(userA.getId());
-        assertThat(rank).isEqualTo(2L);
-
-        rank = underTest.getUserRankById(userB.getId());
-        assertThat(rank).isEqualTo(1L);
-
-        rank = underTest.getUserRankById(userC.getId());
-        assertThat(rank).isEqualTo(3L);
-    }
-
 }
