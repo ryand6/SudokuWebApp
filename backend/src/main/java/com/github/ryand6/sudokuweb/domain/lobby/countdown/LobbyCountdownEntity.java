@@ -37,14 +37,17 @@ public class LobbyCountdownEntity {
 
     // Countdown system for starting games
     @Column(name = "countdown_active")
+    @Builder.Default
     private boolean countdownActive = false;
 
     // Used to determine the time the game will start, unless the host cancels the countdown
     @Column(name = "countdown_ends_at")
+    @Builder.Default
     private Instant countdownEndsAt = null;
 
     // User ID who started the countdown - host can stop countdown if they triggered it, but if triggered by users readying up, can't be stopped
     @Column(name = "countdown_initiated_by")
+    @Builder.Default
     private Long countdownInitiatedBy = null;
 
     @Version

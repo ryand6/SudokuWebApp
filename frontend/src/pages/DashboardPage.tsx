@@ -1,11 +1,5 @@
-import { useState } from "react";
 import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
-import { useGetUserRank } from "../api/rest/users/query/useGetUserRank";
-import { useGetTopFivePlayers } from "../api/rest/users/query/useGetTopFivePlayers";
-import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Modal } from "@/components/ui/custom/Modal";
-import { JoinLobbyModal } from "@/components/dashboard/JoinLobbyModal";
+import { useNavigate } from "react-router-dom";
 import { useIsMobile } from "@/hooks/global/useIsMobile";
 import { DashboardMobileLayout } from "@/components/dashboard/layouts/DashboardMobileLayout";
 import { DashboardDesktopLayout } from "@/components/dashboard/layouts/DashboardDesktopLayout";
@@ -24,9 +18,6 @@ export function DashboardPage() {
     console.log("userActiveLobby: ", userActiveLobby);
 
     const navigate = useNavigate();
-
-    // const { data: userRankDto } = useGetUserRank();
-    // const { data: topFivePlayersDto } = useGetTopFivePlayers();
 
     const isMobile = useIsMobile();
 

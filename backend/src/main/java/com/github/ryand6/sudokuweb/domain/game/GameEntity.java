@@ -44,6 +44,7 @@ public class GameEntity {
     @JoinColumn(name = "puzzle_id", nullable = false)
     private SudokuPuzzleEntity sudokuPuzzleEntity;
 
+    @Builder.Default
     @OneToMany(mappedBy = "gameEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<GamePlayerEntity> gamePlayerEntities = new HashSet<>();
 
@@ -55,22 +56,27 @@ public class GameEntity {
 
     @Column(name = "game_status")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private GameStatus gameStatus = GameStatus.LOADING;
 
     // Default start time is max wait seconds after game creation to prevent players being held up by players disconnecting
     @Column(name = "game_starts_at")
+    @Builder.Default
     private Instant gameStartsAt = null;
 
     // End of game timer
     @Column(name = "game_ends_at")
+    @Builder.Default
     private Instant gameEndsAt = null;
 
     // Flag to signal game ended prematurely due to other players forfeiting - allow option for remaining player to continue
     @Column(name = "ended_prematurely")
+    @Builder.Default
     private boolean endedPrematurely = false;
 
     // Timestamp all players have finished
     @Column(name = "game_ended_at")
+    @Builder.Default
     private Instant gameEndedAt = null;
 
     @Version

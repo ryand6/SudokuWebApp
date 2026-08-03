@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.lobby;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.helpers.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.LobbyCountdownEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;

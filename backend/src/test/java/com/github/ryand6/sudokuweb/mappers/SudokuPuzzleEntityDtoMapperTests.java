@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.mappers;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.helpers.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.dto.entity.puzzle.SudokuPuzzleDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;

@@ -55,16 +55,21 @@ public class TaskSchedulerService {
     //#######################//
 
     public void scheduleGameCreationTask(Long lobbyId, Instant countdownEndsAt) {
-        String taskId = GAME_CREATION_TASK_NAME + lobbyId;
-        cancelTask(taskId);
-        ScheduledFuture<?> future = taskScheduler.schedule(() -> {
-            try {
-                createGame(lobbyId);
-            } finally {
-                scheduledTasks.remove(taskId);
-            }
-        }, countdownEndsAt.plusMillis(50));
-        scheduledTasks.put(taskId, future);
+        try {
+            String taskId = GAME_CREATION_TASK_NAME + lobbyId;
+            cancelTask(taskId);
+            ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+                try {
+                    createGame(lobbyId);
+                } finally {
+                    scheduledTasks.remove(taskId);
+                }
+            }, countdownEndsAt.plusMillis(50));
+            scheduledTasks.put(taskId, future);
+        } catch (Exception e) {
+            log.error("Schedule game creation task failed: ", e);
+        }
+
     }
 
     @Transactional
@@ -84,14 +89,18 @@ public class TaskSchedulerService {
     //#######################//
 
     public void scheduleGameCountdown(Long gameId) {
-        String taskId = SCHEDULE_COUNTDOWN_TASK_NAME + gameId;
-        cancelTask(taskId);
-        ScheduledFuture<?> future = taskScheduler.schedule(() -> {
-            applicationEventPublisher.publishEvent(
-                    new StartCountdownEvent(gameId)
-            );
-        }, Instant.now().plusSeconds(GameEntity.MAX_WAIT_SECONDS));
-        scheduledTasks.put(taskId, future);
+        try {
+            String taskId = SCHEDULE_COUNTDOWN_TASK_NAME + gameId;
+            cancelTask(taskId);
+            ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+                applicationEventPublisher.publishEvent(
+                        new StartCountdownEvent(gameId)
+                );
+            }, Instant.now().plusSeconds(GameEntity.MAX_WAIT_SECONDS));
+            scheduledTasks.put(taskId, future);
+        } catch (Exception e) {
+            log.error("Schedule game countdown task failed: ", e);
+        }
     }
 
     //#######################//
@@ -99,14 +108,19 @@ public class TaskSchedulerService {
     //#######################//
 
     public void scheduleGameStart(Long gameId, Instant gameStartsAt) {
-        String taskId = START_GAME_TASK_NAME + gameId;
-        cancelTask(taskId);
-        ScheduledFuture<?> future = taskScheduler.schedule(() -> {
-            applicationEventPublisher.publishEvent(
-                    new StartGameEvent(gameId)
-            );
-        }, gameStartsAt);
-        scheduledTasks.put(taskId, future);
+        try {
+            String taskId = START_GAME_TASK_NAME + gameId;
+            cancelTask(taskId);
+            ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+                applicationEventPublisher.publishEvent(
+                        new StartGameEvent(gameId)
+                );
+            }, gameStartsAt);
+            scheduledTasks.put(taskId, future);
+        } catch (Exception e) {
+            log.error("Schedule game start task failed: ", e);
+        }
+
     }
 
     //#######################//
@@ -114,14 +128,19 @@ public class TaskSchedulerService {
     //#######################//
 
     public void scheduleGameFinish(Long gameId, Instant gameEndsAt) {
-        String taskId = FINISH_GAME_TASK_NAME + gameId;
-        cancelTask(taskId);
-        ScheduledFuture<?> future = taskScheduler.schedule(() -> {
-            applicationEventPublisher.publishEvent(
-                    new FinishGameEvent(gameId)
-            );
-        }, gameEndsAt);
-        scheduledTasks.put(taskId, future);
+        try {
+            String taskId = FINISH_GAME_TASK_NAME + gameId;
+            cancelTask(taskId);
+            ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+                applicationEventPublisher.publishEvent(
+                        new FinishGameEvent(gameId)
+                );
+            }, gameEndsAt);
+            scheduledTasks.put(taskId, future);
+        } catch (Exception e) {
+            log.error("Schedule game finish task failed: ", e);
+        }
+
     }
 
     //#######################//
@@ -129,14 +148,18 @@ public class TaskSchedulerService {
     //#######################//
 
     public void scheduleGameClose(Long gameId, Instant gameEndedAt) {
-        String taskId = CLOSE_GAME_TASK_NAME + gameId;
-        cancelTask(taskId);
-        ScheduledFuture<?> future = taskScheduler.schedule(() -> {
-            applicationEventPublisher.publishEvent(
-                    new CloseGameEvent(gameId)
-            );
-        }, gameEndedAt.plusMillis(60000));
-        scheduledTasks.put(taskId, future);
+        try {
+            String taskId = CLOSE_GAME_TASK_NAME + gameId;
+            cancelTask(taskId);
+            ScheduledFuture<?> future = taskScheduler.schedule(() -> {
+                applicationEventPublisher.publishEvent(
+                        new CloseGameEvent(gameId)
+                );
+            }, gameEndedAt.plusMillis(60000));
+            scheduledTasks.put(taskId, future);
+        } catch (Exception e) {
+            log.error("Schedule game close task failed: ", e);
+        }
     }
 
     //#######################//

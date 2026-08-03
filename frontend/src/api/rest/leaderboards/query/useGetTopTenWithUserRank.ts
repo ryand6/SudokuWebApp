@@ -9,6 +9,6 @@ export function useGetTopTenWithUserRank(gameMode: GameMode) {
         queryKey: queryKeys.topTenWithUserRank(gameMode),
         queryFn: () => getTopTenWithUserRank(gameMode),
         retry: false,
-        staleTime: 0
+        staleTime: 10000
     })
 }

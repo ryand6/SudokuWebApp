@@ -11,7 +11,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -38,9 +37,30 @@ public abstract class AbstractIntegrationTest {
 
     @BeforeEach
     void resetDatabase() {
-        jdbcTemplate.execute(
-                "TRUNCATE TABLE lobby_chat_messages, game_state, games, lobby_players, lobbies, users, scores, sudoku_puzzles RESTART IDENTITY CASCADE"
-        );
+        jdbcTemplate.execute("""
+            DO $$
+            DECLARE
+                r RECORD;
+            BEGIN
+                FOR r IN (
+                    SELECT tablename
+                    FROM pg_tables
+                    WHERE schemaname = 'public'
+                )
+                LOOP
+                    EXECUTE 'TRUNCATE TABLE ' ||
+                            quote_ident(r.tablename) ||
+                            ' RESTART IDENTITY CASCADE';
+                END LOOP;
+            END $$;
+        """);
     }
+
+//    @BeforeEach
+//    void resetDatabase() {
+//        jdbcTemplate.execute(
+//                "TRUNCATE TABLE lobby_chat_messages, game_state, games, lobby_players, lobbies, users, scores, sudoku_puzzles RESTART IDENTITY CASCADE"
+//        );
+//    }
 
 }

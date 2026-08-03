@@ -50,13 +50,16 @@ public class LobbyEntity {
     private Instant createdAt;
 
     // true if lobby open, false if no players active in the lobby anymore
+    @Builder.Default
     @Column(name = "is_active")
     private boolean isActive = true;
 
     // true if players are currently in the middle of a Sudoku game
+    @Builder.Default
     @Column(name = "in_game")
     private boolean inGame = false;
 
+    @Builder.Default
     @Column(name = "current_game_id")
     private Long currentGameId = null;
 
@@ -66,6 +69,7 @@ public class LobbyEntity {
     @OneToOne(mappedBy = "lobbyEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private LobbyCountdownEntity lobbyCountdownEntity;
 
+    @Builder.Default
     @OneToMany(mappedBy = "lobby", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<LobbyPlayerEntity> lobbyPlayers = new HashSet<>();
 

@@ -1,8 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.puzzle;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
-import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
-import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleRepository;
+import com.github.ryand6.sudokuweb.helpers.TestDataUtil;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;

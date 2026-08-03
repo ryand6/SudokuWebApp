@@ -32,11 +32,13 @@ public class GamePlayerStateEntity {
     })
     private GamePlayerEntity gamePlayerEntity;
 
+    @Builder.Default
     @Column(name = "current_board_state")
     private String currentBoardState = null;
 
     // Each pair of bytes in the array is a bitmask acting as a binary representation of the notes active for that cell
     @Column(name = "notes", nullable = false)
+    @Builder.Default
     private byte[] notes = new byte[81 * 2];
 
     @ElementCollection
@@ -49,17 +51,22 @@ public class GamePlayerStateEntity {
     )
     @MapKeyColumn(name = "cell_index")
     @Column(name = "number_of_mistakes")
+    @Builder.Default
     private Map<Integer, Integer> mistakenCells = new HashMap<>();
 
+    @Builder.Default
     @Column(name = "consecutive_mistake_count")
     private int consecutiveMistakeCount = 0;
 
+    @Builder.Default
     @Column(name = "current_streak", nullable = false)
     private int currentStreak = 0;
 
+    @Builder.Default
     @Column(name = "active_multiplier", nullable = false)
     private double activeMultiplier = 0;
 
+    @Builder.Default
     @Column(name = "multiplier_ends_at")
     private Instant multiplierEndsAt = null;
 

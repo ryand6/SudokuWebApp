@@ -15,7 +15,6 @@ import { LeaderboardScoreBreakdownRow } from "./LeaderboardScoreBreakdownRow";
 import { StatCard } from "./StatCard";
 import { computeMsDifferenceBetweenTimestamps } from "@/utils/time/timeDifference";
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
-import { getUserRank } from "@/api/rest/users/query/getUserRank";
 import { PrematureEndBanner } from "./PrematureEndBanner";
 import { ReturnToLobbyAlertDialog } from "@/components/ui/custom/ReturnToLobbyAlertDialog";
 import { revertInGameStatus } from "@/api/ws/game/playerstate/revertInGameStatus";
@@ -84,10 +83,10 @@ export function GameResults({
 
     const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeMsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
 
-    const resolveUserRank = async () => {
-        const userRank = await getUserRank();
-        setUserRankText("#" + userRank.userRank.toString());
-    }
+    // const resolveUserRank = async () => {
+    //     const userRank = await getUserRank();
+    //     setUserRankText("#" + userRank.userRank.toString());
+    // }
 
     const returnToLobbyHandler = () => {
         revertInGameStatus(send, gameId, userId, lobbyId);
@@ -100,7 +99,7 @@ export function GameResults({
 
     }
 
-    resolveUserRank();
+    // resolveUserRank();
 
     return (
         <div 

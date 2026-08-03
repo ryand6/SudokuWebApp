@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.helpers.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;

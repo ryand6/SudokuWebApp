@@ -1,4 +1,4 @@
-package com.github.ryand6.sudokuweb;
+package com.github.ryand6.sudokuweb.helpers;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;

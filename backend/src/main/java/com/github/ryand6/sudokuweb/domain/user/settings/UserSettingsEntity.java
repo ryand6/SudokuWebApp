@@ -27,15 +27,19 @@ public class UserSettingsEntity {
     //    Visual Settings    //
     //#######################//
 
+    @Builder.Default
     @Column(name = "theme")
     private Theme theme = Theme.DEFAULT;
 
+    @Builder.Default
     @Column(name = "opponent_highlighted_squares")
     private boolean opponentHighlightedSquaresEnabled = true;
 
+    @Builder.Default
     @Column(name = "highlighted_houses")
     private boolean highlightedHousesEnabled = true;
 
+    @Builder.Default
     @Column(name = "highlighted_firsts")
     private boolean highlightedFirstsEnabled = true;
 
@@ -43,12 +47,15 @@ public class UserSettingsEntity {
     // Notification Settings //
     //#######################//
 
+    @Builder.Default
     @Column(name = "game_chat_notifications")
     private boolean gameChatNotificationsEnabled = true;
 
+    @Builder.Default
     @Column(name = "score_notifications")
     private boolean scoreNotificationsEnabled = true;
 
+    @Builder.Default
     @Column(name = "streak_notifications")
     private boolean streakNotificationsEnabled = true;
 
@@ -56,6 +63,7 @@ public class UserSettingsEntity {
     //    Audio Settings     //
     //#######################//
 
+    @Builder.Default
     @Column(name = "audio")
     private boolean audioEnabled = false;
 

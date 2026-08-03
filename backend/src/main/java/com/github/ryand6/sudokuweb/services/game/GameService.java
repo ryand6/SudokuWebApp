@@ -265,7 +265,7 @@ public class GameService {
             }
         }
 
-        // IMPLEMENT - handle leaderboard entity game result update - loss + 0pts
+        // handle leaderboard entity game result update - loss + 0pts
         applicationEventPublisher.publishEvent(
                 new LeaderboardUpdateEvent(gamePlayer.getGameResult(), gameSettings.getGameMode(), gamePlayer.getUserEntity().getId(), 0)
         );

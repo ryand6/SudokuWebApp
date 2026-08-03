@@ -12,7 +12,7 @@ export function GameModesWidget() {
                 <span><IconInfoCircle size={iconSize} /></span>
                 <span className="font-semibold text-lg">Online Play</span>
             </div>
-            <div className="flex w-full h-full p-5 items-center gap-4">
+            <div className="flex w-full h-full p-5 gap-4">
                 <ClassicModeCard iconSize={iconSize} />
                 <DominationModeCard iconSize={iconSize} />
                 <TimeAttackModeCard iconSize={iconSize} />

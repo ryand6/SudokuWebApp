@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.lobby.chat;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.helpers.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;

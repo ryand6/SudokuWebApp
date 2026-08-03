@@ -34,26 +34,34 @@ public class LeaderboardsEntity {
     private UserEntity userEntity;
 
     @Column(name = "game_mode")
+    @Enumerated(EnumType.STRING)
     private GameMode gameMode;
 
+    @Builder.Default
     @Column(name = "total_score")
     private long totalScore = 0;
 
+    @Builder.Default
     @Column(name = "games_played")
     private int gamesPlayed = 0;
 
+    @Builder.Default
     @Column(name = "wins")
     private int wins = 0;
 
+    @Builder.Default
     @Column(name = "losses")
     private int losses = 0;
 
+    @Builder.Default
     @Column(name = "draws")
     private int draws = 0;
 
+    @Builder.Default
     @Column(name = "current_win_streak")
     private int currentWinStreak = 0;
 
+    @Builder.Default
     @Column(name = "max_win_streak")
     private int maxWinStreak = 0;
 

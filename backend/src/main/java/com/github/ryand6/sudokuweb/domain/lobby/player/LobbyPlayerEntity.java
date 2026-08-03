@@ -38,14 +38,18 @@ public class LobbyPlayerEntity {
 
     // Status of player can be "ready", "in game" or "waiting" - determines what is shown in the lobby view
     @Column(name = "lobby_status")
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
     private LobbyStatus lobbyStatus = LobbyStatus.WAITING;
 
     // Time of when player became ready to start game
     @Column(name = "ready_at")
+    @Builder.Default
     private Instant readyAt = null;
 
     // Stored the UTC timestamp of the last submitted chat message by the player - used to prevent message spamming
     @Column(name = "lobby_message_timestamp")
+    @Builder.Default
     private Instant lastLobbyMessageTimestamp = null;
 
     // set the join time before persisting the entity to the DB for the first time - no manual setting required

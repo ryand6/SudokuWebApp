@@ -93,7 +93,7 @@ export function LobbySettingsPanel({
                                     className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
                                                 ${wordToProperCase(timeLimit) === option.label && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}
                                                 ${countdownActive && "opacity-40"}`}
-                                    onClick={() => handleClickDuration(option.value)}
+                                    onClick={() => handleClickDuration(option.label)}
                                 >
                                     {option.value}
                                 </div>

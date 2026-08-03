@@ -17,6 +17,8 @@ import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import { LeaveLobbyAlertDialog } from "@/components/ui/custom/LeaveLobbyAlertDialog";
 import { GameModesWidget } from "../widgets/GameModesWidget";
 import { SinglePlayerWidget } from "../widgets/SinglePlayerWidget";
+import { MyStatsWidget } from "../widgets/MyStatsWidget";
+import { TopTenLeaderboardsWidget } from "../widgets/TopTenLeaderboardsWidget";
 
 export function DashboardDesktopLayout({
     user,
@@ -108,7 +110,7 @@ export function DashboardDesktopLayout({
                         </div>
                     )
                 }
-                <div className="flex justify-evenly flex-1">
+                <div className="flex justify-evenly flex-1 gap-4">
                     <div className="flex flex-col items-center w-full h-full gap-4">
                         <OnlinePlayWidget 
                             isMobile={false}
@@ -121,7 +123,11 @@ export function DashboardDesktopLayout({
                         />
                     </div>
                     <div className="flex flex-col items-center w-full h-full">
-
+                        <MyStatsWidget 
+                        />
+                        <TopTenLeaderboardsWidget
+                            isMobile={false}
+                        />
                     </div>
                 </div>
                 <div className="flex items-center w-full">

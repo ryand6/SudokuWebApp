@@ -29,20 +29,24 @@ public class GameSettingsEntity {
     // Default difficulty = medium
     @Column(name = "difficulty")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private Difficulty difficulty = Difficulty.MEDIUM;
 
     // Length a game can last before it ends - default = 30 mins
     @Column(name = "time_limit")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private TimeLimitPreset timeLimit = TimeLimitPreset.STANDARD;
 
     // Also present in GameEntity
     @Column(name = "game_mode")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private GameMode gameMode = GameMode.CLASSIC;
 
     @Column(name = "game_type")
     @Enumerated(EnumType.STRING)
+    @Builder.Default
     private GameType gameType = GameType.RANKED;
 
     @Version

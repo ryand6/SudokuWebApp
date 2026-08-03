@@ -39,6 +39,7 @@ public class SharedGameStateEntity {
     )
     @MapKeyColumn(name = "cell_index")
     @Column(name = "user_id")
+    @Builder.Default
     private Map<Integer, Long> cellFirstOwnership = new HashMap<>();
 
     // Used to track the claim position of each user when they claim a cell to determine scoring in some game modes
@@ -51,6 +52,7 @@ public class SharedGameStateEntity {
     )
     @MapKeyColumn(name = "cell_index")
     @Column(name = "claim_count")
+    @Builder.Default
     private Map<Integer, Integer> cellClaimCounts = new HashMap<>();
 
     // Track the user ID of the last player to claim a first on a cell

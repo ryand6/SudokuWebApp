@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.services.game;
 
-import com.github.ryand6.sudokuweb.TestDataUtil;
+import com.github.ryand6.sudokuweb.helpers.TestDataUtil;
 import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;

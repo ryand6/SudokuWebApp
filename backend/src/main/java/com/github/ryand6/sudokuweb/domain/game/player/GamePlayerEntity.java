@@ -46,42 +46,53 @@ public class GamePlayerEntity {
     @Column(name = "player_colour", nullable = false)
     private PlayerColour playerColour;
 
+    @Builder.Default
     @Column(name = "score")
     private int score = 0;
 
     // Counts the number of times a player answered a cell without making a mistake before any other player
     @Column(name = "firsts")
+    @Builder.Default
     private int firsts = 0;
 
+    @Builder.Default
     @Column(name = "mistakes")
     private int mistakes = 0;
 
+    @Builder.Default
     @Column(name = "max_streak", nullable = false)
     private int maxStreak = 0;
 
+    @Builder.Default
     @Column(name = "game_loaded")
     private boolean gameLoaded = false;
 
+    @Builder.Default
     @Column(name = "game_loaded_timestamp")
     private Instant gameLoadedTimestamp = null;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "game_result", nullable = false)
+    @Builder.Default
     private GameResult gameResult = GameResult.PENDING;
 
     // Stored the UTC timestamp of the last submitted chat message by the player - used to prevent message spamming
     @Column(name = "game_message_timestamp")
+    @Builder.Default
     private Instant lastGameMessageTimestamp = null;
 
     // Determines when game results should be displayed to the player upon completion / game ending
     @Column(name = "finished_game")
+    @Builder.Default
     private boolean finishedGame = false;
 
+    @Builder.Default
     @Column(name = "finished_game_timestamp")
     private Instant finishedGameTimestamp = null;
 
     // Score applied to leaderboard once player finishes game
     @Column(name = "leaderboard_score")
+    @Builder.Default
     private Integer leaderboardScore = null;
 
     @Version
