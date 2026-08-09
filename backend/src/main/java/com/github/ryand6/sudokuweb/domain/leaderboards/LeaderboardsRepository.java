@@ -20,9 +20,9 @@ public interface LeaderboardsRepository extends JpaRepository<LeaderboardsEntity
 
     @Query(
             value = """
-            SELECT user_rank, user_id, username, total_score FROM (
+            SELECT rank, user_id, username, total_score FROM (
                 SELECT u.id AS user_id,
-                       RANK() OVER (ORDER BY l.total_score DESC) AS user_rank,
+                       RANK() OVER (ORDER BY l.total_score DESC) AS rank,
                        u.username AS username,
                        l.total_score AS total_score,
                        l.game_mode AS game_mode
@@ -30,8 +30,8 @@ public interface LeaderboardsRepository extends JpaRepository<LeaderboardsEntity
                 JOIN leaderboards l ON u.id = l.user_id
                 WHERE l.game_mode = :gameMode
             ) ranked
-            WHERE user_rank <= 10 OR user_id = :userId
-            ORDER BY user_rank
+            WHERE rank <= 10 OR user_id = :userId
+            ORDER BY rank
         """, nativeQuery = true)
     List<TopTenLeaderboardRow> findTop10WithUserRank(@Param("userId") Long userId, @Param("gameMode") String gameMode);
 

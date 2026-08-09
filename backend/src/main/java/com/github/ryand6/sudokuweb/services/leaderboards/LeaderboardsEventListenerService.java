@@ -16,12 +16,17 @@ public class LeaderboardsEventListenerService {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleLeaderboardUpdateEvent(LeaderboardUpdateEvent event) {
+
+        System.out.println("\n\nLeaderboardUpdateEvent intercepted\n\n");
+
         switch (event.getGameResult()) {
             case WIN -> leaderboardsService.recordWin(event.getGameMode(), event.getUserId(), event.getLeaderboardScore());
             case LOSS -> leaderboardsService.recordLoss(event.getGameMode(), event.getUserId(), event.getLeaderboardScore());
             case DRAW -> leaderboardsService.recordDraw(event.getGameMode(), event.getUserId(), event.getLeaderboardScore());
             case FORFEIT -> leaderboardsService.recordLoss(event.getGameMode(), event.getUserId(), 0);
         }
+
+        System.out.println("\n\nLeaderboardUpdateEvent handled\n\n");
     }
 
 }

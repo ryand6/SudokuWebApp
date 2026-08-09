@@ -1,18 +1,14 @@
 package com.github.ryand6.sudokuweb.domain.leaderboards;
 
-import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-public class TopTenLeaderboardRow {
+public interface TopTenLeaderboardRow {
 
-    private int rank;
+    int getRank();
 
-    private Long userId;
+    Long getUserId();
 
-    private String username;
+    String getUsername();
 
-    private long total_score;
+    Long getTotalScore();
 
 }

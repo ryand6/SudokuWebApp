@@ -56,11 +56,4 @@ public abstract class AbstractIntegrationTest {
         """);
     }
 
-//    @BeforeEach
-//    void resetDatabase() {
-//        jdbcTemplate.execute(
-//                "TRUNCATE TABLE lobby_chat_messages, game_state, games, lobby_players, lobbies, users, scores, sudoku_puzzles RESTART IDENTITY CASCADE"
-//        );
-//    }
-
 }
