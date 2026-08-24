@@ -299,9 +299,6 @@ public class GameService {
 
     @Transactional
     public void handlePlayerFinish(Long gameId, Long userId) {
-
-        System.out.println("\n\nhandlePlayerFinish() called for user with ID: " +  userId + "\n\n");
-
         GamePlayerEntity gamePlayer = gamePlayerRepository.findByCompositeId(gameId, userId).orElseThrow(() ->
                 new GamePlayerNotFoundException("Game Player with Game ID " + gameId + " and User ID " + userId + " does not exist"));
         if (gamePlayer.isFinishedGame()) {
@@ -345,9 +342,6 @@ public class GameService {
 
     // Mark game as finished and send event to determine game result of each player
     private void finishGame(GameEntity game) {
-
-        System.out.println("\n\nfinishGame() called\n\n");
-
         GameStatus gameStatus = game.getGameStatus();
         if (gameStatus == GameStatus.FINISHED || gameStatus == GameStatus.ABORTED || gameStatus == GameStatus.CLOSED) {
             return;
@@ -375,9 +369,6 @@ public class GameService {
     }
 
     private void handleGameResults(GameEntity game) {
-
-        System.out.println("\n\nhandleGameResults() called\n\n");
-
         Set<GamePlayerEntity> gamePlayers = game.getRemainingActivePlayers();
         GameSettingsEntity gameSettings = game.getGameSettingsEntity();
         if (gameSettings.getGameMode() == GameMode.TIMEATTACK) {
@@ -416,9 +407,6 @@ public class GameService {
     // Once game is closed, it cannot be navigated back to
     @Transactional
     public void closeGame(Long gameId) {
-
-        System.out.println("\n\ncloseGame() called\n\n");
-
         GameEntity game = getGameById(gameId);
         game.closeGame();
         // Update membership and in memory caches

@@ -1,8 +1,8 @@
-type TopTenLeaderboardRow = {
+export type TopTenLeaderboardRow = {
     rank: number,
     userId: number,
     username: string,
-    total_score: number
+    totalScore: number
 }
 
 export type TopTenWithUserRankDto = {

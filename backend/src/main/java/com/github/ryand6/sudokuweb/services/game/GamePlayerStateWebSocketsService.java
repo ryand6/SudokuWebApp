@@ -7,6 +7,8 @@ import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 

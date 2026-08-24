@@ -122,10 +122,13 @@ export function DashboardDesktopLayout({
                             isMobile={false}    
                         />
                     </div>
-                    <div className="flex flex-col items-center w-full h-full">
-                        <MyStatsWidget 
+                    <div className="flex flex-col gap-4 items-center w-full h-full">
+                        <MyStatsWidget
+                            userId={user.id}
+                            isMobile={false}
                         />
                         <TopTenLeaderboardsWidget
+                            userId={user.id}
                             isMobile={false}
                         />
                     </div>
