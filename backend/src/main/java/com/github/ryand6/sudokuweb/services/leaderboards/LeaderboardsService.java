@@ -34,6 +34,12 @@ public class LeaderboardsService {
         this.userRepository = userRepository;
     }
 
+    public LeaderboardsDto getUserGameModeStats(GameMode gameMode, Long userId) {
+        Optional<LeaderboardsEntity> leaderboardsEntityOptional = leaderboardsRepository.findByGameModeAndUserEntity_Id(gameMode, userId);
+        LeaderboardsEntity leaderboardsEntity = leaderboardsEntityOptional.orElse(null);
+        return leaderboardsEntity != null ? leaderboardsEntityDtoMapper.mapToDto(leaderboardsEntity) : null;
+    }
+
     public List<LeaderboardsDto> getLeaderboardsResults(GameMode gameMode, int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "totalScore"));
         return leaderboardsRepository.findByGameModeOrderByTotalScoreDesc(gameMode, pageable)

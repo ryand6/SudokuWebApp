@@ -1,3 +1,6 @@
+import { useGetUserGameModeStats } from "@/api/rest/leaderboards/query/useGetUserGameModeStats";
+import { StatCard } from "@/components/game/results/StatCard";
+import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { gameModes, type GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { IconChartBar } from "@tabler/icons-react";
@@ -14,6 +17,10 @@ export function MyStatsWidget({
     const iconSize: number = isMobile ? 16 : 24;
     
     const [selectedMode, setSelectedMode] = useState<GameMode>("CLASSIC");
+
+    const { data, isLoading } = useGetUserGameModeStats(selectedMode);
+
+    console.log("Game Mode Stats: ", data);
 
     return (
         <div className="flex flex-col border-2 border-muted rounded-lg w-full font-display flex-1">
@@ -36,8 +43,29 @@ export function MyStatsWidget({
                             ))
                         }
                     </div>
-                    <div className="flex flex-col items-center gap-4 py-6">
-                    
+                    <div className="flex flex-col items-center gap-4 py-1">
+                        {
+                            isLoading ? (
+                                <div>
+                                    <SpinnerButton />
+                                </div>
+                            ) : !data? (
+                                <div className="font-display tracking-wide">
+                                    <p>No stats available for this game mode</p>
+                                </div>
+                            ) : (
+                                <div className="px-4 flex justify-center flex-wrap gap-2">
+                                    <StatCard value={data.gamesPlayed.toString()} label="Games" />
+                                    <StatCard value={data.wins.toString()} label="Wins" />
+                                    <StatCard value={data.losses.toString()} label="Losses" />
+                                    <StatCard value={data.draws.toString()} label="Draws" />
+                                    <StatCard value={data.totalScore.toString()} label="Total Score" />
+                                    <StatCard value={Math.round((data.wins / data.gamesPlayed) * 100).toString() + "%"} label="Win Rate" />
+                                    <StatCard value={data.currentWinStreak.toString()} label="Current Win Streak" />
+                                    <StatCard value={data.maxWinStreak.toString()} label="Max Win Streak" />
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
     )

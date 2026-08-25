@@ -23,6 +23,7 @@ public class LeaderboardsEntityDtoMapper implements EntityDtoMapper<Leaderboards
                 .losses(leaderboardsEntity.getLosses())
                 .draws(leaderboardsEntity.getDraws())
                 .currentWinStreak(leaderboardsEntity.getCurrentWinStreak())
+                .maxWinStreak(leaderboardsEntity.getMaxWinStreak())
                 .build();
     }
 

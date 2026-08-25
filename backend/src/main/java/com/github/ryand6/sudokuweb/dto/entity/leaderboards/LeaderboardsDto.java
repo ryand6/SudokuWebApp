@@ -28,4 +28,6 @@ public class LeaderboardsDto {
 
     private int currentWinStreak;
 
+    private int maxWinStreak;
+
 }

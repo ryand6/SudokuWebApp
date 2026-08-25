@@ -4,6 +4,7 @@ export const queryKeys = {
     user: ["currentUser"] as const,
     userTokens: (userId: number) => ["user", userId, "tokens"] as const,
     topTenWithUserRank: (gameMode: GameMode) => ["topTenWithUserRank", gameMode] as const,
+    gameModeStats: (gameMode: GameMode) => ["gameModeStats", gameMode] as const,
     publicLobbies: ["publicLobbiesList"] as const,
     userActiveLobby: ["userActiveLobby"] as const,
     lobby: (lobbyId: number) => ["lobby", lobbyId] as const,

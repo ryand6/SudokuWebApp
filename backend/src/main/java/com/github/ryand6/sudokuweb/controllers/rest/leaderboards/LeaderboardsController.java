@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers.rest.leaderboards;
 
 import com.github.ryand6.sudokuweb.domain.leaderboards.TopTenLeaderboardRow;
+import com.github.ryand6.sudokuweb.dto.entity.leaderboards.LeaderboardsDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.services.leaderboards.LeaderboardsService;
@@ -33,6 +34,15 @@ public class LeaderboardsController {
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
         List<TopTenLeaderboardRow> leaderboardRows = leaderboardsService.getTopTenWithUserRank(user.getId(), gameMode);
         return ResponseEntity.ok(leaderboardRows);
+    }
+
+    @GetMapping("/get-stats")
+    public ResponseEntity<?> getUserGameModeStats(@AuthenticationPrincipal OAuth2User principal,
+                                              OAuth2AuthenticationToken authToken,
+                                              @RequestParam GameMode gameMode) {
+        UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
+        LeaderboardsDto leaderboardsDto = leaderboardsService.getUserGameModeStats(gameMode, user.getId());
+        return ResponseEntity.ok(leaderboardsDto);
     }
 
 }
