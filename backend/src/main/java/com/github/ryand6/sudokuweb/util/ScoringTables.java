@@ -14,9 +14,9 @@ public final class ScoringTables {
 
     // Penalties for number of mistakes made per cell
     public static final Map<Integer, Integer> standardGameMode_Penalties = Map.of(
-            1, -1,
-            2, -3,
-            standardGameMode_PenaltyMultiplierCap, -5
+            1, -4,
+            2, -5,
+            standardGameMode_PenaltyMultiplierCap, -6
     );
 
     // Key = claim position
