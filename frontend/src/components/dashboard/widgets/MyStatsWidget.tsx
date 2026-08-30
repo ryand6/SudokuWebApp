@@ -43,7 +43,7 @@ export function MyStatsWidget({
                             ))
                         }
                     </div>
-                    <div className="flex flex-col items-center gap-4 py-1">
+                    <div className="flex flex-col items-center justify-center h-full gap-4 py-2">
                         {
                             isLoading ? (
                                 <div>

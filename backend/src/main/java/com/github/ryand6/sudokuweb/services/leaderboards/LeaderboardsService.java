@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.services.leaderboards;
 
 import com.github.ryand6.sudokuweb.domain.leaderboards.LeaderboardsEntity;
 import com.github.ryand6.sudokuweb.domain.leaderboards.LeaderboardsRepository;
-import com.github.ryand6.sudokuweb.domain.leaderboards.TopTenLeaderboardRow;
+import com.github.ryand6.sudokuweb.domain.leaderboards.TopFiveLeaderboardRow;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import com.github.ryand6.sudokuweb.dto.entity.leaderboards.LeaderboardsDto;
@@ -84,8 +84,8 @@ public class LeaderboardsService {
         return leaderboardsEntity;
     }
 
-    public List<TopTenLeaderboardRow> getTopTenWithUserRank(Long userId, GameMode gameMode) {
-        return leaderboardsRepository.findTop10WithUserRank(userId, gameMode.name());
+    public List<TopFiveLeaderboardRow> getTopFiveWithUserRank(Long userId, GameMode gameMode) {
+        return leaderboardsRepository.findTopFiveWithUserRank(userId, gameMode.name());
     }
 
 }

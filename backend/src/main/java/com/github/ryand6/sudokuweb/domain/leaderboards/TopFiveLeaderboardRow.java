@@ -1,7 +1,7 @@
 package com.github.ryand6.sudokuweb.domain.leaderboards;
 
 
-public interface TopTenLeaderboardRow {
+public interface TopFiveLeaderboardRow {
 
     int getRank();
 

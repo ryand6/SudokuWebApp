@@ -1,11 +1,11 @@
-import { useGetTopTenWithUserRank } from "@/api/rest/leaderboards/query/useGetTopTenWithUserRank";
+import { useGetTopFiveWithUserRank } from "@/api/rest/leaderboards/query/useGetTopFiveWithUserRank";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { gameModes, type GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { IconTrophy } from "@tabler/icons-react";
 import { useState } from "react";
 
-export function TopTenLeaderboardsWidget({
+export function TopFiveLeaderboardsWidget({
     userId,
     isMobile
 }: {
@@ -16,9 +16,9 @@ export function TopTenLeaderboardsWidget({
 
     const [selectedMode, setSelectedMode] = useState<GameMode>("CLASSIC");
 
-    const { data, isLoading } = useGetTopTenWithUserRank(selectedMode);
+    const { data, isLoading } = useGetTopFiveWithUserRank(selectedMode);
 
-    console.log("Top Ten Data: ", data);
+    console.log("Top Five Data: ", data);
 
     return (
         <div className="flex flex-col border-2 border-muted rounded-lg w-full font-display flex-1">
@@ -41,7 +41,7 @@ export function TopTenLeaderboardsWidget({
                     ))
                 }
             </div>
-            <div className="flex flex-col items-center gap-4 py-3">
+            <div className="flex flex-col items-center justify-center h-full gap-4 py-3">
                 {
                     isLoading ? (
                         <div>

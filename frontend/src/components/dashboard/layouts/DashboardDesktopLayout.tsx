@@ -1,7 +1,7 @@
 import type { UserDto } from "@/types/dto/entity/user/UserDto"
 import type { LobbyDetailsDto } from "@/types/dto/response/LobbyDetailsDto"
 import { OnlinePlayWidget } from "../widgets/OnlinePlayWidget"
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { JoinLobbyModal } from "../JoinLobbyModal";
 import { Modal } from "@/components/ui/custom/Modal";
 import type { NavigateFunction } from "react-router-dom";
@@ -18,13 +18,20 @@ import { LeaveLobbyAlertDialog } from "@/components/ui/custom/LeaveLobbyAlertDia
 import { GameModesWidget } from "../widgets/GameModesWidget";
 import { SinglePlayerWidget } from "../widgets/SinglePlayerWidget";
 import { MyStatsWidget } from "../widgets/MyStatsWidget";
-import { TopTenLeaderboardsWidget } from "../widgets/TopTenLeaderboardsWidget";
+import { TopFiveLeaderboardsWidget } from "../widgets/TopFiveLeaderboardsWidget";
 
 export function DashboardDesktopLayout({
     user,
     activeLobby,
     leaveLobbyHandler,
     leaveGameHandler,
+    isModalOpen,
+    setModalOpen,
+    isLeaveLobbyAlertOpen,
+    setIsLeaveLobbyAlertOpen,
+    isLeaveGameAlertOpen,
+    setIsLeaveGameAlertOpen,
+    onRejoinClick,
     navigate
 }: {
     user: UserDto,
@@ -37,19 +44,16 @@ export function DashboardDesktopLayout({
         mutate: UseMutateFunction<GameDto | null, Error, LeaveGameRequestDto, unknown>;
         isLeaving: boolean;
     },
+    isModalOpen: boolean,
+    setModalOpen: Dispatch<SetStateAction<boolean>>,
+    isLeaveLobbyAlertOpen: boolean,
+    setIsLeaveLobbyAlertOpen: Dispatch<SetStateAction<boolean>>,
+    isLeaveGameAlertOpen: boolean,
+    setIsLeaveGameAlertOpen: Dispatch<SetStateAction<boolean>>,
+    onRejoinClick: () => void,
     navigate: NavigateFunction
 }) {
     const iconSize = 24;
-
-    const [isModalOpen, setModalOpen] = useState(false);
-    const [isLeaveLobbyAlertOpen, setIsLeaveLobbyAlertOpen] = useState(false);
-    const [isLeaveGameAlertOpen, setIsLeaveGameAlertOpen] = useState(false);
-
-    const onRejoinClick = () => {
-        if (!activeLobby) return;
-        const path = activeLobby.inGame ? `/game/${activeLobby.currentGameId}` : `/lobby/${activeLobby.id}`;
-        navigate(path);
-    }
     
     return (
         <div className="flex flex-col w-full h-full font-display">
@@ -118,23 +122,24 @@ export function DashboardDesktopLayout({
                             setModalOpen={setModalOpen}
                             navigate={navigate}
                         />
-                        <SinglePlayerWidget
-                            isMobile={false}    
-                        />
-                    </div>
-                    <div className="flex flex-col gap-4 items-center w-full h-full">
                         <MyStatsWidget
                             userId={user.id}
                             isMobile={false}
                         />
-                        <TopTenLeaderboardsWidget
+                        
+                    </div>
+                    <div className="flex flex-col gap-4 items-center w-full h-full">
+                        <TopFiveLeaderboardsWidget
                             userId={user.id}
                             isMobile={false}
+                        />
+                        <SinglePlayerWidget
+                            isMobile={false}    
                         />
                     </div>
                 </div>
                 <div className="flex items-center w-full">
-                    <GameModesWidget />
+                    <GameModesWidget isMobile={false} />
                 </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}><JoinLobbyModal isMobile={false} /></Modal>

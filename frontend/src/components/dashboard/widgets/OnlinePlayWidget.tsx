@@ -1,6 +1,6 @@
 import { IconDoorEnter, IconPlus, IconWorld } from "@tabler/icons-react"
 import type { Dispatch, SetStateAction } from "react";
-import { Link, type NavigateFunction } from "react-router-dom";
+import { type NavigateFunction } from "react-router-dom";
 
 export function OnlinePlayWidget({
     isMobile,
