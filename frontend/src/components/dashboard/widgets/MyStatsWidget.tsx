@@ -43,7 +43,7 @@ export function MyStatsWidget({
                             ))
                         }
                     </div>
-                    <div className="flex flex-col items-center justify-center h-full gap-4 py-2">
+                    <div className="flex flex-col items-center justify-center h-full gap-4 py-3">
                         {
                             isLoading ? (
                                 <div>
@@ -55,14 +55,14 @@ export function MyStatsWidget({
                                 </div>
                             ) : (
                                 <div className="px-4 flex justify-center flex-wrap gap-2">
-                                    <StatCard value={data.gamesPlayed.toString()} label="Games" />
-                                    <StatCard value={data.wins.toString()} label="Wins" />
-                                    <StatCard value={data.losses.toString()} label="Losses" />
-                                    <StatCard value={data.draws.toString()} label="Draws" />
-                                    <StatCard value={data.totalScore.toString()} label="Total Score" />
-                                    <StatCard value={Math.round((data.wins / data.gamesPlayed) * 100).toString() + "%"} label="Win Rate" />
-                                    <StatCard value={data.currentWinStreak.toString()} label="Current Win Streak" />
-                                    <StatCard value={data.maxWinStreak.toString()} label="Max Win Streak" />
+                                    <StatCard value={data.gamesPlayed.toLocaleString()} label="Games" />
+                                    <StatCard value={data.wins.toLocaleString()} label="Wins" />
+                                    <StatCard value={data.losses.toLocaleString()} label="Losses" />
+                                    <StatCard value={data.draws.toLocaleString()} label="Draws" />
+                                    <StatCard value={data.totalScore.toLocaleString()} label="Total Score" />
+                                    <StatCard value={Math.round((data.wins / data.gamesPlayed) * 100).toLocaleString() + "%"} label="Win Rate" />
+                                    <StatCard value={data.currentWinStreak.toLocaleString()} label="Current Win Streak" />
+                                    <StatCard value={data.maxWinStreak.toLocaleString()} label="Max Win Streak" />
                                 </div>
                             )
                         }

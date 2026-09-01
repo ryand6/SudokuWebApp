@@ -13,7 +13,7 @@ export function DashboardPage() {
     const { data: currentUser } = useGetCurrentUser();
     const { data: userActiveLobby } = useGetActiveLobby();
 
-    const [isModalOpen, setModalOpen] = useState(false);
+    const [isJoinLobbyModalOpen, setJoinLobbyModalOpen] = useState(false);
     const [isLeaveLobbyAlertOpen, setIsLeaveLobbyAlertOpen] = useState(false);
     const [isLeaveGameAlertOpen, setIsLeaveGameAlertOpen] = useState(false);
 
@@ -41,8 +41,8 @@ export function DashboardPage() {
                 activeLobby={userActiveLobby}
                 leaveLobbyHandler={leaveLobbyHandler}
                 leaveGameHandler={leaveGameHandler}
-                isModalOpen={isModalOpen}
-                setModalOpen={setModalOpen}
+                isJoinLobbyModalOpen={isJoinLobbyModalOpen}
+                setJoinLobbyModalOpen={setJoinLobbyModalOpen}
                 isLeaveLobbyAlertOpen={isLeaveLobbyAlertOpen}
                 setIsLeaveLobbyAlertOpen={setIsLeaveLobbyAlertOpen}
                 isLeaveGameAlertOpen={isLeaveGameAlertOpen}
@@ -56,8 +56,8 @@ export function DashboardPage() {
                 activeLobby={userActiveLobby}
                 leaveLobbyHandler={leaveLobbyHandler}
                 leaveGameHandler={leaveGameHandler}
-                isModalOpen={isModalOpen}
-                setModalOpen={setModalOpen}
+                isJoinLobbyModalOpen={isJoinLobbyModalOpen}
+                setJoinLobbyModalOpen={setJoinLobbyModalOpen}
                 isLeaveLobbyAlertOpen={isLeaveLobbyAlertOpen}
                 setIsLeaveLobbyAlertOpen={setIsLeaveLobbyAlertOpen}
                 isLeaveGameAlertOpen={isLeaveGameAlertOpen}

@@ -5,12 +5,12 @@ import { type NavigateFunction } from "react-router-dom";
 export function OnlinePlayWidget({
     isMobile,
     isActiveLobby,
-    setModalOpen,
+    setJoinLobbyModalOpen,
     navigate
 }: {
     isMobile: boolean,
     isActiveLobby: boolean,
-    setModalOpen: Dispatch<SetStateAction<boolean>>,
+    setJoinLobbyModalOpen: Dispatch<SetStateAction<boolean>>,
     navigate: NavigateFunction
 }) {
     const iconSize: number = isMobile ? 16 : 24;
@@ -49,7 +49,7 @@ export function OnlinePlayWidget({
                  <button 
                     className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4
                                 ${isActiveLobby ? "bg-muted border-muted opacity-20" : "bg-secondary/80 border-secondary text-secondary-foreground hover:bg-secondary/90 cursor-pointer"}`}
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => setJoinLobbyModalOpen(true)}
                     disabled={isActiveLobby}
                 >
                     <div className={`flex justify-center items-center rounded-lg p-2 ${isActiveLobby ? "bg-muted" : "bg-secondary"}`}>

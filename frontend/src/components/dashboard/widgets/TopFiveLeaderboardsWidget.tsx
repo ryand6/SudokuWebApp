@@ -79,7 +79,7 @@ export function TopFiveLeaderboardsWidget({
                                             className={`font-bold font-display tracking-wide
                                                     ${row.userId === userId ? "text-secondary" : "text-accent-foreground"}`}
                                         >
-                                            {row.totalScore}
+                                            {row.totalScore.toLocaleString()}
                                         </div>
                                     </div>
                                 ))

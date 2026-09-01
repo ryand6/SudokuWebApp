@@ -25,8 +25,8 @@ export function DashboardDesktopLayout({
     activeLobby,
     leaveLobbyHandler,
     leaveGameHandler,
-    isModalOpen,
-    setModalOpen,
+    isJoinLobbyModalOpen,
+    setJoinLobbyModalOpen,
     isLeaveLobbyAlertOpen,
     setIsLeaveLobbyAlertOpen,
     isLeaveGameAlertOpen,
@@ -44,8 +44,8 @@ export function DashboardDesktopLayout({
         mutate: UseMutateFunction<GameDto | null, Error, LeaveGameRequestDto, unknown>;
         isLeaving: boolean;
     },
-    isModalOpen: boolean,
-    setModalOpen: Dispatch<SetStateAction<boolean>>,
+    isJoinLobbyModalOpen: boolean,
+    setJoinLobbyModalOpen: Dispatch<SetStateAction<boolean>>,
     isLeaveLobbyAlertOpen: boolean,
     setIsLeaveLobbyAlertOpen: Dispatch<SetStateAction<boolean>>,
     isLeaveGameAlertOpen: boolean,
@@ -119,7 +119,7 @@ export function DashboardDesktopLayout({
                         <OnlinePlayWidget 
                             isMobile={false}
                             isActiveLobby={activeLobby ? true : false}
-                            setModalOpen={setModalOpen}
+                            setJoinLobbyModalOpen={setJoinLobbyModalOpen}
                             navigate={navigate}
                         />
                         <MyStatsWidget
@@ -142,7 +142,7 @@ export function DashboardDesktopLayout({
                     <GameModesWidget isMobile={false} />
                 </div>
             </div>
-            <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}><JoinLobbyModal isMobile={false} /></Modal>
+            <Modal isOpen={isJoinLobbyModalOpen} onClose={() => setJoinLobbyModalOpen(false)}><JoinLobbyModal isMobile={false} /></Modal>
         </div>
     )
 }
