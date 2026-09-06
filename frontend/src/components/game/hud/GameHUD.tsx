@@ -129,7 +129,7 @@ export function GameHUD(
             <Modal 
                 isOpen={isStatsModalOpen} 
                 onClose={() => closeModal(setStatsModalOpen)}
-                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! left-[10%]! !blur-none z-50"
+                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! !blur-none z-50"
             >
                 <HUDStats 
                     userId={userId}
@@ -142,7 +142,7 @@ export function GameHUD(
             <Modal 
                 isOpen={isHeatMapModalOpen} 
                 onClose={() => closeModal(setHeatMapModalOpen)}
-                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! left-[10%]! !blur-none z-50"
+                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! !blur-none z-50"
             >
                 <HUDHeatMaps 
                     userId={userId}
@@ -154,7 +154,7 @@ export function GameHUD(
             <Modal 
                 isOpen={isGameLogModalOpen} 
                 onClose={() => closeModal(setGameLogModalOpen)}
-                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! left-[10%]! !blur-none z-50"
+                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! !blur-none z-50"
             >
                 <HUDGameEventLog 
                     gameId={gameId}
@@ -166,7 +166,7 @@ export function GameHUD(
             <Modal 
                 isOpen={isGameChatModalOpen} 
                 onClose={() => closeModal(setGameChatModalOpen)}
-                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! left-[10%]! !blur-none z-50"
+                className="w-[80%]! h-[80%]! md:h-[70%]! top-[10%]! md:top-[15%]! !blur-none z-50"
             >
                 <HUDGameChat 
                     gameId={gameId}

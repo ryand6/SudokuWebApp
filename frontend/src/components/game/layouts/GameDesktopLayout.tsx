@@ -87,7 +87,7 @@ export function GameDesktopLayout({
                 </div>
                 <Modal
                     isOpen={showGameResultsModal}
-                    className="w-[90%]! h-[90%]! left-[5%]! top-[5%]! md:w-[70%]! md:left-[15%]! lg:w-[50%]! lg:left-[25%]! z-50"
+                    className="w-[90%]! h-[90%]! top-[5%]! md:w-[70%]! lg:w-[50%]! z-50"
                 >
                     <GameResults
                         userId={currentUser.id}

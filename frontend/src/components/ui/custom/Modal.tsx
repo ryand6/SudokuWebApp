@@ -18,9 +18,10 @@ export function Modal({ isOpen, onClose, children, className }: ModalProps) {
                 onClick={onClose}
             />
             <div 
-                className={`fixed w-full top-0 left-0 h-full 
-                            sm:top-[5%] sm:left-[5%] sm:w-[90%] sm:h-[90%]
+                className={`fixed w-full top-0  h-full 
+                            sm:top-[5%] sm:w-[90%] sm:h-[90%]
                             bg-card z-1000 flex border-[2px] border-border rounded-md
+                            left-[50%] translate-x-[-50%]
                             ${className}`}
             >
                 <div className="flex w-[100%] h-[100%] relative">
