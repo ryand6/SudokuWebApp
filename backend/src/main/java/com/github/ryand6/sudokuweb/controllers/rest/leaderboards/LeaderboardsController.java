@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.rest.leaderboards;
 
+import com.github.ryand6.sudokuweb.domain.leaderboards.LeaderboardRow;
 import com.github.ryand6.sudokuweb.domain.leaderboards.TopFiveLeaderboardRow;
 import com.github.ryand6.sudokuweb.dto.entity.leaderboards.LeaderboardsDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
@@ -43,6 +44,31 @@ public class LeaderboardsController {
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
         LeaderboardsDto leaderboardsDto = leaderboardsService.getUserGameModeStats(gameMode, user.getId());
         return ResponseEntity.ok(leaderboardsDto);
+    }
+
+    @GetMapping("/get-leaderboard-rows")
+    public ResponseEntity<?> getLeaderboardRows(@RequestParam GameMode gameMode,
+                                                @RequestParam int page) {
+        List<LeaderboardRow> leaderboardRows = leaderboardsService.getLeaderboardsResults(gameMode, page);
+        return ResponseEntity.ok(leaderboardRows);
+    }
+
+    @GetMapping("/get-user-rank")
+    public ResponseEntity<?> getUserRank(@AuthenticationPrincipal OAuth2User principal,
+                                         OAuth2AuthenticationToken authToken,
+                                         @RequestParam GameMode gameMode) {
+        UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
+        Long userRank = leaderboardsService.getUserRankByGameMode(user.getId(), gameMode);
+        return ResponseEntity.ok(userRank);
+    }
+
+    @GetMapping("/get-user-leaderboard-row")
+    public ResponseEntity<?> getUserLeaderboardRow(@AuthenticationPrincipal OAuth2User principal,
+                                                   OAuth2AuthenticationToken authToken,
+                                                   @RequestParam GameMode gameMode) {
+        UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
+        LeaderboardRow leaderboardRow = leaderboardsService.getUserLeaderboardRow(user.getId(), gameMode);
+        return ResponseEntity.ok(leaderboardRow);
     }
 
 }

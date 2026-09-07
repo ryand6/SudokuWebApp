@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.services.leaderboards;
 
+import com.github.ryand6.sudokuweb.domain.leaderboards.LeaderboardRow;
 import com.github.ryand6.sudokuweb.domain.leaderboards.LeaderboardsEntity;
 import com.github.ryand6.sudokuweb.domain.leaderboards.LeaderboardsRepository;
 import com.github.ryand6.sudokuweb.domain.leaderboards.TopFiveLeaderboardRow;
@@ -11,7 +12,6 @@ import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.leaderboards.LeaderboardsEntityDtoMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,11 +40,10 @@ public class LeaderboardsService {
         return leaderboardsEntity != null ? leaderboardsEntityDtoMapper.mapToDto(leaderboardsEntity) : null;
     }
 
-    public List<LeaderboardsDto> getLeaderboardsResults(GameMode gameMode, int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.DESC, "totalScore"));
-        return leaderboardsRepository.findByGameModeOrderByTotalScoreDesc(gameMode, pageable)
+    public List<LeaderboardRow> getLeaderboardsResults(GameMode gameMode, int page) {
+        Pageable pageable = PageRequest.of(page, LeaderboardsEntity.PAGE_SIZE);
+        return leaderboardsRepository.findByGameModeOrderByRank(gameMode.name(), pageable)
                 .stream()
-                .map(leaderboardsEntityDtoMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 
@@ -86,6 +85,14 @@ public class LeaderboardsService {
 
     public List<TopFiveLeaderboardRow> getTopFiveWithUserRank(Long userId, GameMode gameMode) {
         return leaderboardsRepository.findTopFiveWithUserRank(userId, gameMode.name());
+    }
+
+    public Long getUserRankByGameMode(Long userId, GameMode gameMode) {
+        return leaderboardsRepository.findUserGameModeRank(userId, gameMode.name()).orElse(null);
+    }
+
+    public LeaderboardRow getUserLeaderboardRow(Long userId, GameMode gameMode) {
+        return leaderboardsRepository.findUserLeaderboardRow(userId, gameMode.name()).orElse(null);
     }
 
 }

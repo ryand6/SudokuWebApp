@@ -25,6 +25,8 @@ import java.time.Instant;
 )
 public class LeaderboardsEntity {
 
+    public static final int PAGE_SIZE = 100;
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "leaderboards_id_seq")
     private Long id;

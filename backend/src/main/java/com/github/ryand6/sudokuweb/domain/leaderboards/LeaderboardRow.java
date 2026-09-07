@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.domain.leaderboards;
 
-
-public interface TopFiveLeaderboardRow {
+public interface LeaderboardRow {
 
     long getRank();
 
@@ -10,5 +9,15 @@ public interface TopFiveLeaderboardRow {
     String getUsername();
 
     Long getTotalScore();
+
+    int getGamesPlayed();
+
+    int getWins();
+
+    int getLosses();
+
+    int getDraws();
+
+    int getMaxWinStreak();
 
 }
