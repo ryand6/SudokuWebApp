@@ -1,16 +1,20 @@
 import { useGetTopFiveWithUserRank } from "@/api/rest/leaderboards/query/useGetTopFiveWithUserRank";
+import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { gameModes, type GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { IconTrophy } from "@tabler/icons-react";
 import { useState } from "react";
+import type { NavigateFunction } from "react-router-dom";
 
 export function TopFiveLeaderboardsWidget({
     userId,
-    isMobile
+    isMobile,
+    navigate
 }: {
     userId: number,
-    isMobile: boolean
+    isMobile: boolean,
+    navigate: NavigateFunction
 }) {
     const iconSize: number = isMobile ? 16 : 24;
 
@@ -22,9 +26,18 @@ export function TopFiveLeaderboardsWidget({
 
     return (
         <div className="flex flex-col border-2 border-muted rounded-lg w-full font-display flex-1">
-            <div className="flex w-full border-b-2 border-b-muted bg-card gap-2 px-4 py-2 items-center text-accent-foreground rounded-t-lg">
-                <span><IconTrophy size={iconSize} /></span>
-                <span className="font-semibold text-lg">Leaderboards</span>
+            <div className="flex w-full border-b-2 border-b-muted bg-card justify-between px-4 py-2 items-center text-accent-foreground rounded-t-lg">
+                <div className="flex gap-2">
+                    <span><IconTrophy size={iconSize} /></span>
+                    <span className="font-semibold text-lg">Leaderboards</span>
+                </div>
+                <div>
+                    <Button
+                        onClick={() => navigate("/leaderboards")}
+                    >
+                        Full Leaderboards
+                    </Button>
+                </div>
             </div>
             <div className="flex gap-3 px-4 py-2">
                 {
@@ -64,9 +77,9 @@ export function TopFiveLeaderboardsWidget({
                                         <div className="flex gap-8">
                                             <div
                                                 className={`font-bold font-display
-                                                    ${row.rank === 1 ? "text-[#DDB84A]" : row.rank === 2 ? "text-[#C0C0C0]" : row.rank === 3 ? "text-[#CD7F32]" : row.userId === userId ? "text-secondary" : "text-muted"}`}
+                                                    ${row.rank === 1 ? "text-[#DDB84A]" : row.rank === 2 ? "text-[#C0C0C0]" : row.rank === 3 ? "text-[#CD7F32]" : row.userId === userId ? "text-secondary" : "text-muted-foreground"}`}
                                             >
-                                                {row.rank}
+                                                {row.rank.toLocaleString()}
                                             </div>
                                             <div
                                                 className={`font-bold font-display tracking-wide

@@ -9,19 +9,21 @@ export function useInfiniteMessageList<T>({
     hasNextPage, 
     isFetchingNextPage, 
     fetchNextPage, 
-    refetch 
+    refetch,
+    reverseData
 }: {
-    data: InfiniteData<T[]> | undefined;
-    hasNextPage: boolean;
-    isFetchingNextPage: boolean;
-    fetchNextPage: (options?: FetchNextPageOptions) => Promise<InfiniteQueryObserverResult<InfiniteData<T[]>, Error>>;
-    refetch: () => void;
+    data: InfiniteData<T[]> | undefined,
+    hasNextPage: boolean,
+    isFetchingNextPage: boolean,
+    fetchNextPage: (options?: FetchNextPageOptions) => Promise<InfiniteQueryObserverResult<InfiniteData<T[]>, Error>>,
+    refetch: () => void,
+    reverseData: boolean
 }) {
     const [isAtBottom, setIsAtBottom] = useState(true);
     const [isLoadingNextPage, setIsLoadingNextPage] = useState(false);
 
     const { sentinelRef, messages } = useInfiniteDataManager<T>({
-        data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, isAtBottom, isLoadingNextPage, setIsLoadingNextPage
+        data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, isAtBottom, isLoadingNextPage, setIsLoadingNextPage, reverseData
     });
 
     const { chatRef, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteScroll<T>({

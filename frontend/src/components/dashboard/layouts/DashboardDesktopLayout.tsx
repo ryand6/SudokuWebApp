@@ -132,6 +132,7 @@ export function DashboardDesktopLayout({
                         <TopFiveLeaderboardsWidget
                             userId={user.id}
                             isMobile={false}
+                            navigate={navigate}
                         />
                         <SinglePlayerWidget
                             isMobile={false}    

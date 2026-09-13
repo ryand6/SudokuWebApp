@@ -29,11 +29,12 @@ export function HUDGameChat({
     gameMode: GameMode,
     isMobile: boolean
 }) {
+    const reverseData = true;
     const { send } = useWebSocketContext();
     const [inputMessage, setInputMessage] = useState("");
     const [isQuickMessage, setIsQuickMessage] = useState(true);
     const { data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameChatMessages(gameId);
-    const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch });
+    const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, reverseData });
 
     const handleTypeClick = () => {
         if (!inputMessage.trim()) return;

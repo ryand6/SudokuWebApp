@@ -1,12 +1,12 @@
 import { queryKeys } from "@/state/queryKeys";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PAGE_SIZE } from "@/utils/global/globalConstants";
-import type { LeaderboardRow } from "@/types/dto/entity/leaderboards/LeaderboardRow";
+import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRow";
 import { getLeaderboardRows } from "./getLeaderboardRows";
 import type { GameMode } from "@/types/enum/GameMode";
 
 export function useGetLeaderboardRows(gameMode: GameMode) { 
-    return useInfiniteQuery<LeaderboardRow[], Error>({ 
+    return useInfiniteQuery<LeaderboardRowDto[], Error>({ 
         queryKey: queryKeys.leaderboardRows(gameMode),
         queryFn: async ({ queryKey, pageParam }) => {
             const [, gameMode] = queryKey;

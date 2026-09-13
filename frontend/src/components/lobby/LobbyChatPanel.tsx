@@ -19,10 +19,11 @@ export function LobbyChatPanel({
     lobbyId: number, 
     userId: number
 }) {
+    const reverseData = true;
     const { send } = useWebSocketContext();
     const [inputMessage, setInputMessage] = useState("");
     const {data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetLobbyChatMessages(lobbyId);
-    const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch });
+    const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, reverseData });
 
     const handleClick = () => {
         if (!inputMessage.trim()) return;

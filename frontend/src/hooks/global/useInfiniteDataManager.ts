@@ -11,22 +11,25 @@ export function useInfiniteDataManager<T>({
     refetch,
     isAtBottom, 
     isLoadingNextPage, 
-    setIsLoadingNextPage
+    setIsLoadingNextPage,
+    reverseData
 }: {
-    data: InfiniteData<T[]> | undefined;
-    hasNextPage: boolean;
-    isFetchingNextPage: boolean;
-    fetchNextPage: (options?: FetchNextPageOptions) => Promise<InfiniteQueryObserverResult<InfiniteData<T[]>, Error>>;
-    refetch: () => void;
-    isAtBottom: boolean;
-    isLoadingNextPage: boolean;
-    setIsLoadingNextPage: (value: boolean) => void;
+    data: InfiniteData<T[]> | undefined,
+    hasNextPage: boolean,
+    isFetchingNextPage: boolean,
+    fetchNextPage: (options?: FetchNextPageOptions) => Promise<InfiniteQueryObserverResult<InfiniteData<T[]>, Error>>,
+    refetch: () => void,
+    isAtBottom: boolean,
+    isLoadingNextPage: boolean,
+    setIsLoadingNextPage: (value: boolean) => void,
+    reverseData: boolean
 }) {
 
     const { ref: sentinelRef, inView } = useInView({ threshold: 0 });
 
     const messages = useMemo(() => {
         if (!data) return [];
+        if (!reverseData) return data.pages.flat();
         return data.pages.flat().reverse();
     }, [data]);
 

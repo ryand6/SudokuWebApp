@@ -1,4 +1,4 @@
-export type LeaderboardRow = {
+export type LeaderboardRowDto = {
     rank: number,
     userId: number,
     username: string,

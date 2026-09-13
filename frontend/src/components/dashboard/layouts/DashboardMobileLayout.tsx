@@ -169,6 +169,7 @@ export function DashboardMobileLayout({
                             <TopFiveLeaderboardsWidget
                                 userId={user.id}
                                 isMobile={true}
+                                navigate={navigate}
                             />
                         </>
                     ) : (

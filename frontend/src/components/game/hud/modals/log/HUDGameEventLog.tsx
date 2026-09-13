@@ -10,9 +10,11 @@ export function HUDGameEventLog({
     gameId: number,
     playerColours: Record<number, PlayerColour> | undefined
 }) {
+    const reverseData = true;
+
     const {data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameEvents(gameId);
 
-    const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch });
+    const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, reverseData });
 
     const totalEvents = data?.pages.reduce((acc, page) => acc + page.length, 0) ?? 0;
 
