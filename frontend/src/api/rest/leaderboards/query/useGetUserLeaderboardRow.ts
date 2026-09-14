@@ -1,5 +1,5 @@
 import { queryKeys } from "@/state/queryKeys";
-import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRow";
+import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRowDto";
 import type { GameMode } from "@/types/enum/GameMode";
 import { useQuery } from "@tanstack/react-query";
 import { getUserLeaderboardRow } from "./getUserLeaderboardRow";

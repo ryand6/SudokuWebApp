@@ -60,6 +60,7 @@ export function LobbyChatPanel({
                         <IncomingMessageGroup key={index} messageGroup={group} playerColours={undefined} isLastGroup={isLastGroup} />
                     )
                 }}
+                reverseData={true}
             />
             <div className="flex flex-col py-3 px-4 border-t-1 border-muted bg-card">
                 <TypeMessageBar inputMessage={inputMessage} setInputMessage={setInputMessage} handleClick={handleClick} />

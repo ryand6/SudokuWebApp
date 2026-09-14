@@ -7,7 +7,7 @@ import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { Spinner } from "@/components/ui/spinner";
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
 import { useIsMobile } from "@/hooks/global/useIsMobile";
-import { type LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRow";
+import { type LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRowDto";
 import { gameModes, type GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
 import { IconZoom } from "@tabler/icons-react";
@@ -23,8 +23,6 @@ export function LeaderboardsPage() {
     const {data, isLoading: isLoadingRows, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetLeaderboardRows(selectedMode);
     const reverseData = false;
     const iconSize = isMobile ? 16 : 24;
-
-    console.log("User Leaderboard Row:", userLeaderboardRecord);
     
     const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, reverseData });
 
@@ -38,6 +36,9 @@ export function LeaderboardsPage() {
     }, [messages, searchTerm]);
 
     if (!user) return;
+
+    console.log("filtered messages length:", filteredMessages.length);
+    console.log("filtered messages:", filteredMessages);
 
     return (
         <div className="flex flex-col flex-1 bg-background">
@@ -58,10 +59,10 @@ export function LeaderboardsPage() {
                     }
                 </div>
                 <div className="flex flex-1 justify-end items-center py-2">
-                    <div className="flex border-1 gap-3 border-muted rounded-lg py-2 px-3 text-muted-foreground items-center">
+                    <div className="flex border-1 gap-3 border-muted bg-background rounded-lg py-2 px-3 text-muted-foreground items-center">
                         <IconZoom size={iconSize} />
-                        <div className="rounded-lg bg-muted/60 p-2">
-                            <input type="text" placeholder="Search player..." className="outline-0" onChange={(e) => setSearchTerm(e.target.value)} />
+                        <div className="rounded-lg bg-muted/50 p-2">
+                            <input type="text" placeholder="Search player..." className="outline-0" onChange={(e) => setSearchTerm(e.target.value)} value={searchTerm} />
                         </div>
                     </div>
                 </div>
@@ -150,7 +151,9 @@ export function LeaderboardsPage() {
                 renderMessage={(msg, index) => 
                     <LeaderboardRow key={index} data={msg} userId={user?.id} isMobile={isMobile} />
                 }
+                reverseData={false}
             />
+            <div className="py-10"></div>
         </div>
     )
 }

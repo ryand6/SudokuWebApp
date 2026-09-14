@@ -10,7 +10,8 @@ export function InfiniteMessageList<T>({
     onScroll, 
     onScrollToBottom, 
     messages, 
-    renderMessage 
+    renderMessage,
+    reverseData
 }: {
     chatRef: RefObject<HTMLDivElement | null>;
     sentinelRef: (node?: Element | null) => void;
@@ -20,6 +21,7 @@ export function InfiniteMessageList<T>({
     onScrollToBottom: () => void;
     messages: T[];
     renderMessage: (message: T, index: number) => ReactNode;
+    reverseData: boolean
 }) {
     return (
         <div
@@ -27,8 +29,17 @@ export function InfiniteMessageList<T>({
             ref={chatRef}
             onScroll={onScroll}
         >
-            <div ref={sentinelRef} className="h-1" />
+            {
+                reverseData && (
+                    <div ref={sentinelRef} className="h-1" />
+                )
+            }
             {messages.map((msg, index) => renderMessage(msg, index))}
+            {
+                !reverseData && (
+                    <div ref={sentinelRef} className="h-1" />
+                )
+            }
             {hasNewMessages && !isAtBottom && (
                 <Button
                     onClick={onScrollToBottom}

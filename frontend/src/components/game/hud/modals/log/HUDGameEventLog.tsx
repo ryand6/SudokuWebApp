@@ -40,6 +40,7 @@ export function HUDGameEventLog({
                     <GameEventMessage key={index} msg={msg} playerColours={playerColours} />
 
                 }
+                reverseData={true}
             />
         </div>
     )

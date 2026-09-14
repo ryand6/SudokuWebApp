@@ -1,7 +1,7 @@
 import { queryKeys } from "@/state/queryKeys";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { PAGE_SIZE } from "@/utils/global/globalConstants";
-import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRow";
+import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRowDto";
 import { getLeaderboardRows } from "./getLeaderboardRows";
 import type { GameMode } from "@/types/enum/GameMode";
 

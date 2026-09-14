@@ -1,4 +1,4 @@
-import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRow"
+import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRowDto"
 
 export function LeaderboardRow({
     data,
