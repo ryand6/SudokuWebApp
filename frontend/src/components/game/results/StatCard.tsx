@@ -1,19 +1,21 @@
 export function StatCard({ 
     value, 
-    label 
+    label,
+    compact
 }: { 
     value: string,
-    label: string 
+    label: string,
+    compact: boolean
 }) {
     return (
         <div className="bg-card border-2 border-muted rounded-md px-2.5 py-2 text-center">
             <div
-                className="text-xl font-semibold text-primary leading-none mb-0.5 font-display"
+                className={`${compact ? "text-md" : "text-xl"} font-semibold text-primary leading-none mb-0.5 font-display`}
             >
                 {value}
             </div>
             <div
-                className="text-md text-muted-foreground font-sans"
+                className={`${compact ? "text-xs" : "text-md"} text-muted-foreground font-sans`}
             >
                 {label}
             </div>

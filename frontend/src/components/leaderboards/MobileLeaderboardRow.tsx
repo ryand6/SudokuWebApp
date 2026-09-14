@@ -1,21 +1,23 @@
 import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRowDto";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
-import { LeaderboardRow } from "./LeaderboardRow";
+import { Accordion, AccordionContent, AccordionItem } from "../ui/accordion";
 import { ChevronDown } from "lucide-react";
 import { NoChevronAccordionTrigger } from "../ui/custom/NoChevronAccordionTrigger";
 import { StatCard } from "../game/results/StatCard";
+import type { GameMode } from "@/types/enum/GameMode";
 
 export function MobileLeaderboardRow({
     data,
-    userId
+    userId,
+    gameMode
 }: {
     data: LeaderboardRowDto,
-    userId: number
+    userId: number,
+    gameMode: GameMode
 }) {
 
     return (
         <Accordion type="single" collapsible>
-            <AccordionItem value={userId.toString()}>
+            <AccordionItem value={userId.toString() + gameMode}>
                 <NoChevronAccordionTrigger
                     className="w-full p-0"
                 >
@@ -40,23 +42,13 @@ export function MobileLeaderboardRow({
 
                             <div
                                 className={`flex flex-1 justify-center font-bold tracking-wide
-                                    ${
-                                        data.userId === userId
-                                            ? "text-secondary"
-                                            : "text-foreground"
-                                    }`}
+                                        ${data.userId === userId ? "text-secondary" : "text-foreground"}`}
                             >
                                 {data.username}
                             </div>
-                        </div>
-                        <div className="flex flex-1 gap-4 py-2 px-4">
                             <div
                                 className={`flex flex-1 justify-center font-bold tracking-wide
-                                    ${
-                                        data.userId === userId
-                                            ? "text-secondary"
-                                            : "text-accent-foreground"
-                                    }`}
+                                        ${data.userId === userId ? "text-secondary" : "text-accent-foreground"}`}
                             >
                                 {data.totalScore.toLocaleString()}
                             </div>
@@ -74,11 +66,11 @@ export function MobileLeaderboardRow({
                 </NoChevronAccordionTrigger>
                 <AccordionContent>
                     <div className="px-4 py-2 bg-sidebar-primary/20 flex justify-center flex-wrap gap-2 border-b-2 border-muted">
-                        <StatCard value={data.wins.toLocaleString()} label="Wins" />
-                        <StatCard value={data.losses.toLocaleString()} label="Losses" />
-                        <StatCard value={data.draws.toLocaleString()} label="Draws" />
-                        <StatCard value={Math.round((data.wins / data.gamesPlayed) * 100).toLocaleString() + "%"} label="Win Rate" />
-                        <StatCard value={data.maxWinStreak.toLocaleString()} label="Max Win Streak" />
+                        <StatCard value={data.wins.toLocaleString()} label="Wins" compact={true} />
+                        <StatCard value={data.losses.toLocaleString()} label="Losses" compact={true} />
+                        <StatCard value={data.draws.toLocaleString()} label="Draws" compact={true} />
+                        <StatCard value={Math.round((data.wins / data.gamesPlayed) * 100).toLocaleString() + "%"} label="Win Rate" compact={true} />
+                        <StatCard value={data.maxWinStreak.toLocaleString()} label="Max Win Streak" compact={true} />
                     </div>
                 </AccordionContent>
             </AccordionItem>

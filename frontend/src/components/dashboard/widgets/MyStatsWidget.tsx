@@ -55,14 +55,14 @@ export function MyStatsWidget({
                                 </div>
                             ) : (
                                 <div className="px-4 flex justify-center flex-wrap gap-2">
-                                    <StatCard value={data.gamesPlayed.toLocaleString()} label="Games" />
-                                    <StatCard value={data.wins.toLocaleString()} label="Wins" />
-                                    <StatCard value={data.losses.toLocaleString()} label="Losses" />
-                                    <StatCard value={data.draws.toLocaleString()} label="Draws" />
-                                    <StatCard value={data.totalScore.toLocaleString()} label="Total Score" />
-                                    <StatCard value={Math.round((data.wins / data.gamesPlayed) * 100).toLocaleString() + "%"} label="Win Rate" />
-                                    <StatCard value={data.currentWinStreak.toLocaleString()} label="Current Win Streak" />
-                                    <StatCard value={data.maxWinStreak.toLocaleString()} label="Max Win Streak" />
+                                    <StatCard value={data.gamesPlayed.toLocaleString()} label="Games" compact={false} />
+                                    <StatCard value={data.wins.toLocaleString()} label="Wins" compact={false} />
+                                    <StatCard value={data.losses.toLocaleString()} label="Losses" compact={false} />
+                                    <StatCard value={data.draws.toLocaleString()} label="Draws" compact={false} />
+                                    <StatCard value={data.totalScore.toLocaleString()} label="Total Score" compact={false} />
+                                    <StatCard value={Math.round((data.wins / data.gamesPlayed) * 100).toLocaleString() + "%"} label="Win Rate" compact={false} />
+                                    <StatCard value={data.currentWinStreak.toLocaleString()} label="Current Win Streak" compact={false} />
+                                    <StatCard value={data.maxWinStreak.toLocaleString()} label="Max Win Streak" compact={false} />
                                 </div>
                             )
                         }

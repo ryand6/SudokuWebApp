@@ -225,10 +225,10 @@ export function GameResults({
                     Game stats
                 </p>
                 <div className="grid grid-cols-2 grid-rows-2 gap-1.5 mb-4">
-                    <StatCard value={timeTaken} label="Time taken" />
-                    <StatCard value={players[userId].mistakes.toString()} label="Mistakes" />
-                    <StatCard value={players[userId].firsts.toString()} label="Firsts" />
-                    <StatCard value={userRankText} label="Leaderboard rank" />
+                    <StatCard value={timeTaken} label="Time taken" compact={false} />
+                    <StatCard value={players[userId].mistakes.toString()} label="Mistakes" compact={false} />
+                    <StatCard value={players[userId].firsts.toString()} label="Firsts" compact={false} />
+                    <StatCard value={userRankText} label="Leaderboard rank" compact={false} />
                 </div>
                 <ReturnToLobbyAlertDialog open={isAlertOpen} handleContinueClick={() => returnToLobbyHandler()} setOpen={setIsAlertOpen} />
                 <Button variant="destructive" className="cursor-pointer" onClick={() => setIsAlertOpen(true)}>Return to Lobby</Button>

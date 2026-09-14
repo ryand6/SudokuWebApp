@@ -49,7 +49,7 @@ export function GameHUD(
     const [isGameChatModalOpen, setGameChatModalOpen] = useState(false);
     const [isAlertOpen, setIsAlertOpen] = useState(false);
 
-    const iconSize: number = isMobile ? 16 : 24;
+    const iconSize: number = isMobile ? 12 : 24;
     const iconStroke: number = isMobile ? 2 : 3;
 
     useEffect(() => {
