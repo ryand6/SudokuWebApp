@@ -3,10 +3,11 @@ import { UserSettings } from "@/components/global/UserSettings";
 import { WebSocketReconnectScreen } from "@/components/global/WebSocketReconnectScreen";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useQueryClient } from "@tanstack/react-query";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 
 export default function MainLayout() {
 	const queryClient = useQueryClient();
+	const navigate = useNavigate();
 	const { isConnected } = useWebSocketContext();
 	const { data: user } = useGetCurrentUser();
 
@@ -14,7 +15,10 @@ export default function MainLayout() {
 		<div className="min-h-screen md:h-screen flex flex-col">
 			<header className="bg-secondary h-16 text-secondary-foreground px-4 py-3">
 				<div className="w-full h-full mx-auto flex items-center justify-between px-5">
-					<h1 className="font-bold text-3xl">
+					<h1 
+						className="font-bold text-3xl cursor-pointer"
+						onClick={() => navigate("/")}
+					>
 						Tomo Sudoku
 					</h1>
 					{
