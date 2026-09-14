@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { gameModes, type GameMode } from "@/types/enum/GameMode";
 import { wordToProperCase } from "@/utils/string/wordToProperCase";
-import { IconTrophy } from "@tabler/icons-react";
+import { IconArrowNarrowRight, IconTrophy } from "@tabler/icons-react";
 import { useState } from "react";
 import type { NavigateFunction } from "react-router-dom";
 
@@ -33,9 +33,13 @@ export function TopFiveLeaderboardsWidget({
                 </div>
                 <div>
                     <Button
+                        className="cursor-pointer bg-card text-accent-foreground border-accent-foreground border-1 hover:bg-accent-foreground/20"
                         onClick={() => navigate("/leaderboards")}
                     >
-                        Full Leaderboards
+                        <div className="flex gap-2 items-center font-semibold text-lg">
+                            <span>Full Leaderboards</span>
+                            <span><IconArrowNarrowRight size={iconSize} /></span>
+                        </div>
                     </Button>
                 </div>
             </div>
