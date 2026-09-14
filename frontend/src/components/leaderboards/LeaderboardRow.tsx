@@ -10,7 +10,7 @@ export function LeaderboardRow({
     isMobile: boolean
 }) {
     return (
-        <div className="flex justify-between py-2 px-4 border-b-1 border-muted bg-background font-display">
+        <div className="flex w-full justify-between py-2 px-4 border-b-1 border-muted bg-background font-display">
             <div className="flex flex-1 justify-start gap-4">
                 <div 
                     className={`flex flex-1 md:max-w-[10%] justify-center font-bold font-display

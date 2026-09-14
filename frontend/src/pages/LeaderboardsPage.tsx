@@ -3,6 +3,7 @@ import { useGetUserLeaderboardRow } from "@/api/rest/leaderboards/query/useGetUs
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
 import { InfiniteMessageList } from "@/components/global/InfiniteMessageList";
 import { LeaderboardRow } from "@/components/leaderboards/LeaderboardRow";
+import { MobileLeaderboardRow } from "@/components/leaderboards/MobileLeaderboardRow";
 import { SpinnerButton } from "@/components/ui/custom/SpinnerButton";
 import { Spinner } from "@/components/ui/spinner";
 import { useInfiniteMessageList } from "@/hooks/global/useInfiniteMessageList";
@@ -114,6 +115,11 @@ export function LeaderboardsPage() {
                         GAMES
                     </div>
                     {
+                        isMobile && (
+                            <div className="flex flex-1 justify-center"></div>
+                        )
+                    }
+                    {
                         !isMobile && (
                             <>
                                 <div className="flex flex-1 justify-center tracking-wider text-muted-foreground font-semibold">
@@ -148,9 +154,10 @@ export function LeaderboardsPage() {
                 hasNewMessages={hasNewMessages}
                 onScroll={handleScroll}
                 onScrollToBottom={scrollToBottom}
-                renderMessage={(msg, index) => 
-                    <LeaderboardRow key={index} data={msg} userId={user?.id} isMobile={isMobile} />
-                }
+                renderMessage={(msg, index) => {
+                    if (isMobile) return <MobileLeaderboardRow key={index} data={msg} userId={user?.id} />;
+                    return <LeaderboardRow key={index} data={msg} userId={user?.id} isMobile={isMobile} />;
+                }}
                 reverseData={false}
             />
             <div className="py-10"></div>

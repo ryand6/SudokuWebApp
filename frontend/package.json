@@ -23,6 +23,7 @@
     "@types/sockjs-client": "^1.5.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cn": "^0.3.0",
     "lucide-react": "^0.544.0",
     "radix-ui": "^1.6.0",
     "react": "^19.1.0",
