@@ -33,7 +33,7 @@ export function TopFiveLeaderboardsWidget({
                 </div>
                 <div>
                     <Button
-                        className="cursor-pointer bg-card text-accent-foreground border-accent-foreground border-1 hover:bg-accent-foreground/20"
+                        className="cursor-pointer bg-card text-accent-foreground border-muted border-1 hover:bg-accent-foreground/20"
                         onClick={() => navigate("/leaderboards")}
                     >
                         <div className="flex gap-2 items-center font-semibold text-lg">
