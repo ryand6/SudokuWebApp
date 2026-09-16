@@ -56,7 +56,7 @@ export function DashboardDesktopLayout({
     const iconSize = 24;
     
     return (
-        <div className="flex flex-col w-full h-full font-display">
+        <div className="flex flex-col w-full h-full font-display overflow-y-auto">
             <div className="flex items-center px-5 py-5 border-b-border border-b-2">
                 <div className="tracking-wide font-semibold text-foreground text-lg">
                     Hello, {user.username}!

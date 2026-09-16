@@ -11,6 +11,15 @@ export default function MainLayout() {
 	const { isConnected } = useWebSocketContext();
 	const { data: user } = useGetCurrentUser();
 
+	if (user) {
+		document.documentElement.classList.remove(
+			"theme-midnight", "theme-classic", "theme-frost"
+		);
+		if (user.userSettings.theme !== "HEARTHSIDE") {
+			document.documentElement.classList.add(`theme-${user.userSettings.theme.toLowerCase()}`);
+		}
+	}
+
 	return (
 		<div className="min-h-screen md:h-screen flex flex-col">
 			<header className="bg-secondary h-16 text-secondary-foreground px-4 py-3">

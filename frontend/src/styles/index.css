@@ -32,9 +32,9 @@
     --card-foreground:            #2C2416;
     --popover:                    #FAF6EE;
     --popover-foreground:         #2C2416;
-    --primary:                    #A85432;
+    --primary:                    #964000;
     --primary-foreground:         #FAF6EE;
-    --secondary:                  #3D6B4A;
+    --secondary:                  #5C6941;
     --secondary-foreground:       #FAF6EE;
     --muted:                      #D6CBAF;
     --muted-foreground:           #9B8E7A;
@@ -94,78 +94,125 @@
     --player-colour-four-light: rgb(242, 228, 248);
 }
 
-.dark {
-    --background: oklch(0.141 0.005 285.823);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.21 0.006 285.885);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.21 0.006 285.885);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.541 0.281 293.009);
-    --primary-foreground: oklch(0.969 0.016 293.756);
-    --secondary: oklch(0.274 0.006 286.033);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.274 0.006 286.033);
-    --muted-foreground: oklch(0.705 0.015 286.067);
-    --accent: oklch(0.274 0.006 286.033);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --destructive-light:          #f56868;
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.541 0.281 293.009);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.21 0.006 285.885);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.541 0.281 293.009);
-    --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
-    --sidebar-accent: oklch(0.274 0.006 286.033);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.541 0.281 293.009);
-    --grid-line: #F0E9D8;
-    --header:                     #3D6B4A;
-    --header-foreground:          #FAF6EE;
-    --footer:                     #3D6B4A;
-    --footer-foreground:          #FAF6EE;
-
-    /* Game Results Styles */
-    --result-win:             #DDB84A;
-    --result-win-foreground:  #2C2416;       
-
-    --result-draw:            rgba(200,189,168,0.15);  
-    --result-draw-border:     rgba(200,189,168,0.35);  
-    --result-draw-foreground: #C8BDA8;         
-
-    --result-loss:            rgba(168,84,50,0.15);   
-    --result-loss-border:     rgba(168,84,50,0.4);    
-    --result-loss-foreground: #F5C4A0;         
-
-    --result-pending:         rgba(200,189,168,0.12);  
-    --result-pending-border:  rgba(200,189,168,0.35);  
-    --result-pending-foreground: #C8BDA8; 
-
-    --player-colour-one-strong: rgb(156, 186, 235);
-    --player-colour-one-medium: rgb(181, 203, 238);
-    --player-colour-one-light: rgb(213, 226, 247);
-
-    --player-colour-two-strong: rgb(182, 238, 203);
-    --player-colour-two-medium: rgb(196, 235, 210);
-    --player-colour-two-light: rgb(228, 247, 235);
-
-    --player-colour-three-strong: rgb(243, 157, 157);
-    --player-colour-three-medium: rgb(240, 178, 178);
-    --player-colour-three-light: rgb(250, 221, 221);
-
-    --player-colour-four-strong: rgb(203, 162, 250);
-    --player-colour-four-medium: rgb(220, 204, 240);
-    --player-colour-four-light: rgb(242, 228, 248);
+.theme-midnight {
+    --background:             #0F1117;  
+    --foreground:             #E8EAF0;  
+    --card:                   #1A1D2E;  
+    --card-foreground:        #E8EAF0;
+    --muted:                  #2A2D3E;  
+    --muted-foreground:       #6B7090; 
+    --accent:                 #1E2235;  
+    --accent-foreground:      #C5C8D8;
+    --primary:                #6C63FF;
+    --primary-foreground:     #FFFFFF;
+    --secondary:              #00BFA5;
+    --secondary-foreground:   #0F1117;
+    --border:                 #2E3250;
+    --sidebar:                #0B0D18;
+    --sidebar-foreground:     #E8EAF0;
+    --sidebar-accent:         #4A4E6A;
+    --sidebar-primary:        #6C63FF;   
+    --sidebar-primary-foreground: #FFFFFF;
+    --header:                 #12152A;
+    --header-foreground:      #E8EAF0;
+    --grid-line:              #2E3250;
+    
+    --player-colour-one-light:    rgba(108,99,255,0.2);
+    --player-colour-one-medium:   rgba(108,99,255,0.45);
+    --player-colour-one-strong:   #6C63FF;
+    
+    --player-colour-two-light:    rgba(0,191,165,0.2);
+    --player-colour-two-medium:   rgba(0,191,165,0.45);
+    --player-colour-two-strong:   #00BFA5;
+    
+    --player-colour-three-light:  rgba(255,82,82,0.2);
+    --player-colour-three-medium: rgba(255,82,82,0.45);
+    --player-colour-three-strong: #FF5252;
+    
+    --player-colour-four-light:   rgba(255,196,0,0.2);
+    --player-colour-four-medium:  rgba(255,196,0,0.45);
+    --player-colour-four-strong:  #FFC400;
 }
-
+ 
+.theme-classic {
+    --background:             #FAFCFE;  
+    --foreground:             #1A2233;  
+    --card:                   #EEF3F8;  
+    --card-foreground:        #1A2233;
+    --muted:                  #D0DCE8; 
+    --muted-foreground:       #7A8FA8; 
+    --accent:                 #E2EDF7; 
+    --accent-foreground:      #2C3D52;
+    --primary:                #3A6EA8;
+    --primary-foreground:     #FAFCFE;
+    --secondary:              #4A5A7A;
+    --secondary-foreground:   #FAFCFE;
+    --border:                 #1A2233;
+    --sidebar:                #1E2E45;
+    --sidebar-foreground:     #FAFCFE;
+    --sidebar-accent:         #8AA4C0;
+    --sidebar-primary:        #6FA8DC;  
+    --sidebar-primary-foreground: #1A2233;
+    --header:                 #2C3D52;
+    --header-foreground:      #FAFCFE;
+    --grid-line:              #1A2233;
+    
+    --player-colour-one-light:    rgba(58,110,168,0.15);
+    --player-colour-one-medium:   rgba(58,110,168,0.4);
+    --player-colour-one-strong:   #3A6EA8;
+    
+    --player-colour-two-light:    rgba(74,90,122,0.15);
+    --player-colour-two-medium:   rgba(74,90,122,0.4);
+    --player-colour-two-strong:   #4A5A7A;
+    
+    --player-colour-three-light:  rgba(111,168,220,0.2);
+    --player-colour-three-medium: rgba(111,168,220,0.45);
+    --player-colour-three-strong: #6FA8DC;
+    
+    --player-colour-four-light:   rgba(138,164,192,0.2);
+    --player-colour-four-medium:  rgba(138,164,192,0.45);
+    --player-colour-four-strong:  #8AA4C0;
+}
+ 
+.theme-dusk {
+    --background:             #F7F4FA; 
+    --foreground:             #2A2035;  
+    --card:                   #EDE8F5;  
+    --card-foreground:        #2A2035;
+    --muted:                  #D8D0E8;  
+    --muted-foreground:       #8A7EA0;  
+    --accent:                 #F2E8F0; 
+    --accent-foreground:      #4A2840;
+    --primary:                #B85880;
+    --primary-foreground:     #F7F4FA;
+    --secondary:              #5A8A72;
+    --secondary-foreground:   #F7F4FA;
+    --border:                 #3A2850;
+    --sidebar:                #2E1E40;
+    --sidebar-foreground:     #F7F4FA;
+    --sidebar-accent:         #9A88B8;
+    --sidebar-primary:        #E8A0B8;   
+    --sidebar-primary-foreground: #2A2035;
+    --header:                 #5A8A72;  
+    --header-foreground:      #F7F4FA;
+    --grid-line:              #3A2850;
+    
+    --player-colour-one-light:    rgba(184,88,128,0.15);
+    --player-colour-one-medium:   rgba(184,88,128,0.4);
+    --player-colour-one-strong:   #B85880;
+    
+    --player-colour-two-light:    rgba(90,138,114,0.15);
+    --player-colour-two-medium:   rgba(90,138,114,0.4);
+    --player-colour-two-strong:   #5A8A72;
+    
+    --player-colour-three-light:  rgba(154,136,184,0.2);
+    --player-colour-three-medium: rgba(154,136,184,0.45);
+    --player-colour-three-strong: #9A88B8;
+    
+    --player-colour-four-light:   rgba(232,160,184,0.2);
+    --player-colour-four-medium:  rgba(232,160,184,0.45);
+    --player-colour-four-strong:  #E8A0B8;
+}
 
 @theme inline {
     --radius-sm: calc(var(--radius) - 4px);

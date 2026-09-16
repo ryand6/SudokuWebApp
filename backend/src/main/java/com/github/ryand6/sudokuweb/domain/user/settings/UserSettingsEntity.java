@@ -29,7 +29,7 @@ public class UserSettingsEntity {
 
     @Builder.Default
     @Column(name = "theme")
-    private Theme theme = Theme.COSY;
+    private Theme theme = Theme.HEARTHSIDE;
 
     @Builder.Default
     @Column(name = "opponent_highlighted_squares")

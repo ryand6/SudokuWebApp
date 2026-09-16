@@ -1,1 +1,1 @@
-export type Theme = "COSY" | "MIDNIGHT" | "RETRO" | "COOL";
+export type Theme = "HEARTHSIDE" | "MIDNIGHT" | "CLASSIC" | "DUSK";

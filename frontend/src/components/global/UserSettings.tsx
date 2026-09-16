@@ -35,10 +35,10 @@ export function UserSettings({
     type BooleanSettings = BooleanKeys<UserSettingsDto>
 
     const themeOptions = [
-        {value: 'COSY', label: 'Cosy', colours: ['#A85432', '#3D6B4A', '#3D2E1E', '#D6CBAF']},
-        {value: 'MIDNIGHT', label: 'Midnight', colours: ['#5c6bc0', '#4a6fa5', '#0f0f1a', '#90caf9']},
-        {value: 'RETRO', label: 'Retro', colours: ['#c0392b', '#2c7873', '#2c2c2c', '#f39c12']},
-        {value: 'COOL', label: 'Cool', colours: ['#7e57c2', '#26a69a', '#1a237e', '#80cbc4']}
+        {value: 'HEARTHSIDE', label: 'Hearthside', colours: ['#964000', '#5C6941', '#3D2E1E', '#D6CBAF']},
+        {value: 'MIDNIGHT', label: 'Midnight', colours: ['#6C63FF', '#00BFA5', '#0B0D18', '#2A2D3E']},
+        {value: 'CLASSIC', label: 'Classic', colours: ['#3A6EA8', '#4A5A7A', '#1E2E45', '#D0DCE8']},
+        {value: 'DUSK', label: 'Dusk', colours: ['#B85880', '#5A8A72', '#2E1E40', '#D8D0E8']}
     ];
     const visualSettings: { field: BooleanSettings; label: string; description: string }[] = [
         {field: 'opponentHighlightedSquaresEnabled', label: 'Opponent Highlighted Squares', description: 'Show corner highlights on the board to indicate which squares opponents are currently focusing on.'},

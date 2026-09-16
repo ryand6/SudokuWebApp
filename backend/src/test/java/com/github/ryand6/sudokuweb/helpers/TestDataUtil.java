@@ -46,7 +46,7 @@ public final class TestDataUtil {
     public static UserSettingsEntity createUserSettingsA(final UserEntity user) {
         return UserSettingsEntity.builder().
                 userEntity(user).
-                theme(Theme.COSY).
+                theme(Theme.HEARTHSIDE).
                 build();
     }
 
