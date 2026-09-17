@@ -20,8 +20,6 @@ export function MyStatsWidget({
 
     const { data, isLoading } = useGetUserGameModeStats(selectedMode);
 
-    console.log("Game Mode Stats: ", data);
-
     return (
         <div className="flex flex-col border-2 border-muted rounded-lg w-full font-display flex-1">
                     <div className="flex w-full border-b-2 border-b-muted bg-card gap-2 px-4 py-2 items-center text-accent-foreground rounded-t-lg">
@@ -35,7 +33,7 @@ export function MyStatsWidget({
                                     key={index}
                                     className={`inline-flex items-center justify-center gap-2 w-full rounded-full 
                                     py-1 font-display border-2 border-muted cursor-pointer
-                                    ${selectedMode === mode ? "bg-secondary text-secondary-foreground border-secondary" : "bg-card text-muted"}`}
+                                    ${selectedMode === mode ? "bg-secondary/70 text-secondary-foreground border-secondary" : "bg-card text-muted"}`}
                                     onClick={() => setSelectedMode(mode)}
                                 >
                                     <span className="text-md text-center font-medium tracking-wide">{wordToProperCase(mode)}</span>

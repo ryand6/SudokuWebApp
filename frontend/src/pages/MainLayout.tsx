@@ -13,12 +13,14 @@ export default function MainLayout() {
 
 	if (user) {
 		document.documentElement.classList.remove(
-			"theme-midnight", "theme-classic", "theme-frost"
+			"theme-midnight", "theme-classic", "theme-dusk"
 		);
 		if (user.userSettings.theme !== "HEARTHSIDE") {
 			document.documentElement.classList.add(`theme-${user.userSettings.theme.toLowerCase()}`);
 		}
 	}
+
+	console.log("User: ", user);
 
 	return (
 		<div className="min-h-screen md:h-screen flex flex-col">
@@ -32,7 +34,7 @@ export default function MainLayout() {
 					</h1>
 					{
 						user && (
-							<UserSettings settings={user.userSettings} queryClient={queryClient} />
+							<UserSettings settings={user.userSettings} queryClient={queryClient} navigate={navigate} />
 						)
 					}
 				</div>

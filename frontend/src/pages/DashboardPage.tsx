@@ -26,8 +26,6 @@ export function DashboardPage() {
     const leaveLobbyHandler = useLeaveLobby();
     const leaveGameHandler = useLeaveGame();
 
-    console.log("userActiveLobby: ", userActiveLobby);
-
     const navigate = useNavigate();
 
     const isMobile = useIsMobile();

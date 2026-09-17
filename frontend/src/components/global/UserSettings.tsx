@@ -7,15 +7,18 @@ import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from ".
 import { Switch } from "../ui/switch";
 import { userCacheDispatcher } from "@/state/user/userCacheDispatcher";
 import type { QueryClient } from "@tanstack/react-query";
-import { IconSettings } from '@tabler/icons-react';
+import { IconMail, IconSettings, IconUser } from '@tabler/icons-react';
 import { useIsMobile } from "@/hooks/global/useIsMobile";
+import type { NavigateFunction } from "react-router-dom";
 
 export function UserSettings({
     settings,
-    queryClient
+    queryClient,
+    navigate
 }: {
     settings: UserSettingsDto,
-    queryClient: QueryClient
+    queryClient: QueryClient,
+    navigate: NavigateFunction
 }) {
     const { send } = useWebSocketContext();
 
@@ -81,6 +84,40 @@ export function UserSettings({
                 <div id="user-settings-content" className="overflow-y-auto">
                     <div id="user-account-settings" className="flex flex-col gap-4 px-4 pb-4 border-b-2 border-muted">
                         <h2 className="tracking-widest text-muted-foreground">ACCOUNT</h2>
+                        <div 
+                            className="flex justify-between items-center border-2 border-muted rounded-lg p-3 bg-card cursor-pointer"
+                            onClick={() => navigate("/user-update")}
+                        >
+                            <div className="flex gap-3 items-center">
+                                <div className="bg-sidebar text-sidebar-primary p-2 rounded-lg">
+                                    <IconUser size={iconSize} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="tracking-wide text-md text-card-foreground font-semibold">Update Username</span>
+                                    <span className="text-sm text-muted-foreground">Change your display name</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="text-muted-foreground">❯</span>
+                            </div>
+                        </div>
+                        <div 
+                            className="flex justify-between items-center border-2 border-muted rounded-lg p-3 bg-card cursor-pointer"
+                            onClick={() => navigate("/user-update")}
+                        >
+                            <div className="flex gap-3 items-center">
+                                <div className="bg-sidebar text-sidebar-primary p-2 rounded-lg">
+                                    <IconMail size={iconSize} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="tracking-wide text-md text-card-foreground font-semibold">Recovery Email</span>
+                                    <span className="text-sm text-muted-foreground">Update your recovery email address</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="text-muted-foreground">❯</span>
+                            </div>
+                        </div>
                     </div>
                     <div id="theme-settings" className="flex flex-col gap-4 px-4 py-4 border-b-2 border-muted">
                         <h2 className="tracking-widest text-muted-foreground">THEME</h2>

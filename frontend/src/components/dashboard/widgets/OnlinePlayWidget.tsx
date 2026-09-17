@@ -30,11 +30,11 @@ export function OnlinePlayWidget({
                 }
                 <button 
                     className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4
-                                ${isActiveLobby ? "bg-muted border-muted opacity-20" : "bg-primary/80 border-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"}`}
+                                ${isActiveLobby ? "bg-muted border-muted opacity-20" : "bg-primary/65 border-primary text-primary-foreground hover:bg-primary/80 cursor-pointer"}`}
                     onClick={() => navigate("/create-lobby")}
                     disabled={isActiveLobby}
                 >
-                    <div className={`flex justify-center items-center rounded-lg p-2 ${isActiveLobby ? "bg-muted" : "bg-primary"}`}>
+                    <div className={`flex justify-center items-center rounded-lg p-2 ${isActiveLobby ? "bg-muted" : "bg-primary/70"}`}>
                         <IconPlus size={iconSize} />
                     </div>
                     <div className="flex flex-col items-start">
@@ -48,11 +48,11 @@ export function OnlinePlayWidget({
                 </button>
                  <button 
                     className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4
-                                ${isActiveLobby ? "bg-muted border-muted opacity-20" : "bg-secondary/80 border-secondary text-secondary-foreground hover:bg-secondary/90 cursor-pointer"}`}
+                                ${isActiveLobby ? "bg-muted border-muted opacity-20" : "bg-secondary/65 border-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer"}`}
                     onClick={() => setJoinLobbyModalOpen(true)}
                     disabled={isActiveLobby}
                 >
-                    <div className={`flex justify-center items-center rounded-lg p-2 ${isActiveLobby ? "bg-muted" : "bg-secondary"}`}>
+                    <div className={`flex justify-center items-center rounded-lg p-2 ${isActiveLobby ? "bg-muted" : "bg-secondary/70"}`}>
                         <IconDoorEnter size={iconSize} />
                     </div>
                     <div className="flex flex-col items-start">
