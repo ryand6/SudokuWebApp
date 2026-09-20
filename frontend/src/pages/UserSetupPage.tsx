@@ -25,7 +25,7 @@ export function UserSetupPage(): JSX.Element {
                     </p>
                     <div className="flex flex-col gap-3">
                         <button
-                            onClick={() => navigate("/link-account", { replace: true, state: { fromSetup: true } })}
+                            onClick={() => navigate("/link-additional-providers", { replace: true, state: { fromSetup: true } })}
                             className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors cursor-pointer"
                         >
                             Link another provider

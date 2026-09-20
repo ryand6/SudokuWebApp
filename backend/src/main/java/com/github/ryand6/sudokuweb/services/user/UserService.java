@@ -6,6 +6,7 @@ import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserFactory;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
+import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderRepository;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UsernameUpdatedWsEvent;
@@ -33,6 +34,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,6 +42,7 @@ import java.util.Set;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserOAuthProviderRepository userOAuthProviderRepository;
     private final LobbyRepository lobbyRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -49,6 +52,7 @@ public class UserService {
 
 
     public UserService(UserRepository userRepository,
+                       UserOAuthProviderRepository userOAuthProviderRepository,
                        LobbyRepository lobbyRepository,
                        UserEntityDtoMapper userEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher,
@@ -56,6 +60,7 @@ public class UserService {
                        EmailService emailService,
                        CacheManager cacheManager) {
         this.userRepository = userRepository;
+        this.userOAuthProviderRepository = userOAuthProviderRepository;
         this.lobbyRepository = lobbyRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -201,6 +206,11 @@ public class UserService {
                 .difficulty(activeLobbySettings.getDifficulty())
                 .timeLimitPreset(activeLobbySettings.getTimeLimit())
                 .build();
+    }
+
+    public List<String> getAllLinkedProviders(Long userId) {
+        List<UserOAuthProviderEntity> providerEntities = userOAuthProviderRepository.findAllByUserEntity_Id(userId);
+        return providerEntities.stream().map(UserOAuthProviderEntity::getProvider).toList();
     }
 
 }

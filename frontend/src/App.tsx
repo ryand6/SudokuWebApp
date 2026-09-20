@@ -17,6 +17,7 @@ import { ForegroundToastContainer } from "./components/ui/custom/ForegroundToast
 import { LinkAccountPage } from "./pages/LinkAccountPage";
 import { WsDevToolbar } from "./components/testing/WsDevToolBar";
 import { LeaderboardsPage } from "./pages/LeaderboardsPage";
+import { LinkAdditionalProvidersPage } from "./pages/LinkAdditionalProvidersPage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
                 {/* Protected routes */}
                 <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
+                <Route path="/link-additional-providers" element={<RequireAuth><LinkAdditionalProvidersPage /></RequireAuth>} />
                 <Route path="/leaderboards" element={<RequireAuth><LeaderboardsPage /></RequireAuth>}/>
                 <Route path="/user-update" element={<RequireAuth><UserAmendPage /></RequireAuth>} />
                 <Route path="/create-lobby" element={<RequireAuth><CreateLobbyPage /></RequireAuth>} />

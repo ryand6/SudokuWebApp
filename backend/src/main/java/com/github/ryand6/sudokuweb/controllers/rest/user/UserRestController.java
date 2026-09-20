@@ -136,4 +136,12 @@ public class UserRestController {
         return ResponseEntity.ok(activeLobby);
     }
 
+    @GetMapping("/get-linked-providers")
+    public ResponseEntity<?> getLinkedProviders(@AuthenticationPrincipal OAuth2User principal,
+                                                OAuth2AuthenticationToken authToken) {
+        UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
+        List<String> providers = userService.getAllLinkedProviders(user.getId());
+        return ResponseEntity.ok(providers);
+    }
+
 }

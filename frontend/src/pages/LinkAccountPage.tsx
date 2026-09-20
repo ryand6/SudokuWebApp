@@ -8,7 +8,8 @@ import { IconArrowBigRight } from "@tabler/icons-react";
 export function LinkAccountPage(): JSX.Element {
     const navigate = useNavigate();
     const location = useLocation();
-    const fromSetup = location.state?.fromSetup ?? false;
+    // const isProviderLinked = location.state?.isProviderLinked ?? false;
+    // const fromSetup = location.state?.fromSetup ?? false;
 
     const [step, setStep] = useState<"email" | "otp">("email");
     const [email, setEmail] = useState("");
@@ -68,21 +69,19 @@ export function LinkAccountPage(): JSX.Element {
         <div className="flex justify-center min-h-screen w-full font-display">
             <div className="flex flex-col w-full max-w-lg min-h-screen p-6 gap-6">
                 <h1 className="my-4 font-extrabold tracking-tight text-foreground">
-                    {fromSetup ? "Link Another Provider" : "Link Account"}
+                    Link Account
                 </h1>
 
                 {step === "email" && (
                     <>
                         <p className="text-foreground">
-                            {fromSetup
-                                ? "To link this new login provider to your account, enter the recovery email you registered with."
-                                : "This login provider isn't linked to an account yet. If you have an existing account, enter your recovery email and send verification code to link it."}
+                            This login provider isn't linked to an account yet. If you have an existing account, enter your recovery email and send verification code to link it.
                         </p>
-                        {!fromSetup && (
-                            <p className="text-muted-foreground text-sm">
-                                Alternatively, log in with an already linked provider then visit account settings to link providers manually.
-                            </p>
-                        )}
+                     
+                        <p className="text-muted-foreground text-sm">
+                            Alternatively, <a href="/login">log in</a> with an already linked provider. Other login providers can also be linked via the account settings menu.
+                        </p>
+                        
                         <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">
                             <label htmlFor="email" className="font-semibold text-foreground text-lg">Recovery email:</label>
                             <input
@@ -101,15 +100,13 @@ export function LinkAccountPage(): JSX.Element {
                             >
                                 {loading ? "Sending..." : "Send verification code"}
                             </button>
-                            {!fromSetup && (
-                                <button
-                                    type="button"
-                                    onClick={() => navigate("/user-setup", { replace: true, state: { firstTimeSetup: true } })}
-                                    className="bg-secondary text-secondary-foreground font-semibold py-2 px-4 rounded-lg hover:bg-secondary/80 transition-colors cursor-pointer"
-                                >
-                                    New here? Create an account
-                                </button>
-                            )}
+                            <button
+                                type="button"
+                                onClick={() => navigate("/user-setup", { replace: true, state: { firstTimeSetup: true } })}
+                                className="bg-secondary text-secondary-foreground font-semibold py-2 px-4 rounded-lg hover:bg-secondary/80 transition-colors cursor-pointer"
+                            >
+                                New here? Create an account
+                            </button>
                         </form>
                     </>
                 )}
@@ -151,21 +148,6 @@ export function LinkAccountPage(): JSX.Element {
                 )}
 
                 {error && <div className="text-destructive">{error}</div>}
-                {
-                    fromSetup && (
-                        <div className="flex justify-end items-center">
-                            <Button
-                                variant="outline"
-                                className="border-muted-foreground text-muted-foreground font-semibold py-2 cursor-pointer"
-                                onClick={() => navigate("/dashboard", {replace: true})}
-                            >
-                                Go to Dashboard
-                                <IconArrowBigRight />
-                            </Button>
-                        </div>
-                        
-                    )
-                }
             </div>
         </div>
     );
