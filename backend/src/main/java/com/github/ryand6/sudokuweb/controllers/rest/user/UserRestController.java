@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.controllers.rest.user;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.AccountLinkRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.OtpVerificationRequestDto;
+import com.github.ryand6.sudokuweb.dto.request.ProviderLinkRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
 import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
@@ -142,6 +143,15 @@ public class UserRestController {
         UserDto user = userService.getCurrentUserByOAuth(principal, authToken);
         List<String> providers = userService.getAllLinkedProviders(user.getId());
         return ResponseEntity.ok(providers);
+    }
+
+    @PostMapping("/begin-provider-link")
+    public ResponseEntity<?> beginProviderLink(@AuthenticationPrincipal OAuth2User principal,
+                                               OAuth2AuthenticationToken authToken,
+                                               @RequestBody ProviderLinkRequestDto request,
+                                               HttpSession session) {
+        userService.beginProviderLink(principal, authToken, request.getProviderName(), session);
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.config;
 
 import com.github.ryand6.sudokuweb.security.OAuth2SuccessHandler;
+import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +37,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   UserService userService) throws Exception {
         CookieCsrfTokenRepository csrfTokenRepository = cookieCsrfTokenRepository();
 
         http
@@ -58,7 +60,7 @@ public class SecurityConfig {
 
                 // Enable OAuth2 login
                 .oauth2Login(oauth -> oauth
-                        .successHandler(new OAuth2SuccessHandler(spaBaseUrl, csrfTokenRepository))
+                        .successHandler(new OAuth2SuccessHandler(spaBaseUrl, csrfTokenRepository, userService))
                 )
 
                 // Add logout config

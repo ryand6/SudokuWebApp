@@ -29,11 +29,13 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -124,36 +126,41 @@ public class UserService {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         // Store pending OAuth provider linking details in session in order to link provider if OTP is verified
-        session.setAttribute("pendingLinkProvider", provider);
-        session.setAttribute("pendingLinkProviderId", providerId);
-        session.setAttribute("pendingLinkUserId", user.getId());
+        session.setAttribute("pendingRecoveryLinkProvider", provider);
+        session.setAttribute("pendingRecoveryLinkProviderId", providerId);
+        session.setAttribute("pendingRecoveryLinkUserId", user.getId());
         String otp = otpService.generateAndStoreOtp(user.getId());
         emailService.sendOtpEmail(emailAddress, otp);
     }
 
     @Transactional
     public void verifyAccountLink(String otp, HttpSession session) {
-        String provider = (String) session.getAttribute("pendingLinkProvider");
-        String providerId = (String) session.getAttribute("pendingLinkProviderId");
-        Long userId = (Long) session.getAttribute("pendingLinkUserId");
+        String provider = (String) session.getAttribute("pendingRecoveryLinkProvider");
+        String providerId = (String) session.getAttribute("pendingRecoveryLinkProviderId");
+        Long userId = (Long) session.getAttribute("pendingRecoveryLinkUserId");
         try {
             if (provider == null || providerId == null || userId == null) {
                 throw new InvalidOtpException("Session expired, please restart the account linking process");
             }
             otpService.validateOtp(userId, otp);
-            UserEntity user = findUserById(userId);
-            UserOAuthProviderEntity newProvider = UserOAuthProviderEntity.builder()
-                    .provider(provider)
-                    .providerId(providerId)
-                    .userEntity(user)
-                    .build();
-            user.getUserOAuthProviderEntities().add(newProvider);
-            userRepository.save(user);
+            completeProviderLink(userId, provider, providerId);
         } finally {
-            session.removeAttribute("pendingLinkProvider");
-            session.removeAttribute("pendingLinkProviderId");
-            session.removeAttribute("pendingLinkUserId");
+            session.removeAttribute("pendingRecoveryLinkProvider");
+            session.removeAttribute("pendingRecoveryLinkProviderId");
+            session.removeAttribute("pendingRecoveryLinkUserId");
         }
+    }
+
+    @Transactional
+    public void completeProviderLink(Long userId, String provider, String providerId) {
+        UserEntity user = findUserById(userId);
+        UserOAuthProviderEntity newProvider = UserOAuthProviderEntity.builder()
+                .provider(provider)
+                .providerId(providerId)
+                .userEntity(user)
+                .build();
+        user.getUserOAuthProviderEntities().add(newProvider);
+        userRepository.save(user);
     }
 
     @Transactional
@@ -211,6 +218,20 @@ public class UserService {
     public List<String> getAllLinkedProviders(Long userId) {
         List<UserOAuthProviderEntity> providerEntities = userOAuthProviderRepository.findAllByUserEntity_Id(userId);
         return providerEntities.stream().map(UserOAuthProviderEntity::getProvider).toList();
+    }
+
+    public void beginProviderLink(@AuthenticationPrincipal OAuth2User principal,
+                                  OAuth2AuthenticationToken authToken,
+                                  String providerName,
+                                  HttpSession session) {
+        UserDto user = getCurrentUserByOAuth(principal, authToken);
+        boolean alreadyLinked = getAllLinkedProviders(user.getId()).stream().anyMatch(provider -> provider.equals(providerName));
+        if (alreadyLinked) {
+            throw new IllegalStateException("OAuth provider is already linked");
+        }
+        session.setAttribute("pendingLinkProviderUserId", user.getId());
+        session.setAttribute("pendingLinkProviderName", providerName);
+        session.setAttribute("pendingLinkProviderCreatedAt", System.currentTimeMillis());
     }
 
 }

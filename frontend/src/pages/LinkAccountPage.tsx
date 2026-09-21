@@ -2,8 +2,7 @@ import { useState, type JSX } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { requestAccountLink } from "../api/rest/users/mutate/requestAccountLink";
 import { verifyAccountLink } from "../api/rest/users/mutate/verifyAccountLink";
-import { Button } from "@/components/ui/button";
-import { IconArrowBigRight } from "@tabler/icons-react";
+
 
 export function LinkAccountPage(): JSX.Element {
     const navigate = useNavigate();
@@ -68,7 +67,7 @@ export function LinkAccountPage(): JSX.Element {
     return (
         <div className="flex justify-center min-h-screen w-full font-display">
             <div className="flex flex-col w-full max-w-lg min-h-screen p-6 gap-6">
-                <h1 className="my-4 font-extrabold tracking-tight text-foreground">
+                <h1 className="my-4 text-4xl font-bold tracking-wide text-foreground">
                     Link Account
                 </h1>
 

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Check, Github, Facebook, Link2 } from "lucide-react";
-
 import { Button } from "@/components/ui/button";
 import { getLinkedProviders } from "@/api/rest/users/query/getLinkedProviders";
-import { IconArrowBigRight } from "@tabler/icons-react";
+import { IconArrowBigRight, IconBrandFacebook, IconBrandGithub, IconBrandGoogle, IconCheck, IconLink } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
+import { beginProviderLink } from "@/api/rest/users/mutate/beginProviderLink";
+import { useIsMobile } from "@/hooks/global/useIsMobile";
 
 export type OAuthProvider = "github" | "facebook" | "google";
 
@@ -32,6 +32,9 @@ export function LinkAdditionalProvidersPage() {
     const [error, setError] = useState<string | null>(null);
     const [linkingProvider, setLinkingProvider] = useState<OAuthProvider | null>(null);
     const navigate = useNavigate();
+    const isMobile = useIsMobile();
+
+    const iconSize = isMobile ? 16 : 24;
 
     useEffect(() => {
         async function loadProviders() {
@@ -52,15 +55,21 @@ export function LinkAdditionalProvidersPage() {
         return linkedProviders.includes(provider);
     }
 
-    function handleLink(provider: OAuthProvider) {
+    async function handleLink(provider: OAuthProvider) {
         setLinkingProvider(provider);
-        // Start Spring Security's OAuth flow directly.
-        window.location.assign(`${import.meta.env.VITE_API_BASE_URL}/oauth2/authorization/${provider}`);
+        try {
+            await beginProviderLink(provider);
+            // Start Spring Security's OAuth flow directly.
+            window.location.assign(`${import.meta.env.VITE_API_BASE_URL}/oauth2/authorization/${provider}`);
+        } catch (err: any) {
+            setLinkingProvider(null);
+            setError(err);
+        }
     }
 
     if (loading) {
         return (
-            <div className="mx-auto max-w-md p-6">
+            <div className="font-display mx-auto max-w-md p-6">
                 <p className="text-sm text-muted-foreground">
                     Loading linked providers...
                 </p>
@@ -70,7 +79,7 @@ export function LinkAdditionalProvidersPage() {
 
     if (error) {
         return (
-            <div className="mx-auto max-w-md p-6">
+            <div className="font-display mx-auto max-w-md p-6">
                 <p className="text-sm text-destructive">
                     {error}
                 </p>
@@ -79,40 +88,38 @@ export function LinkAdditionalProvidersPage() {
     }
 
     return (
-        <div className="mx-auto max-w-md space-y-6 p-6">
+        <div className="flex flex-col gap-4 font-display mx-auto max-w-lg p-6">
             <div>
-                <h1 className="text-2xl font-semibold">
+                <h1 className="my-4 text-4xl font-bold tracking-wide text-foreground">
                     Link Additional Providers
                 </h1>
 
-                <p className="mt-2 text-sm text-muted-foreground">
+                <p className="mt-2 text-md text-muted-foreground">
                     Link additional sign-in providers to your account.
                 </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="flex flex-col gap-4">
                 {providers.map(provider => {
                     const linked = isLinked(provider.id);
 
                     return (
                         <div
                             key={provider.id}
-                            className="flex items-center justify-between rounded-lg border p-4"
+                            className="flex items-center justify-between rounded-lg border-2 border-muted p-4"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
                                     {provider.id === "github" && (
-                                        <Github className="h-5 w-5" />
+                                        <IconBrandGithub size={iconSize} />
                                     )}
 
                                     {provider.id === "facebook" && (
-                                        <Facebook className="h-5 w-5" />
+                                        <IconBrandFacebook size={iconSize} />
                                     )}
 
                                     {provider.id === "google" && (
-                                        <span className="text-lg font-bold">
-                                            G
-                                        </span>
+                                        <IconBrandGoogle size={iconSize} />
                                     )}
                                 </div>
 
@@ -122,28 +129,25 @@ export function LinkAdditionalProvidersPage() {
                                     </p>
 
                                     <p className="text-sm text-muted-foreground">
-                                        {linked
-                                            ? "Linked to your account"
-                                            : "Not linked"}
+                                        {linked ? "Linked to your account" : "Not linked"}
                                     </p>
                                 </div>
                             </div>
 
                             {linked ? (
                                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                    <Check className="h-4 w-4" />
+                                    <IconCheck size={iconSize} />
                                     Linked
                                 </div>
                             ) : (
                                 <Button
                                     size="sm"
+                                    className="cursor-pointer"
                                     disabled={linkingProvider !== null}
                                     onClick={() => handleLink(provider.id)}
                                 >
-                                    <Link2 className="mr-2 h-4 w-4" />
-                                    {linkingProvider === provider.id
-                                        ? "Connecting..."
-                                        : "Link"}
+                                    <IconLink size={iconSize} />
+                                    {linkingProvider === provider.id ? "Connecting..." : "Link"}
                                 </Button>
                             )}
                         </div>
