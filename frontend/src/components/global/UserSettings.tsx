@@ -7,7 +7,7 @@ import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from ".
 import { Switch } from "../ui/switch";
 import { userCacheDispatcher } from "@/state/user/userCacheDispatcher";
 import type { QueryClient } from "@tanstack/react-query";
-import { IconMail, IconSettings, IconUser } from '@tabler/icons-react';
+import { IconLink, IconMail, IconSettings, IconUser } from '@tabler/icons-react';
 import { useIsMobile } from "@/hooks/global/useIsMobile";
 import type { NavigateFunction } from "react-router-dom";
 
@@ -112,6 +112,23 @@ export function UserSettings({
                                 <div className="flex flex-col">
                                     <span className="tracking-wide text-md text-card-foreground font-semibold">Recovery Email</span>
                                     <span className="text-sm text-muted-foreground">Update your recovery email address</span>
+                                </div>
+                            </div>
+                            <div className="flex items-center">
+                                <span className="text-muted-foreground">❯</span>
+                            </div>
+                        </div>
+                        <div 
+                            className="flex justify-between items-center border-2 border-muted rounded-lg p-3 bg-card cursor-pointer"
+                            onClick={() => navigate("/link-additional-providers")}
+                        >
+                            <div className="flex gap-3 items-center">
+                                <div className="bg-sidebar text-sidebar-primary p-2 rounded-lg">
+                                    <IconLink size={iconSize} />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="tracking-wide text-md text-card-foreground font-semibold">Add Login Providers</span>
+                                    <span className="text-sm text-muted-foreground">Link additional OAuth2 login providers to your account</span>
                                 </div>
                             </div>
                             <div className="flex items-center">
