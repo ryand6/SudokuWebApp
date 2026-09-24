@@ -97,9 +97,9 @@ const SudokuCell = React.memo(function SudokuCell(
                 onMouseEnter={onHoverHandler(setIsHovered)}
                 onMouseLeave={onLeaveHandler(setIsHovered)}
                 className={`w-full h-full flex items-center justify-center 
-                            cursor-pointer box-border
+                            cursor-pointer box-border text-foreground
                             ${!isAnimationPlayed && "animate-fill-cell"} 
-                            ${cellOwnership && !isSelected && !isHovered && !isInUnit ? playerColourClassNamePicker[playerColours[cellOwnership]].medium : "bg-primary-foreground"}
+                            ${cellOwnership && !isSelected && !isHovered && !isInUnit ? playerColourClassNamePicker[playerColours[cellOwnership]].medium : "bg-background"}
                             ${(isInUnit && !isSelected && !isHovered) && playerColourClassName.light}
                             ${(isHovered && !isSelected) && playerColourClassName.medium}
                             ${isSelected && playerColourClassName.strong}

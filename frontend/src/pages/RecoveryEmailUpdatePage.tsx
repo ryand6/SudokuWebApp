@@ -48,7 +48,7 @@ export function RecoveryEmailUpdatePage() {
 	return (
 		<div className="flex justify-center min-h-screen w-full font-display">
 			<div className="flex flex-col w-full max-w-lg min-h-screen p-6">
-				<h1 className="my-4 font-extrabold tracking-tight text-foreground">Update Recovery Email</h1>
+				<h1 className="my-4 text-4xl font-bold tracking-tight text-foreground">Update Recovery Email</h1>
 				{isLoading && <SpinnerButton />}
 				<form onSubmit={handleSubmit} method="post" className="flex flex-col gap-4 w-full max-w-lg mx-auto">
 					{/* display any errors found during attempted form submission */}

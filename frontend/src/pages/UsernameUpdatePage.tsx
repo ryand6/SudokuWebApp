@@ -49,7 +49,7 @@ export function UsernameUpdatePage() {
 	return (
 		<div className="flex justify-center min-h-screen w-full font-display">
 			<div className="flex flex-col w-full max-w-lg min-h-screen p-6">
-				<h1 className="my-4 font-extrabold tracking-tight text-foreground">Update Username</h1>
+				<h1 className="my-4 text-4xl font-bold tracking-tight text-foreground">Update Username</h1>
 				<label className="font-semibold text-gray-700 text-lg">Current username:</label>
 				<div className="border border-gray-400 rounded-lg p-3 mt-4 mb-6 bg-gray-500">{user?.username ?? ""}</div>
 				{isLoading && <SpinnerButton />}

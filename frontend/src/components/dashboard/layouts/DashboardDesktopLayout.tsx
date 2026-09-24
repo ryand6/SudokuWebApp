@@ -1,7 +1,7 @@
 import type { UserDto } from "@/types/dto/entity/user/UserDto"
 import type { LobbyDetailsDto } from "@/types/dto/response/LobbyDetailsDto"
 import { OnlinePlayWidget } from "../widgets/OnlinePlayWidget"
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { JoinLobbyModal } from "../JoinLobbyModal";
 import { Modal } from "@/components/ui/custom/Modal";
 import type { NavigateFunction } from "react-router-dom";

@@ -3,7 +3,7 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { sendUserSettingsUpdate } from "@/api/ws/user/sendUserSettingsUpdate";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from "../ui/field";
+import { Field, FieldContent, FieldDescription, FieldLabel } from "../ui/field";
 import { Switch } from "../ui/switch";
 import { userCacheDispatcher } from "@/state/user/userCacheDispatcher";
 import type { QueryClient } from "@tanstack/react-query";
@@ -57,9 +57,9 @@ export function UserSettings({
         {field: 'streakNotificationsEnabled', label: 'Streak Notifications', description: 'Receive notifications for your streak updates.'}
     ];
 
-    const audioSettings: { field: BooleanSettings; label: string; description: string }[] = [
-        {field: 'audioEnabled', label: 'Audio', description: 'Enable or disable audio.'},
-    ];
+    // const audioSettings: { field: BooleanSettings; label: string; description: string }[] = [
+    //     {field: 'audioEnabled', label: 'Audio', description: 'Enable or disable audio.'},
+    // ];
 
     return (
          <Sheet>
