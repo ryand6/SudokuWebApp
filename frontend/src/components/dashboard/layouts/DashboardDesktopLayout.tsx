@@ -57,9 +57,9 @@ export function DashboardDesktopLayout({
     
     return (
         <div className="flex flex-col w-full h-full font-display overflow-y-auto">
-            <div className="flex items-center px-5 py-5 border-b-border border-b-2">
+            <div className="flex items-center px-5 py-5 border-b-muted border-b-2">
                 <div className="pl-5 tracking-wide font-semibold text-foreground text-lg">
-                    Hello, {user.username}!
+                    Hello, <span className="text-sidebar-primary">{user.username}</span>!
                 </div>
             </div>
             <div className="flex flex-col p-5 gap-5 w-full">

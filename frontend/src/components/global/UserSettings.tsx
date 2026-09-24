@@ -7,9 +7,10 @@ import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from ".
 import { Switch } from "../ui/switch";
 import { userCacheDispatcher } from "@/state/user/userCacheDispatcher";
 import type { QueryClient } from "@tanstack/react-query";
-import { IconLink, IconMail, IconSettings, IconUser } from '@tabler/icons-react';
+import { IconDoorExit, IconLink, IconMail, IconSettings, IconUser } from '@tabler/icons-react';
 import { useIsMobile } from "@/hooks/global/useIsMobile";
 import type { NavigateFunction } from "react-router-dom";
+import { useLogout } from "@/api/rest/users/mutate/useLogout";
 
 export function UserSettings({
     settings,
@@ -23,13 +24,14 @@ export function UserSettings({
     const { send } = useWebSocketContext();
 
     const handleUpdate = (setting: keyof UserSettingsDto, value: any) => {
-        console.log(`Updating setting ${setting} to value ${value}`);
         userCacheDispatcher(queryClient, {type: "USER_SETTINGS_UPDATED", field: setting, value: value});
         sendUserSettingsUpdate(send, {field: setting, value: value});
     }
 
     const isMobile = useIsMobile();
     const iconSize: number = isMobile ? 12 : 24;
+
+    const logoutHandler = useLogout();
 
     type BooleanKeys<T> = {
         [K in keyof T]: T[K] extends boolean ? K : never
@@ -86,7 +88,7 @@ export function UserSettings({
                         <h2 className="tracking-widest text-muted-foreground">ACCOUNT</h2>
                         <div 
                             className="flex justify-between items-center border-2 border-muted rounded-lg p-3 bg-card cursor-pointer"
-                            onClick={() => navigate("/user-update")}
+                            onClick={() => navigate("/username-update")}
                         >
                             <div className="flex gap-3 items-center">
                                 <div className="bg-sidebar text-sidebar-primary p-2 rounded-lg">
@@ -103,7 +105,7 @@ export function UserSettings({
                         </div>
                         <div 
                             className="flex justify-between items-center border-2 border-muted rounded-lg p-3 bg-card cursor-pointer"
-                            onClick={() => navigate("/user-update")}
+                            onClick={() => navigate("/recovery-email-update")}
                         >
                             <div className="flex gap-3 items-center">
                                 <div className="bg-sidebar text-sidebar-primary p-2 rounded-lg">
@@ -133,6 +135,19 @@ export function UserSettings({
                             </div>
                             <div className="flex items-center">
                                 <span className="text-muted-foreground">❯</span>
+                            </div>
+                        </div>
+                        <div 
+                            className="flex gap-3 items-center border-2 border-destructive rounded-lg p-3 bg-destructive/20 cursor-pointer"
+                            onClick={() => logoutHandler.mutate()}
+                        >
+                            <div className="bg-destructive text-white p-2 rounded-lg">
+                                <IconDoorExit size={iconSize} />
+                            </div>
+                            <div>
+                                <span className="tracking-wide text-lg text-destructive font-semibold">
+                                    Logout
+                                </span>
                             </div>
                         </div>
                     </div>

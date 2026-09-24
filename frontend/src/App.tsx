@@ -3,7 +3,7 @@ import { UserSetupPage } from "./pages/UserSetupPage";
 import { HomePage } from "./pages/HomePage";
 import { RequireAuth } from "./auth/RequireAuth";
 import { DashboardPage } from "./pages/DashboardPage";
-import { UserAmendPage } from "./pages/UserAmendPage";
+import { UsernameUpdatePage } from "./pages/UsernameUpdatePage";
 import { NewUserOnly } from "./auth/NewUserOnly";
 import { ToastContainer } from "react-toastify";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -18,6 +18,7 @@ import { LinkAccountPage } from "./pages/LinkAccountPage";
 import { WsDevToolbar } from "./components/testing/WsDevToolBar";
 import { LeaderboardsPage } from "./pages/LeaderboardsPage";
 import { LinkAdditionalProvidersPage } from "./pages/LinkAdditionalProvidersPage";
+import { RecoveryEmailUpdatePage } from "./pages/RecoveryEmailUpdatePage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -39,7 +40,8 @@ function App() {
                 <Route path="/dashboard" element={<RequireAuth><DashboardPage /></RequireAuth>} />
                 <Route path="/link-additional-providers" element={<RequireAuth><LinkAdditionalProvidersPage /></RequireAuth>} />
                 <Route path="/leaderboards" element={<RequireAuth><LeaderboardsPage /></RequireAuth>}/>
-                <Route path="/user-update" element={<RequireAuth><UserAmendPage /></RequireAuth>} />
+                <Route path="/username-update" element={<RequireAuth><UsernameUpdatePage /></RequireAuth>} />
+                <Route path="/recovery-email-update" element={<RequireAuth><RecoveryEmailUpdatePage /></RequireAuth>} />
                 <Route path="/create-lobby" element={<RequireAuth><CreateLobbyPage /></RequireAuth>} />
                 <Route path="/lobby/:lobbyId" element={<RequireAuth><LobbyPage /></RequireAuth>} />
                 <Route path="/lobby/private/:token" element={<RequireAuth><PrivateLobbyJoinPage /></RequireAuth>} />

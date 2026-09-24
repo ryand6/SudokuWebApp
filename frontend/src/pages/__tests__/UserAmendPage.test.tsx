@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
-import { UserAmendPage } from '../UserAmendPage';
-import { processUserAmend } from '../../api/rest/users/mutate/processUserAmend';
+import { UsernameUpdatePage } from '../UsernameUpdatePage';
+import { processUsernameUpdate } from '../../api/rest/users/mutate/processUsernameUpdate';
 import { renderWithRouterAndContext } from '../../setupTests';
 import { QueryClient } from '@tanstack/react-query';
 
@@ -29,14 +29,14 @@ describe('UserAmendPage', () => {
     });
 
     test('renders UserForm', () => {
-        renderWithRouterAndContext(queryClient, <UserAmendPage />);
+        renderWithRouterAndContext(queryClient, <UsernameUpdatePage />);
         expect(screen.getByRole('textbox')).toBeInTheDocument(); // assumes input is rendered in UserForm
         // name uses case insensitive regex to find button text
         expect(screen.getByRole('button', { name: /update account/i })).toBeInTheDocument();
     });
 
     test('submits username and navigates', async () => {
-        renderWithRouterAndContext(queryClient, <UserAmendPage />);
+        renderWithRouterAndContext(queryClient, <UsernameUpdatePage />);
 
         const input = screen.getByRole('textbox');
         const button = screen.getByRole('button', { name: /update account/i });
@@ -48,7 +48,7 @@ describe('UserAmendPage', () => {
         await userEvent.click(button);
 
         // Check that API was called
-        expect(processUserAmend).toHaveBeenCalledWith('testuser');
+        expect(processUsernameUpdate).toHaveBeenCalledWith('testuser');
 
         // Check that navigation happened
         expect(mockNavigate).toHaveBeenCalledWith('/dashboard', { replace: true });

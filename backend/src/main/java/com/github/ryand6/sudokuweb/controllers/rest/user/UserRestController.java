@@ -1,10 +1,7 @@
 package com.github.ryand6.sudokuweb.controllers.rest.user;
 
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
-import com.github.ryand6.sudokuweb.dto.request.AccountLinkRequestDto;
-import com.github.ryand6.sudokuweb.dto.request.OtpVerificationRequestDto;
-import com.github.ryand6.sudokuweb.dto.request.ProviderLinkRequestDto;
-import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
+import com.github.ryand6.sudokuweb.dto.request.*;
 import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.services.user.UserService;
@@ -105,11 +102,11 @@ public class UserRestController {
     }
 
     // Post update form details to amend User in DB
-    @PostMapping("/process-user-amend")
-    public ResponseEntity<?> processUserAmendRequest(@AuthenticationPrincipal OAuth2User principal,
-                                                     OAuth2AuthenticationToken authToken,
-                                                     @Valid @RequestBody UserSetupRequestDto request,
-                                                     BindingResult bindingResult) {
+    @PostMapping("/process-username-update")
+    public ResponseEntity<?> processUsernameUpdateRequest(@AuthenticationPrincipal OAuth2User principal,
+                                                          OAuth2AuthenticationToken authToken,
+                                                          @Valid @RequestBody UpdateUsernameRequestDto request,
+                                                          BindingResult bindingResult) {
         // Check if validation errors occurred in DTO
         if (bindingResult.hasErrors()) {
             // Collect all validation errors
@@ -122,8 +119,30 @@ public class UserRestController {
                     .body(errors);
         }
         String username = request.getUsername();
-        // Update user in DB
         userService.updateUsername(username, principal, authToken);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .body(null);
+    }
+
+    @PostMapping("/process-recovery-email-update")
+    public ResponseEntity<?> processRecoveryEmailUpdateRequest(@AuthenticationPrincipal OAuth2User principal,
+                                                               OAuth2AuthenticationToken authToken,
+                                                               @Valid @RequestBody UpdateRecoveryEmailRequestDto request,
+                                                               BindingResult bindingResult) {
+        // Check if validation errors occurred in DTO
+        if (bindingResult.hasErrors()) {
+            // Collect all validation errors
+            List<String> errors = bindingResult.getAllErrors()
+                    .stream()
+                    .map(ObjectError::getDefaultMessage)
+                    .toList();
+            return ResponseEntity
+                    .badRequest()
+                    .body(errors);
+        }
+        String recoveryEmail = request.getRecoveryEmail();
+        userService.updateRecoveryEmail(recoveryEmail, principal, authToken);
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)
                 .body(null);

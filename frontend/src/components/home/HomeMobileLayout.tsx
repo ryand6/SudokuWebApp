@@ -52,7 +52,7 @@ export function HomeMobileLayout({
                     user ? (
                         <div className="flex flex-col gap-4 rounded-lg bg-sidebar/90 py-6 px-8">
                             <div className="text-primary-foreground font-semibold tracking-wide text-xl">
-                                Welcome back, {user.username}!
+                                Welcome back, <span className="text-sidebar-primary">{user.username}</span>!
                             </div>
                             <div className="text-sidebar-accent">
                                 Jump back into the dashboard to start playing, view stats, or check the leaderboards.

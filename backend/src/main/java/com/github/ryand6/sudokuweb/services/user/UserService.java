@@ -113,7 +113,6 @@ public class UserService {
         }
         String recoveryEmailHash = HashUtils.generateHmacHash(recoveryEmail, hmacSecretKey);
         UserEntity newUser = UserFactory.createUser(username, provider, providerId, recoveryEmailHash);
-
         userRepository.save(newUser);
     }
 
@@ -165,8 +164,7 @@ public class UserService {
 
     @Transactional
     @CacheEvict(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
-    // Update a user's username
-    public UserDto updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
+    public void updateUsername(String username, OAuth2User principal, OAuth2AuthenticationToken authToken) {
         if (userRepository.existsByUsername(username)) {
             throw new UsernameTakenException("Username provided is taken, please choose another");
         }
@@ -184,8 +182,15 @@ public class UserService {
         applicationEventPublisher.publishEvent(
                 new UsernameUpdatedWsEvent(userDto, providerId)
         );
+    }
 
-        return userDto;
+    @Transactional
+    @CacheEvict(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
+    public void updateRecoveryEmail(String recoveryEmail, OAuth2User principal, OAuth2AuthenticationToken authToken) {
+        UserEntity user = getCurrentUserEntityByOAuth(principal, authToken);
+        String recoveryEmailHash = HashUtils.generateHmacHash(recoveryEmail, hmacSecretKey);
+        user.setRecoveryEmailHash(recoveryEmailHash);
+        UserEntity updatedUser = userRepository.save(user);
     }
 
     // Get user entity from DB via their id

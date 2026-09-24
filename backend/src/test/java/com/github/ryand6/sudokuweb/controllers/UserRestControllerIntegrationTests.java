@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.controllers;
 
 import com.github.ryand6.sudokuweb.helpers.TestOAuthUtil;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
-import com.github.ryand6.sudokuweb.dto.request.UserSetupRequestDto;
+import com.github.ryand6.sudokuweb.dto.request.UpdateUsernameRequestDto;
 import com.github.ryand6.sudokuweb.integration.AbstractControllerIntegrationTests;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import com.github.ryand6.sudokuweb.util.OAuthUtil;
@@ -49,7 +49,7 @@ class UserRestControllerIntegrationTests extends AbstractControllerIntegrationTe
     // POST /api/users/process-user-setup
     @Test
     void processUserSetupRequest_validRequest_returnsCreated() throws Exception {
-        UserSetupRequestDto requestDto = UserSetupRequestDto.builder()
+        UpdateUsernameRequestDto requestDto = UpdateUsernameRequestDto.builder()
                 .username("ValidUser")
                 .build();
 
@@ -75,7 +75,7 @@ class UserRestControllerIntegrationTests extends AbstractControllerIntegrationTe
 
     @Test
     void processUserSetupRequest_validationErrors_returnsBadRequest() throws Exception {
-        UserSetupRequestDto requestDto = UserSetupRequestDto.builder()
+        UpdateUsernameRequestDto requestDto = UpdateUsernameRequestDto.builder()
                 .username("") // invalid: @NotBlank
                 .build();
 
@@ -107,7 +107,7 @@ class UserRestControllerIntegrationTests extends AbstractControllerIntegrationTe
 
     @Test
     void processUserAmendRequest_validationErrors_returnsBadRequest() throws Exception {
-        UserSetupRequestDto requestDto = UserSetupRequestDto.builder()
+        UpdateUsernameRequestDto requestDto = UpdateUsernameRequestDto.builder()
                 .username("") // invalid: @NotBlank
                 .build();
 

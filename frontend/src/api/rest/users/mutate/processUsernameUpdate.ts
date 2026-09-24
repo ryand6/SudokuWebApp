@@ -2,15 +2,13 @@ import { backendValidationErrors } from "../../../../utils/error/backendValidati
 import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
-export async function processUserAmend(username: string): Promise<void> {
+export async function processUsernameUpdate(username: string): Promise<void> {
     try {
-        const response = await fetch("/api/users/process-user-amend", {
+        const response = await fetch("/api/users/process-username-update", {
             method: "POST",
             credentials: "include",
             headers: { 
-                // Send data in JSON format
                 "Content-Type": "application/json",
-                // assign token to empty string if it is null because header cannot accept null/undefined values
                 "X-XSRF-TOKEN": getCsrfTokenFromCookie() ?? "",
             },
             body: JSON.stringify({username})
