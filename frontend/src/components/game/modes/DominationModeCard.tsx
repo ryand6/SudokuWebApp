@@ -13,15 +13,15 @@ export function DominationModeCard({
     return (
         <>
             <div className="flex flex-col border-1 border-muted rounded-lg font-display w-full">
-                <div className="flex items-center px-4 py-3 bg-sidebar justify-between rounded-t-lg">
-                    <div className="flex items-center gap-2 text-sidebar-primary text-lg">
+                <div className="flex items-center px-4 py-3 bg-domination-game-mode justify-between rounded-t-lg">
+                    <div className="flex items-center gap-2 text-domination-game-mode-foreground text-lg">
                         <span><IconSwords size={iconSize} /></span>
                         <span className="font-semibold">Domination</span>
                     </div>
                     <div>
                         <div 
-                            className="flex items-end justify-center gap-2 rounded-lg border-1 border-text-sidebar-primary px-3 py-1 w-auto
-                                        text-sidebar-primary cursor-pointer hover:bg-sidebar-primary/20 font-semibold"
+                            className="flex items-end justify-center gap-2 rounded-lg border-1 border-text-domination-game-mode-foreground px-3 py-1 w-auto
+                                        text-domination-game-mode-foreground cursor-pointer hover:bg-domination-game-mode-foreground/20 font-semibold"
                             onClick={() => setRulesModalOpen(true)}
                         >
                             <span>Rules</span>

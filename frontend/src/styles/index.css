@@ -25,6 +25,12 @@
         var(--sidebar)
     );
 
+    --header-gradient: linear-gradient(
+        180deg,
+        var(--header),
+        var(--sidebar)
+    );
+
     --radius: 0.65rem;
     --background:                 #FAF6EE;
     --foreground:                 #2C2416;
@@ -45,11 +51,6 @@
     --border:                     #442e05;
     --input:                      #C8BDA8;
     --ring:                       #C4714A;
-    --chart-1:                    oklch(0.646 0.222 41.116);
-    --chart-2:                    oklch(0.6 0.118 184.704);
-    --chart-3:                    oklch(0.398 0.07 227.392);
-    --chart-4:                    oklch(0.828 0.189 84.429);
-    --chart-5:                    oklch(0.769 0.188 70.08);
     --sidebar:                    #3D2E1E;
     --sidebar-foreground:         #FAF6EE;
     --sidebar-primary:            #DDB84A;
@@ -59,6 +60,15 @@
     --sidebar-border:             #2A1F12;
     --sidebar-ring:               #C4714A;
     --grid-line:                  #2C2416;
+    --header:                     #304529;
+
+    /* Game Mode Styles */
+    --classic-game-mode:            #7A6848;
+    --classic-game-mode-foreground: #FAF6EE;
+    --domination-game-mode:            #8B5545;
+    --domination-game-mode-foreground: #FAF6EE;
+    --time-attack-game-mode:            #68704A;
+    --time-attack-game-mode-foreground: #FAF6EE;
 
     /* Game Results Styles */
     --result-win:             #DDB84A;
@@ -116,6 +126,13 @@
     --header:                 #12152A;
     --header-foreground:      #E8EAF0;
     --grid-line:              #2E3250;
+
+    --classic-game-mode:            #555B7A;
+    --classic-game-mode-foreground: #E8EAF0;
+    --domination-game-mode:            #704E62;
+    --domination-game-mode-foreground: #E8EAF0;
+    --time-attack-game-mode:            #3F706D;
+    --time-attack-game-mode-foreground: #E8EAF0;
     
     --player-colour-one-light:    rgba(108,99,255,0.2);
     --player-colour-one-medium:   rgba(108,99,255,0.45);
@@ -156,6 +173,13 @@
     --header:                 #2C3D52;
     --header-foreground:      #FAFCFE;
     --grid-line:              #1A2233;
+
+    --classic-game-mode:            #52759A;
+    --classic-game-mode-foreground: #FAFCFE;
+    --domination-game-mode:            #8A6066;
+    --domination-game-mode-foreground: #FAFCFE;
+    --time-attack-game-mode:            #71869A;
+    --time-attack-game-mode-foreground: #FAFCFE;
     
     --player-colour-one-light:    rgba(58,110,168,0.15);
     --player-colour-one-medium:   rgba(58,110,168,0.4);
@@ -196,7 +220,14 @@
     --header:                 #5A8A72;  
     --header-foreground:      #F7F4FA;
     --grid-line:              #3A2850;
-    
+
+    --classic-game-mode:            #77658C;
+    --classic-game-mode-foreground: #F7F4FA;
+    --domination-game-mode:            #985C73;
+    --domination-game-mode-foreground: #F7F4FA;
+    --time-attack-game-mode:            #668275;
+    --time-attack-game-mode-foreground: #F7F4FA;
+
     --player-colour-one-light:    rgba(184,88,128,0.15);
     --player-colour-one-medium:   rgba(184,88,128,0.4);
     --player-colour-one-strong:   #B85880;
@@ -256,6 +287,13 @@
     --color-header-foreground: var(--header-foreground);
     --color-footer: var(--footer);
     --color-footer-foreground: var(--footer-foreground);
+
+    --color-classic-game-mode: var(--classic-game-mode);
+    --color-domination-game-mode: var(--domination-game-mode);
+    --color-time-attack-game-mode: var(--time-attack-game-mode);
+    --color-classic-game-mode-foreground: var(--classic-game-mode-foreground);
+    --color-domination-game-mode-foreground: var(--domination-game-mode-foreground);
+    --color-time-attack-game-mode-foreground: var(--time-attack-game-mode-foreground);
 
     --color-result-win: var(--result-win);
     --color-result-win-forefround: var(--result-win-foreground);
@@ -456,23 +494,8 @@
         background-image: var(--app-gradient);
     }
 
-}
-
-/* html, body, #root {
-    height: 100%;
-}
-
-main {
-    flex: 1
-}
- 
-main > * {
-    height: 100%
-}
-
-@media (max-width: 767.98px) {
-    main > * {
-        height: auto;
-        min-height: 100%;
+    .bg-header-gradient {
+        background-image: var(--header-gradient);
     }
-} */
+
+}

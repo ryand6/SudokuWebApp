@@ -7,9 +7,9 @@ export function TimeAttackModeRulesModel({
     iconSize: number
 }) {
     return (
-        <div id="modal-content" className="flex flex-col w-full h-full bg-background font-display tracking-wide">
-            <div className="flex items-center px-4 py-5 bg-secondary justify-between">
-                <div className="flex items-center gap-3 text-secondary-foreground text-lg">
+        <div id="modal-content" className="flex flex-col w-full h-full bg-background font-display tracking-wide rounded-t-md">
+            <div className="flex items-center px-4 py-5 bg-time-attack-game-mode justify-between rounded-t-sm">
+                <div className="flex items-center gap-3 text-time-attack-game-mode-foreground text-lg">
                     <span className="p-3 bg-background/20 rounded-2xl"><IconStopwatch size={iconSize} /></span>
                     <span className="font-semibold text-2xl tracking-wider">Time Attack</span>
                 </div>

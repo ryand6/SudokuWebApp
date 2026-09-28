@@ -23,7 +23,7 @@ export default function MainLayout() {
 	return (
 		<>
 			<div className="min-h-screen md:h-screen flex flex-col">
-				<header className="bg-secondary h-16 text-secondary-foreground px-4 py-3">
+				<header className="bg-header h-16 text-primary-foreground px-4 py-3">
 					<div className="w-full h-full mx-auto flex items-center justify-between px-5">
 						<h1 
 							className="font-bold text-3xl cursor-pointer"

@@ -7,9 +7,9 @@ export function DominationModeRulesModel({
     iconSize: number
 }) {
     return (
-        <div id="modal-content" className="flex flex-col w-full h-full bg-background font-display tracking-wide">
-            <div className="flex items-center px-4 py-5 bg-sidebar justify-between">
-                <div className="flex items-center gap-3 text-sidebar-primary text-lg">
+        <div id="modal-content" className="flex flex-col w-full h-full bg-background font-display tracking-wide rounded-t-md">
+            <div className="flex items-center px-4 py-5 bg-domination-game-mode justify-between rounded-t-sm">
+                <div className="flex items-center gap-3 text-domination-game-mode-foreground text-lg">
                     <span className="p-3 bg-background/20 rounded-2xl"><IconSwords size={iconSize} /></span>
                     <span className="font-semibold text-2xl tracking-wider">Domination</span>
                 </div>

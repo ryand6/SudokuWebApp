@@ -61,7 +61,7 @@ export function DashboardMobileLayout({
 
     return (
         <div className="flex flex-col w-full h-full font-display">
-            <div className="w-full bg-sidebar flex pb-1 text-muted">
+            <div className="w-full bg-header-gradient flex pb-1 text-muted">
                 <div
                     className={`flex flex-1 justify-center gap-2 items-center py-2
                         ${tab === "play" ? "border-b-2 border-sidebar-primary text-sidebar-primary" : ""}

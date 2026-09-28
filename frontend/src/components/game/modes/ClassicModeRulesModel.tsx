@@ -7,9 +7,9 @@ export function ClassicModeRulesModel({
     iconSize: number
 }) {
     return (
-        <div id="modal-content" className="flex flex-col w-full h-full bg-background font-display tracking-wide">
-            <div className="flex items-center px-4 py-5 bg-primary justify-between">
-                <div className="flex items-center gap-3 text-primary-foreground text-lg">
+        <div id="modal-content" className="flex flex-col w-full h-full bg-background font-display tracking-wide rounded-t-md">
+            <div className="flex items-center px-4 py-5 bg-classic-game-mode justify-between rounded-t-sm">
+                <div className="flex items-center gap-3 text-classic-game-mode-foreground text-lg">
                     <span className="p-3 bg-background/20 rounded-2xl"><IconCategory size={iconSize} /></span>
                     <span className="font-semibold text-2xl tracking-wider">Classic</span>
                 </div>

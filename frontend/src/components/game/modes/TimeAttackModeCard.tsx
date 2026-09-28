@@ -13,15 +13,15 @@ export function TimeAttackModeCard({
     return (
         <>
             <div className="flex flex-col border-1 border-muted rounded-lg font-display w-full">
-                <div className="flex items-center px-4 py-3 bg-secondary justify-between rounded-t-lg">
-                    <div className="flex items-center gap-2 text-secondary-foreground text-lg">
+                <div className="flex items-center px-4 py-3 bg-time-attack-game-mode justify-between rounded-t-lg">
+                    <div className="flex items-center gap-2 text-time-attack-game-mode-foreground text-lg">
                         <span><IconStopwatch size={iconSize} /></span>
                         <span className="font-semibold">Time Attack</span>
                     </div>
                     <div>
                         <div 
-                            className="flex items-end justify-center gap-2 rounded-lg border-1 border-secondary-foreground px-3 py-1 w-auto
-                                        text-secondary-foreground cursor-pointer hover:bg-secondary-foreground/20 font-semibold"
+                            className="flex items-end justify-center gap-2 rounded-lg border-1 border-time-attack-game-mode-foreground px-3 py-1 w-auto
+                                        text-time-attack-game-mode-foreground cursor-pointer hover:bg-time-attack-game-mode-foreground/20 font-semibold"
                             onClick={() => setRulesModalOpen(true)}
                         >
                             <span>Rules</span>

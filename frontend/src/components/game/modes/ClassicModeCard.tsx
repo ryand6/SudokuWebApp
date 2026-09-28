@@ -13,15 +13,15 @@ export function ClassicModeCard({
     return (
         <>
             <div className="flex flex-col border-1 border-muted rounded-lg font-display w-full">
-                <div className="flex items-center px-4 py-3 bg-primary justify-between rounded-t-lg">
-                    <div className="flex items-center gap-2 text-primary-foreground text-lg">
+                <div className="flex items-center px-4 py-3 bg-classic-game-mode justify-between rounded-t-lg">
+                    <div className="flex items-center gap-2 text-classic-game-mode-foreground text-lg">
                         <span><IconCategory size={iconSize} /></span>
                         <span className="font-semibold">Classic</span>
                     </div>
                     <div>
                         <div 
-                            className="flex items-end justify-center gap-2 rounded-lg border-1 border-primary-foreground px-3 py-1 w-auto
-                                        text-primary-foreground cursor-pointer hover:bg-primary-foreground/20 font-semibold"
+                            className="flex items-end justify-center gap-2 rounded-lg border-1 border-classic-game-mode-foreground px-3 py-1 w-auto
+                                        text-classic-game-mode-foreground cursor-pointer hover:bg-classic-game-mode-foreground/20 font-semibold"
                             onClick={() => setRulesModalOpen(true)}
                         >
                             <span>Rules</span>

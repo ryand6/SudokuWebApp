@@ -29,12 +29,12 @@ export function OnlinePlayWidget({
                     )
                 }
                 <button 
-                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4
-                                ${isActiveLobby ? "bg-muted border-muted opacity-20" : "bg-primary/65 border-primary text-primary-foreground hover:bg-primary/80 cursor-pointer"}`}
+                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4 bg-muted/70 border-muted-foreground hover:bg-muted-foreground/80 hover:text-primary-foreground text-muted-foreground
+                                ${isActiveLobby ? "opacity-20" : "cursor-pointer"} group`}
                     onClick={() => navigate("/create-lobby")}
                     disabled={isActiveLobby}
                 >
-                    <div className={`flex justify-center items-center rounded-lg p-2 ${isActiveLobby ? "bg-muted" : "bg-primary/70"}`}>
+                    <div className={`flex justify-center items-center rounded-lg p-2 bg-muted group-hover:bg-muted-foreground`}>
                         <IconPlus size={iconSize} />
                     </div>
                     <div className="flex flex-col items-start">
@@ -47,12 +47,12 @@ export function OnlinePlayWidget({
                     </div>
                 </button>
                  <button 
-                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4
-                                ${isActiveLobby ? "bg-muted border-muted opacity-20" : "bg-secondary/65 border-secondary text-secondary-foreground hover:bg-secondary/80 cursor-pointer"}`}
+                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4 bg-muted/70 border-muted-foreground hover:bg-muted-foreground/80 hover:text-primary-foreground text-muted-foreground
+                                ${isActiveLobby ? "opacity-20" : "cursor-pointer"} group`}
                     onClick={() => setJoinLobbyModalOpen(true)}
                     disabled={isActiveLobby}
                 >
-                    <div className={`flex justify-center items-center rounded-lg p-2 ${isActiveLobby ? "bg-muted" : "bg-secondary/70"}`}>
+                    <div className={`flex justify-center items-center rounded-lg p-2 bg-muted group-hover:bg-muted-foreground`}>
                         <IconDoorEnter size={iconSize} />
                     </div>
                     <div className="flex flex-col items-start">
