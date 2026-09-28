@@ -19,6 +19,7 @@ import { WsDevToolbar } from "./components/testing/WsDevToolBar";
 import { LeaderboardsPage } from "./pages/LeaderboardsPage";
 import { LinkAdditionalProvidersPage } from "./pages/LinkAdditionalProvidersPage";
 import { RecoveryEmailUpdatePage } from "./pages/RecoveryEmailUpdatePage";
+import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ function App() {
                 {/* Public routes */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/link-account" element={<LinkAccountPage />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                 {/* One time public routes - new users only */}
                 <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
                 {/* Protected routes */}

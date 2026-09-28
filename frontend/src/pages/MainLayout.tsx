@@ -20,39 +20,41 @@ export default function MainLayout() {
 		}
 	}
 
-	console.log("User: ", user);
-
 	return (
-		<div className="min-h-screen md:h-screen flex flex-col">
-			<header className="bg-secondary h-16 text-secondary-foreground px-4 py-3">
-				<div className="w-full h-full mx-auto flex items-center justify-between px-5">
-					<h1 
-						className="font-bold text-3xl cursor-pointer"
-						onClick={() => navigate("/")}
-					>
-						Tomo Sudoku
-					</h1>
+		<>
+			<div className="min-h-screen md:h-screen flex flex-col">
+				<header className="bg-secondary h-16 text-secondary-foreground px-4 py-3">
+					<div className="w-full h-full mx-auto flex items-center justify-between px-5">
+						<h1 
+							className="font-bold text-3xl cursor-pointer"
+							onClick={() => navigate("/")}
+						>
+							Tomo Sudoku
+						</h1>
+						{
+							user && (
+								<UserSettings settings={user.userSettings} queryClient={queryClient} navigate={navigate} />
+							)
+						}
+					</div>
+				</header>
+
+				<main className="flex-1 md:min-h-0 overflow-y-auto">
 					{
-						user && (
-							<UserSettings settings={user.userSettings} queryClient={queryClient} navigate={navigate} />
-						)
+						(!isConnected && user) ? 
+							<WebSocketReconnectScreen />
+						: 
+							<Outlet />
 					}
+				</main>
+
+			</div>
+			<footer className="bg-muted text-footer-foreground px-4 py-2 text-sm text-center font-display">
+				<div className="flex justify-center items-center gap-3">
+					<a href="/privacy-policy">Privacy Policy</a>
 				</div>
-			</header>
-
-			<main className="flex-1 md:min-h-0">
-				{
-					(!isConnected && user) ? 
-						<WebSocketReconnectScreen />
-					: 
-						<Outlet />
-				}
-			</main>
-
-			{/* <footer className="bg-footer text-footer-foreground px-4 py-2 text-sm text-center">
-				© RD
-			</footer> */}
-
-		</div>
+			</footer>
+		</>
+		
 	);
 }

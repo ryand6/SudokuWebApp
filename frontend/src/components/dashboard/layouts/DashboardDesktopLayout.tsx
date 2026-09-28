@@ -56,7 +56,7 @@ export function DashboardDesktopLayout({
     const iconSize = 24;
     
     return (
-        <div className="flex flex-col w-full h-full font-display overflow-y-auto">
+        <div className="flex flex-col w-full h-[calc(100vh-4rem)] font-display overflow-y-auto">
             <div className="flex items-center px-5 py-5 border-b-muted border-b-2">
                 <div className="pl-5 tracking-wide font-semibold text-foreground text-lg">
                     Hello, <span className="text-sidebar-primary">{user.username}</span>!

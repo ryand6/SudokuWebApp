@@ -53,27 +53,29 @@ export function UsernameUpdatePage() {
 				<label className="font-semibold text-gray-700 text-lg">Current username:</label>
 				<div className="border border-gray-400 rounded-lg p-3 mt-4 mb-6 bg-gray-500">{user?.username ?? ""}</div>
 				{isLoading && <SpinnerButton />}
-				<form onSubmit={handleSubmit} method="post" className="flex flex-col gap-4 w-full max-w-lg mx-auto">
+				<form onSubmit={handleSubmit} method="post" className="flex flex-col gap-8 w-full max-w-lg mx-auto">
 					{/* display any errors found during attempted form submission */}
 					{error && <div className="p-2 border-red-300 border-2 rounded-xl bg-red-200 text-destructive text-lg mb-1">{error}</div>}
-					<div className="flex flex-col items-start">
-						<label htmlFor="username" className="font-semibold text-foreground mt-1 text-lg">Choose a username:</label>
-						<span className="text-xs text-muted">3-10 character limit</span>
+					<div className="flex flex-col gap-3">
+						<div className="flex flex-col items-start">
+							<label htmlFor="username" className="font-semibold text-foreground mt-1 text-lg">Choose a username:</label>
+							<span className="text-xs text-muted">3-10 character limit</span>
+						</div>
+						<input
+							type="text"
+							id="username"
+							placeholder="Username"
+							value={username}
+							required
+							maxLength={20}
+							minLength={3}
+							onChange={(e) => setUsername(e.target.value)}
+							className="border border-border text-foreground font-semibold 
+										bg-input rounded-lg p-3 focus:outline-none focus:ring-2 
+										placeholder:text-muted-foreground focus:ring-ring"
+						/>
+						<span className="text-destructive text-sm">Your username is visible to other players. Don't use your real name or other personal information.</span>
 					</div>
-					
-					<input
-						type="text"
-						id="username"
-						placeholder="Username"
-						value={username}
-						required
-						maxLength={20}
-						minLength={3}
-						onChange={(e) => setUsername(e.target.value)}
-						className="border border-border text-foreground font-semibold 
-									bg-input rounded-lg p-3 focus:outline-none focus:ring-2 
-									placeholder:text-muted-foreground focus:ring-ring"
-					/>
 					<button 
 						type="submit"
 						className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors cursor-pointer"
