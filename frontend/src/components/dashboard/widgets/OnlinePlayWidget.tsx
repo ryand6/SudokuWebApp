@@ -29,7 +29,7 @@ export function OnlinePlayWidget({
                     )
                 }
                 <button 
-                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4 bg-muted/70 border-muted-foreground hover:bg-muted-foreground/80 hover:text-primary-foreground text-muted-foreground
+                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4 bg-muted/50 border-muted-foreground hover:bg-muted-foreground/80 hover:text-primary-foreground text-muted-foreground
                                 ${isActiveLobby ? "opacity-20" : "cursor-pointer"} group`}
                     onClick={() => navigate("/create-lobby")}
                     disabled={isActiveLobby}
@@ -47,7 +47,7 @@ export function OnlinePlayWidget({
                     </div>
                 </button>
                  <button 
-                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4 bg-muted/70 border-muted-foreground hover:bg-muted-foreground/80 hover:text-primary-foreground text-muted-foreground
+                    className={`flex items-center border-1 w-full rounded-lg px-5 py-3 gap-4 bg-muted/50 border-muted-foreground hover:bg-muted-foreground/80 hover:text-primary-foreground text-muted-foreground
                                 ${isActiveLobby ? "opacity-20" : "cursor-pointer"} group`}
                     onClick={() => setJoinLobbyModalOpen(true)}
                     disabled={isActiveLobby}

@@ -27,8 +27,9 @@
 
     --header-gradient: linear-gradient(
         180deg,
-        var(--header),
-        var(--sidebar)
+        var(--header) 0%,
+        color-mix(in srgb, var(--header), var(--sidebar) 50%) 50%,
+        var(--sidebar) 100%
     );
 
     --radius: 0.65rem;

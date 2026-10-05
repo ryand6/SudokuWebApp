@@ -50,7 +50,7 @@ export function HomeMobileLayout({
                 </div>
                 {
                     user ? (
-                        <div className="flex flex-col gap-4 rounded-lg bg-sidebar/90 py-6 px-8">
+                        <div className="flex flex-col gap-4 rounded-lg bg-sidebar/75 py-6 px-8">
                             <div className="text-primary-foreground font-semibold tracking-wide text-xl">
                                 Welcome back, <span className="text-sidebar-primary">{user.username}</span>!
                             </div>
@@ -69,7 +69,7 @@ export function HomeMobileLayout({
                             </div>
                         </div>
                     ) : (
-                        <div className="flex flex-col gap-4 rounded-lg bg-sidebar/90 py-6 px-8 items-center">
+                        <div className="flex flex-col gap-4 rounded-lg bg-sidebar/75 py-6 px-8 items-center">
                             <div className="text-primary-foreground font-semibold tracking-wide text-xl">
                                 Get started
                             </div>
@@ -154,7 +154,7 @@ export function HomeMobileLayout({
                     </div>
                 </div>
                 <div className="flex w-full text-sm text-muted-foreground">
-                    <p>If you have any enquiries or suggestions for the site, please contact me at: <a href="mailto:tomosudoku@gmail.com" className="text-primary underline">tomosudoku@gmail.com</a></p>
+                    <p>If you would like to show your support by making a donation, please feel free to <a href="https://buymeacoffee.com/ryand6" className="text-primary font-semibold hover:underline">buy me a coffee</a></p>
                 </div>
             </div>
         </div>

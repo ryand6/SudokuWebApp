@@ -20,6 +20,7 @@ import { LeaderboardsPage } from "./pages/LeaderboardsPage";
 import { LinkAdditionalProvidersPage } from "./pages/LinkAdditionalProvidersPage";
 import { RecoveryEmailUpdatePage } from "./pages/RecoveryEmailUpdatePage";
 import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
+import { AboutPage } from "./pages/AboutPage";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/link-account" element={<LinkAccountPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/about" element={<AboutPage />} />
                 {/* One time public routes - new users only */}
                 <Route path="/user-setup" element={<NewUserOnly><UserSetupPage /></NewUserOnly>} />
                 {/* Protected routes */}
