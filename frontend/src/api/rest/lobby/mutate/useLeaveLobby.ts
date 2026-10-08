@@ -18,19 +18,32 @@ export function useLeaveLobby() {
         onMutate: () => {
             setIsLeaving(true);
         },
-        onSuccess: (updatedLobby, variables) => {
+        onSuccess: async (updatedLobby, variables) => {
             unsubscribe(`/topic/lobby/${variables.lobbyId}`);
-            // handles when a lobby is closed
+
+            queryClient.setQueryData(
+                queryKeys.userActiveLobby,
+                null
+            );
+
             if (updatedLobby === null) {
-                // Reset public lobbies list and removed lobby caches to account for removal of the lobby from the backend
-                queryClient.removeQueries({ queryKey: queryKeys.lobby(variables.lobbyId), exact: true });
-                queryClient.resetQueries({ queryKey: queryKeys.publicLobbies, exact: true });
-                navigate("/dashboard", { replace: true });
-                return;
+                queryClient.removeQueries({
+                    queryKey: queryKeys.lobby(variables.lobbyId),
+                    exact: true,
+                });
+
+                queryClient.resetQueries({
+                    queryKey: queryKeys.publicLobbies,
+                    exact: true,
+                });
             } else {
-                queryClient.setQueryData(queryKeys.lobby(variables.lobbyId), updatedLobby);
-                navigate("/dashboard", { replace: true });
+                queryClient.setQueryData(
+                    queryKeys.lobby(variables.lobbyId),
+                    updatedLobby
+                );
             }
+
+            navigate("/dashboard", { replace: true });
         },
         onError: (err: any) => {
             // Handle any error for display in UI

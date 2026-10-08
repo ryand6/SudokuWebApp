@@ -1,5 +1,7 @@
 package com.github.ryand6.sudokuweb.services.user;
 
+import com.github.ryand6.sudokuweb.domain.game.GameEntity;
+import com.github.ryand6.sudokuweb.domain.game.GameRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
@@ -9,6 +11,7 @@ import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderEntity;
 import com.github.ryand6.sudokuweb.domain.user.oauth.UserOAuthProviderRepository;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
+import com.github.ryand6.sudokuweb.enums.GameStatus;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UsernameUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.auth.InvalidOtpException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
@@ -35,7 +38,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.Cacheable;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,6 +48,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserOAuthProviderRepository userOAuthProviderRepository;
     private final LobbyRepository lobbyRepository;
+    private final GameRepository gameRepository;
     private final UserEntityDtoMapper userEntityDtoMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final OtpService otpService;
@@ -56,6 +59,7 @@ public class UserService {
     public UserService(UserRepository userRepository,
                        UserOAuthProviderRepository userOAuthProviderRepository,
                        LobbyRepository lobbyRepository,
+                       GameRepository gameRepository,
                        UserEntityDtoMapper userEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher,
                        OtpService otpService,
@@ -64,6 +68,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.userOAuthProviderRepository = userOAuthProviderRepository;
         this.lobbyRepository = lobbyRepository;
+        this.gameRepository = gameRepository;
         this.userEntityDtoMapper = userEntityDtoMapper;
         this.applicationEventPublisher = applicationEventPublisher;
         this.otpService = otpService;
@@ -218,6 +223,16 @@ public class UserService {
                 .difficulty(activeLobbySettings.getDifficulty())
                 .timeLimitPreset(activeLobbySettings.getTimeLimit())
                 .build();
+    }
+
+    public Long getUserActiveGameIfExists(Long userId) {
+        Set<GameEntity> activeGames = gameRepository.findByGamePlayerEntities_UserEntity_IdAndGameStatusIn(userId, Set.of(GameStatus.LOADING, GameStatus.COUNTDOWN, GameStatus.IN_PROGRESS));
+        Optional<GameEntity> activeGameOptional = activeGames.stream().findFirst();
+        if (activeGameOptional.isEmpty()) {
+            return null;
+        }
+        GameEntity activeGame = activeGameOptional.get();
+        return activeGame.getId();
     }
 
     public List<String> getAllLinkedProviders(Long userId) {

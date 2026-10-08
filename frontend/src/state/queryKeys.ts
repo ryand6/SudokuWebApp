@@ -12,6 +12,7 @@ export const queryKeys = {
     userActiveLobby: ["userActiveLobby"] as const,
     lobby: (lobbyId: number) => ["lobby", lobbyId] as const,
     lobbyChat: (lobbyId: number) => ["lobbyChat", lobbyId] as const,
+    userActiveGameId: ["userActiveGameId"] as const,
     game: (gameId: number) => ["game", gameId] as const,
     gameChat: (gameId: number) => ["gameChat", gameId] as const,
     gameEvents: (gameId: number) => ["gameEvents", gameId] as const,

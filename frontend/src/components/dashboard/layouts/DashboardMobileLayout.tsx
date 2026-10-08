@@ -23,6 +23,7 @@ import { LeaveLobbyAlertDialog } from "@/components/ui/custom/LeaveLobbyAlertDia
 export function DashboardMobileLayout({
     user,
     activeLobby,
+    activeGameId,
     leaveLobbyHandler,
     leaveGameHandler,
     isJoinLobbyModalOpen,
@@ -35,7 +36,8 @@ export function DashboardMobileLayout({
     navigate
 }: {
     user: UserDto,
-    activeLobby: LobbyDetailsDto | undefined,
+    activeLobby: LobbyDetailsDto | null | undefined,
+    activeGameId: number | null | undefined,
     leaveLobbyHandler: {
         mutate: UseMutateFunction<LobbyDto | null, Error, LeaveLobbyRequestDto, unknown>;
         isLeaving: boolean;
@@ -50,7 +52,7 @@ export function DashboardMobileLayout({
     setIsLeaveLobbyAlertOpen: Dispatch<SetStateAction<boolean>>,
     isLeaveGameAlertOpen: boolean,
     setIsLeaveGameAlertOpen: Dispatch<SetStateAction<boolean>>,
-    onRejoinClick: () => void,   
+    onRejoinClick: () => void,
     navigate: NavigateFunction
 }) {
     const iconSize = 16;
@@ -108,7 +110,7 @@ export function DashboardMobileLayout({
                                                 <div className="w-2 h-2 rounded-full animate-pulse bg-primary" />
                                             </div>
                                             <div className="flex flex-col items-start">
-                                                {activeLobby.currentGameId ? (
+                                                {activeGameId ? (
                                                     <div className="tracking-wide font-semibold text-secondary-foreground text-lg">
                                                         You are in an active game
                                                     </div>
@@ -138,7 +140,7 @@ export function DashboardMobileLayout({
                                             <button
                                                 className="flex items-center gap-1 px-3 py-2 rounded-lg bg-destructive/20 cursor-pointer hover:bg-destructive/10 text-semibold text-secondary-foreground text-md border-1 border-sidebar"
                                                 onClick={() => {
-                                                    activeLobby.currentGameId ? setIsLeaveGameAlertOpen(true) : setIsLeaveLobbyAlertOpen(true)
+                                                    activeGameId ? setIsLeaveGameAlertOpen(true) : setIsLeaveLobbyAlertOpen(true)
                                                 }}
                                             >   
                                                 <span>Leave</span>

@@ -23,6 +23,7 @@ import { TopFiveLeaderboardsWidget } from "../widgets/TopFiveLeaderboardsWidget"
 export function DashboardDesktopLayout({
     user,
     activeLobby,
+    activeGameId,
     leaveLobbyHandler,
     leaveGameHandler,
     isJoinLobbyModalOpen,
@@ -35,7 +36,8 @@ export function DashboardDesktopLayout({
     navigate
 }: {
     user: UserDto,
-    activeLobby: LobbyDetailsDto | undefined,
+    activeLobby: LobbyDetailsDto | null | undefined,
+    activeGameId: number | null | undefined,
     leaveLobbyHandler: {
         mutate: UseMutateFunction<LobbyDto | null, Error, LeaveLobbyRequestDto, unknown>;
         isLeaving: boolean;
@@ -72,7 +74,7 @@ export function DashboardDesktopLayout({
                                     <div className="w-2 h-2 rounded-full animate-pulse bg-primary" />
                                 </div>
                                 <div className="flex flex-col items-start">
-                                    {activeLobby.currentGameId ? (
+                                    {activeGameId ? (
                                         <div className="tracking-wide font-semibold text-secondary-foreground text-lg">
                                             You are in an active game
                                         </div>
@@ -102,7 +104,7 @@ export function DashboardDesktopLayout({
                                 <button
                                     className="flex items-center gap-1 px-4 py-3 rounded-lg bg-destructive/20 cursor-pointer hover:bg-destructive/10 text-semibold text-secondary-foreground text-lg border-1 border-sidebar"
                                     onClick={() => {
-                                        activeLobby.currentGameId ? setIsLeaveGameAlertOpen(true) : setIsLeaveLobbyAlertOpen(true)
+                                        activeGameId ? setIsLeaveGameAlertOpen(true) : setIsLeaveLobbyAlertOpen(true)
                                     }}
                                 >   
                                     <span>Leave</span>

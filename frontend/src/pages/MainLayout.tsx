@@ -49,7 +49,7 @@ export default function MainLayout() {
 				</main>
 
 			</div>
-			<footer className="bg-muted tracking-wide font-semibold text-sidebar px-4 py-2 text-sm text-center font-display">
+			<footer className="bg-sidebar tracking-wide font-semibold text-sidebar-foreground px-4 py-4 text-sm text-center font-display">
 				<div className="flex justify-center items-center gap-3">
 					<a href="/about" className="hover:text-primary">About</a>
 					<span>&middot;</span>

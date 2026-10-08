@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getActiveLobby } from "./getActiveLobby";
 
 export function useGetActiveLobby() {
-    return useQuery<LobbyDetailsDto, Error>({
+    return useQuery<LobbyDetailsDto | null, Error>({
         queryKey: queryKeys.userActiveLobby,
         queryFn: getActiveLobby,
         retry: false,

@@ -22,6 +22,17 @@ export function useLeaveGame() {
             unsubscribe(`/topic/game/${variables.gameId}`);
             unsubscribe(`/topic/game/${variables.gameId}/user/${variables.userId}`);
             unsubscribe(`/topic/lobby/${variables.lobbyId}`);
+
+            queryClient.setQueryData(
+                queryKeys.userActiveGameId,
+                null
+            );
+
+            queryClient.setQueryData(
+                queryKeys.userActiveLobby,
+                null
+            );
+
             // handles when a game is closed
             if (updatedGame === null) {
                 // Remove game and game player state caches

@@ -7,11 +7,13 @@ import { useGetActiveLobby } from "@/api/rest/users/query/useGetActiveLobby";
 import { useLeaveGame } from "@/api/rest/game/mutate/useLeaveGame";
 import { useLeaveLobby } from "@/api/rest/lobby/mutate/useLeaveLobby";
 import { useState } from "react";
+import { useGetActiveGameId } from "@/api/rest/users/query/useGetActiveGameId";
 
 export function DashboardPage() {
 
     const { data: currentUser } = useGetCurrentUser();
     const { data: userActiveLobby } = useGetActiveLobby();
+    const { data: userActiveGameId } = useGetActiveGameId();
 
     const [isJoinLobbyModalOpen, setJoinLobbyModalOpen] = useState(false);
     const [isLeaveLobbyAlertOpen, setIsLeaveLobbyAlertOpen] = useState(false);
@@ -19,7 +21,7 @@ export function DashboardPage() {
 
     const onRejoinClick = () => {
         if (!userActiveLobby) return;
-        const path = userActiveLobby.inGame ? `/game/${userActiveLobby.currentGameId}` : `/lobby/${userActiveLobby.id}`;
+        const path = userActiveGameId ? `/game/${userActiveGameId}` : `/lobby/${userActiveLobby.id}`;
         navigate(path);
     }
 
@@ -37,6 +39,7 @@ export function DashboardPage() {
             <DashboardMobileLayout 
                 user={currentUser} 
                 activeLobby={userActiveLobby}
+                activeGameId={userActiveGameId}
                 leaveLobbyHandler={leaveLobbyHandler}
                 leaveGameHandler={leaveGameHandler}
                 isJoinLobbyModalOpen={isJoinLobbyModalOpen}
@@ -52,6 +55,7 @@ export function DashboardPage() {
             <DashboardDesktopLayout 
                 user={currentUser} 
                 activeLobby={userActiveLobby}
+                activeGameId={userActiveGameId}
                 leaveLobbyHandler={leaveLobbyHandler}
                 leaveGameHandler={leaveGameHandler}
                 isJoinLobbyModalOpen={isJoinLobbyModalOpen}
