@@ -22,6 +22,7 @@ import { useWebSocketContext } from "@/context/WebSocketProvider";
 import type { NavigateFunction } from "react-router-dom";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import BasicTimer from "@/components/ui/custom/BasicTimer";
+import { useGetUserRank } from "@/api/rest/leaderboards/query/useGetUserRank";
 
 export function GameResults({
     userId,
@@ -63,9 +64,17 @@ export function GameResults({
 
     const { send } = useWebSocketContext();
 
+    const { data: userRank, refetch } = useGetUserRank(userId, gameMode);
+
     useEffect(() => {
-        if (leaderboardResult !== undefined) return;
-        
+        if (leaderboardResult) {
+            refetch();
+            setUserRankText(userRank ? userRank.toLocaleString() : "-");
+        }
+    }, [leaderboardResult, userRank]);
+
+    useEffect(() => {
+        if (leaderboardResult !== undefined) return; 
         const fetchLeaderboard = async () => {
             try {
                 const fetchedLeaderboard: LeaderboardResult = await getLeaderboardResult(gameId);
@@ -77,16 +86,10 @@ export function GameResults({
                 setError("Error fetching leaderboard result. Please try again later.");
             }
         }
-
         fetchLeaderboard();
     }, [gameId, userId, leaderboardResult]);
 
     const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeMsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
-
-    // const resolveUserRank = async () => {
-    //     const userRank = await getUserRank();
-    //     setUserRankText("#" + userRank.userRank.toString());
-    // }
 
     const returnToLobbyHandler = () => {
         revertInGameStatus(send, gameId, userId, lobbyId);
@@ -98,8 +101,6 @@ export function GameResults({
     const onContinue = () => {
 
     }
-
-    // resolveUserRank();
 
     return (
         <div 

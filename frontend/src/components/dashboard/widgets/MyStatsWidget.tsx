@@ -33,7 +33,7 @@ export function MyStatsWidget({
                                     key={index}
                                     className={`inline-flex items-center justify-center gap-2 w-full rounded-full 
                                     py-1 font-display border-2 border-muted cursor-pointer
-                                    ${selectedMode === mode ? "bg-secondary/70 text-secondary-foreground border-secondary" : "bg-card text-muted"}`}
+                                    ${selectedMode === mode ? "bg-primary/70 text-primary-foreground border-primary" : "bg-card text-muted"}`}
                                     onClick={() => setSelectedMode(mode)}
                                 >
                                     <span className="text-md text-center font-medium tracking-wide">{wordToProperCase(mode)}</span>

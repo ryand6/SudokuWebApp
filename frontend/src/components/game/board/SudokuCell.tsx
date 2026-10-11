@@ -103,7 +103,7 @@ const SudokuCell = React.memo(function SudokuCell(
                             ${(isInUnit && !isSelected && !isHovered) && playerColourClassName.light}
                             ${(isHovered && !isSelected) && playerColourClassName.medium}
                             ${isSelected && playerColourClassName.strong}
-                            ${isSameNumber ? "font-extrabold text-3xl" : "font-semibold text-2xl"}
+                            ${isSameNumber ? "font-extrabold text-3xl" : "font-semibold text-xl"}
                             ${isRejected ? "text-red-500 text-2xl" : "text-black"}
                             `}
                 style={{animationDelay: `${((row * 3) + col) * 15}ms`}}

@@ -1,11 +1,19 @@
 import { Separator } from "@/components/ui/separator";
 import { IconCategory } from "@tabler/icons-react";
+import { useEffect } from "react";
 
 export function ClassicModeRulesModel({
     iconSize
 }: {
     iconSize: number
 }) {
+    useEffect(() => {
+        document.getElementById("root")?.classList.add("blur-sm");
+        return () => {
+            document.getElementById("root")?.classList.remove("blur-sm");
+        };
+    }, []);
+
     return (
         <div id="modal-content" className="flex flex-col w-full h-full bg-background font-display tracking-wide rounded-t-md">
             <div className="flex items-center px-4 py-5 bg-classic-game-mode justify-between rounded-t-sm">

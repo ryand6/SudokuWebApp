@@ -166,7 +166,7 @@ public class GamePlayerEntity {
         }
         int cellsGiven = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsGiven();
         int cellsToFill = 81 - cellsGiven;
-        long scoreOverCellsCompleted = baseScore != 0 ? baseScore / completedCellsCount : 0;
+        long scoreOverCellsCompleted = baseScore != 0 && completedCellsCount != 0 ? baseScore / completedCellsCount : 0;
         int normalisationRate = Math.round(((float) completedCellsCount / cellsToFill) * 100);
         long normalisedScore = scoreOverCellsCompleted * normalisationRate;
 

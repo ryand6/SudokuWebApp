@@ -78,7 +78,7 @@ public class LobbyPlayerEntity {
 
     public void validateStatusChange() {
         if (lobby.isInGame()) {
-            throw new LobbyPlayerStatusUpdatesLockedException("Lobby player status updates are locked whilst their is an active game");
+            throw new LobbyPlayerStatusUpdatesLockedException("Lobby player status updates are locked whilst there is an active game");
         }
     }
 
