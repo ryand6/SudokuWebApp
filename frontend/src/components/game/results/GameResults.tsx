@@ -67,11 +67,14 @@ export function GameResults({
     const { data: userRank, refetch } = useGetUserRank(userId, gameMode);
 
     useEffect(() => {
-        if (leaderboardResult) {
-            refetch();
+        const refetchUserRank = async () => {
+            await refetch();
+        }
+        if (players[userId].gameResult !== "PENDING") {
+            refetchUserRank();
             setUserRankText(userRank ? userRank.toLocaleString() : "-");
         }
-    }, [leaderboardResult, userRank]);
+    }, [players[userId].gameResult, leaderboardResult, userRank]);
 
     useEffect(() => {
         if (leaderboardResult !== undefined) return; 

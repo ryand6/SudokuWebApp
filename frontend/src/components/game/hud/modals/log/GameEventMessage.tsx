@@ -10,11 +10,6 @@ export function GameEventMessage({
     msg: GameEventDto,
     playerColours: Record<number, PlayerColour> | undefined
 }) {
-
-    console.log(msg);
-    console.log(msg.createdAt);
-    console.log(getLocalTime(msg.createdAt));
-
     return (
         <div className="flex flex-row w-full py-2 px-4 border-muted border-b-1 hover:bg-sidebar-primary/20 items-center gap-4">
             <div className="flex w-[20%] items-center gap-2">

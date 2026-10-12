@@ -17,9 +17,5 @@ export function computeMsDifferenceBetweenTimestamps(timestamp1: string, timesta
 export function computeSecondsLeftUntilTimestamp(timestamp: string | null): number {
     if (timestamp === null) return -1;
     const diffMs = getEpochTimeFromTimestamp(timestamp) - Date.now();
-
-    console.log("DiffMs: ", diffMs);
-    console.log("DiffSecs: ", Math.floor(diffMs / 1000));
-
     return Math.floor(diffMs / 1000);
 }
