@@ -20,7 +20,7 @@ export function RequireAuth({ children }: { children : React.ReactNode }) {
         handleUserFetchError(error, navigate, location.pathname + location.search + location.hash, false, onLinkAccountRoute);
     }, [error, navigate, location.pathname, location.search, location.hash]);
 
-    if (isLoading) return <SpinnerButton />;
+    if (isLoading) return <div className="py-4"><SpinnerButton /></div>;
 
     if (!user) return <div>Error fetching user</div>;
 

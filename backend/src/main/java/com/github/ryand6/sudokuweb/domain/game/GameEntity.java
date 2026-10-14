@@ -205,6 +205,9 @@ public class GameEntity {
     }
 
     public void reduceEndTimeOnFirstPlayerCompletion() {
+        if (gameSettingsEntity.getGameType() == GameType.CASUAL) {
+            return;
+        }
         Instant newEndTime = Instant.now().plusSeconds(60);
         if (gameEndsAt.isAfter(newEndTime)) {
             gameEndsAt = newEndTime;

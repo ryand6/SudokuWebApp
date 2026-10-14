@@ -232,7 +232,23 @@ export function GameResults({
                     <StatCard value={timeTaken} label="Time taken" compact={false} />
                     <StatCard value={players[userId].mistakes.toString()} label="Mistakes" compact={false} />
                     <StatCard value={players[userId].firsts.toString()} label="Firsts" compact={false} />
-                    <StatCard value={userRankText} label="Leaderboard rank" compact={false} />
+                    {
+                        players[userId].gameResult !== "PENDING" ? (
+                            <StatCard value={userRankText} label="Leaderboard rank" compact={false} />
+                        ) : (
+                            <div className="bg-card border-2 border-muted rounded-md px-2.5 py-2 text-center">
+                                <div>
+                                    <SpinnerButton text="Waiting for game results…" />
+                                </div>
+                                <div
+                                    className="text-md text-muted-foreground font-sans"
+                                >
+                                    Leaderboard rank
+                                </div>
+                            </div>
+                        )
+                    }
+                    
                 </div>
                 <ReturnToLobbyAlertDialog open={isAlertOpen} handleContinueClick={() => returnToLobbyHandler()} setOpen={setIsAlertOpen} />
                 <Button variant="destructive" className="cursor-pointer" onClick={() => setIsAlertOpen(true)}>Return to Lobby</Button>
