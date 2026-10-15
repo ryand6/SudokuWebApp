@@ -99,9 +99,9 @@ const SudokuCell = React.memo(function SudokuCell(
                 className={`w-full h-full flex items-center justify-center 
                             cursor-pointer box-border text-foreground
                             ${!isAnimationPlayed && "animate-fill-cell"} 
-                            ${cellOwnership && !isSelected && !isHovered && !isInUnit ? playerColourClassNamePicker[playerColours[cellOwnership]].medium : "bg-background"}
-                            ${(isInUnit && !isSelected && !isHovered) && playerColourClassName.light}
-                            ${(isHovered && !isSelected) && playerColourClassName.medium}
+                            ${cellOwnership && !isSelected && !isHovered && !isInUnit ? playerColourClassNamePicker[playerColours[cellOwnership]].light : "bg-background"}
+                            ${(isInUnit && !isSelected && !isHovered) && playerColourClassName.medium}
+                            ${(isHovered && !isSelected) && playerColourClassName.strong}
                             ${isSelected && playerColourClassName.strong}
                             ${isSameNumber ? "font-extrabold text-3xl" : "font-semibold text-xl"}
                             ${isRejected ? "text-red-500 text-2xl" : "text-black"}

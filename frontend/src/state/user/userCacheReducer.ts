@@ -11,7 +11,6 @@ export function userCacheReducer(
             return event.userData;
         }
         case "USER_SETTINGS_UPDATED": {
-            console.log(`Updating setting ${event.field} to value ${event.value}`);
             if (!existingData) {
                 return existingData;
             }

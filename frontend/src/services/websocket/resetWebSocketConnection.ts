@@ -10,8 +10,6 @@ export async function resetWebSocketConnection(
     handleWebSocketClose: () => void,
     handleWebSocketError: (event: any) => void
 ) {
-    console.log("Resetting WebSocket connection...");
-
     // Clean up old client
     clientRef.current?.deactivate();
     clientRef.current = null;
