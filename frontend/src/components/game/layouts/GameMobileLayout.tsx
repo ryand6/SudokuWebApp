@@ -90,6 +90,7 @@ export function GameMobileLayout({
                         lobbyId={publicGameState.lobbyId}
                         difficulty={publicGameState.gameSettings.difficulty}
                         gameMode={publicGameState.gameSettings.gameMode}
+                        gameType={publicGameState.gameSettings.gameType}
                         leaderboardResult={privateGameState.leaderboardResult}
                         players={publicGameState.players}
                         gameStartsAt={publicGameState.gameStartsAt}

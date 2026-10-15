@@ -24,7 +24,12 @@ export function HUDStats(
                 <div className="flex flex-col gap-4 px-5 py-5 items-center">
                     {Object.entries(gamePlayers).map(([key, player], index) => {
                         return (
-                            <div className={`flex flex-col w-full bg-muted/20 border-1 md:border-2 rounded-md border-muted justify-center items-center ${userId === Number(key) && "border-sidebar-primary bg-sidebar-primary/20"}`} key={index}>
+                            <div 
+                                className={`flex flex-col w-full bg-muted/20 border-1 md:border-2 rounded-md border-muted justify-center items-center 
+                                            ${userId === Number(key) && "border-sidebar-primary bg-sidebar-primary/20"}
+                                            ${player.gameResult === "FORFEIT" && "opacity-40"}`} 
+                                key={index}
+                            >
                                 <div className="flex flex-col w-full gap-1">
                                     <div 
                                         className="flex w-full justify-between px-5 py-3 items-center"

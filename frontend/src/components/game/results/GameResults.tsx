@@ -23,6 +23,7 @@ import type { NavigateFunction } from "react-router-dom";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import BasicTimer from "@/components/ui/custom/BasicTimer";
 import { useGetUserRank } from "@/api/rest/leaderboards/query/useGetUserRank";
+import type { GameType } from "@/types/enum/GameType";
 
 export function GameResults({
     userId,
@@ -30,6 +31,7 @@ export function GameResults({
     lobbyId,
     difficulty,
     gameMode,
+    gameType,
     leaderboardResult,
     players,
     gameStartsAt,
@@ -43,6 +45,7 @@ export function GameResults({
     lobbyId: number,
     difficulty: Difficulty,
     gameMode: GameMode,
+    gameType: GameType,
     leaderboardResult: LeaderboardResult | undefined,
     players: GamePlayers,
     gameStartsAt: string | null,
@@ -228,28 +231,37 @@ export function GameResults({
                 >
                     Game stats
                 </p>
-                <div className="grid grid-cols-2 grid-rows-2 gap-1.5 mb-4">
-                    <StatCard value={timeTaken} label="Time taken" compact={false} />
-                    <StatCard value={players[userId].mistakes.toString()} label="Mistakes" compact={false} />
-                    <StatCard value={players[userId].firsts.toString()} label="Firsts" compact={false} />
-                    {
-                        players[userId].gameResult !== "PENDING" ? (
-                            <StatCard value={userRankText} label="Leaderboard rank" compact={false} />
-                        ) : (
-                            <div className="bg-card border-2 border-muted rounded-md px-2.5 py-2 text-center">
-                                <div>
-                                    <SpinnerButton text="Waiting for game results…" />
-                                </div>
-                                <div
-                                    className="text-md text-muted-foreground font-sans"
-                                >
-                                    Leaderboard rank
-                                </div>
-                            </div>
-                        )
-                    }
-                    
-                </div>
+                {
+                    gameType === "CASUAL" ? (
+                        <div className="grid grid-cols-3 grid-rows-1 gap-1.5 mb-4">
+                            <StatCard value={timeTaken} label="Time taken" compact={false} />
+                            <StatCard value={players[userId].mistakes.toString()} label="Mistakes" compact={false} />
+                            <StatCard value={players[userId].firsts.toString()} label="Firsts" compact={false} />
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 grid-rows-2 gap-1.5 mb-4">
+                            <StatCard value={timeTaken} label="Time taken" compact={false} />
+                            <StatCard value={players[userId].mistakes.toString()} label="Mistakes" compact={false} />
+                            <StatCard value={players[userId].firsts.toString()} label="Firsts" compact={false} />
+                            {
+                                players[userId].gameResult !== "PENDING" ? (
+                                    <StatCard value={userRankText} label="Leaderboard rank" compact={false} />
+                                ) : (
+                                    <div className="bg-card border-2 border-muted rounded-md px-2.5 py-2 text-center">
+                                        <div>
+                                            <SpinnerButton text="Waiting for game results…" />
+                                        </div>
+                                        <div
+                                            className="text-md text-muted-foreground font-sans"
+                                        >
+                                            Leaderboard rank
+                                        </div>
+                                    </div>
+                                )
+                            }           
+                        </div>
+                    )
+                }
                 <ReturnToLobbyAlertDialog open={isAlertOpen} handleContinueClick={() => returnToLobbyHandler()} setOpen={setIsAlertOpen} />
                 <Button variant="destructive" className="cursor-pointer" onClick={() => setIsAlertOpen(true)}>Return to Lobby</Button>
             </div>

@@ -29,7 +29,7 @@ export function HUDHeatMaps({
                         {Object.entries(gamePlayers).map(([key, gp], index) => {
                             return (
                                 <div 
-                                    className={`flex h-[50%] w-[90%] p-4 border-2 md:border-3 border-muted rounded-xl flex-col justify-center bg-muted/20 items-center ${userId === Number(key) && "bg-sidebar-primary/20 border-sidebar-primary"}`}
+                                    className={`flex h-[50%] w-[90%] p-4 border-2 md:border-3 border-muted rounded-xl flex-col justify-center bg-muted/20 items-center ${userId === Number(key) && "bg-sidebar-primary/20 border-sidebar-primary"} ${gp.gameResult === "FORFEIT" && "opacity-40"}`}
                                     key={index}
                                 >
                                     <div 
@@ -62,7 +62,7 @@ export function HUDHeatMaps({
                         {Object.entries(gamePlayers).map(([key, gp], index) => {
                             return (
                                 <div 
-                                    className={`flex h-[45%] p-4 border-2 md:border-3 border-muted rounded-xl flex-col justify-center bg-muted/20 items-center ${userId === Number(key) && "bg-sidebar-primary/20 border-sidebar-primary"}`}
+                                    className={`flex h-[45%] p-4 border-2 md:border-3 border-muted rounded-xl flex-col justify-center bg-muted/20 items-center ${userId === Number(key) && "bg-sidebar-primary/20 border-sidebar-primary"} ${gp.gameResult === "FORFEIT" && "opacity-40"}`}
                                     key={index}
                                 >
                                     <div 
