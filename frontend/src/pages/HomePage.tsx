@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetCurrentUser } from "../api/rest/users/query/useGetCurrentUser";
 import { redirectPostLogin } from "../utils/routing/redirectPostLogin";
@@ -11,6 +11,23 @@ export function HomePage() {
     const navigate = useNavigate();
     const isMobile = useIsMobile();
 
+    const [isImageLoading, setIsImageLoading] = useState(true);
+    const [isImageError, setIsImageError] = useState(false);
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = "/images/developer.jpg";
+
+        img.onload = () => {
+            setIsImageLoading(false);
+        };
+
+        img.onerror = (e) => {
+            setIsImageLoading(false);
+            setIsImageError(true);
+        };
+    }, []);
+
     // When homepage is accessed, check if it was via a redirect following a login/account set up - if so, redirect to original URL
     useEffect(() => {
         redirectPostLogin(navigate)
@@ -18,9 +35,9 @@ export function HomePage() {
 
     return (
         isMobile ? (
-            <HomeMobileLayout user={user} navigate={navigate} />
+            <HomeMobileLayout user={user} navigate={navigate} isImageLoading={isImageLoading} isImageError={isImageError} />
         ) : (
-            <HomeDesktopLayout user={user} navigate={navigate} />
+            <HomeDesktopLayout user={user} navigate={navigate} isImageLoading={isImageLoading} isImageError={isImageError} />
         )
     )
 }

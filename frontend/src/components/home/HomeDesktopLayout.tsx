@@ -9,29 +9,16 @@ import { Spinner } from "../ui/spinner"
 
 export function HomeDesktopLayout({
     user,
-    navigate
+    navigate,
+    isImageLoading,
+    isImageError
 }: {
     user: UserDto | undefined,
-    navigate: NavigateFunction
+    navigate: NavigateFunction,
+    isImageLoading: boolean,
+    isImageError: boolean
 }) {
     const iconSize: number = 24;
-
-    const [isImageLoading, setIsImageLoading] = useState(true);
-    const [isImageError, setIsImageError] = useState(false);
-
-    useEffect(() => {
-        const img = new Image();
-        img.src = "/images/developer.jpg";
-
-        img.onload = () => {
-            setIsImageLoading(false);
-        };
-
-        img.onerror = (e) => {
-            setIsImageLoading(false);
-            setIsImageError(true);
-        };
-    }, []);
 
     return (
         <div className="flex flex-col w-full h-full font-display">

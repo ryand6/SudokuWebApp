@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { Button } from "../../ui/button";
-import { TimerCountdown } from "../../ui/custom/TimerCountdown";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import { LobbyPlayersPanel } from "../LobbyPlayersPanel";
 import { LobbySettingsPanel } from "../LobbySettingsPanel";
@@ -29,7 +27,9 @@ export function LobbyMobileLayout({
     gameType,
     lobbyPlayers,
     isMobile,
-    handleLeaveLobbyClick
+    handleLeaveLobbyClick,
+    isAlertOpen,
+    setIsAlertOpen
 }: {
     lobbyId: number,
     lobbyName: string,
@@ -44,11 +44,10 @@ export function LobbyMobileLayout({
     gameType: GameType,
     lobbyPlayers: LobbyPlayerDto[],
     isMobile: boolean,
-    handleLeaveLobbyClick: () => void
+    handleLeaveLobbyClick: () => void,
+    isAlertOpen: boolean,
+    setIsAlertOpen: Dispatch<SetStateAction<boolean>>
 }) {
-
-    const [isAlertOpen, setIsAlertOpen] = useState(false);
-    
     const iconSize: number = isMobile ? 16 : 24;
     const iconStroke: number = isMobile ? 2 : 3;
 

@@ -8,7 +8,7 @@ import type { GameMode } from "@/types/enum/GameMode";
 import type { GameType } from "@/types/enum/GameType";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 import { IconDoorExit } from "@tabler/icons-react";
-import { useState } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 import { LeaveLobbyAlertDialog } from "@/components/ui/custom/LeaveLobbyAlertDialog";
 import BasicTimer from "@/components/ui/custom/BasicTimer";
 import { IconUsers } from '@tabler/icons-react';
@@ -29,7 +29,9 @@ export function LobbyDesktopLayout({
     gameType,
     lobbyPlayers,
     isMobile,
-    handleLeaveLobbyClick
+    handleLeaveLobbyClick,
+    isAlertOpen,
+    setIsAlertOpen
 }: {
     lobbyId: number,
     lobbyName: string,
@@ -44,11 +46,10 @@ export function LobbyDesktopLayout({
     gameType: GameType,
     lobbyPlayers: LobbyPlayerDto[],
     isMobile: boolean,
-    handleLeaveLobbyClick: () => void
-}) {
-
-    const [isAlertOpen, setIsAlertOpen] = useState(false);
-    
+    handleLeaveLobbyClick: () => void,
+    isAlertOpen: boolean,
+    setIsAlertOpen: Dispatch<SetStateAction<boolean>>
+}) {    
     const iconSize: number = isMobile ? 16 : 24;
     const iconStroke: number = isMobile ? 2 : 3;
 

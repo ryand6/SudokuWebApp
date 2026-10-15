@@ -14,11 +14,14 @@ import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 import { useIsMobile } from "@/hooks/global/useIsMobile";
 import { LobbyMobileLayout } from "@/components/lobby/layouts/LobbyMobileLayout";
 import { LobbyDesktopLayout } from "@/components/lobby/layouts/LobbyDesktopLayout";
+import { useState } from "react";
 
 export function LobbyPage() {
     const { lobbyId } = useParams();
 
     const lobbyIdNum = lobbyId ? Number(lobbyId) : NaN;
+
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
 
     useValidateLobbyId(lobbyIdNum);
 
@@ -75,6 +78,8 @@ export function LobbyPage() {
             lobbyPlayers={lobby.lobbyPlayers} 
             isMobile={isMobile}
             handleLeaveLobbyClick={handleLeaveLobbyClick}
+            isAlertOpen={isAlertOpen}
+            setIsAlertOpen={setIsAlertOpen}
         /> : 
         <LobbyDesktopLayout
             lobbyId={lobby.id}
@@ -91,6 +96,8 @@ export function LobbyPage() {
             lobbyPlayers={lobby.lobbyPlayers}
             isMobile={isMobile}
             handleLeaveLobbyClick={handleLeaveLobbyClick}
+            isAlertOpen={isAlertOpen}
+            setIsAlertOpen={setIsAlertOpen}
         />
 
 }
