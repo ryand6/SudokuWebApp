@@ -17,13 +17,11 @@ import { computeMsDifferenceBetweenTimestamps } from "@/utils/time/timeDifferenc
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
 import { PrematureEndBanner } from "./PrematureEndBanner";
 import { ReturnToLobbyAlertDialog } from "@/components/ui/custom/ReturnToLobbyAlertDialog";
-import { useWebSocketContext } from "@/context/WebSocketProvider";
 import type { NavigateFunction } from "react-router-dom";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import BasicTimer from "@/components/ui/custom/BasicTimer";
 import { useGetUserRank } from "@/api/rest/leaderboards/query/useGetUserRank";
 import type { GameType } from "@/types/enum/GameType";
-import type { LobbyStatus } from "@/types/enum/LobbyStatus";
 import { useRevertInGameStatus } from "@/api/rest/game/playerstate/mutate/useRevertInGameStatus";
 
 export function GameResults({
@@ -38,9 +36,7 @@ export function GameResults({
     gameStartsAt,
     endedPrematurely,
     gameEndedAt,
-    queryClient,
-    lobbyStatus,
-    navigate
+    queryClient
 }: {
     userId: number,
     gameId: number,
@@ -53,9 +49,7 @@ export function GameResults({
     gameStartsAt: string | null,
     endedPrematurely: boolean,
     gameEndedAt: string | null,
-    queryClient: QueryClient,
-    lobbyStatus: LobbyStatus,
-    navigate: NavigateFunction
+    queryClient: QueryClient
 }) {
     const [error, setError] = useState<string | null>(null);
     const [userRankText, setUserRankText] = useState<string>("-");

@@ -102,7 +102,6 @@ export function GameDesktopLayout({
                         endedPrematurely={publicGameState.endedPrematurely}
                         gameEndedAt={publicGameState.gameEndedAt}
                         queryClient={queryClient}
-                        navigate={navigate}
                     />
                 </Modal>
             </div>

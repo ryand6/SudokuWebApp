@@ -97,7 +97,6 @@ export function GameMobileLayout({
                         endedPrematurely={publicGameState.endedPrematurely}
                         gameEndedAt={publicGameState.gameEndedAt}
                         queryClient={queryClient}
-                        navigate={navigate}
                     />
                 </Modal>
             </div>
