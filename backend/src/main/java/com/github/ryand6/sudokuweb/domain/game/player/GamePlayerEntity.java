@@ -156,7 +156,6 @@ public class GamePlayerEntity {
         int baseScore = score;
         int completedCellsCount;
         GameMode gameMode = gameEntity.getGameSettingsEntity().getGameMode();
-        // UPDATE - consider splitting TimeAttack and Domination, since TimeAttack should take into account cells completed by all players
         if (gameMode == GameMode.DOMINATION) {
             completedCellsCount = gameEntity.getSharedGameStateEntity().getPlayerCompletedCellsCount_SharedGameMode(userEntity.getId());
         } else if (gameMode == GameMode.TIMEATTACK) {
@@ -166,22 +165,22 @@ public class GamePlayerEntity {
         }
         int cellsGiven = gameEntity.getSudokuPuzzleEntity().getNumberOfCellsGiven();
         int cellsToFill = 81 - cellsGiven;
-        long scoreOverCellsCompleted = baseScore != 0 && completedCellsCount != 0 ? baseScore / completedCellsCount : 0;
-        int normalisationRate = Math.round(((float) completedCellsCount / cellsToFill) * 100);
-        long normalisedScore = scoreOverCellsCompleted * normalisationRate;
+        double scoreOverCellsCompleted = baseScore != 0 && completedCellsCount != 0 ? (double) baseScore / completedCellsCount : 0;
+        int normalisationRate = (int) Math.round(((double) completedCellsCount / cellsToFill) * 100);
+        double normalisedScore = scoreOverCellsCompleted * normalisationRate;
 
         GameSettingsEntity gameSettings = gameEntity.getGameSettingsEntity();
 
-        Double difficultyMultiplier = gameSettings.getDifficultyMultiplier();
-        Double scoreTimesDifficultyMultiplier = normalisedScore * difficultyMultiplier;
-        Double timerMultiplier;
+        double difficultyMultiplier = gameSettings.getDifficultyMultiplier();
+        double scoreTimesDifficultyMultiplier = normalisedScore * difficultyMultiplier;
+        double timerMultiplier;
         if (gameMode == GameMode.TIMEATTACK) {
             timerMultiplier = calculateTimeAttackMultiplier();
         } else {
             timerMultiplier = gameSettings.getTimerMultiplier();
         }
-        Double scoreTimesTimerMultiplier = scoreTimesDifficultyMultiplier * timerMultiplier;
-        int finalScore = scoreTimesTimerMultiplier.intValue();
+        double scoreTimesTimerMultiplier = scoreTimesDifficultyMultiplier * timerMultiplier;
+        int finalScore = (int) scoreTimesTimerMultiplier;
         return new LeaderboardScoreCalculation(
                 baseScore,
                 completedCellsCount,

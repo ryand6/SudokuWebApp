@@ -15,19 +15,19 @@ public class LeaderboardScoreCalculation {
 
     private int cellsCompleted;
 
-    private long scoreOverCellsCompleted;
+    private double scoreOverCellsCompleted;
 
     private int normalisationRate;
 
-    private long normalisedScore;
+    private double normalisedScore;
 
-    private Double difficultyMultiplier;
+    private double difficultyMultiplier;
 
-    private Double scoreTimesDifficultyMultiplier;
+    private double scoreTimesDifficultyMultiplier;
 
-    private Double timerMultiplier;
+    private double timerMultiplier;
 
-    private Double scoreTimesTimerMultiplier;
+    private double scoreTimesTimerMultiplier;
 
     private int finalScore;
 
