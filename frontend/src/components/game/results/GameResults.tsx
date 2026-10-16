@@ -17,13 +17,14 @@ import { computeMsDifferenceBetweenTimestamps } from "@/utils/time/timeDifferenc
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
 import { PrematureEndBanner } from "./PrematureEndBanner";
 import { ReturnToLobbyAlertDialog } from "@/components/ui/custom/ReturnToLobbyAlertDialog";
-import { revertInGameStatus } from "@/api/ws/game/playerstate/revertInGameStatus";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import type { NavigateFunction } from "react-router-dom";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import BasicTimer from "@/components/ui/custom/BasicTimer";
 import { useGetUserRank } from "@/api/rest/leaderboards/query/useGetUserRank";
 import type { GameType } from "@/types/enum/GameType";
+import type { LobbyStatus } from "@/types/enum/LobbyStatus";
+import { useRevertInGameStatus } from "@/api/rest/game/playerstate/mutate/useRevertInGameStatus";
 
 export function GameResults({
     userId,
@@ -38,6 +39,7 @@ export function GameResults({
     endedPrematurely,
     gameEndedAt,
     queryClient,
+    lobbyStatus,
     navigate
 }: {
     userId: number,
@@ -52,6 +54,7 @@ export function GameResults({
     endedPrematurely: boolean,
     gameEndedAt: string | null,
     queryClient: QueryClient,
+    lobbyStatus: LobbyStatus,
     navigate: NavigateFunction
 }) {
     const [error, setError] = useState<string | null>(null);
@@ -65,9 +68,11 @@ export function GameResults({
         };
     }, []);
 
-    const { send } = useWebSocketContext();
+    // const { send } = useWebSocketContext();
 
     const { data: userRank, refetch } = useGetUserRank(userId, gameMode);
+
+    const useRevertInGameStatusHandler = useRevertInGameStatus();
 
     useEffect(() => {
         const refetchUserRank = async () => {
@@ -98,9 +103,7 @@ export function GameResults({
     const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeMsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
 
     const returnToLobbyHandler = () => {
-        revertInGameStatus(send, gameId, userId, lobbyId);
-        document.getElementById("root")?.classList.remove("blur-sm");
-        navigate(`/lobby/${lobbyId}`);
+        useRevertInGameStatusHandler.mutate(lobbyId);
     }
 
     // Implement

@@ -394,15 +394,16 @@ public class GameService {
                 new GameResultsDeterminedEvent(game.getId(), gameResults)
         );
 
-        // IMPLEMENT - handle leaderboard entity game result updates
         for (GamePlayerEntity player : game.getGamePlayerEntities()) {
+            // Forfeit loss already recorded when the player left the game
+            if (player.getGameResult() == GameResult.FORFEIT) {
+                continue;
+            }
             applicationEventPublisher.publishEvent(
                     new LeaderboardUpdateEvent(player.getGameResult(), gameSettings.getGameMode(), player.getUserEntity().getId(), player.getLeaderboardScore())
             );
         }
-
     }
-
 
     // Once game is closed, it cannot be navigated back to
     @Transactional
