@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.controllers.ws;
 
+import com.github.ryand6.sudokuweb.domain.game.player.state.NoteUpdate;
 import com.github.ryand6.sudokuweb.dto.request.ClearNotesRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.SubmitCellUpdateRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.SubmitNoteUpdateRequestDto;
@@ -31,15 +32,7 @@ public class GamePlayerStateWsController {
             @DestinationVariable Long gameId,
             @DestinationVariable Long userId,
             @Valid SubmitNoteUpdateRequestDto requestDto) {
-        gamePlayerStateService.handleNoteUpdateSubmission(gameId, userId, requestDto.getRow(), requestDto.getCol(), requestDto.getNote());
-    }
-
-    @MessageMapping("/game/{gameId}/user/{userId}/clear-note")
-    public void clearNote(
-            @DestinationVariable Long gameId,
-            @DestinationVariable Long userId,
-            @Valid SubmitNoteUpdateRequestDto requestDto) {
-        gamePlayerStateService.clearCellNote(gameId, userId, requestDto.getRow(), requestDto.getCol(), requestDto.getNote());
+        gamePlayerStateService.handleNoteUpdateSubmission(gameId, userId, new NoteUpdate(requestDto.getRow(), requestDto.getCol(), requestDto.getNote()));
     }
 
     @MessageMapping("/game/{gameId}/user/{userId}/clear-notes")

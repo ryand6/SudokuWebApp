@@ -1,6 +1,6 @@
 package com.github.ryand6.sudokuweb.events.types.game;
 
-import com.github.ryand6.sudokuweb.domain.game.player.state.NoteUpdateRejection;
+import com.github.ryand6.sudokuweb.domain.game.player.state.NoteUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,6 +12,6 @@ public class NoteUpdateRejectedEvent {
 
     private Long userId;
 
-    private NoteUpdateRejection noteUpdateRejection;
+    private NoteUpdate noteUpdate;
 
 }

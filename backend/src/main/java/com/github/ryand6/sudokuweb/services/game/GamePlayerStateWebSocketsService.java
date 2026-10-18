@@ -3,13 +3,11 @@ package com.github.ryand6.sudokuweb.services.game;
 import com.github.ryand6.sudokuweb.domain.game.player.LeaderboardScoreCalculation;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
-import com.github.ryand6.sudokuweb.domain.game.player.state.NoteUpdateRejection;
+import com.github.ryand6.sudokuweb.domain.game.player.state.NoteUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -87,10 +85,10 @@ public class GamePlayerStateWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
-    public void handleNoteUpdateSubmissionRejected(Long gameId, Long userId, NoteUpdateRejection noteUpdateRejection) {
+    public void handleNoteUpdateSubmissionRejected(Long gameId, Long userId, NoteUpdate noteUpdate) {
         Map<String, Object> messageHeader = Map.of(
                 "type", "NOTE_UPDATE_REJECTED",
-                "payload", noteUpdateRejection
+                "payload", noteUpdate
         );
         String topic = "/topic/game/" + gameId + "/user/" + userId;
 
@@ -134,7 +132,7 @@ public class GamePlayerStateWebSocketsService {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleNoteUpdateRejectedEvent(NoteUpdateRejectedEvent event) {
-        handleNoteUpdateSubmissionRejected(event.getGameId(), event.getUserId(), event.getNoteUpdateRejection());
+        handleNoteUpdateSubmissionRejected(event.getGameId(), event.getUserId(), event.getNoteUpdate());
     }
 
 }

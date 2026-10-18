@@ -155,40 +155,42 @@ public class GamePlayerStateService {
         gamePlayer.updateScore(scoreToBeApplied);
         gamePlayerState.resetConsecutiveMistakeCount();
 
-       if (gameMode == GameMode.TIMEATTACK) {
-           int secondsToAdd = handleTimeAttackTimerAddition(gamePlayer.getGameEntity());
-           applicationEventPublisher.publishEvent(
-                   new TimeAttackCellUpdateSubmissionAcceptedEvent(gameId, userId, new TimeAttackUpdate(row, col, value, scoreToBeApplied, secondsToAdd, gamePlayerState.getCurrentStreak()))
-           );
-       } else {
-           applicationEventPublisher.publishEvent(
-                   new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied, gamePlayerState.getCurrentStreak()))
-           );
-       }
+        clearNotesAffectedByCellUpdate(gamePlayerState, gameId, userId, row, col, value);
 
-       applicationEventPublisher.publishEvent(
-               new CellAcceptedPublicUpdateEvent(gameId, new CellAcceptedPublicUpdate(userId, gamePlayer.getScore(), gamePlayer.getFirsts(), gamePlayer.getMaxStreak(), gamePlayer.getGameEntity().getGameEndsAt(), row, col, gamePlayer.getGameEntity().getSharedGameStateEntity().getFirstOwnership(cellIndex)))
-       );
+        if (gameMode == GameMode.TIMEATTACK) {
+            int secondsToAdd = handleTimeAttackTimerAddition(gamePlayer.getGameEntity());
+            applicationEventPublisher.publishEvent(
+                    new TimeAttackCellUpdateSubmissionAcceptedEvent(gameId, userId, new TimeAttackUpdate(row, col, value, scoreToBeApplied, secondsToAdd, gamePlayerState.getCurrentStreak()))
+            );
+        }  else {
+            applicationEventPublisher.publishEvent(
+                    new CellUpdateSubmissionAcceptedEvent(gameId, userId, new CellValueAndScoreUpdate(row, col, value, scoreToBeApplied, gamePlayerState.getCurrentStreak()))
+            );
+        }
 
-       applicationEventPublisher.publishEvent(
-               new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "score increased"))
-       );
+        applicationEventPublisher.publishEvent(
+                new CellAcceptedPublicUpdateEvent(gameId, new CellAcceptedPublicUpdate(userId, gamePlayer.getScore(), gamePlayer.getFirsts(), gamePlayer.getMaxStreak(), gamePlayer.getGameEntity().getGameEndsAt(), row, col, gamePlayer.getGameEntity().getSharedGameStateEntity().getFirstOwnership(cellIndex)))
+        );
 
-       boolean isBoardComplete = gamePlayer.getGameEntity().isBoardStateShared()
-               ? gamePlayer.getGameEntity().getSharedGameStateEntity() != null
-               && gamePlayer.getGameEntity().getSharedGameStateEntity().isBoardStateComplete()
-               : gamePlayerState.getCurrentBoardState() != null
-               && gamePlayerState.isBoardStateComplete();
+        applicationEventPublisher.publishEvent(
+                new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.SCORE_UPDATE, "score increased"))
+        );
 
-       if (isBoardComplete) {
-           applicationEventPublisher.publishEvent(
-                   new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.BOARD_COMPLETED, "completed the board"))
-           );
+        boolean isBoardComplete = gamePlayer.getGameEntity().isBoardStateShared()
+                ? gamePlayer.getGameEntity().getSharedGameStateEntity() != null
+                && gamePlayer.getGameEntity().getSharedGameStateEntity().isBoardStateComplete()
+                : gamePlayerState.getCurrentBoardState() != null
+                && gamePlayerState.isBoardStateComplete();
 
-           applicationEventPublisher.publishEvent(
-                   new HandlePlayerFinishEvent(gameId, userId)
-           );
-       }
+        if (isBoardComplete) {
+            applicationEventPublisher.publishEvent(
+                    new CreateGameLogEvent(gameId, userId, new GameEventRequest(GameEventType.BOARD_COMPLETED, "completed the board"))
+            );
+
+            applicationEventPublisher.publishEvent(
+                    new HandlePlayerFinishEvent(gameId, userId)
+            );
+        }
     }
 
     private void handleStreakUpdates(
@@ -361,11 +363,36 @@ public class GamePlayerStateService {
                 .orElseThrow(() -> new GamePlayerNotFoundException( "Game Player with Game ID " + gameId + " and User ID " + userId + " does not exist"));
     }
 
+    private void clearNotesAffectedByCellUpdate(GamePlayerStateEntity gamePlayerState, Long gameId, Long userId, int row, int col, int value) {
+        clearCellNotes(gameId, userId, row, col);
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (r == row && c == col) {
+                    continue;
+                }
+                boolean sameRow = r == row;
+                boolean sameColumn = c == col;
+                boolean sameBlock = r / 3 == row / 3 && c / 3 == col / 3;
+                if (sameRow || sameColumn || sameBlock) {
+                    clearCellNote(gameId, userId, new NoteUpdate(r, c, value));
+                }
+            }
+        }
+    }
+
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50, multiplier = 2)
+    )
     @Transactional
-    public void handleNoteUpdateSubmission(Long gameId, Long userId, int row, int col, int note) {
+    public void handleNoteUpdateSubmission(Long gameId, Long userId, NoteUpdate noteUpdate) {
         GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
         GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
-        int cellIndex = (row * 9) + col;
+        int row = noteUpdate.getRow();
+        int col = noteUpdate.getCol();
+        int note = noteUpdate.getNotes();
+        int cellIndex = (noteUpdate.getRow() * 9) + col;
         int bitmask = gamePlayerState.getNotesBitmask(cellIndex);
         if (isBoardStateValuePresent(gamePlayerState.getCurrentBoardState(), row, col)) {
             handleRejectedNoteUpdate(gameId, userId, row, col, bitmask);
@@ -378,10 +405,18 @@ public class GamePlayerStateService {
         }
     }
 
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50, multiplier = 2)
+    )
     @Transactional
-    public void clearCellNote(Long gameId, Long userId, int row, int col, int note) {
+    public void clearCellNote(Long gameId, Long userId, NoteUpdate noteUpdate) {
         GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
         GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
+        int row = noteUpdate.getRow();
+        int col = noteUpdate.getCol();
+        int note = noteUpdate.getNotes();
         int cellIndex = (row * 9) + col;
         int bitmask = gamePlayerState.getNotesBitmask(cellIndex);
         int updatedBitmask = GameUtils.clearNote(bitmask, note);
@@ -392,6 +427,20 @@ public class GamePlayerStateService {
         }
     }
 
+    @Recover
+    public void handleNoteUpdateSubmissionRecover(Throwable ex, Long gameId, Long userId, int row, int col, int value) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
+        throw new GamePlayerStateOptimisticLockException("Unable to apply cell update due to a conflict.");
+    }
+
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            maxAttempts = 3,
+            backoff = @Backoff(delay = 50, multiplier = 2)
+    )
     @Transactional
     public void clearCellNotes(Long gameId, Long userId, int row, int col) {
         GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
@@ -407,7 +456,7 @@ public class GamePlayerStateService {
 
     private void handleRejectedNoteUpdate(Long gameId, Long userId, int row, int col, int originalBitmask) {
         applicationEventPublisher.publishEvent(
-               new NoteUpdateRejectedEvent(gameId, userId, new NoteUpdateRejection(row, col, originalBitmask))
+               new NoteUpdateRejectedEvent(gameId, userId, new NoteUpdate(row, col, originalBitmask))
         );
     }
 

@@ -1,4 +1,4 @@
-export function clearNoteUpdate(
+export function clearNotes(
     send: (dest: string, body: any) => void,
     gameId: number, 
     userId: number, 

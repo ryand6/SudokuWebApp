@@ -7,6 +7,8 @@ import { hasNote } from "@/utils/game/noteUtils";
 import type { QueryClient } from "@tanstack/react-query";
 import { useCallback, type Dispatch, type SetStateAction } from "react";
 import { IconPencil, IconEraser } from '@tabler/icons-react';
+import { submitNoteUpdate } from "@/api/ws/game/playerstate/submitNoteUpdate";
+import { clearNotes } from "@/api/ws/game/playerstate/clearNotes";
 
 export function UserActionBar(
     {
@@ -56,7 +58,6 @@ export function UserActionBar(
                 console.error("Issue found when attempting CELL_UPDATE_SUBMITTED: ", err);
                 return;
             } 
-
             // Send out WS message if frontend validation in dispatch method succeeds
             submitCellUpdate(send, gameId, userId, playerHighlightedCell.row, playerHighlightedCell.col, num);
             return;
@@ -75,7 +76,7 @@ export function UserActionBar(
                 console.error("Issue found when attempting NOTE_UPDATE: ", err);
                 return;
             }
-            // IMPLEMENT SUBMIT NOTE UPDATE WS
+            submitNoteUpdate(send, gameId, userId, playerHighlightedCell.row, playerHighlightedCell.col, num);
             return;
         }
     }, [gameId, userId, initialBoardState, queryClient, send]);
@@ -87,7 +88,7 @@ export function UserActionBar(
             row: playerHighlightedCell.row,
             col: playerHighlightedCell.col,
         })
-        // IMPLEMENT SUBMIT NOTE UPDATE WS (0 VALUE)
+        clearNotes(send, gameId, userId, playerHighlightedCell.row, playerHighlightedCell.col);
     }, [gameId, userId, queryClient, send]); 
 
     return (

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class NoteUpdateRejection {
+public class NoteUpdate {
 
     private int row;
 
