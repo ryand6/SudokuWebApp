@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.services.game;
 import com.github.ryand6.sudokuweb.domain.game.player.LeaderboardScoreCalculation;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
 import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
+import com.github.ryand6.sudokuweb.domain.game.player.state.NoteUpdateRejection;
 import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -86,6 +87,16 @@ public class GamePlayerStateWebSocketsService {
         simpMessagingTemplate.convertAndSend(topic, messageHeader);
     }
 
+    public void handleNoteUpdateSubmissionRejected(Long gameId, Long userId, NoteUpdateRejection noteUpdateRejection) {
+        Map<String, Object> messageHeader = Map.of(
+                "type", "NOTE_UPDATE_REJECTED",
+                "payload", noteUpdateRejection
+        );
+        String topic = "/topic/game/" + gameId + "/user/" + userId;
+
+        simpMessagingTemplate.convertAndSend(topic, messageHeader);
+    }
+
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handleCellUpdateSubmissionInvalidEvent(CellUpdateSubmissionInvalidEvent event) {
         handleCellUpdateSubmissionInvalid(event.getGameId(), event.getUserId(), event.getCellValueUpdate());
@@ -119,6 +130,11 @@ public class GamePlayerStateWebSocketsService {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     void handlePlayerLeaderboardScoreBroadcastEvent(PlayerLeaderboardScoreEvent event) {
         handlePlayerLeaderboardScoreBroadcast(event.getGameId(), event.getUserId(), event.getLeaderboardScoreCalculation());
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    void handleNoteUpdateRejectedEvent(NoteUpdateRejectedEvent event) {
+        handleNoteUpdateSubmissionRejected(event.getGameId(), event.getUserId(), event.getNoteUpdateRejection());
     }
 
 }

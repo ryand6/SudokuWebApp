@@ -113,6 +113,12 @@ export type GamePlayerStateEvent =
         note: number
       }
     | {
+        type: "NOTE_UPDATE_REJECTED",
+        row: number,
+        col: number,
+        notes: number
+    }
+    | {
         type: "CELL_CLEAR",
         row: number,
         col: number

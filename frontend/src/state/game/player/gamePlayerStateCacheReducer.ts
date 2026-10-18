@@ -68,7 +68,7 @@ export function gamePlayerStateCacheReducer(
         }
         // Handles optimistic UI update prior to server validation
         case "NOTE_UPDATE": {
-            if (event.note < 0 || event.note > 9) {
+            if (event.note < 1 || event.note > 9) {
                 throw new NotesUpdateValidationError("Submitted note outside of valid range");
             }
             const boardCell = existingData.boardState[event.row][event.col];
@@ -79,6 +79,14 @@ export function gamePlayerStateCacheReducer(
             if (updatedCellNotes < 0 || updatedCellNotes > 511) {
                 throw new NotesUpdateValidationError("Submitted notes outside of valid range");
             }
+            const newBoard = updateNotesInBoardState(existingData.boardState, event.row, event.col, updatedCellNotes);
+            return {
+                ...existingData,
+                boardState: newBoard
+            };
+        }
+        case "NOTE_UPDATE_REJECTED": {
+            const updatedCellNotes = event.notes;
             const newBoard = updateNotesInBoardState(existingData.boardState, event.row, event.col, updatedCellNotes);
             return {
                 ...existingData,

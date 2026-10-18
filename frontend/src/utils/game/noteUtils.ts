@@ -1,5 +1,3 @@
-import type { PrivateBoardState } from "@/types/game/GameTypes";
-
 // Checks if a note is present in bit representation of cell notes
 export function hasNote(notes: number, note: number): boolean {
     return ((notes >> (note - 1)) & 1) === 1;

@@ -24,4 +24,12 @@ public final class GameUtils {
         return initialBoardState.charAt(index) == '.' ? CellStatus.WON : CellStatus.GIVEN;
     };
 
+    public static int toggleNote(int notes, int note) {
+        return notes ^ (1 << (note - 1));
+    }
+
+    public static int clearNote(int notes, int note) {
+        return ~(1 << (note -1)) & notes;
+    }
+
 }

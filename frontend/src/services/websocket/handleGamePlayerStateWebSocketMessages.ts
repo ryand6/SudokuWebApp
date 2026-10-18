@@ -42,6 +42,15 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
             // IMPLEMENT - May not need a websocket event for this 
             break;
         }
+        case "NOTE_UPDATE_REJECTED": {
+            gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
+                type: "NOTE_UPDATE_REJECTED",
+                row: message.payload.row,
+                col: message.payload.col,
+                notes: message.payload.notes
+            })
+            break;
+        }
         case "LEADERBOARD_SCORE_CALCULATED": {
             gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
                 type: "LEADERBOARD_SCORE_CALCULATED",

@@ -6,10 +6,7 @@ import com.github.ryand6.sudokuweb.domain.game.GameEntity;
 import com.github.ryand6.sudokuweb.domain.game.event.GameEventRequest;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
-import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueAndScoreUpdate;
-import com.github.ryand6.sudokuweb.domain.game.player.state.CellValueUpdate;
-import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntity;
-import com.github.ryand6.sudokuweb.domain.game.player.state.TimeAttackUpdate;
+import com.github.ryand6.sudokuweb.domain.game.player.state.*;
 import com.github.ryand6.sudokuweb.domain.game.state.CellClaimEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.enums.GameEventType;
@@ -17,7 +14,7 @@ import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateOptimisticLockException;
-import com.github.ryand6.sudokuweb.services.TaskSchedulerService;
+import com.github.ryand6.sudokuweb.util.GameUtils;
 import com.github.ryand6.sudokuweb.util.ScoringTables;
 import com.github.ryand6.sudokuweb.util.StringUtils;
 import jakarta.transaction.Transactional;
@@ -345,9 +342,9 @@ public class GamePlayerStateService {
                 : gamePlayer.getGameEntity().getSharedGameStateEntity().getCurrentSharedBoardState();
         if (currentBoardState == null) return false;
         // Number already exists
-        if (StringUtils.getBoardStateValueFromNestedArrayIndexes(initialBoardState, row, col) != '.') {
+        if (isBoardStateValuePresent(initialBoardState, row, col)) {
             return false;
-        } else if (StringUtils.getBoardStateValueFromNestedArrayIndexes(currentBoardState, row, col) != '.') {
+        } else if (isBoardStateValuePresent(currentBoardState, row, col)) {
             return false;
         }
         return true;
@@ -362,6 +359,60 @@ public class GamePlayerStateService {
     public GamePlayerEntity getGamePlayerEntity(Long gameId, Long userId) {
         return gamePlayerRepository.findByCompositeId(gameId, userId)
                 .orElseThrow(() -> new GamePlayerNotFoundException( "Game Player with Game ID " + gameId + " and User ID " + userId + " does not exist"));
+    }
+
+    @Transactional
+    public void handleNoteUpdateSubmission(Long gameId, Long userId, int row, int col, int note) {
+        GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
+        GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
+        int cellIndex = (row * 9) + col;
+        int bitmask = gamePlayerState.getNotesBitmask(cellIndex);
+        if (isBoardStateValuePresent(gamePlayerState.getCurrentBoardState(), row, col)) {
+            handleRejectedNoteUpdate(gameId, userId, row, col, bitmask);
+        }
+        int updatedBitmask = GameUtils.toggleNote(bitmask, note);
+        try {
+            gamePlayerState.updateNotesByteArr(cellIndex, updatedBitmask);
+        } catch (IllegalArgumentException ex) {
+            handleRejectedNoteUpdate(gameId, userId, row, col, bitmask);
+        }
+    }
+
+    @Transactional
+    public void clearCellNote(Long gameId, Long userId, int row, int col, int note) {
+        GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
+        GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
+        int cellIndex = (row * 9) + col;
+        int bitmask = gamePlayerState.getNotesBitmask(cellIndex);
+        int updatedBitmask = GameUtils.clearNote(bitmask, note);
+        try {
+            gamePlayerState.updateNotesByteArr(cellIndex, updatedBitmask);
+        } catch (IllegalArgumentException ex) {
+            handleRejectedNoteUpdate(gameId, userId, row, col, bitmask);
+        }
+    }
+
+    @Transactional
+    public void clearCellNotes(Long gameId, Long userId, int row, int col) {
+        GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
+        GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
+        int cellIndex = (row * 9) + col;
+        int bitmask = gamePlayerState.getNotesBitmask(cellIndex);
+        try {
+            gamePlayerState.updateNotesByteArr(cellIndex, 0);
+        } catch (IllegalArgumentException ex) {
+            handleRejectedNoteUpdate(gameId, userId, row, col, bitmask);
+        }
+    }
+
+    private void handleRejectedNoteUpdate(Long gameId, Long userId, int row, int col, int originalBitmask) {
+        applicationEventPublisher.publishEvent(
+               new NoteUpdateRejectedEvent(gameId, userId, new NoteUpdateRejection(row, col, originalBitmask))
+        );
+    }
+
+    boolean isBoardStateValuePresent(String boardState, int row, int col) {
+        return StringUtils.getBoardStateValueFromNestedArrayIndexes(boardState, row, col) != '.';
     }
 
 }

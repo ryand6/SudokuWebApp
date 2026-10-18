@@ -153,4 +153,23 @@ public class GamePlayerStateEntity {
         consecutiveMistakeCount = 0;
     }
 
+    public int getNotesBitmask(int cellIndex) {
+        int noteOffset = cellIndex * 2;
+        int lowByte = notes[noteOffset] & 0xFF;
+        int highByte = notes[noteOffset + 1] & 0xFF;
+        return lowByte | (highByte << 8);
+    }
+
+    public void updateNotesByteArr(int cellIndex, int noteBitmask) {
+        if (cellIndex < 0 || cellIndex >= 81) {
+            throw new IllegalArgumentException("Invalid cell index");
+        }
+        if (noteBitmask < 0 || noteBitmask > 511) {
+            throw new IllegalArgumentException("Invalid notes bitmask");
+        }
+        int noteOffset = cellIndex * 2;
+        notes[noteOffset] = (byte) (noteBitmask & 0xFF);
+        notes[noteOffset + 1] = (byte) ((noteBitmask >>> 8) & 0xFF);
+    }
+
 }

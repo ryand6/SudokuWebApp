@@ -1,6 +1,8 @@
 package com.github.ryand6.sudokuweb.controllers.ws;
 
+import com.github.ryand6.sudokuweb.dto.request.ClearNotesRequestDto;
 import com.github.ryand6.sudokuweb.dto.request.SubmitCellUpdateRequestDto;
+import com.github.ryand6.sudokuweb.dto.request.SubmitNoteUpdateRequestDto;
 import com.github.ryand6.sudokuweb.services.game.GamePlayerStateService;
 import jakarta.validation.Valid;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -22,6 +24,30 @@ public class GamePlayerStateWsController {
             @DestinationVariable Long userId,
             @Valid SubmitCellUpdateRequestDto requestDto) {
         gamePlayerStateService.handleCellUpdateSubmission(gameId, userId, requestDto.getRow(), requestDto.getCol(), requestDto.getValue());
+    }
+
+    @MessageMapping("/game/{gameId}/user/{userId}/submit-note-update")
+    public void submitNoteUpdate(
+            @DestinationVariable Long gameId,
+            @DestinationVariable Long userId,
+            @Valid SubmitNoteUpdateRequestDto requestDto) {
+        gamePlayerStateService.handleNoteUpdateSubmission(gameId, userId, requestDto.getRow(), requestDto.getCol(), requestDto.getNote());
+    }
+
+    @MessageMapping("/game/{gameId}/user/{userId}/clear-note")
+    public void clearNote(
+            @DestinationVariable Long gameId,
+            @DestinationVariable Long userId,
+            @Valid SubmitNoteUpdateRequestDto requestDto) {
+        gamePlayerStateService.clearCellNote(gameId, userId, requestDto.getRow(), requestDto.getCol(), requestDto.getNote());
+    }
+
+    @MessageMapping("/game/{gameId}/user/{userId}/clear-notes")
+    public void clearNotes(
+            @DestinationVariable Long gameId,
+            @DestinationVariable Long userId,
+            @Valid ClearNotesRequestDto requestDto) {
+        gamePlayerStateService.clearCellNotes(gameId, userId, requestDto.getRow(), requestDto.getCol());
     }
 
 }
