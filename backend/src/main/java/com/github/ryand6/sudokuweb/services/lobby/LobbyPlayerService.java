@@ -4,11 +4,13 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerStatusUpdate;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyCountdownDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.response.RevertInGameStatusResponseDto;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyPlayerStatusUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyCountdownEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
@@ -21,17 +23,20 @@ public class LobbyPlayerService {
     private final LobbyService lobbyService;
     private final LobbyChatService lobbyChatService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
+    private final LobbyCountdownEntityDtoMapper lobbyCountdownEntityDtoMapper;
     private final LobbyCountdownMutationService lobbyCountdownMutationService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     public LobbyPlayerService(LobbyService lobbyService,
                               LobbyChatService lobbyChatService,
                               LobbyEntityDtoMapper lobbyEntityDtoMapper,
+                              LobbyCountdownEntityDtoMapper lobbyCountdownEntityDtoMapper,
                               LobbyCountdownMutationService lobbyCountdownMutationService,
                               ApplicationEventPublisher applicationEventPublisher) {
         this.lobbyService = lobbyService;
         this.lobbyChatService = lobbyChatService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
+        this.lobbyCountdownEntityDtoMapper = lobbyCountdownEntityDtoMapper;
         this.lobbyCountdownMutationService = lobbyCountdownMutationService;
         this.applicationEventPublisher = applicationEventPublisher;
     }
@@ -47,10 +52,11 @@ public class LobbyPlayerService {
         CountdownEvaluationResult countdownEvaluationResult = lobbyCountdownMutationService.safeEvaluateCountdown(lobby.getLobbyCountdownEntity());
 
         LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+        LobbyCountdownDto lobbyCountdownDto = lobbyCountdownEntityDtoMapper.mapToDto(lobby.getLobbyCountdownEntity());
 
         // Send Lobby Update WS event after commit
         applicationEventPublisher.publishEvent(
-                new LobbyPlayerStatusUpdatedWsEvent(new LobbyPlayerStatusUpdate(lobbyId, userId, lobbyStatus))
+                new LobbyPlayerStatusUpdatedWsEvent(new LobbyPlayerStatusUpdate(lobbyId, userId, lobbyStatus, lobbyPlayer.getReadyAt(), lobbyCountdownDto))
         );
 
         // update countdown scheduler via synchronised event
@@ -71,6 +77,8 @@ public class LobbyPlayerService {
     @Transactional
     public void revertAllLobbyPlayerInGameStatuses(Long lobbyId) {
         LobbyEntity lobby = lobbyService.getLobbyById(lobbyId);
+        LobbyCountdownDto lobbyCountdownDto = lobbyCountdownEntityDtoMapper.mapToDto(lobby.getLobbyCountdownEntity());
+
         lobby.getLobbyPlayers().forEach(lp -> {
             if (lp.getLobbyStatus() == LobbyStatus.INGAME) {
                 lp.setLobbyStatus(LobbyStatus.WAITING);
@@ -79,7 +87,7 @@ public class LobbyPlayerService {
                 lobbyChatService.createInfoMessage(lobbyId, lp.getUser().getId(), message, false);
 
                 applicationEventPublisher.publishEvent(
-                        new LobbyPlayerStatusUpdatedWsEvent(new LobbyPlayerStatusUpdate(lobbyId, lp.getUser().getId(), lp.getLobbyStatus()))
+                        new LobbyPlayerStatusUpdatedWsEvent(new LobbyPlayerStatusUpdate(lobbyId, lp.getUser().getId(), lp.getLobbyStatus(), lp.getReadyAt(), lobbyCountdownDto))
                 );
             }
         });

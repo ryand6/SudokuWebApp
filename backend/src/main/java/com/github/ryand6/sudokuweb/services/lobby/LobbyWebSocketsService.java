@@ -28,15 +28,6 @@ public class LobbyWebSocketsService {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
-//    public void handleLobbyUpdate(LobbyDto lobbyDto) {
-//        Map<String, Object> messageHeader = Map.of(
-//                "type", "LOBBY_UPDATED",
-//                "payload", lobbyDto
-//        );
-//        String topic = "/topic/lobby/" + lobbyDto.getId();
-//        simpMessagingTemplate.convertAndSend(topic, messageHeader);
-//    }
-
     public void handleLobbyDifficultySettingsUpdate(LobbyDifficultyUpdate lobbyDifficultyUpdate) {
         Map<String, Object> messageHeader = Map.of(
                 "type", "LOBBY_DIFFICULTY_UPDATED",

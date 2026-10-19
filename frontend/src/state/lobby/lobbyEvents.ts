@@ -1,6 +1,8 @@
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 import type { LobbyChatMessageDto } from "@/types/dto/entity/lobby/LobbyChatMessageDto";
+import type { LobbyCountdownDto } from "@/types/dto/entity/lobby/LobbyCountdownDto";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
+import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import type { Difficulty } from "@/types/enum/Difficulty";
 import type { LobbyStatus } from "@/types/enum/LobbyStatus";
 import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
@@ -20,7 +22,9 @@ export type LobbyEvent =
         type: "LOBBY_PLAYER_STATUS_UPDATED",
         lobbyId: number,
         userId: number,
-        lobbyStatus: LobbyStatus
+        lobbyStatus: LobbyStatus,
+        readyAt: string | null,
+        lobbyCountdown: LobbyCountdownDto
       }
     | {
         type: "LOBBY_PLAYER_JOINED",
@@ -30,7 +34,10 @@ export type LobbyEvent =
     | {
         type: "LOBBY_PLAYER_LEFT",
         lobbyId: number,
-        userId: number
+        userId: number,
+        isActive: boolean,
+        host: UserDto,
+        lobbyCountdown: LobbyCountdownDto
       }
     | {
         type: "LOBBY_GAME_CREATED",

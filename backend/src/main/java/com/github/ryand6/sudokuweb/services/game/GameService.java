@@ -63,7 +63,6 @@ public class GameService {
     private final GamePlayerRepository gamePlayerRepository;
     private final PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper;
     private final LobbyRepository lobbyRepository;
-    private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final GameEventSequenceRepository gameEventSequenceRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
 
@@ -75,7 +74,6 @@ public class GameService {
                        GamePlayerRepository gamePlayerRepository,
                        PrivateGamePlayerStateEntityDtoMapper privateGamePlayerStateEntityDtoMapper,
                        LobbyRepository lobbyRepository,
-                       LobbyEntityDtoMapper lobbyEntityDtoMapper,
                        GameEventSequenceRepository gameEventSequenceRepository,
                        ApplicationEventPublisher applicationEventPublisher) {
         this.gameRepository = gameRepository;
@@ -86,7 +84,6 @@ public class GameService {
         this.gamePlayerRepository = gamePlayerRepository;
         this.privateGamePlayerStateEntityDtoMapper = privateGamePlayerStateEntityDtoMapper;
         this.lobbyRepository = lobbyRepository;
-        this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.gameEventSequenceRepository = gameEventSequenceRepository;
         this.applicationEventPublisher = applicationEventPublisher;
     }

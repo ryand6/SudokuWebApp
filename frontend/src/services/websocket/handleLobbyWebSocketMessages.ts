@@ -27,7 +27,9 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
                 type: "LOBBY_PLAYER_STATUS_UPDATED",
                 lobbyId: message.payload.lobbyId,
                 userId: message.payload.userId,
-                lobbyStatus: message.payload.lobbyStatus
+                lobbyStatus: message.payload.lobbyStatus,
+                readyAt: message.payload.readyAt,
+                lobbyCountdown: message.payload.lobbyCountdown
             })
             break;
         }
@@ -43,7 +45,10 @@ export function handleLobbyWebSocketMessages(message: any, queryClient: QueryCli
             lobbyCacheDispatcher(queryClient, lobbyId, {
                 type: "LOBBY_PLAYER_LEFT",
                 lobbyId: message.payload.lobbyId,
-                userId: message.payload.userId
+                userId: message.payload.userId,
+                isActive: message.payload.isActive,
+                host: message.payload.host,
+                lobbyCountdown: message.payload.lobbyCountdown
             })
             break;
         }

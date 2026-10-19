@@ -99,7 +99,6 @@ export function CreateLobbyPage() {
                             <FieldLegend className="font-display text-xl! tracking-wide font-bold text-primary-foreground">Lobby Creation</FieldLegend>
                             <FieldDescription className="font-display">Set up a new lobby. You can only be part of one active lobby at a time.</FieldDescription>
                         </div>
-                        {isLoading && <SpinnerButton />}
                         <div className="flex pt-5 px-5">
                             <div className="flex flex-col items-center">
                                 <div 
@@ -334,6 +333,7 @@ export function CreateLobbyPage() {
                                 </FieldGroup>
                             </div>
                         </div>
+                        {isLoading && <SpinnerButton />}
                         <div className="flex px-5 pb-5">
                             <Field orientation="responsive">
                                 <Button 

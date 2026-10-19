@@ -7,8 +7,10 @@ import com.github.ryand6.sudokuweb.domain.lobby.*;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerJoinedUpdate;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerLeftUpdate;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyCountdownDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyPlayerDto;
+import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.events.types.lobby.*;
@@ -16,9 +18,11 @@ import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePlayerJoined
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyUpdatePlayerLeftWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyCountdownEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyPlayerEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,6 +48,8 @@ public class LobbyService {
     private final LobbyChatService lobbyChatService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
     private final LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
+    private final LobbyCountdownEntityDtoMapper lobbyCountdownEntityDtoMapper;
+    private final UserEntityDtoMapper userEntityDtoMapper;
     private final PrivateLobbyTokenService privateLobbyTokenService;
     private final LobbyCountdownMutationService lobbyCountdownMutationService;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -53,6 +59,8 @@ public class LobbyService {
                         LobbyChatService lobbyChatService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
                         LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper,
+                        LobbyCountdownEntityDtoMapper lobbyCountdownEntityDtoMapper,
+                        UserEntityDtoMapper userEntityDtoMapper,
                         PrivateLobbyTokenService privateLobbyTokenService,
                         LobbyCountdownMutationService lobbyCountdownMutationService,
                         ApplicationEventPublisher applicationEventPublisher) {
@@ -61,6 +69,8 @@ public class LobbyService {
         this.lobbyChatService = lobbyChatService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
         this.lobbyPlayerEntityDtoMapper = lobbyPlayerEntityDtoMapper;
+        this.lobbyCountdownEntityDtoMapper = lobbyCountdownEntityDtoMapper;
+        this.userEntityDtoMapper = userEntityDtoMapper;
         this.privateLobbyTokenService = privateLobbyTokenService;
         this.lobbyCountdownMutationService = lobbyCountdownMutationService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -245,10 +255,12 @@ public class LobbyService {
         );
 
         LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
+        UserDto hostDto = userEntityDtoMapper.mapToDto(lobby.getHost());
+        LobbyCountdownDto lobbyCountdownDto = lobbyCountdownEntityDtoMapper.mapToDto(lobby.getLobbyCountdownEntity());
 
         // publisher WS update after commit
         applicationEventPublisher.publishEvent(
-                new LobbyUpdatePlayerLeftWsEvent(new LobbyPlayerLeftUpdate(lobbyId, userId))
+                new LobbyUpdatePlayerLeftWsEvent(new LobbyPlayerLeftUpdate(lobbyId, userId, lobby.isActive(), hostDto, lobbyCountdownDto))
         );
 
         return lobbyDto;

@@ -27,11 +27,13 @@ export function lobbyCacheReducer(
         case "LOBBY_PLAYER_STATUS_UPDATED": {
             return {
                 ...existingData,
+                lobbyCountdown: event.lobbyCountdown,
                 lobbyPlayers: existingData.lobbyPlayers.map((lp) => 
                     lp.user.id === event.userId 
                     ? {
                         ...lp,
-                        lobbyStatus: event.lobbyStatus
+                        lobbyStatus: event.lobbyStatus,
+                        readyAt: event.readyAt
                     } : lp
                 )
             };
@@ -45,6 +47,9 @@ export function lobbyCacheReducer(
         case "LOBBY_PLAYER_LEFT": {
             return {
                 ...existingData,
+                isActive: event.isActive,
+                host: event.host,
+                lobbyCountdown: event.lobbyCountdown,
                 lobbyPlayers: existingData.lobbyPlayers.filter((lp) => lp.user.id !== event.userId)
             };
         }
