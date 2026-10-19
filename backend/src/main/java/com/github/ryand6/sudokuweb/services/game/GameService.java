@@ -13,6 +13,7 @@ import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateEntit
 import com.github.ryand6.sudokuweb.domain.game.player.state.GamePlayerStateRepository;
 import com.github.ryand6.sudokuweb.domain.game.settings.GameSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.LobbyGameCreationUpdate;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
@@ -133,7 +134,7 @@ public class GameService {
                 new LobbyCountdownResetEvent(lobby.getLobbyCountdownEntity())
         );
         applicationEventPublisher.publishEvent(
-                new LobbyUpdatePostGameCreationWsEvent(lobbyEntityDtoMapper.mapToDto(lobby))
+                new LobbyUpdatePostGameCreationWsEvent(new LobbyGameCreationUpdate(lobbyId, game.getGameId(), true))
         );
         applicationEventPublisher.publishEvent(
                 new ScheduleCountdownEvent(game.getGameId())

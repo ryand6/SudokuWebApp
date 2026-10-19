@@ -1,7 +1,9 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbyDifficultyUpdate;
 import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbySettingsEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbyTimeLimitUpdate;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.enums.Difficulty;
 import com.github.ryand6.sudokuweb.enums.TimeLimitPreset;
@@ -52,7 +54,7 @@ public class LobbySettingsService {
 
         // Send Lobby Update WS event after commit
         applicationEventPublisher.publishEvent(
-                new LobbyDifficultySettingsUpdatedWsEvent(lobbyDto)
+                new LobbyDifficultySettingsUpdatedWsEvent(new LobbyDifficultyUpdate(lobbyId, difficulty))
         );
 
         // Send an info update to the lobby chat after commit
@@ -88,7 +90,7 @@ public class LobbySettingsService {
 
         // Send Lobby Update WS event after commit
         applicationEventPublisher.publishEvent(
-                new LobbyTimeLimitSettingsUpdatedWsEvent(lobbyDto)
+                new LobbyTimeLimitSettingsUpdatedWsEvent(new LobbyTimeLimitUpdate(lobbyId, timeLimit))
         );
 
         // Send an info update to the lobby chat after commit

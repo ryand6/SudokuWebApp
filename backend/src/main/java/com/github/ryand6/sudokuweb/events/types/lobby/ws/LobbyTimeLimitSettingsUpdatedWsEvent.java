@@ -1,13 +1,13 @@
 package com.github.ryand6.sudokuweb.events.types.lobby.ws;
 
-import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
+import com.github.ryand6.sudokuweb.domain.lobby.settings.LobbyTimeLimitUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LobbyTimeLimitSettingsUpdatedWsEvent implements LobbyUpdateWsEvent {
+public class LobbyTimeLimitSettingsUpdatedWsEvent {
 
-    private LobbyDto lobbyDto;
+    private LobbyTimeLimitUpdate lobbyTimeLimitUpdate;
 
 }

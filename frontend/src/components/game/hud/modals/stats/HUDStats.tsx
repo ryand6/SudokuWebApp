@@ -48,7 +48,7 @@ export function HUDStats(
                                         }
                                     </div>
                                     <div className="grid grid-cols-2">
-                                        <div className="flex flex-col justify-start py-4 px-6 border-t-1 border-r-1 md:border-t-2 md:border-r-2 border-muted">
+                                        <div className={`flex flex-col justify-start py-4 px-6 border-t-1 border-r-1 md:border-t-2 md:border-r-2 border-muted ${userId === Number(key) && "border-sidebar-primary"}`}>
                                             <span className="font-display font-semibold text-primary text-4xl">
                                                 { player.score.toLocaleString() }
                                             </span>
@@ -56,7 +56,7 @@ export function HUDStats(
                                                 Score
                                             </span>
                                         </div>
-                                        <div className="flex flex-col justify-start py-4 px-6 border-t-1 md:border-t-2 border-muted">
+                                        <div className={`flex flex-col justify-start py-4 px-6 border-t-1 md:border-t-2 border-muted ${userId === Number(key) && "border-sidebar-primary"}`}>
                                             <span className="font-display font-semibold text-primary text-4xl">
                                                 { player.firsts }
                                             </span>
@@ -64,7 +64,7 @@ export function HUDStats(
                                                 Firsts
                                             </span>
                                         </div>
-                                        <div className="flex flex-col justify-start py-4 px-6 border-t-1 border-r-1 md:border-t-2 md:border-r-2 border-muted">
+                                        <div className={`flex flex-col justify-start py-4 px-6 border-t-1 border-r-1 md:border-t-2 md:border-r-2 border-muted ${userId === Number(key) && "border-sidebar-primary"}`}>
                                             <span className="font-display font-semibold text-primary text-4xl">
                                                 { player.mistakes }
                                             </span>
@@ -72,7 +72,7 @@ export function HUDStats(
                                                 Mistakes
                                             </span>
                                         </div>
-                                        <div className="flex flex-col justify-start py-4 px-6 border-t-1 md:border-t-2 border-muted">
+                                        <div className={`flex flex-col justify-start py-4 px-6 border-t-1 md:border-t-2 border-muted ${userId === Number(key) && "border-sidebar-primary"}`}>
                                             <span className="font-display font-semibold text-primary text-4xl">
                                                 { player.maxStreak }
                                             </span>

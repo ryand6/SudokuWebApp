@@ -6,11 +6,53 @@ import { type NavigateFunction } from "react-router-dom";
 
 export function handleLobbyWebSocketMessages(message: any, queryClient: QueryClient, lobbyId: number, navigate: NavigateFunction) {
     switch (message.type) {
-        // Updates React Query lobby cache if the lobby is updated in the backend
-        case "LOBBY_UPDATED": {
+        case "LOBBY_DIFFICULTY_UPDATED": {
             lobbyCacheDispatcher(queryClient, lobbyId, {
-                type: "LOBBY_UPDATED",
-                lobbyData: message.payload
+                type: "LOBBY_DIFFICULTY_UPDATED",
+                lobbyId: message.payload.lobbyId,
+                difficulty: message.payload.difficulty
+            })
+            break;
+        }
+        case "LOBBY_TIME_LIMIT_UPDATED": {
+            lobbyCacheDispatcher(queryClient, lobbyId, {
+                type: "LOBBY_TIME_LIMIT_UPDATED",
+                lobbyId: message.payload.lobbyId,
+                timeLimit: message.payload.timeLimit
+            })
+            break;
+        }
+        case "LOBBY_PLAYER_STATUS_UPDATED": {
+            lobbyCacheDispatcher(queryClient, lobbyId, {
+                type: "LOBBY_PLAYER_STATUS_UPDATED",
+                lobbyId: message.payload.lobbyId,
+                userId: message.payload.userId,
+                lobbyStatus: message.payload.lobbyStatus
+            })
+            break;
+        }
+        case "LOBBY_PLAYER_JOINED": {
+            lobbyCacheDispatcher(queryClient, lobbyId, {
+                type: "LOBBY_PLAYER_JOINED",
+                lobbyId: message.payload.lobbyId,
+                lobbyPlayer: message.payload.lobbyPlayer
+            })
+            break;
+        }
+        case "LOBBY_PLAYER_LEFT": {
+            lobbyCacheDispatcher(queryClient, lobbyId, {
+                type: "LOBBY_PLAYER_LEFT",
+                lobbyId: message.payload.lobbyId,
+                userId: message.payload.userId
+            })
+            break;
+        }
+        case "LOBBY_GAME_CREATED": {
+            lobbyCacheDispatcher(queryClient, lobbyId, {
+                type: "LOBBY_GAME_CREATED",
+                lobbyId: message.payload.lobbyId,
+                gameId: message.payload.gameId,
+                inGame: message.payload.inGame
             })
             break;
         }

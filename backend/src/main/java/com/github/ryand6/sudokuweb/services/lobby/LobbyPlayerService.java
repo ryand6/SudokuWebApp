@@ -3,6 +3,7 @@ package com.github.ryand6.sudokuweb.services.lobby;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerStatusUpdate;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.response.RevertInGameStatusResponseDto;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
@@ -49,7 +50,7 @@ public class LobbyPlayerService {
 
         // Send Lobby Update WS event after commit
         applicationEventPublisher.publishEvent(
-                new LobbyPlayerStatusUpdatedWsEvent(lobbyDto)
+                new LobbyPlayerStatusUpdatedWsEvent(new LobbyPlayerStatusUpdate(lobbyId, userId, lobbyStatus))
         );
 
         // update countdown scheduler via synchronised event
@@ -76,15 +77,12 @@ public class LobbyPlayerService {
 
                 String message = "updated their status to " + lp.getLobbyStatus().toString().toLowerCase() + ".";
                 lobbyChatService.createInfoMessage(lobbyId, lp.getUser().getId(), message, false);
+
+                applicationEventPublisher.publishEvent(
+                        new LobbyPlayerStatusUpdatedWsEvent(new LobbyPlayerStatusUpdate(lobbyId, lp.getUser().getId(), lp.getLobbyStatus()))
+                );
             }
         });
-
-        LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
-
-        applicationEventPublisher.publishEvent(
-                new LobbyPlayerStatusUpdatedWsEvent(lobbyDto)
-        );
-
     }
 
     @Transactional

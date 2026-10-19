@@ -1,13 +1,13 @@
 package com.github.ryand6.sudokuweb.events.types.lobby.ws;
 
-import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerJoinedUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LobbyUpdatePlayerJoinedWsEvent implements LobbyUpdateWsEvent {
+public class LobbyUpdatePlayerJoinedWsEvent {
 
-    private LobbyDto lobbyDto;
+    private LobbyPlayerJoinedUpdate lobbyPlayerJoinedUpdate;
 
 }

@@ -4,8 +4,11 @@ import com.github.ryand6.sudokuweb.domain.lobby.countdown.CountdownEvaluationRes
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerFactory;
 import com.github.ryand6.sudokuweb.domain.lobby.*;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerJoinedUpdate;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerLeftUpdate;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
+import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.events.types.lobby.*;
@@ -15,6 +18,7 @@ import com.github.ryand6.sudokuweb.exceptions.lobby.*;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyPlayerEntityDtoMapper;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +31,6 @@ import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -40,6 +43,7 @@ public class LobbyService {
     private final UserService userService;
     private final LobbyChatService lobbyChatService;
     private final LobbyEntityDtoMapper lobbyEntityDtoMapper;
+    private final LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
     private final PrivateLobbyTokenService privateLobbyTokenService;
     private final LobbyCountdownMutationService lobbyCountdownMutationService;
     private final ApplicationEventPublisher applicationEventPublisher;
@@ -48,6 +52,7 @@ public class LobbyService {
                         UserService userService,
                         LobbyChatService lobbyChatService,
                         LobbyEntityDtoMapper lobbyEntityDtoMapper,
+                        LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper,
                         PrivateLobbyTokenService privateLobbyTokenService,
                         LobbyCountdownMutationService lobbyCountdownMutationService,
                         ApplicationEventPublisher applicationEventPublisher) {
@@ -55,6 +60,7 @@ public class LobbyService {
         this.userService = userService;
         this.lobbyChatService = lobbyChatService;
         this.lobbyEntityDtoMapper = lobbyEntityDtoMapper;
+        this.lobbyPlayerEntityDtoMapper = lobbyPlayerEntityDtoMapper;
         this.privateLobbyTokenService = privateLobbyTokenService;
         this.lobbyCountdownMutationService = lobbyCountdownMutationService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -112,12 +118,12 @@ public class LobbyService {
         lobby.validateIfPlayerCanJoin(userId);
         // Add user to lobby
         UserEntity user = userService.findUserById(userId);
-        addPlayerToLobby(lobby, user);
+        LobbyPlayerDto lobbyPlayerDto = addPlayerToLobby(lobby, user);
         LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
 
         // publisher WS update after commit
         applicationEventPublisher.publishEvent(
-                new LobbyUpdatePlayerJoinedWsEvent(lobbyDto)
+                new LobbyUpdatePlayerJoinedWsEvent(new LobbyPlayerJoinedUpdate(lobby.getId(), lobbyPlayerDto))
         );
 
         // Send an info update to the lobby chat
@@ -159,12 +165,12 @@ public class LobbyService {
         lobby.validateIfPlayerCanJoin(userId);
         // Add user to lobby
         UserEntity user = userService.findUserById(userId);
-        addPlayerToLobby(lobby, user);
+        LobbyPlayerDto lobbyPlayerDto = addPlayerToLobby(lobby, user);
         LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
 
         // publisher WS update after commit
         applicationEventPublisher.publishEvent(
-                new LobbyUpdatePlayerJoinedWsEvent(lobbyDto)
+                new LobbyUpdatePlayerJoinedWsEvent(new LobbyPlayerJoinedUpdate(lobbyId, lobbyPlayerDto))
         );
 
         // Send an info update to the lobby chat
@@ -189,9 +195,10 @@ public class LobbyService {
     }
 
     // Create a LobbyPlayer entity instance and add them to the lobby when joining
-    private void addPlayerToLobby(LobbyEntity lobby, UserEntity user) {
+    private LobbyPlayerDto addPlayerToLobby(LobbyEntity lobby, UserEntity user) {
         LobbyPlayerEntity lobbyPlayer = LobbyPlayerFactory.createLobbyPlayer(lobby, user);
         lobby.getLobbyPlayers().add(lobbyPlayer);
+        return lobbyPlayerEntityDtoMapper.mapToDto(lobbyPlayer);
     }
 
     @Retryable(
@@ -241,7 +248,7 @@ public class LobbyService {
 
         // publisher WS update after commit
         applicationEventPublisher.publishEvent(
-                new LobbyUpdatePlayerLeftWsEvent(lobbyDto)
+                new LobbyUpdatePlayerLeftWsEvent(new LobbyPlayerLeftUpdate(lobbyId, userId))
         );
 
         return lobbyDto;
