@@ -214,4 +214,12 @@ public class GamePlayerEntity {
         return Double.parseDouble(formattedNumber);
     }
 
+    public void determineSinglePlayerResult() {
+        if (gamePlayerStateEntity.isBoardStateComplete()) {
+            gameResult = GameResult.COMPLETE;
+        } else {
+            gameResult = GameResult.INCOMPLETE;
+        }
+    }
+
 }

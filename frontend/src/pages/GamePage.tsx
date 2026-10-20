@@ -44,7 +44,6 @@ export function GamePage() {
 
     useGetGameHighlightedCells(gameIdNum, currentUser?.id, setGameHighlightedCells);
 
-    // CREATE FUNCTION - gets game data from server, includes game state data for each player
     const {data: publicGameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
 
     const {data: privateGameState, isLoading: isGameStateLoading, isError: isGameStateError, error: gameStateError} = useGetGamePlayerState(gameIdNum, currentUser?.id);
@@ -82,6 +81,9 @@ export function GamePage() {
     if (!publicGameState || !currentUser || !privateGameState || !boardState) return null;    
 
     const userHighlightedCell: CellCoordinates | undefined = gameHighlightedCells?.get(currentUser.id);
+
+    console.log("GAME PUBLIC STATE:", publicGameState);
+    console.log("GAME PRIVATE STATE:", privateGameState);
 
     return (
         // make game page size of remaining screen minus header height and outer borders

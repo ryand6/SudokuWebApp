@@ -27,6 +27,17 @@ export function StatusPill({ result }: { result: GameResult }) {
             </div>
         );
     }
+
+    if (result === "COMPLETE") {
+        return (
+            <div
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full 
+                            mt-2.5 bg-result-win text-result-win-forefround font-display"
+            >
+                <span className="text-md font-medium tracking-wide">🏆 You completed the board!</span>
+            </div>
+        );
+    }
  
     if (result === "DRAW") {
         return (
@@ -48,6 +59,18 @@ export function StatusPill({ result }: { result: GameResult }) {
                             text-result-loss-foreground font-display"
             >
                 <span className="text-md font-medium tracking-wide">💢 Defeated</span>
+            </div>
+        );
+    }
+
+    if (result === "INCOMPLETE") {
+        return (
+            <div
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full 
+                            mt-2.5 border border-result-loss-border bg-result-loss 
+                            text-result-loss-foreground font-display"
+            >
+                <span className="text-md font-medium tracking-wide">💢 You failed to complete the board</span>
             </div>
         );
     }

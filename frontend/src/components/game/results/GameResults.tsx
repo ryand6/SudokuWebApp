@@ -17,7 +17,6 @@ import { computeMsDifferenceBetweenTimestamps } from "@/utils/time/timeDifferenc
 import { convertMillisecondsToMinuteClock } from "@/utils/time/convertMillisecondsToMinuteClock";
 import { PrematureEndBanner } from "./PrematureEndBanner";
 import { ReturnToLobbyAlertDialog } from "@/components/ui/custom/ReturnToLobbyAlertDialog";
-import type { NavigateFunction } from "react-router-dom";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import BasicTimer from "@/components/ui/custom/BasicTimer";
 import { useGetUserRank } from "@/api/rest/leaderboards/query/useGetUserRank";
@@ -61,8 +60,6 @@ export function GameResults({
             document.getElementById("root")?.classList.remove("blur-sm");
         };
     }, []);
-
-    // const { send } = useWebSocketContext();
 
     const { data: userRank, refetch } = useGetUserRank(userId, gameMode);
 
@@ -163,7 +160,7 @@ export function GameResults({
                 <p
                     className="text-md tracking-wide uppercase text-muted-foreground mb-2 font-display"
                 >
-                    Leaderboard score
+                    {gameType === "CASUAL" ? "Final score" : "Leaderboard score"}
                 </p>
 
                 {leaderboardResult === undefined ? (
@@ -178,7 +175,7 @@ export function GameResults({
                         </div>
                     ) : (
                         <div className="mb-4">
-                            <SpinnerButton text="Loading leaderboard score…" />
+                            <SpinnerButton text={gameType === "CASUAL" ? "Loading final score…" : "Loading leaderboard score…"} />
                         </div>
                     ) 
                 ) : (

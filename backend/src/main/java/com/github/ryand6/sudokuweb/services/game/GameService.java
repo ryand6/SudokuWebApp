@@ -345,9 +345,7 @@ public class GameService {
             return;
         }
         game.finishGame();
-        if (game.getGameSettingsEntity().getGameType() == GameType.RANKED) {
-            handleGameResults(game);
-        }
+        handleGameResults(game);
         gameRepository.save(game);
         applicationEventPublisher.publishEvent(
                 new ScheduleGameCloseEvent(game.getId(), game.getGameEndedAt())
@@ -367,23 +365,28 @@ public class GameService {
     }
 
     private void handleGameResults(GameEntity game) {
-        Set<GamePlayerEntity> gamePlayers = game.getRemainingActivePlayers();
+        Set<GamePlayerEntity> allGamePlayers = game.getGamePlayerEntities();
+        Set<GamePlayerEntity> activeGamePlayers = game.getRemainingActivePlayers();
         GameSettingsEntity gameSettings = game.getGameSettingsEntity();
         if (gameSettings.getGameMode() == GameMode.TIMEATTACK) {
             boolean gameWon = game.determineTimeAttackVictory();
             GameResult gameResult = gameWon ? GameResult.WIN : GameResult.LOSS;
-            for (GamePlayerEntity gamePlayer : gamePlayers) {
+            for (GamePlayerEntity gamePlayer : activeGamePlayers) {
                 gamePlayer.setGameResult(gameResult);
             }
         } else {
-            Set<GamePlayerEntity> winners = game.determineGameWinners();
-            for (GamePlayerEntity gamePlayer : gamePlayers) {
-                GameResult gameResult = !winners.contains(gamePlayer) ? GameResult.LOSS :
-                        winners.size() == 1 ? GameResult.WIN : GameResult.DRAW;
-                gamePlayer.setGameResult(gameResult);
+            if (allGamePlayers.size() == 1) {
+                allGamePlayers.stream().findFirst().get().determineSinglePlayerResult();
+            } else {
+                Set<GamePlayerEntity> winners = game.determineGameWinners();
+                for (GamePlayerEntity gamePlayer : activeGamePlayers) {
+                    GameResult gameResult = !winners.contains(gamePlayer) ? GameResult.LOSS :
+                            winners.size() == 1 ? GameResult.WIN : GameResult.DRAW;
+                    gamePlayer.setGameResult(gameResult);
+                }
             }
         }
-        Map<Long, GameResult> gameResults = gamePlayers.stream()
+        Map<Long, GameResult> gameResults = activeGamePlayers.stream()
                 .collect(Collectors.toMap(
                         gamePlayer -> gamePlayer.getUserEntity().getId(),
                         GamePlayerEntity::getGameResult));
@@ -392,14 +395,16 @@ public class GameService {
                 new GameResultsDeterminedEvent(game.getId(), gameResults)
         );
 
-        for (GamePlayerEntity player : game.getGamePlayerEntities()) {
-            // Forfeit loss already recorded when the player left the game
-            if (player.getGameResult() == GameResult.FORFEIT) {
-                continue;
+        if (game.getGameSettingsEntity().getGameType() == GameType.RANKED) {
+            for (GamePlayerEntity player : game.getGamePlayerEntities()) {
+                // Forfeit loss already recorded when the player left the game
+                if (player.getGameResult() == GameResult.FORFEIT) {
+                    continue;
+                }
+                applicationEventPublisher.publishEvent(
+                        new LeaderboardUpdateEvent(player.getGameResult(), gameSettings.getGameMode(), player.getUserEntity().getId(), player.getLeaderboardScore())
+                );
             }
-            applicationEventPublisher.publishEvent(
-                    new LeaderboardUpdateEvent(player.getGameResult(), gameSettings.getGameMode(), player.getUserEntity().getId(), player.getLeaderboardScore())
-            );
         }
     }
 
