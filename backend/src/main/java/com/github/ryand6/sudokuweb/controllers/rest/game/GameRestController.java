@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.LeaveGameRequestDto;
+import com.github.ryand6.sudokuweb.dto.request.OnContinueRequestDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.services.game.GameService;
@@ -95,6 +96,12 @@ public class GameRestController {
         if (gameDto == null) {
             return ResponseEntity.noContent().build();
         }
+        return ResponseEntity.ok(gameDto);
+    }
+
+    @PostMapping("/on-continue")
+    public ResponseEntity<?> onContinue(@Valid @RequestBody OnContinueRequestDto requestDto) {
+        GameDto gameDto = gameService.handleOnContinue(requestDto.getGameId());
         return ResponseEntity.ok(gameDto);
     }
 

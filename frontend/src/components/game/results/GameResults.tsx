@@ -22,6 +22,7 @@ import BasicTimer from "@/components/ui/custom/BasicTimer";
 import { useGetUserRank } from "@/api/rest/leaderboards/query/useGetUserRank";
 import type { GameType } from "@/types/enum/GameType";
 import { useRevertInGameStatus } from "@/api/rest/game/playerstate/mutate/useRevertInGameStatus";
+import { useOnContinue } from "@/api/rest/game/mutate/useOnContinue";
 
 export function GameResults({
     userId,
@@ -62,6 +63,7 @@ export function GameResults({
     }, []);
 
     const { data: userRank, refetch } = useGetUserRank(userId, gameMode);
+    const onContinueHandler = useOnContinue(userId);
 
     const useRevertInGameStatusHandler = useRevertInGameStatus();
 
@@ -97,9 +99,8 @@ export function GameResults({
         useRevertInGameStatusHandler.mutate(lobbyId);
     }
 
-    // Implement
     const onContinue = () => {
-
+        onContinueHandler.mutate(gameId);
     }
 
     return (

@@ -222,4 +222,11 @@ public class GamePlayerEntity {
         }
     }
 
+    public void resetFinishedState() {
+        gameResult = GameResult.PENDING;
+        finishedGame = false;
+        finishedGameTimestamp = null;
+        leaderboardScore = null;
+    }
+
 }

@@ -20,7 +20,7 @@ export function CasualModeContinueAlertDialog({
 }) {
     return (
         <AlertDialog open={open} onOpenChange={setOpen}>
-            <AlertDialogContent className="bg-card">
+            <AlertDialogContent className="bg-card z-1000">
                 <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure you want to continue playing in casual mode?</AlertDialogTitle>
                     <AlertDialogDescription>

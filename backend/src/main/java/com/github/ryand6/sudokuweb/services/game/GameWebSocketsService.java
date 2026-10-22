@@ -5,6 +5,7 @@ import com.github.ryand6.sudokuweb.domain.game.CellRejectedPublicUpdate;
 import com.github.ryand6.sudokuweb.domain.game.GameClocksInit;
 import com.github.ryand6.sudokuweb.domain.game.GameFinished;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameChatMessageDto;
+import com.github.ryand6.sudokuweb.dto.entity.game.GameDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GameEventDto;
 import com.github.ryand6.sudokuweb.dto.entity.game.GamePlayerDto;
 import com.github.ryand6.sudokuweb.dto.events.PlayerHighlightedCellDto;

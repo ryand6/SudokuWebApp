@@ -36,7 +36,10 @@ export function PrematureEndBanner({
                 <Button
                     variant="secondary"
                     className="text-md font-display cursor-pointer"
-                    onClick={() => setIsAlertOpen(true)}
+                    onClick={() => {
+                        console.log("Continue button clicked");
+                        setIsAlertOpen(true)
+                    }}
                 >
                     Continue →
                 </Button>

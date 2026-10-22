@@ -82,9 +82,6 @@ export function GamePage() {
 
     const userHighlightedCell: CellCoordinates | undefined = gameHighlightedCells?.get(currentUser.id);
 
-    console.log("GAME PUBLIC STATE:", publicGameState);
-    console.log("GAME PRIVATE STATE:", privateGameState);
-
     return (
         // make game page size of remaining screen minus header height and outer borders
         <div className="h-[calc(100dvh-4rem-4px)] md:h-[calc(100dvh-4rem-8px)] w-full">

@@ -241,4 +241,17 @@ public class GameEntity {
         return finishedPlayers.size() == 1 && finishedPlayers.contains(gamePlayer);
     }
 
+    public void continueInCasualMode() {
+        gameStatus = GameStatus.IN_PROGRESS;
+        gameEndedAt = null;
+        gameEndsAt = null;
+        endedPrematurely = false;
+        gameSettingsEntity.continueInCasualMode();
+        for (GamePlayerEntity gp : gamePlayerEntities) {
+            if (gp.getGameResult() != GameResult.FORFEIT) {
+                gp.resetFinishedState();
+            }
+        }
+    }
+
 }

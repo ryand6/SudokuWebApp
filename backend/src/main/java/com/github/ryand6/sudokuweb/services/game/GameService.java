@@ -428,4 +428,14 @@ public class GameService {
         );
     }
 
+    @Transactional
+    public GameDto handleOnContinue(Long gameId) {
+        GameEntity game = getGameById(gameId);
+        game.continueInCasualMode();
+        applicationEventPublisher.publishEvent(
+                new CancelScheduledTaskEvent(TaskSchedulerService.FINISH_GAME_TASK_NAME + gameId)
+        );
+        return gameEntityDtoMapper.mapToDto(game);
+    }
+
 }

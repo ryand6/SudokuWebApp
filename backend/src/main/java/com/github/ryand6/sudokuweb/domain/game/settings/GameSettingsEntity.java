@@ -64,4 +64,9 @@ public class GameSettingsEntity {
         return ScoringTables.timeLimitPresetMultiplier.get(timeLimit);
     }
 
+    public void continueInCasualMode() {
+        gameType = GameType.CASUAL;
+        timeLimit = TimeLimitPreset.UNLIMITED;
+    }
+
 }
