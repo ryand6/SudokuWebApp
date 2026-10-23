@@ -8,6 +8,7 @@ import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyCountdownDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.response.RevertInGameStatusResponseDto;
 import com.github.ryand6.sudokuweb.enums.LobbyStatus;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyInGameStatusRevertedEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.ws.LobbyPlayerStatusUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.events.types.lobby.UpdateLobbyCountdownSchedulerEvent;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyCountdownEntityDtoMapper;
@@ -103,9 +104,13 @@ public class LobbyPlayerService {
 
             String message = "updated their status to " + lobbyPlayer.getLobbyStatus().toString().toLowerCase() + ".";
             lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
-        }
-        return new RevertInGameStatusResponseDto(lobbyId, userId, lobbyPlayer.getLobbyStatus());
 
+            applicationEventPublisher.publishEvent(
+                    new LobbyInGameStatusRevertedEvent(lobby.getCurrentGameId())
+            );
+        }
+
+        return new RevertInGameStatusResponseDto(lobbyId, userId, lobbyPlayer.getLobbyStatus());
     }
 
 }

@@ -92,4 +92,8 @@ public class LobbyPlayerEntity {
         lastLobbyMessageTimestamp = Instant.now();
     }
 
+    public boolean validateNotInGame() {
+        return lobbyStatus != LobbyStatus.INGAME;
+    }
+
 }

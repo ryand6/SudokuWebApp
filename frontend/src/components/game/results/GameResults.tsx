@@ -95,7 +95,7 @@ export function GameResults({
 
     const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeMsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
 
-    const returnToLobbyHandler = () => {
+    const returnToLobbyHandler = async () => {
         useRevertInGameStatusHandler.mutate(lobbyId);
     }
 

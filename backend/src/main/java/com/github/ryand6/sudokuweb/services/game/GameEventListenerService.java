@@ -1,6 +1,7 @@
 package com.github.ryand6.sudokuweb.services.game;
 
 import com.github.ryand6.sudokuweb.events.types.game.*;
+import com.github.ryand6.sudokuweb.events.types.lobby.LobbyInGameStatusRevertedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -57,6 +58,12 @@ public class GameEventListenerService {
         gameService.startGame(event.getGameId());
     }
 
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    void handleLobbyInGameStatusRevertedEvent(LobbyInGameStatusRevertedEvent event) {
+        gameService.closeIfNoPlayersInGame(event.getGameId());
+    }
+
     //#######################//
     // Game Event Service    //
     //#######################//
@@ -80,6 +87,5 @@ public class GameEventListenerService {
     void handleGameLeftInMemoryStateEvent(GameClosedMembershipUpdateEvent event) {
         gameInMemoryStateService.removeGame(event.getGameId());
     }
-
 
 }

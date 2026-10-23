@@ -268,6 +268,10 @@ public class GameService {
                 new LeaderboardUpdateEvent(gamePlayer.getGameResult(), gameSettings.getGameMode(), gamePlayer.getUserEntity().getId(), 0)
         );
 
+        if (game.isGameFinished()) {
+            finishGame(game);
+        }
+
         return gameDto;
     }
 
@@ -353,6 +357,16 @@ public class GameService {
         applicationEventPublisher.publishEvent(
                 new GameFinishedEvent(game.getId(), game.getGameEndedAt(), GameStatus.FINISHED)
         );
+        closeIfNoPlayersInGame(game.getId());
+    }
+
+    @Transactional
+    public void closeIfNoPlayersInGame(Long gameId) {
+        GameEntity gameEntity = gameRepository.findByIdWithLock(gameId)
+                .orElseThrow(() -> new GameNotFoundException("Game with ID " + gameId + " does not exist"));
+        if (gameEntity.isGameClosed()) {
+            closeGame(gameId);
+        }
     }
 
     private void handlePlayerLeaderboardScore(Long gameId, GamePlayerEntity gamePlayer) {
@@ -411,6 +425,9 @@ public class GameService {
     // Once game is closed, it cannot be navigated back to
     @Transactional
     public void closeGame(Long gameId) {
+
+        System.out.println("\n\n\nGame Closed!\n\n\n");
+
         GameEntity game = getGameById(gameId);
         game.closeGame();
         // Update membership and in memory caches

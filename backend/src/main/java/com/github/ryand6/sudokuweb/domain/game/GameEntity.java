@@ -4,6 +4,7 @@ import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.settings.GameSettingsEntity;
 import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
+import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.puzzle.SudokuPuzzleEntity;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.enums.*;
@@ -221,6 +222,10 @@ public class GameEntity {
 
     public boolean isGameFinished() {
         return gamePlayerEntities.stream().filter(gp -> gp.getGameResult() != GameResult.FORFEIT).allMatch(GamePlayerEntity::isFinishedGame);
+    }
+
+    public boolean isGameClosed() {
+        return lobbyEntity.getLobbyPlayers().stream().allMatch(LobbyPlayerEntity::validateNotInGame);
     }
 
     public Integer determineMaxScore() {
