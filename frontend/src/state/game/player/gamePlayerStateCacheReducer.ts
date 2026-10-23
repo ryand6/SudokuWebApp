@@ -1,6 +1,6 @@
 import type { PrivateCellState, PrivateGamePlayerState } from "@/types/game/GameTypes";
 import type { GamePlayerStateEvent } from "../gameEvents";
-import { clearCellState, updateCellStateInBoardState, updateNotesInBoardState } from "@/utils/game/boardStateUtils";
+import { clearCellState, revertCellStateInBoardState, updateCellStateInBoardState, updateNotesInBoardState } from "@/utils/game/boardStateUtils";
 import { notificationEmitter } from "@/utils/game/gameNotificationUtils";
 import { toggleNote } from "@/utils/game/noteUtils";
 
@@ -56,8 +56,11 @@ export function gamePlayerStateCacheReducer(
             };
         }
         case "CELL_UPDATE_INVALID": {
-            // IMPLEMENT
-            return existingData;
+            const newBoard = revertCellStateInBoardState(existingData.boardState, event.row, event.col, event.value);
+            return {
+                ...existingData,
+                boardState: newBoard
+            };
         }
         case "STREAK_RESET": {
             notificationEmitter.emit({ type: "streak", message: "Streak lost" });
@@ -101,7 +104,6 @@ export function gamePlayerStateCacheReducer(
             }
         }
         case "LEADERBOARD_SCORE_CALCULATED": {
-            // IMPLEMENT
             return {
                 ...existingData,
                 leaderboardResult: event.leaderboardResult

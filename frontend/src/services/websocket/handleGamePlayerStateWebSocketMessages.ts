@@ -29,7 +29,12 @@ export function handleGamePlayerStateWebSocketMessages(message: any, queryClient
             break;
         }
         case "CELL_UPDATE_INVALID": {
-            // Add logging details
+            gamePlayerStateCacheDispatcher(queryClient, gameId, userId, {
+                type: "CELL_UPDATE_INVALID",
+                row: message.payload.row,
+                col: message.payload.col,
+                value: message.payload.value,
+            });
             break;
         }
         case "STREAK_RESET": {

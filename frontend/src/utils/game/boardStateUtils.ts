@@ -33,6 +33,23 @@ export function updateCellStateInBoardState(
     );
 }
 
+export function revertCellStateInBoardState(
+    boardState: PrivateBoardState, 
+    rowIndex: number, 
+    colIndex: number, 
+    previousValue: number
+): PrivateBoardState {
+    return boardState.map((row, r) =>
+        r === rowIndex ? row.map((cell, c) =>
+            c === colIndex
+            ? {
+                ...cell,
+                value: String(previousValue)
+            } : cell
+        ) : row
+    )
+}
+
 export function clearCellState(
     boardState: PrivateBoardState, 
     rowIndex: number, 

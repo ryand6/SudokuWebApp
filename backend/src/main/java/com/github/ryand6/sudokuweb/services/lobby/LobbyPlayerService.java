@@ -103,13 +103,6 @@ public class LobbyPlayerService {
 
             String message = "updated their status to " + lobbyPlayer.getLobbyStatus().toString().toLowerCase() + ".";
             lobbyChatService.createInfoMessage(lobbyId, userId, message, false);
-
-
-//            LobbyDto lobbyDto = lobbyEntityDtoMapper.mapToDto(lobby);
-//
-//            applicationEventPublisher.publishEvent(
-//                    new LobbyPlayerStatusUpdatedWsEvent(lobbyDto)
-//            );
         }
         return new RevertInGameStatusResponseDto(lobbyId, userId, lobbyPlayer.getLobbyStatus());
 

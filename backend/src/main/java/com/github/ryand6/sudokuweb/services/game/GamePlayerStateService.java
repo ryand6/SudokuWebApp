@@ -9,11 +9,13 @@ import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerRepository;
 import com.github.ryand6.sudokuweb.domain.game.player.state.*;
 import com.github.ryand6.sudokuweb.domain.game.state.CellClaimEvaluationResult;
 import com.github.ryand6.sudokuweb.domain.game.state.SharedGameStateEntity;
+import com.github.ryand6.sudokuweb.dto.entity.game.PrivateGamePlayerStateDto;
 import com.github.ryand6.sudokuweb.enums.GameEventType;
 import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.events.types.game.*;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.state.GamePlayerStateOptimisticLockException;
+import com.github.ryand6.sudokuweb.mappers.Impl.game.PrivateGamePlayerStateEntityDtoMapper;
 import com.github.ryand6.sudokuweb.util.GameUtils;
 import com.github.ryand6.sudokuweb.util.ScoringTables;
 import com.github.ryand6.sudokuweb.util.StringUtils;
@@ -78,6 +80,12 @@ public class GamePlayerStateService {
             if (ex instanceof RuntimeException) throw (RuntimeException) ex;
             throw new RuntimeException(ex);
         }
+        GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
+        GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
+        int previousValue = (int) StringUtils.getBoardStateValueFromNestedArrayIndexes(gamePlayerState.getCurrentBoardState(), row, col);
+        applicationEventPublisher.publishEvent(
+                new CellUpdateSubmissionInvalidEvent(gameId, userId, new CellValueUpdate(row, col, previousValue))
+        );
         throw new GamePlayerStateOptimisticLockException("Unable to apply cell update due to a conflict.");
     }
 
@@ -428,12 +436,12 @@ public class GamePlayerStateService {
     }
 
     @Recover
-    public void handleNoteUpdateSubmissionRecover(Throwable ex, Long gameId, Long userId, int row, int col, int value) {
+    public void handleNoteUpdateSubmissionRecover(Throwable ex, Long gameId, Long userId, NoteUpdate noteUpdate) {
         if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
             if (ex instanceof RuntimeException) throw (RuntimeException) ex;
             throw new RuntimeException(ex);
         }
-        throw new GamePlayerStateOptimisticLockException("Unable to apply cell update due to a conflict.");
+        throw new GamePlayerStateOptimisticLockException("Unable to apply note update due to a conflict.");
     }
 
     @Retryable(
@@ -452,6 +460,22 @@ public class GamePlayerStateService {
         } catch (IllegalArgumentException ex) {
             handleRejectedNoteUpdate(gameId, userId, row, col, bitmask);
         }
+    }
+
+    @Recover
+    public void handleClearCellNotesRecover(Throwable ex, Long gameId, Long userId, int row, int col) {
+        if (!(ex instanceof ObjectOptimisticLockingFailureException)) {
+            if (ex instanceof RuntimeException) throw (RuntimeException) ex;
+            throw new RuntimeException(ex);
+        }
+        GamePlayerEntity gamePlayer = getGamePlayerEntity(gameId, userId);
+        GamePlayerStateEntity gamePlayerState = gamePlayer.getGamePlayerStateEntity();
+        int cellIndex = (row * 9) + col;
+        int originalBitmask = gamePlayerState.getNotesBitmask(cellIndex);
+        applicationEventPublisher.publishEvent(
+                new NoteUpdateRejectedEvent(gameId, userId, new NoteUpdate(row, col, originalBitmask))
+        );
+        throw new GamePlayerStateOptimisticLockException("Unable to apply note update due to a conflict.");
     }
 
     private void handleRejectedNoteUpdate(Long gameId, Long userId, int row, int col, int originalBitmask) {

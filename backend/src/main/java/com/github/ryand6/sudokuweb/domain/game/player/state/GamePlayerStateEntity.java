@@ -2,7 +2,6 @@ package com.github.ryand6.sudokuweb.domain.game.player.state;
 
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerEntity;
 import com.github.ryand6.sudokuweb.domain.game.player.GamePlayerId;
-import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
