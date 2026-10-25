@@ -21,10 +21,10 @@ export function useLeaveLobby() {
         onSuccess: async (updatedLobby, variables) => {
             unsubscribe(`/topic/lobby/${variables.lobbyId}`);
 
-            queryClient.setQueryData(
-                queryKeys.userActiveLobby,
-                null
-            );
+            queryClient.removeQueries({
+                queryKey: queryKeys.userActiveLobby,
+                exact: true
+            });
 
             if (updatedLobby === null) {
                 queryClient.removeQueries({

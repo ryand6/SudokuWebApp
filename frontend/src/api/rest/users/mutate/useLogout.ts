@@ -9,9 +9,17 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: logout,
-    onSuccess: () => {
-      // Invalidate the "currentUser" query so the cache is cleared
-      queryClient.setQueryData(queryKeys.user, null);
+    onSuccess: async () => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.user,
+        exact: true,
+      });
+
+      queryClient.removeQueries({
+        queryKey: queryKeys.user,
+        exact: true,
+      });
+
       // redirect to home or login page
       navigate("/", { replace: true });
     },

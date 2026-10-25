@@ -1,5 +1,5 @@
 import { useGetCurrentUser } from "@/api/rest/users/query/useGetCurrentUser";
-import { UserSettings } from "@/components/global/UserSettings";
+import { UserSettings } from "@/components/users/UserSettings";
 import { WebSocketReconnectScreen } from "@/components/global/WebSocketReconnectScreen";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useQueryClient } from "@tanstack/react-query";
@@ -29,7 +29,7 @@ export default function MainLayout() {
 							className="font-bold text-3xl cursor-pointer"
 							onClick={() => navigate("/")}
 						>
-							Tomo Sudoku
+							TomoSudoku
 						</h1>
 						{
 							user && (

@@ -23,15 +23,15 @@ export function useLeaveGame() {
             unsubscribe(`/topic/game/${variables.gameId}/user/${variables.userId}`);
             unsubscribe(`/topic/lobby/${variables.lobbyId}`);
 
-            queryClient.setQueryData(
-                queryKeys.userActiveGameId,
-                null
-            );
+            queryClient.removeQueries({
+                queryKey: queryKeys.userActiveGameId,
+                exact: true
+            });
 
-            queryClient.setQueryData(
-                queryKeys.userActiveLobby,
-                null
-            );
+            queryClient.removeQueries({
+                queryKey: queryKeys.userActiveLobby,
+                exact: true
+            });
 
             // handles when a game is closed
             if (updatedGame === null) {
