@@ -29,7 +29,7 @@ export function TimeAttackModeCard({
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center justify-center p-5 text-muted-foreground">
+                <div className="flex flex-1 p-5 bg-card rounded-b-lg text-card-foreground">
                     Work together to complete the shared board before the clock runs out. Successful answers add time to the clock, mistakes take time away. Co-operative, time is the enemy.
                 </div>
             </div>

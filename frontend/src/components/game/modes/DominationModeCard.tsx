@@ -29,7 +29,7 @@ export function DominationModeCard({
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center justify-center p-5 text-muted-foreground">
+                <div className="flex flex-1 p-5 bg-card text-card-foreground rounded-b-lg">
                     All players share one board. Territory is the aim of the game, claim as many cells as you can before your opponents. Mistakes here are costly.
                 </div>
             </div>

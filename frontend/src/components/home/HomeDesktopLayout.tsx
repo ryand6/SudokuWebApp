@@ -82,65 +82,67 @@ export function HomeDesktopLayout({
                     )
                 }
             </div>
-            <div className="flex w-full h-[30%] min-h-[250px] bg-background py-5 px-10 gap-4 justify-evenly">
+            <div className="flex w-full min-h-[250px] bg-background py-10 px-10 gap-4 justify-evenly">
                 <ClassicModeCard iconSize={iconSize} />
                 <DominationModeCard iconSize={iconSize} />
                 <TimeAttackModeCard iconSize={iconSize} />
             </div>
-            <div className="flex flex-col items-start p-5 px-10 gap-2">
-                <div className="tracking-wide font-semibold text-xl text-foreground pb-2">
-                    About the Developer
-                </div>
-                <div className="flex items-center gap-4">
-                    <div>
-                        {
-                            isImageLoading ? (
-                                <div className="flex justify-center items-center w-[75px]">
-                                    <Spinner />
-                                </div>
-                                
-                            ) : isImageError ? (
-                                <div className="flex flex-col justify-center items-center w-[75px]">
-                                    <span className="text-wrap text-center text-xs">
-                                        No image available 
-                                    </span>
-                                    <IconPhotoCancel size={iconSize} />
-                                </div> 
-                            ) : (
-                                <img 
-                                    src="/images/developer.jpg" 
-                                    alt="developer"
-                                    className="rounded-full w-[75px] h-[75px]"    
-                                />
-                            )
-                        }
+            <div className="flex flex-col flex-1 items-start p-5 px-10 gap-2 border-t-2 border-muted bg-card/60">
+                <div className="border-2 border-muted rounded-lg p-5 bg-background">
+                    <div className="tracking-wide font-semibold text-xl text-foreground pb-2">
+                        About the Developer
                     </div>
-                    <div className="flex flex-col gap-1">
-                        <div className="font-semibold text-lg text-foreground">
-                            Ryan
-                        </div>
-                        <div className="text-muted-foreground tracking-wide">
-                            Full-stack developer
-                        </div>
-                        <div className="flex justify-start items-center">
-                            <div className="w-auto text-foreground rounded-lg">
-                                <a 
-                                    href="https://github.com/ryand6"
-                                    target="_blank"
-                                    className="cursor-pointer"
-                                >
-                                    <img
-                                        src="/images/GitHub_Invertocat_Black_Clearspace.png" 
-                                        alt="github"
-                                        className="rounded-full w-[30px] h-[30px]" 
+                    <div className="flex items-center gap-4">
+                        <div>
+                            {
+                                isImageLoading ? (
+                                    <div className="flex justify-center items-center w-[75px]">
+                                        <Spinner />
+                                    </div>
+                                    
+                                ) : isImageError ? (
+                                    <div className="flex flex-col justify-center items-center w-[75px]">
+                                        <span className="text-wrap text-center text-xs">
+                                            No image available 
+                                        </span>
+                                        <IconPhotoCancel size={iconSize} />
+                                    </div> 
+                                ) : (
+                                    <img 
+                                        src="/images/developer.jpg" 
+                                        alt="developer"
+                                        className="rounded-full w-[75px] h-[75px]"    
                                     />
-                                </a>
+                                )
+                            }
+                        </div>
+                        <div className="flex flex-col gap-1">
+                            <div className="font-semibold text-lg text-foreground">
+                                Ryan
+                            </div>
+                            <div className="text-muted-foreground tracking-wide">
+                                Full-stack developer
+                            </div>
+                            <div className="flex justify-start items-center">
+                                <div className="w-auto text-foreground rounded-lg">
+                                    <a 
+                                        href="https://github.com/ryand6"
+                                        target="_blank"
+                                        className="cursor-pointer"
+                                    >
+                                        <img
+                                            src="/images/GitHub_Invertocat_Black_Clearspace.png" 
+                                            alt="github"
+                                            className="rounded-full w-[30px] h-[30px]" 
+                                        />
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div className="flex w-full text-sm text-muted-foreground">
-                    <p>If you would like to show your support by making a donation, please feel free to <a href="https://buymeacoffee.com/ryand6" className="text-primary font-semibold hover:underline">buy me a coffee</a></p>
+                    <div className="flex w-full text-sm text-muted-foreground">
+                        <p>If you would like to show your support by making a donation, please feel free to <a href="https://buymeacoffee.com/ryand6" className="text-primary font-semibold hover:underline">buy me a coffee</a></p>
+                    </div>
                 </div>
             </div>
         </div>

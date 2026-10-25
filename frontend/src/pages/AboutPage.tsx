@@ -1,6 +1,9 @@
+import { useIsMobile } from "@/hooks/global/useIsMobile";
 import { Link } from "react-router-dom";
 
 export function AboutPage() {
+    const isMobile = useIsMobile();
+
     return (
         <div className="flex flex-col w-full h-full font-display overflow-y-auto">
             <div className="flex flex-col w-full max-w-5xl mx-auto px-6 md:px-10 py-8 md:py-14 gap-8">
@@ -42,7 +45,7 @@ export function AboutPage() {
                         <img
                             src="/images/developer.jpg"
                             alt="Ryan"
-                            className="rounded-full w-[75px] h-[75px] object-cover"
+                            className={`rounded-full ${isMobile ? "w-[40px] h-[40px]" : "w-[75px] h-[75px]"} object-cover`}
                         />
 
                         <div className="flex flex-col gap-1">
@@ -63,7 +66,7 @@ export function AboutPage() {
                                 <img
                                     src="/images/GitHub_Invertocat_Black_Clearspace.png"
                                     alt="GitHub"
-                                    className="rounded-full w-[30px] h-[30px]"
+                                    className={`rounded-full ${isMobile ? "w-[20px] h-[20px]" : "w-[30px] h-[30px]"}`}
                                 />
                             </a>
                         </div>

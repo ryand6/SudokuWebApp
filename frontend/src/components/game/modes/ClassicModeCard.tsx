@@ -29,7 +29,7 @@ export function ClassicModeCard({
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center justify-center p-5 text-muted-foreground">
+                <div className="flex flex-1 p-5 text-card-foreground rounded-b-lg bg-card">
                     Each player completes their own board. Bonuses awarded to the first to answer each cell correctly without a mistake. Streaks awarded for consecutive first answers.
                 </div>
             </div>
