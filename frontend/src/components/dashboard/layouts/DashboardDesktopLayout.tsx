@@ -91,7 +91,7 @@ export function DashboardDesktopLayout({
                             </div>
                             <div className="flex items-center gap-4">
                                 <button
-                                    className="flex items-center gap-1 px-4 py-3 rounded-lg bg-primary cursor-pointer hover:bg-primary/60 text-semibold text-primary-foreground text-lg border-1 border-sidebar"
+                                    className="flex items-center gap-1 px-4 py-3 rounded-lg bg-secondary/80 cursor-pointer hover:bg-secondary/60 text-semibold text-secondary-foreground text-lg border-1 border-sidebar"
                                     onClick={onRejoinClick}
                                 >   
                                     <span>Rejoin</span>
@@ -102,7 +102,7 @@ export function DashboardDesktopLayout({
                                 <LeaveLobbyAlertDialog open={isLeaveLobbyAlertOpen} handleContinueClick={() => leaveLobbyHandler.mutate({ lobbyId: activeLobby.id })} setOpen={setIsLeaveLobbyAlertOpen} />
                                 <LeaveGameAlertDialog open={isLeaveGameAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({ gameId: activeLobby.currentGameId!, userId: user.id, lobbyId: activeLobby.id })} setOpen={setIsLeaveGameAlertOpen} />
                                 <button
-                                    className="flex items-center gap-1 px-4 py-3 rounded-lg bg-destructive/60 cursor-pointer hover:bg-destructive/30 text-semibold text-primary-foreground text-lg border-1 border-sidebar"
+                                    className="flex items-center gap-1 px-4 py-3 rounded-lg bg-destructive/20 cursor-pointer hover:bg-destructive/10 text-semibold text-primary-foreground text-lg border-1 border-sidebar"
                                     onClick={() => {
                                         activeGameId ? setIsLeaveGameAlertOpen(true) : setIsLeaveLobbyAlertOpen(true)
                                     }}

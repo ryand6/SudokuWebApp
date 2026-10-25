@@ -21,7 +21,7 @@
 
     --app-gradient: linear-gradient(
         135deg,
-        var(--secondary),
+        var(--sidebar-accent),
         var(--sidebar)
     );
 
@@ -175,28 +175,28 @@
     --header-foreground:      #FAFCFE;
     --grid-line:              #1A2233;
 
-    --classic-game-mode:            #52759A;
+    --classic-game-mode:            #6E8EA7;
     --classic-game-mode-foreground: #FAFCFE;
     --domination-game-mode:            #8A6066;
     --domination-game-mode-foreground: #FAFCFE;
-    --time-attack-game-mode:            #71869A;
+    --time-attack-game-mode:            #7C9D8E;
     --time-attack-game-mode-foreground: #FAFCFE;
     
-    --player-colour-one-light:    rgba(58,110,168,0.15);
-    --player-colour-one-medium:   rgba(58,110,168,0.4);
-    --player-colour-one-strong:   #3A6EA8;
+    --player-colour-one-light:    rgba(134, 93, 93,0.2);
+    --player-colour-one-medium:   rgba(134, 93, 93,0.45);
+    --player-colour-one-strong:   rgba(134, 93, 93, 0.7);
     
-    --player-colour-two-light:    rgba(74,90,122,0.15);
-    --player-colour-two-medium:   rgba(74,90,122,0.4);
-    --player-colour-two-strong:   #4A5A7A;
+    --player-colour-two-light:    rgba(141, 126, 163,0.2);
+    --player-colour-two-medium:   rgba(141, 126, 163,0.4);
+    --player-colour-two-strong:   rgba(141, 126, 163, 0.7);
     
-    --player-colour-three-light:  rgba(111,168,220,0.2);
-    --player-colour-three-medium: rgba(111,168,220,0.45);
-    --player-colour-three-strong: #6FA8DC;
+    --player-colour-three-light:  rgba(139, 133, 95,0.2);
+    --player-colour-three-medium: rgba(139, 133, 95,0.45);
+    --player-colour-three-strong: rgba(138, 139, 95, 0.7);
     
-    --player-colour-four-light:   rgba(138,164,192,0.2);
-    --player-colour-four-medium:  rgba(138,164,192,0.45);
-    --player-colour-four-strong:  #8AA4C0;
+    --player-colour-four-light:   rgba(112, 150, 126,0.2);
+    --player-colour-four-medium:  rgba(112, 150, 126,0.45);
+    --player-colour-four-strong:  rgba(112, 150, 126, 0.7);
 }
  
 .theme-dusk {
@@ -208,9 +208,9 @@
     --muted-foreground:       #8A7EA0;  
     --accent:                 #F2E8F0; 
     --accent-foreground:      #4A2840;
-    --primary:                #B85880;
+    --primary:                #4d2149;
     --primary-foreground:     #F7F4FA;
-    --secondary:              #5A8A72;
+    --secondary:              #A36D44;
     --secondary-foreground:   #F7F4FA;
     --border:                 #3A2850;
     --sidebar:                #2E1E40;
@@ -218,32 +218,32 @@
     --sidebar-accent:         #9A88B8;
     --sidebar-primary:        #E8A0B8;   
     --sidebar-primary-foreground: #2A2035;
-    --header:                 #2d4a3b;  
+    --header:                 #0C1444;  
     --header-foreground:      #F7F4FA;
     --grid-line:              #3A2850;
 
-    --classic-game-mode:            #77658C;
+    --classic-game-mode:            #704259;
     --classic-game-mode-foreground: #F7F4FA;
-    --domination-game-mode:            #985C73;
+    --domination-game-mode:            #8B3B08;
     --domination-game-mode-foreground: #F7F4FA;
-    --time-attack-game-mode:            #668275;
+    --time-attack-game-mode:            #5c7567;
     --time-attack-game-mode-foreground: #F7F4FA;
 
-    --player-colour-one-light:    rgba(184,88,128,0.15);
-    --player-colour-one-medium:   rgba(184,88,128,0.4);
-    --player-colour-one-strong:   #B85880;
+    --player-colour-one-light:    rgba(204, 149, 112,0.2);
+    --player-colour-one-medium:   rgba(204, 149, 112,0.4);
+    --player-colour-one-strong:   rgba(204, 149, 112, 0.7);
     
-    --player-colour-two-light:    rgba(90,138,114,0.15);
-    --player-colour-two-medium:   rgba(90,138,114,0.4);
-    --player-colour-two-strong:   #5A8A72;
+    --player-colour-two-light:    rgba(82, 124, 103,0.2);
+    --player-colour-two-medium:   rgba(82, 124, 103,0.4);
+    --player-colour-two-strong:   rgba(82, 124, 103, 0.7);
     
-    --player-colour-three-light:  rgba(154,136,184,0.2);
-    --player-colour-three-medium: rgba(154,136,184,0.45);
-    --player-colour-three-strong: #9A88B8;
+    --player-colour-three-light:  rgba(62, 112, 146,0.2);
+    --player-colour-three-medium: rgba(62, 112, 146,0.4);
+    --player-colour-three-strong: rgba(62, 112, 146, 0.7);
     
-    --player-colour-four-light:   rgba(232,160,184,0.2);
-    --player-colour-four-medium:  rgba(232,160,184,0.45);
-    --player-colour-four-strong:  #E8A0B8;
+    --player-colour-four-light:   rgba(199, 99, 133,0.2);
+    --player-colour-four-medium:  rgba(199, 99, 133,0.4);
+    --player-colour-four-strong:  rgba(199, 99, 133, 0.7);
 }
 
 @theme inline {

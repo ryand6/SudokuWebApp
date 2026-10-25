@@ -62,8 +62,8 @@ export function LobbySettingsPanel({
                             difficultyOptions.map((option, index) => 
                                 <div 
                                     key={index} 
-                                    className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
-                                                ${wordToProperCase(difficulty) === option && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}
+                                    className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer hover:bg-secondary/40 hover:border-secondary/40 hover:text-secondary-foreground
+                                                ${wordToProperCase(difficulty) === option && "bg-secondary/70! text-secondary-foreground! border-secondary! font-semibold"}
                                                 ${countdownActive && "opacity-40"}`}
                                     onClick={() => handleClickDifficulty(option)}
                                 >
@@ -90,8 +90,8 @@ export function LobbySettingsPanel({
                             durationOptions.map((option, index) => 
                                 <div 
                                     key={index} 
-                                    className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer
-                                                ${wordToProperCase(timeLimit) === option.label && "bg-secondary! text-secondary-foreground! border-secondary! font-semibold"}
+                                    className={`rounded-full px-3 py-1 font-display text-muted-foreground border-2 border-muted cursor-pointer hover:bg-secondary/40 hover:border-secondary/40 hover:text-secondary-foreground
+                                                ${wordToProperCase(timeLimit) === option.label && "bg-secondary/70! text-secondary-foreground! border-secondary! font-semibold"}
                                                 ${countdownActive && "opacity-40"}`}
                                     onClick={() => handleClickDuration(option.label)}
                                 >

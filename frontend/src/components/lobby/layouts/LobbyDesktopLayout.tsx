@@ -8,7 +8,7 @@ import type { GameMode } from "@/types/enum/GameMode";
 import type { GameType } from "@/types/enum/GameType";
 import type { LobbyPlayerDto } from "@/types/dto/entity/lobby/LobbyPlayerDto";
 import { IconDoorExit } from "@tabler/icons-react";
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { LeaveLobbyAlertDialog } from "@/components/ui/custom/LeaveLobbyAlertDialog";
 import BasicTimer from "@/components/ui/custom/BasicTimer";
 import { IconUsers } from '@tabler/icons-react';
@@ -84,8 +84,8 @@ export function LobbyDesktopLayout({
                     {/* Desktop only: split left/right columns */}
                     <div className="flex w-full h-full">
                         {/* Left column */}
-                        <div className="flex flex-col w-[40%]">
-                            <div className="flex flex-col w-full h-[55%] border-border border-r-2">
+                        <div className="flex flex-col w-[50%]">
+                            <div className={`flex flex-col w-full ${isPublic ? "h-[55%]" : "h-full"} border-border border-r-2`}>
                                 <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
                                     <div className="flex items-center gap-2">
                                         <span className="text-sidebar-primary">
@@ -107,46 +107,80 @@ export function LobbyDesktopLayout({
                                     isMobile={isMobile}
                                 />
                             </div>
-                            <div className="flex flex-col h-[45%] border-border border-t-2 border-r-2">
-                                <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sidebar-primary">
-                                            <IconSettings size={iconSize} />
-                                        </span>
-                                        <span className="tracking-wider font-semibold font-display text-primary-foreground">
-                                            Settings
-                                        </span>
+                            {
+                                isPublic && (
+                                    <div className="flex flex-col h-[45%] border-border border-t-2 border-r-2">
+                                        <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sidebar-primary">
+                                                    <IconSettings size={iconSize} />
+                                                </span>
+                                                <span className="tracking-wider font-semibold font-display text-primary-foreground">
+                                                    Settings
+                                                </span>
+                                            </div>
+                                            <span className="tracking-widest text-primary-foreground font-display">Host controls</span>
+                                        </div>
+                                        <LobbySettingsPanel 
+                                            lobbyId={lobbyId} 
+                                            userId={userId}
+                                            difficulty={difficulty}
+                                            hostId={hostId}
+                                            countdownActive={countdownActive}
+                                            timeLimit={timeLimit}
+                                            gameMode={gameMode}
+                                            gameType={gameType}
+                                        />
                                     </div>
-                                    <span className="tracking-widest text-primary-foreground font-display">Host controls</span>
-                                </div>
-                                <LobbySettingsPanel 
-                                    lobbyId={lobbyId} 
-                                    userId={userId}
-                                    difficulty={difficulty}
-                                    hostId={hostId}
-                                    countdownActive={countdownActive}
-                                    timeLimit={timeLimit}
-                                    gameMode={gameMode}
-                                    gameType={gameType}
-                                />
-                            </div>
+                                )
+                            }
+                            
                         </div>
                         {/* Right column */}
-                        <div className="flex flex-col h-full w-[60%] min-h-0">
-                            <div className="flex items-center px-4 py-2 bg-sidebar">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-sidebar-primary">
-                                        <IconMessageCircle size={iconSize} />
-                                    </span>
-                                    <span className="tracking-wider font-semibold font-display text-primary-foreground">
-                                        Chat
-                                    </span>
+                        <div className="flex flex-col h-full w-[50%] min-h-0">
+                            <div className={`flex flex-col h-full ${!isPublic && "h-[55%]"}`}>
+                                <div className="flex items-center px-4 py-2 bg-sidebar">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-sidebar-primary">
+                                            <IconMessageCircle size={iconSize} />
+                                        </span>
+                                        <span className="tracking-wider font-semibold font-display text-primary-foreground">
+                                            Chat
+                                        </span>
+                                    </div>
                                 </div>
+                                <LobbyChatPanel 
+                                    lobbyId={lobbyId} 
+                                    userId={userId} 
+                                />
                             </div>
-                            <LobbyChatPanel 
-                                lobbyId={lobbyId} 
-                                userId={userId} 
-                            />
+                            {
+                                !isPublic && (
+                                    <div className="flex flex-col h-[45%] border-border border-t-2 border-r-2">
+                                        <div className="flex items-center px-4 py-2 bg-sidebar justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sidebar-primary">
+                                                    <IconSettings size={iconSize} />
+                                                </span>
+                                                <span className="tracking-wider font-semibold font-display text-primary-foreground">
+                                                    Settings
+                                                </span>
+                                            </div>
+                                            <span className="tracking-widest text-primary-foreground font-display">Host controls</span>
+                                        </div>
+                                        <LobbySettingsPanel 
+                                            lobbyId={lobbyId} 
+                                            userId={userId}
+                                            difficulty={difficulty}
+                                            hostId={hostId}
+                                            countdownActive={countdownActive}
+                                            timeLimit={timeLimit}
+                                            gameMode={gameMode}
+                                            gameType={gameType}
+                                        />
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
                 </div>

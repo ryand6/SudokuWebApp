@@ -127,7 +127,7 @@ export function DashboardMobileLayout({
                                         </div>
                                         <div className="flex flex-col items-center gap-2 py-2">
                                             <button
-                                                className="flex items-center gap-1 px-3 py-2 rounded-lg bg-secondary-foreground/20 cursor-pointer hover:bg-secondary-foreground/10 text-semibold text-secondary-foreground text-md border-1 border-sidebar"
+                                                className="flex items-center gap-1 px-3 py-2 rounded-lg bg-secondary/80 cursor-pointer hover:bg-secondary/60 text-semibold text-secondary-foreground text-md border-1 border-sidebar"
                                                 onClick={onRejoinClick}
                                             >   
                                                 <span>Rejoin</span>

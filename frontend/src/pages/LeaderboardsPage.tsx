@@ -47,8 +47,8 @@ export function LeaderboardsPage() {
                             <div 
                                 key={index}
                                 className={`inline-flex items-center justify-center w-full py-1 px-3 rounded-full 
-                                            font-display border-1 border-muted cursor-pointer
-                                            ${selectedMode === mode ? "bg-primary text-primary-foreground border-primary" : "bg-background text-muted-foreground hover:bg-primary/40 hover:border-primary/40 hover:text-primary-foreground"}`}
+                                            font-display border-2 border-muted cursor-pointer
+                                            ${selectedMode === mode ? "bg-primary/70 text-primary-foreground border-primary" : "bg-background text-muted-foreground hover:bg-primary/40 hover:border-primary/40 hover:text-primary-foreground"}`}
                                 onClick={() => setSelectedMode(mode)}
                             >
                                 <span className="text-md text-center font-medium tracking-wide">{wordToProperCase(mode)}</span>
