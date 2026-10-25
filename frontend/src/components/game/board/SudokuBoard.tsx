@@ -71,15 +71,15 @@ export function SudokuBoard(
                         let borderTop, borderLeft, borderBottom, borderRight;
                         // Tailwind border logic
                         if (isMobile) {
-                            borderTop = r === 0 ? "border-t-3 border-foreground" : r % 3 === 0 ? "border-t-3 border-foreground" : "border-t border-foreground";
-                            borderLeft = c === 0 ? "border-l-3 border-foreground" : c % 3 === 0 ? "border-l-3 border-foreground" : "border-l border-foreground";
-                            borderBottom = r === 8 ? "border-b-3 border-foreground" : "";
-                            borderRight = c === 8 ? "border-r-3 border-foreground" : "";
+                            borderTop = r === 0 ? "border-t-3 border-grid-line" : r % 3 === 0 ? "border-t-3 border-grid-line" : "border-t border-grid-line";
+                            borderLeft = c === 0 ? "border-l-3 border-grid-line" : c % 3 === 0 ? "border-l-3 border-grid-line" : "border-l border-grid-line";
+                            borderBottom = r === 8 ? "border-b-3 border-grid-line" : "";
+                            borderRight = c === 8 ? "border-r-3 border-grid-line" : "";
                         } else {
-                            borderTop = r === 0 ? "border-t-6 border-foreground" : r % 3 === 0 ? "border-t-6 border-foreground" : "border-t border-foreground";
-                            borderLeft = c === 0 ? "border-l-6 border-foreground" : c % 3 === 0 ? "border-l-6 border-foreground" : "border-l border-foreground";
-                            borderBottom = r === 8 ? "border-b-6 border-foreground" : "border-b border-foreground";
-                            borderRight = c === 8 ? "border-r-6 border-foreground" : "border-r border-foreground";
+                            borderTop = r === 0 ? "border-t-6 border-grid-line" : r % 3 === 0 ? "border-t-6 border-grid-line" : "border-t border-grid-line";
+                            borderLeft = c === 0 ? "border-l-6 border-grid-line" : c % 3 === 0 ? "border-l-6 border-grid-line" : "border-l border-grid-line";
+                            borderBottom = r === 8 ? "border-b-6 border-grid-line" : "border-b border-grid-line";
+                            borderRight = c === 8 ? "border-r-6 border-grid-line" : "border-r border-grid-line";
                         }
                         const cellIndex: number = getCellIndex(r, c);
 
