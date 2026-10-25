@@ -23,8 +23,7 @@ export function GameMobileLayout({
     leaveGameHandler,
     isMobile,
     gameMode,
-    queryClient,
-    navigate
+    queryClient
 }: GameLayout) {
     return (
         <div className="flex flex-col h-full w-full">

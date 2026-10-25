@@ -16,6 +16,7 @@ import { IconMessageCircle } from '@tabler/icons-react';
 import { IconDoorExit } from '@tabler/icons-react';
 import type { PlayerColour } from "@/types/enum/PlayerColour";
 import type { GameMode } from "@/types/enum/GameMode";
+import { useRevertInGameStatus } from "@/api/rest/game/playerstate/mutate/useRevertInGameStatus";
 
 export function GameHUD(
     {
@@ -52,6 +53,8 @@ export function GameHUD(
     const iconSize: number = isMobile ? 12 : 24;
     const iconStroke: number = isMobile ? 2 : 3;
 
+    const useRevertInGameStatusHandler = useRevertInGameStatus();
+
     useEffect(() => {
         document.getElementById("root")?.classList.remove("blur-sm");
     }, []);
@@ -65,6 +68,11 @@ export function GameHUD(
         setter(false);
         document.getElementById("root")?.classList.remove("blur-sm");
     };
+
+    const onLeaveGame = async () => {
+        leaveGameHandler.mutate({gameId, userId, lobbyId});
+        useRevertInGameStatusHandler.mutate(lobbyId);
+    }
 
     return (
         <div 
@@ -116,7 +124,7 @@ export function GameHUD(
                     <span><IconMessageCircle size={iconSize} stroke={iconStroke} /></span>
                     <span>Chat</span>
                 </div>
-                <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({gameId, userId, lobbyId})} setOpen={setIsAlertOpen} />
+                <LeaveGameAlertDialog open={isAlertOpen} handleContinueClick={onLeaveGame} setOpen={setIsAlertOpen} />
                 <div className="flex items-center justify-center w-full h-full rounded-md border-1 md:border-2 
                             bg-background border-destructive/50 text-destructive cursor-pointer py-2
                             hover:bg-destructive/10" 

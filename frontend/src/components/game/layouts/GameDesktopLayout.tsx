@@ -25,7 +25,6 @@ export function GameDesktopLayout({
     isMobile,
     gameMode,
     queryClient,
-    navigate
 }: GameLayout) {
     return (
         <>

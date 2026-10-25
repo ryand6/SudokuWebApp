@@ -26,6 +26,5 @@ export type GameLayout = {
     },
     isMobile: boolean,
     gameMode: GameMode,
-    queryClient: QueryClient,
-    navigate: NavigateFunction
+    queryClient: QueryClient
 }

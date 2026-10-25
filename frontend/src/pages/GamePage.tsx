@@ -107,7 +107,6 @@ export function GamePage() {
                         isMobile={true}
                         gameMode={publicGameState.gameSettings.gameMode}
                         queryClient={queryClient}
-                        navigate={navigate}
                     />
                 ) : (
                     <GameDesktopLayout 
@@ -126,7 +125,6 @@ export function GamePage() {
                         isMobile={false}
                         gameMode={publicGameState.gameSettings.gameMode}
                         queryClient={queryClient}
-                        navigate={navigate}
                     />
                 )
             }            
