@@ -3,7 +3,7 @@ import { UserSettings } from "@/components/users/UserSettings";
 import { WebSocketReconnectScreen } from "@/components/global/WebSocketReconnectScreen";
 import { useWebSocketContext } from "@/context/WebSocketProvider";
 import { useQueryClient } from "@tanstack/react-query";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 
 export default function MainLayout() {
 	const queryClient = useQueryClient();
@@ -51,9 +51,9 @@ export default function MainLayout() {
 			</div>
 			<footer className="bg-sidebar tracking-wide font-semibold text-sidebar-foreground px-4 py-4 text-sm text-center font-display">
 				<div className="flex justify-center items-center gap-3">
-					<a href="/about" className="hover:text-primary">About</a>
+					<Link to="/about" className="hover:text-primary">About</Link>
 					<span>&middot;</span>
-					<a href="/privacy-policy" className="hover:text-primary">Privacy Policy</a>
+					<Link to="/privacy-policy" className="hover:text-primary">Privacy Policy</Link>
 				</div>
 			</footer>
 		</>

@@ -47,7 +47,7 @@ public class SecurityConfig {
                 // Publish csrf token in a cookie that React SPA can read
                 .csrf((csrf) -> csrf
                         // Send the csrf token as a cookie that is readable by React so that it can attach this to HTTP request headers
-                        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRepository(csrfTokenRepository)
                         // Make the CSRF token available whenever a request is processed
                         .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
 

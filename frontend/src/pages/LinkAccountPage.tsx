@@ -1,14 +1,11 @@
 import { useState, type JSX } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { requestAccountLink } from "../api/rest/users/mutate/requestAccountLink";
 import { verifyAccountLink } from "../api/rest/users/mutate/verifyAccountLink";
 
 
 export function LinkAccountPage(): JSX.Element {
     const navigate = useNavigate();
-    const location = useLocation();
-    // const isProviderLinked = location.state?.isProviderLinked ?? false;
-    // const fromSetup = location.state?.fromSetup ?? false;
 
     const [step, setStep] = useState<"email" | "otp">("email");
     const [email, setEmail] = useState("");

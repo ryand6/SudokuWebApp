@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export function AboutPage() {
     return (
         <div className="flex flex-col w-full h-full font-display overflow-y-auto">
@@ -21,12 +23,12 @@ export function AboutPage() {
                             Privacy is central to TomoSudoku. Data used by the site is 
                             intentionally kept to an absolute minimum.
                             You can find more information in the{" "}
-                            <a
-                                href="/privacy-policy"
-                                className="text-primary hover:underline"
+                            <Link
+                                to="/privacy-policy"
+                                className="text-primary underline hover:opacity-80 cursor-pointer"
                             >
                                 Privacy Policy
-                            </a>.
+                            </Link>.
                         </p>
                     </div>
                 </section>

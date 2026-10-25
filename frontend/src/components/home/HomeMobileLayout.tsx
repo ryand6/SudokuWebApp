@@ -1,6 +1,5 @@
 import type { UserDto } from "@/types/dto/entity/user/UserDto";
 import { IconArrowNarrowRight, IconPhotoCancel } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
 import type { NavigateFunction } from "react-router-dom";
 import { ClassicModeCard } from "../game/modes/ClassicModeCard";
 import { DominationModeCard } from "../game/modes/DominationModeCard";

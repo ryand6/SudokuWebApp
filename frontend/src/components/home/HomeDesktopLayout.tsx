@@ -4,7 +4,6 @@ import type { NavigateFunction } from "react-router-dom"
 import { ClassicModeCard } from "../game/modes/ClassicModeCard"
 import { DominationModeCard } from "../game/modes/DominationModeCard"
 import { TimeAttackModeCard } from "../game/modes/TimeAttackModeCard"
-import { useEffect, useState } from "react"
 import { Spinner } from "../ui/spinner"
 
 export function HomeDesktopLayout({

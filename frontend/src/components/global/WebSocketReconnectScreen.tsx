@@ -6,8 +6,6 @@ export function WebSocketReconnectScreen() {
     const dotsCount = useDotsAnimation();
     const { nextReconnectAt } = useWebSocketContext();
 
-    // console.log(nextReconnectAt);
-
     return (
         <div className="relative flex flex-col gap-2 text-primary items-center justify-center h-full w-full">
             <h1 
