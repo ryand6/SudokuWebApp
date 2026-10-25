@@ -36,7 +36,7 @@ export function ClassicModeRulesModel({
                     <div className="flex flex-col gap-1">
                         <div className="flex justify-between">
                             <span>Had a prior mistake on the cell</span>
-                            <span className="text-accent-foreground font-semibold text-xl">1 pt</span>
+                            <span className="text-accent-foreground font-semibold text-xl">0 pts</span>
                         </div>
                         <Separator className="border-1 text-muted" />
                         <div className="flex justify-between">

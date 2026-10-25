@@ -21,7 +21,7 @@ public final class ScoringTables {
 
     // Key = claim position
     public static final Map<Integer, Integer> standardGameMode_PointsPerClaimPosition = Map.of(
-            -1, 1,
+            -1, 0,
             1, 4,
             2, 3,
             3, 2,
