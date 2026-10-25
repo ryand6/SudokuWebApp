@@ -142,7 +142,7 @@ export function GameResults({
                 <StatusPill result={players[userId].gameResult} />
             </div>
             {
-                endedPrematurely && <PrematureEndBanner onContinue={onContinue} />
+                endedPrematurely && players[userId].gameResult === "PENDING" && <PrematureEndBanner onContinue={onContinue} />
             }
             <div className="flex flex-col gap-0 px-4 py-4 w-full">
                 <p
