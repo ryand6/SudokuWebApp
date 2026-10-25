@@ -5,7 +5,7 @@ import { CellUpdateValidationError, NotesUpdateValidationError } from "@/state/g
 import type { CellCoordinates, PrivateCellState } from "@/types/game/GameTypes";
 import { hasNote } from "@/utils/game/noteUtils";
 import type { QueryClient } from "@tanstack/react-query";
-import { useCallback, type Dispatch, type SetStateAction } from "react";
+import { useCallback, useEffect, type Dispatch, type SetStateAction } from "react";
 import { IconPencil, IconEraser } from '@tabler/icons-react';
 import { submitNoteUpdate } from "@/api/ws/game/playerstate/submitNoteUpdate";
 import { clearNotes } from "@/api/ws/game/playerstate/clearNotes";
@@ -80,6 +80,23 @@ export function UserActionBar(
             return;
         }
     }, [gameId, userId, initialBoardState, queryClient, send]);
+
+    const handleNumberKeydown = useCallback((event: KeyboardEvent) => {
+        if (/^[1-9]$/.test(event.key)) {
+            onNumberInputClick(
+                Number(event.key),
+                playerHighlightedCell,
+                notesModeOn
+            );
+        }
+    }, [onNumberInputClick, playerHighlightedCell, notesModeOn]);
+
+    useEffect(() => {
+        document.addEventListener('keydown', handleNumberKeydown);
+        return () => {
+            document.removeEventListener('keydown', handleNumberKeydown);
+        }
+    }, [handleNumberKeydown]);
 
     const handleCellClear = useCallback((playerHighlightedCell: CellCoordinates | undefined) => {
         if (!playerHighlightedCell) return;

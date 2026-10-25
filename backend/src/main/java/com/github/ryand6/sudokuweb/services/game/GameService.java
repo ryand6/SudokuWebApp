@@ -425,10 +425,10 @@ public class GameService {
     // Once game is closed, it cannot be navigated back to
     @Transactional
     public void closeGame(Long gameId) {
-
-        System.out.println("\n\n\nGame Closed!\n\n\n");
-
         GameEntity game = getGameById(gameId);
+        if (game.getGameStatus() == GameStatus.CLOSED) {
+            return;
+        }
         game.closeGame();
         // Update membership and in memory caches
         applicationEventPublisher.publishEvent(
