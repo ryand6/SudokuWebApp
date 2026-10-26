@@ -17,6 +17,7 @@ export function DominationModeCard({
                     <div className="flex items-center gap-2 text-domination-game-mode-foreground text-lg">
                         <span><IconSwords size={iconSize} /></span>
                         <span className="font-semibold">Domination</span>
+                        
                     </div>
                     <div>
                         <div 
@@ -29,8 +30,9 @@ export function DominationModeCard({
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-1 p-5 bg-card text-card-foreground rounded-b-lg">
+                <div className="flex flex-col justify-between flex-1 p-5 bg-card text-card-foreground rounded-b-lg">
                     All players share one board. Territory is the aim of the game, claim as many cells as you can before your opponents. Mistakes here are costly.
+                    <div className="ml-auto rounded-xl py-0.5 px-4 bg-secondary/70 border-secondary border-1 text-secondary-foreground text-xs w-fit font-semibold tracking-wide">Coming Soon</div>
                 </div>
             </div>
             <Modal className="max-w-[650px]" isOpen={isRulesModelOpen} onClose={() => setRulesModalOpen(false)}><DominationModeRulesModel iconSize={iconSize} /></Modal>

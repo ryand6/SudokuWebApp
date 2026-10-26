@@ -311,21 +311,31 @@ export function CreateLobbyPage() {
                                                 </Field>
                                             </FieldLabel>
                                             <FieldLabel htmlFor="domination-radio">
+                                                
                                                 <Field orientation="horizontal" className="cursor-pointer">
-                                                    <FieldContent>
-                                                        <FieldTitle>Domination</FieldTitle>
+                                                    <FieldContent className="opacity-50 h-full">
+                                                        <FieldTitle>
+                                                            Domination
+                                                            <div className="rounded-xl py-0.5 px-4 bg-secondary/70 border-secondary border-1 text-secondary-foreground ml-2 text-xs w-fit">Coming Soon</div>
+                                                        </FieldTitle>
                                                         <FieldDescription>Claim cells before your opponents to dominate the board. The board is shared between all players.</FieldDescription>
+                                                        
                                                     </FieldContent>
-                                                    <RadioGroupItem value="DOMINATION" id="domination-radio" />
+                                                    <RadioGroupItem value="DOMINATION" id="domination-radio" disabled />
+                                                    
                                                 </Field>
+                                                
                                             </FieldLabel>
                                             <FieldLabel htmlFor="time-attack-radio">
                                                 <Field orientation="horizontal" className="cursor-pointer">
-                                                    <FieldContent>
-                                                        <FieldTitle>Time Attack</FieldTitle>
+                                                    <FieldContent className="opacity-50">
+                                                        <FieldTitle>
+                                                            Time Attack
+                                                            <div className="rounded-xl py-0.5 px-4 bg-secondary/70 border-secondary border-1 text-secondary-foreground ml-2 text-xs w-fit">Coming Soon</div>
+                                                        </FieldTitle>
                                                         <FieldDescription>Work with other players in a race against the clock to complete the board. The board is shared between all players.</FieldDescription>
                                                     </FieldContent>
-                                                    <RadioGroupItem value="TIMEATTACK" id="time-attack-radio" />
+                                                    <RadioGroupItem value="TIMEATTACK" id="time-attack-radio" disabled />
                                                 </Field>
                                             </FieldLabel>
                                         </RadioGroup>

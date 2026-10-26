@@ -29,8 +29,9 @@ export function TimeAttackModeCard({
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-1 p-5 bg-card rounded-b-lg text-card-foreground">
+                <div className="flex flex-col justify-between flex-1 p-5 bg-card rounded-b-lg text-card-foreground">
                     Work together to complete the shared board before the clock runs out. Successful answers add time to the clock, mistakes take time away. Co-operative, time is the enemy.
+                    <div className="ml-auto rounded-xl py-0.5 px-4 bg-secondary/70 border-secondary border-1 text-secondary-foreground text-xs w-fit font-semibold tracking-wide">Coming Soon</div>
                 </div>
             </div>
             <Modal className="max-w-[650px]" isOpen={isRulesModelOpen} onClose={() => setRulesModalOpen(false)}><TimeAttackModeRulesModel iconSize={iconSize} /></Modal>
