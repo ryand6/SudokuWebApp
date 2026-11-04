@@ -29,7 +29,7 @@ export default function MainLayout() {
 							className="font-bold text-3xl cursor-pointer"
 							onClick={() => navigate("/")}
 						>
-							TomoSudoku
+							KachiDoku
 						</h1>
 						{
 							user && (
