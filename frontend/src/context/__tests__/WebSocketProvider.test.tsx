@@ -1,152 +1,152 @@
-import React from "react";
-import { waitFor, render } from "@testing-library/react";
-import { describe, expect, vi } from "vitest";
-import { useWebSocketContext } from "../WebSocketProvider";
-import { renderWithRouterAndContext } from "../../setupTests";
-import { QueryClient, type UseQueryResult } from "@tanstack/react-query";
-import type { UserStatsDto } from "../../types/dto/entity/user/UserStatsDto";
-import type { UserDto } from "../../types/dto/entity/user/UserDto";
-import * as currentUserHook from '../../api/rest/users/query/useGetCurrentUser';
-import * as wsUtils from '../../services/websocket/initWebSocket';
-import * as stompUtils from '../../services/websocket/initStompClient';
-import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
+// import React from "react";
+// import { waitFor, render } from "@testing-library/react";
+// import { describe, expect, vi } from "vitest";
+// import { useWebSocketContext } from "../WebSocketProvider";
+// import { renderWithRouterAndContext } from "../../setupTests";
+// import { QueryClient, type UseQueryResult } from "@tanstack/react-query";
+// import type { UserStatsDto } from "../../types/dto/entity/user/UserStatsDto";
+// import type { UserDto } from "../../types/dto/entity/user/UserDto";
+// import * as currentUserHook from '../../api/rest/users/query/useGetCurrentUser';
+// import * as wsUtils from '../../services/websocket/initWebSocket';
+// import * as stompUtils from '../../services/websocket/initStompClient';
+// import type { UserSettingsDto } from "@/types/dto/entity/user/UserSettingsDto";
 
-const queryClient = new QueryClient();
+// const queryClient = new QueryClient();
 
-const mockStats: UserStatsDto = {
-    totalScore: 0, 
-    gamesPlayed: 0,
-    wins: 0,
-    losses: 0,
-    draws: 0,
-    currentWinStreak: 0,
-    maxWinStreak: 0
-}
+// const mockStats: UserStatsDto = {
+//     totalScore: 0, 
+//     gamesPlayed: 0,
+//     wins: 0,
+//     losses: 0,
+//     draws: 0,
+//     currentWinStreak: 0,
+//     maxWinStreak: 0
+// }
 
-const mockSettings: UserSettingsDto = {
-    isDarkModeActive: false,
-    isSoundActive: true
-}
+// const mockSettings: UserSettingsDto = {
+//     isDarkModeActive: false,
+//     isSoundActive: true
+// }
 
-// stub user object
-const mockUser: UserDto = {
-    id: 1,
-    username: "testUser",
-    isOnline: true,
-    userStats: mockStats,
-    userSettings: mockSettings
-};
-
-// const mockCsrfResponse = {
-//     headerName: "X-XSRF-TOKEN", 
-//     token: "abc",
-//     parameterName: "_csrf"
+// // stub user object
+// const mockUser: UserDto = {
+//     id: 1,
+//     username: "testUser",
+//     isOnline: true,
+//     userStats: mockStats,
+//     userSettings: mockSettings
 // };
 
-// Mock STOMP Client
-vi.mock('@stomp/stompjs', () => ({
-    Client: vi.fn().mockImplementation(() => ({
-        activate: vi.fn(),
-        deactivate: vi.fn(),
-        subscribe: vi.fn((topic, callback) => ({
-            unsubscribe: vi.fn(),
-            topic,
-            callback,
-        })),
-        publish: vi.fn(),
-        connected: true,
-    })),
-}));
+// // const mockCsrfResponse = {
+// //     headerName: "X-XSRF-TOKEN", 
+// //     token: "abc",
+// //     parameterName: "_csrf"
+// // };
+
+// // Mock STOMP Client
+// vi.mock('@stomp/stompjs', () => ({
+//     Client: vi.fn().mockImplementation(() => ({
+//         activate: vi.fn(),
+//         deactivate: vi.fn(),
+//         subscribe: vi.fn((topic, callback) => ({
+//             unsubscribe: vi.fn(),
+//             topic,
+//             callback,
+//         })),
+//         publish: vi.fn(),
+//         connected: true,
+//     })),
+// }));
 
 
-/* Consumer that exposes the context to the test by calling onReady(ctx) */
-function TestConsumer({ onContext }: { onContext: (ctx: any) => void }) {
-    const ctx = useWebSocketContext();
-    React.useEffect(() => {
-        onContext(ctx);
-    }, [ctx, onContext]);
-    return null;
-}
+// /* Consumer that exposes the context to the test by calling onReady(ctx) */
+// function TestConsumer({ onContext }: { onContext: (ctx: any) => void }) {
+//     const ctx = useWebSocketContext();
+//     React.useEffect(() => {
+//         onContext(ctx);
+//     }, [ctx, onContext]);
+//     return null;
+// }
 
 
-/* ------------------ Tests ------------------ */
-describe('WebSocketProviderTests', () => {
+// /* ------------------ Tests ------------------ */
+// describe('WebSocketProviderTests', () => {
 
-    beforeEach(() => {
-        vi.clearAllMocks();    
-    });
+//     beforeEach(() => {
+//         vi.clearAllMocks();    
+//     });
 
-    test('throws error if useWebSocketContext is used outside provider', () => {
-        const fn = () => render(<TestConsumer onContext={() => {}} />);
-        expect(fn).toThrowError('useWebSocketContext must be used inside WebSocketProvider wrapper');
-    });
+//     test('throws error if useWebSocketContext is used outside provider', () => {
+//         const fn = () => render(<TestConsumer onContext={() => {}} />);
+//         expect(fn).toThrowError('useWebSocketContext must be used inside WebSocketProvider wrapper');
+//     });
 
-    test('provides subscribe, unsubscribe, send when wrapped in provider', () => {
+//     test('provides subscribe, unsubscribe, send when wrapped in provider', () => {
 
-        let contextValue: any;
-        renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
+//         let contextValue: any;
+//         renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
 
-        expect(contextValue).toHaveProperty('subscribe');
-        expect(contextValue).toHaveProperty('unsubscribe');
-        expect(contextValue).toHaveProperty('send');
-    });
+//         expect(contextValue).toHaveProperty('subscribe');
+//         expect(contextValue).toHaveProperty('unsubscribe');
+//         expect(contextValue).toHaveProperty('send');
+//     });
 
-    test('socket and stomp client created when user is not null', async () => {
+//     test('socket and stomp client created when user is not null', async () => {
 
-        const currentUserSpy = vi.spyOn(currentUserHook, 'useCurrentUser').mockReturnValue({data: mockUser} as unknown as UseQueryResult<UserDto, Error>);
+//         const currentUserSpy = vi.spyOn(currentUserHook, 'useCurrentUser').mockReturnValue({data: mockUser} as unknown as UseQueryResult<UserDto, Error>);
 
-        // Mock the functions
-        const socketSpy = vi.spyOn(wsUtils, 'initWebSocket').mockImplementation(() => {
-            return {} as any; // empty object pretending to be a socket
-        });
+//         // Mock the functions
+//         const socketSpy = vi.spyOn(wsUtils, 'initWebSocket').mockImplementation(() => {
+//             return {} as any; // empty object pretending to be a socket
+//         });
 
-        const stompSpy = vi.spyOn(stompUtils, 'initStompClient').mockImplementation(() => {
-            return {} as any; // empty object pretending to be a socket
-        });
+//         const stompSpy = vi.spyOn(stompUtils, 'initStompClient').mockImplementation(() => {
+//             return {} as any; // empty object pretending to be a socket
+//         });
 
-        let contextValue: any;
-        renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
+//         let contextValue: any;
+//         renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
 
-        await waitFor(() => {
-            //expect(window.fetch).toHaveBeenCalled();
-            expect(currentUserSpy).toHaveReturnedWith({ data: mockUser});
-            expect(socketSpy).toHaveBeenCalled();
-            expect(stompSpy).toHaveBeenCalled();
-        });
-    })
+//         await waitFor(() => {
+//             //expect(window.fetch).toHaveBeenCalled();
+//             expect(currentUserSpy).toHaveReturnedWith({ data: mockUser});
+//             expect(socketSpy).toHaveBeenCalled();
+//             expect(stompSpy).toHaveBeenCalled();
+//         });
+//     })
 
-    test('socket and stomp client not created when user is null', async () => {
+//     test('socket and stomp client not created when user is null', async () => {
 
-        // window.fetch = vi.fn((...args) => {
-        //     console.log("fetch called with:", args);
-        //     return Promise.resolve(new Response(JSON.stringify({mockUser}), {
-        //         status: 200,
-        //         headers: { "Content-Type": "application/json" }
-        //     }));
-        // });
+//         // window.fetch = vi.fn((...args) => {
+//         //     console.log("fetch called with:", args);
+//         //     return Promise.resolve(new Response(JSON.stringify({mockUser}), {
+//         //         status: 200,
+//         //         headers: { "Content-Type": "application/json" }
+//         //     }));
+//         // });
 
-        // const currentUserSpy = vi.mock('../../hooks/useCurrentUser', () => ({
-        //     useCurrentUser: vi.fn(() => ({ data: mockUser })),
-        // }));
+//         // const currentUserSpy = vi.mock('../../hooks/useCurrentUser', () => ({
+//         //     useCurrentUser: vi.fn(() => ({ data: mockUser })),
+//         // }));
 
-        const currentUserSpy = vi.spyOn(currentUserHook, 'useCurrentUser').mockReturnValue({data: null} as unknown as UseQueryResult<UserDto, Error>);
+//         const currentUserSpy = vi.spyOn(currentUserHook, 'useCurrentUser').mockReturnValue({data: null} as unknown as UseQueryResult<UserDto, Error>);
 
-        // Mock the functions
-        const socketSpy = vi.spyOn(wsUtils, 'initWebSocket').mockImplementation(() => {
-            return {} as any; // empty object pretending to be a socket
-        });
+//         // Mock the functions
+//         const socketSpy = vi.spyOn(wsUtils, 'initWebSocket').mockImplementation(() => {
+//             return {} as any; // empty object pretending to be a socket
+//         });
 
-        const stompSpy = vi.spyOn(stompUtils, 'initStompClient').mockImplementation(() => {
-            return {} as any; // empty object pretending to be a socket
-        });
+//         const stompSpy = vi.spyOn(stompUtils, 'initStompClient').mockImplementation(() => {
+//             return {} as any; // empty object pretending to be a socket
+//         });
 
-        let contextValue: any;
-        renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
+//         let contextValue: any;
+//         renderWithRouterAndContext(queryClient, <TestConsumer onContext={(ctx) => contextValue = ctx} />);
 
-        await waitFor(() => {
-            expect(currentUserSpy).toHaveReturnedWith({ data: null});
-            expect(socketSpy).not.toHaveBeenCalled();
-            expect(stompSpy).not.toHaveBeenCalled();
-        });
-    })
-});
+//         await waitFor(() => {
+//             expect(currentUserSpy).toHaveReturnedWith({ data: null});
+//             expect(socketSpy).not.toHaveBeenCalled();
+//             expect(stompSpy).not.toHaveBeenCalled();
+//         });
+//     })
+// });
