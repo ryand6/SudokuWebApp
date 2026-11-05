@@ -1,7 +1,8 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { GameHighlightedCellsResponseDto } from "@/types/dto/response/GameHighlightedCellsResponseDto";
 
 export async function getGameHighlightedCells(gameId: number): Promise<GameHighlightedCellsResponseDto | null> {
-    const response = await fetch(`/api/game/memory/get-game-highlighted-cells?gameId=${gameId}`, {
+    const response = await apiFetch(`/api/game/memory/get-game-highlighted-cells?gameId=${gameId}`, {
         method: "GET",
         credentials: "include",
         headers: {

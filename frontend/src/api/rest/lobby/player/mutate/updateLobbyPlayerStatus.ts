@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { LobbyStatus } from "@/types/enum/LobbyStatus";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function updateLobbyPlayerStatus(lobbyId: number, userId: number, lobbyStatus: LobbyStatus) {
-    const response = await fetch("/api/lobby/player/update-player-status", {
+    const response = await apiFetch("/api/lobby/player/update-player-status", {
         method: "POST",
         credentials: "include",
         headers: { 

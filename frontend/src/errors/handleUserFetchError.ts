@@ -1,4 +1,5 @@
 import type { NavigateFunction } from "react-router-dom";
+import { backendUrl } from "@/api/apiFetch";
 
 export function handleUserFetchError(
       error: Error,
@@ -11,7 +12,7 @@ export function handleUserFetchError(
     // Redirect to login
     if (error.message === "RedirectToLogin") {
         sessionStorage.setItem("postLoginPath", currentPath);
-        window.location.replace("http://localhost:8080/login");
+        window.location.replace(backendUrl("/login"));
         return;
     }
     // Redirect to user setup - prevent redirection if the check is being performed inside the UserSetupPage route to prevent infinite looping

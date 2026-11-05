@@ -1,7 +1,8 @@
+import { apiFetch } from "@/api/apiFetch";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function beginProviderLink(providerName: string): Promise<void> {
-    const response = await fetch("/api/users/begin-provider-link", {
+    const response = await apiFetch("/api/users/begin-provider-link", {
         method: "POST",
         credentials: "include",
         headers: { 

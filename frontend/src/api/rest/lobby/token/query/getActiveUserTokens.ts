@@ -1,7 +1,8 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { UserActiveTokensDto } from "@/types/dto/response/UserActiveTokensDto";
 
 export async function getActiveUserTokens(userId: number): Promise<UserActiveTokensDto> {
-    const response = await fetch(`/api/lobby/token/${userId}/get-active-tokens`, {
+    const response = await apiFetch(`/api/lobby/token/${userId}/get-active-tokens`, {
         method: "GET",
         credentials: "include",
         headers: { "Accept" : "application/json" }

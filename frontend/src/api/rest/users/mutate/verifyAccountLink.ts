@@ -1,9 +1,10 @@
+import { apiFetch } from "@/api/apiFetch";
 import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
 export async function verifyAccountLink(otp: string): Promise<void> {
     try {
-        const response = await fetch("/api/users/verify-account-link", {
+        const response = await apiFetch("/api/users/verify-account-link", {
             method: "POST",
             credentials: "include",
             headers: {

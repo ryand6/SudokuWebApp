@@ -1,10 +1,11 @@
+import { apiFetch } from "@/api/apiFetch";
 import { backendValidationErrors } from "../../../../utils/error/backendValidationErrors";
 import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
 export async function processUsernameUpdate(username: string): Promise<void> {
     try {
-        const response = await fetch("/api/users/process-username-update", {
+        const response = await apiFetch("/api/users/process-username-update", {
             method: "POST",
             credentials: "include",
             headers: { 

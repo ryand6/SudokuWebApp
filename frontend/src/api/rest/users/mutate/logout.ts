@@ -1,7 +1,8 @@
+import { apiFetch } from "@/api/apiFetch";
 import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 
 export async function logout() {
-    const response = await fetch("/logout", {
+    const response = await apiFetch("/logout", {
         method: "POST",
         credentials: "include",
         headers: {

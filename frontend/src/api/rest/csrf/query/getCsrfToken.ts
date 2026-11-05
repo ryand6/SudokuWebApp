@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { CsrfResponseData } from "@/types/dto/auth/CsrfResponseData";
 
 // Retrieves xor encoded csrf token from backend, for use in requests that require this such as websocket connections
 export async function getCsrfToken(): Promise<CsrfResponseData | null> {
-    const response = await fetch("/csrf", { 
+    const response = await apiFetch("/csrf", { 
         credentials: "include",
         redirect: "manual"
     });

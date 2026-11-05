@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { LobbyTokenResponseDto } from "@/types/dto/response/LobbyTokenResponseDto";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function requestJoinCode(lobbyId: number, userId: number): Promise<LobbyTokenResponseDto> {
-    const response = await fetch("/api/lobby/token/request-token", {
+    const response = await apiFetch("/api/lobby/token/request-token", {
         method: "POST",
         credentials: "include",
         headers: {

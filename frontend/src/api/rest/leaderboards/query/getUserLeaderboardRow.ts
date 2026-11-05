@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/LeaderboardRowDto";
 import type { GameMode } from "@/types/enum/GameMode";
 
 export async function getUserLeaderboardRow(gameMode: GameMode): Promise<LeaderboardRowDto> {
-    const response = await fetch(`/api/leaderboards/get-user-leaderboard-row?gameMode=${gameMode}`, {
+    const response = await apiFetch(`/api/leaderboards/get-user-leaderboard-row?gameMode=${gameMode}`, {
         method: "GET",
         credentials: "include",
         headers: { "Accept": "application/json" },

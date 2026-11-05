@@ -1,9 +1,10 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 import type { RevertInGameStatusResponseDto } from "@/types/dto/response/RevertInGameStatusResponseDto";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function revertInGameStatus(lobbyId: number): Promise<RevertInGameStatusResponseDto> {
-    const response = await fetch(`/api/game-player-state/revert-in-game-status`, {
+    const response = await apiFetch(`/api/game-player-state/revert-in-game-status`, {
         method: "POST",
         credentials: "include",
         headers: {

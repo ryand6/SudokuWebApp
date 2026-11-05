@@ -1,7 +1,8 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 
 export async function getGame(gameId: number): Promise<GameDto> {
-    const response = await fetch(`/api/game/get-game?gameId=${gameId}`, {
+    const response = await apiFetch(`/api/game/get-game?gameId=${gameId}`, {
         method: "GET",
         credentials: "include",
         headers: {

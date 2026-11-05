@@ -1,3 +1,4 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { backendValidationErrors } from "@/utils/error/backendValidationErrors";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
@@ -12,7 +13,7 @@ export async function processLobbySetup(
     gameType: GameType
 ): Promise<LobbyDto> {
     try {
-        const response = await fetch("/api/lobby/process-lobby-setup", {
+        const response = await apiFetch("/api/lobby/process-lobby-setup", {
             method: "POST",
             credentials: "include",
             headers: { 

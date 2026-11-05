@@ -1,9 +1,10 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import type { TimeLimitPreset } from "@/types/enum/TimeLimitPreset";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function updateLobbyTimeLimit(lobbyId: number, userId: number, timeLimit: TimeLimitPreset): Promise<LobbyDto> {
-    const response = await fetch("/api/lobby/settings/update-time-limit", {
+    const response = await apiFetch("/api/lobby/settings/update-time-limit", {
         method: "POST",
         credentials: "include",
         headers: { 

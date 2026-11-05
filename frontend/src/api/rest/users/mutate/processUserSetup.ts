@@ -1,10 +1,11 @@
+import { apiFetch } from "@/api/apiFetch";
 import { backendValidationErrors } from "../../../../utils/error/backendValidationErrors";
 import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
 export async function processUserSetup(username: string, recoveryEmail: string): Promise<void> {
     try {
-        const response = await fetch("/api/users/process-user-setup", {
+        const response = await apiFetch("/api/users/process-user-setup", {
             method: "POST",
             credentials: "include",
             headers: { 

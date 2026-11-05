@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { GameDto } from "@/types/dto/entity/game/GameDto";
 
 // Backend uses authentication principal to determine user
 export async function checkIfUserInGame(gameId: number): Promise<GameDto> {
-    const response = await fetch(`/api/game/check-user-in-game?gameId=${gameId}`, {
+    const response = await apiFetch(`/api/game/check-user-in-game?gameId=${gameId}`, {
         method: "GET",
         credentials: "include",
         headers: { "Accept" : "application/json" },

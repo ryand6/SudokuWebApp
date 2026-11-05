@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { LobbyDto } from "@/types/dto/entity/lobby/LobbyDto";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 
 export async function joinPrivateLobby(token: string): Promise<LobbyDto> {
-    const response = await fetch("/api/lobby/join/private", {
+    const response = await apiFetch("/api/lobby/join/private", {
         method: "POST",
         credentials: "include",
         headers: { 

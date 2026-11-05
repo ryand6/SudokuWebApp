@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
 export async function leaveGame(gameId: number) {
-    const response = await fetch(`/api/game/leave`, {
+    const response = await apiFetch(`/api/game/leave`, {
         method: "POST",
         credentials: "include",
         headers: {

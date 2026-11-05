@@ -1,7 +1,8 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { PrivateGamePlayerStateDtoRaw } from "@/types/dto/entity/game/PrivateGamePlayerStateDtoRaw";
 
 export async function getGamePlayerState(gameId: number): Promise<PrivateGamePlayerStateDtoRaw> {
-    const response = await fetch(`/api/game/get-game-player-state?gameId=${gameId}`, {
+    const response = await apiFetch(`/api/game/get-game-player-state?gameId=${gameId}`, {
         method: "GET",
         credentials: "include",
         headers: {

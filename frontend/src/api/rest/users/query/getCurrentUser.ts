@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { UserDto } from "../../../../types/dto/entity/user/UserDto";
 
 
 export async function getCurrentUser(): Promise<UserDto> {
-    const response = await fetch("/api/users/current-user", {
+    const response = await apiFetch("/api/users/current-user", {
         method: "GET",
         credentials: "include",
         // expect json data to be returned

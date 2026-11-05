@@ -2,6 +2,7 @@ import { Client, ReconnectionTimeMode, type IFrame } from "@stomp/stompjs";
 import { initWebSocket } from "@/services/websocket/initWebSocket";
 import { MAX_RECONNECT_DELAY } from "@/context/WebSocketProvider";
 import { getCsrfToken } from "@/api/rest/csrf/query/getCsrfToken";
+import { backendUrl } from "@/api/apiFetch";
 
 
 // Factory for creating StompJS client with callback functions to handle OnStompError and onConnect
@@ -30,7 +31,7 @@ export function stompClientFactory(
                 const csrfTokenData = await getCsrfToken();
                 if (csrfTokenData === null) {
                     sessionStorage.setItem("postLoginPath", window.location.pathname + window.location.search + window.location.hash);
-                    window.location.replace("http://localhost:8080/login");
+                    window.location.replace(backendUrl("/login"));
                     return;
                 }
                 client.connectHeaders = {

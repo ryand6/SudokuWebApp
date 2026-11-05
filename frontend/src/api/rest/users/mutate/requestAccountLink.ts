@@ -1,9 +1,10 @@
+import { apiFetch } from "@/api/apiFetch";
 import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
 export async function requestAccountLink(email: string): Promise<void> {
     try {
-        const response = await fetch("/api/users/request-account-link", {
+        const response = await apiFetch("/api/users/request-account-link", {
             method: "POST",
             credentials: "include",
             headers: {

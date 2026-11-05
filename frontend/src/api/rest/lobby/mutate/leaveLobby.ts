@@ -1,8 +1,9 @@
+import { apiFetch } from "@/api/apiFetch";
 import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
 
 export async function leaveLobby(lobbyId: number) { 
-    const response = await fetch(`/api/lobby/leave`, {
+    const response = await apiFetch(`/api/lobby/leave`, {
         method: "POST",
         credentials: "include",
         headers: {

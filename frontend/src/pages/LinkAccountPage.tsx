@@ -2,6 +2,7 @@ import { useState, type JSX } from "react";
 import { useNavigate } from "react-router-dom";
 import { requestAccountLink } from "../api/rest/users/mutate/requestAccountLink";
 import { verifyAccountLink } from "../api/rest/users/mutate/verifyAccountLink";
+import { backendUrl } from "@/api/apiFetch";
 
 
 export function LinkAccountPage(): JSX.Element {
@@ -75,7 +76,7 @@ export function LinkAccountPage(): JSX.Element {
                         </p>
                      
                         <p className="text-muted-foreground text-sm">
-                            Alternatively, <a href="/login">log in</a> with an already linked provider. Other login providers can also be linked via the account settings menu.
+                            Alternatively, <a href={backendUrl("/login")}>log in</a> with an already linked provider. Other login providers can also be linked via the account settings menu.
                         </p>
                         
                         <form onSubmit={handleEmailSubmit} className="flex flex-col gap-4">

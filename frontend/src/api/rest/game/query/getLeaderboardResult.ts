@@ -1,7 +1,8 @@
+import { apiFetch } from "@/api/apiFetch";
 import type { LeaderboardResult } from "@/types/game/GameTypes";
 
 export async function getLeaderboardResult(gameId: number): Promise<LeaderboardResult>  {
-    const response = await fetch(`/api/game/get-leaderboard-result?gameId=${gameId}`, {
+    const response = await apiFetch(`/api/game/get-leaderboard-result?gameId=${gameId}`, {
         method: "GET",
         credentials: "include",
         headers: {
