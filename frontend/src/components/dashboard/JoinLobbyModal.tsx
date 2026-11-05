@@ -23,6 +23,7 @@ export function JoinLobbyModal({
     }
 
     const toggleStatus = (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (!event.currentTarget.textContent) return;
         const buttonText = event.currentTarget.textContent.toLowerCase();
         if (buttonText === "public" || buttonText === "private") {
             setPane(buttonText);
