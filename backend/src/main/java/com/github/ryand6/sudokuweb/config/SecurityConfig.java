@@ -23,9 +23,13 @@ public class SecurityConfig {
 
     // get from application.properties
     private final String spaBaseUrl;
+    // optional shared cookie domain used for sharing cookies across common domains
+    private final String csrfCookieDomain;
 
-    public SecurityConfig(@Value("${spa.base-url}") String spaBaseUrl) {
+    public SecurityConfig(@Value("${spa.base-url}") String spaBaseUrl,
+                          @Value("${csrf.cookie.domain:}") String csrfCookieDomain) {
         this.spaBaseUrl = spaBaseUrl;
+        this.csrfCookieDomain = csrfCookieDomain;
     }
 
     // Register bean so that this can be injected into OAuth2SuccessHandler
@@ -33,6 +37,11 @@ public class SecurityConfig {
     public CookieCsrfTokenRepository cookieCsrfTokenRepository() {
         CookieCsrfTokenRepository repo = CookieCsrfTokenRepository.withHttpOnlyFalse();
         repo.setCookiePath("/"); // ensures the cookie is valid site-wide
+        if (!csrfCookieDomain.isBlank()) {
+            repo.setCookieCustomizer(cookie -> cookie
+                    .domain(csrfCookieDomain)
+                    .httpOnly(false));
+        }
         return repo;
     }
 
