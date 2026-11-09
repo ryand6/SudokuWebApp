@@ -5,7 +5,7 @@ import { useIsMobile } from "@/hooks/global/useIsMobile";
 import { BulletList } from "@/components/global/BulletList";
 
 const CONTROLLER_NAME = "Ryan Downey";
-const CONTACT_EMAIL = "tomosudoku@gmail.com";
+const CONTACT_EMAIL = "kachidoku@gmail.com";
 const LAST_UPDATED = "27 September 2026";
 
 export function PrivacyPolicyPage() {
@@ -40,7 +40,7 @@ export function PrivacyPolicyPage() {
                             isMobile={isMobile}
                         >
                             <p>
-                                TomoSudoku is operated by{" "}
+                                KachiDoku is operated by{" "}
                                 {CONTROLLER_NAME}.
                             </p>
                             <p>
@@ -55,7 +55,7 @@ export function PrivacyPolicyPage() {
                                 .
                             </p>
                             <p>
-                                TomoSudoku is operated from the United Kingdom.
+                                KachiDoku is operated from the United Kingdom.
                             </p>
                         </Section>
 
@@ -68,7 +68,7 @@ export function PrivacyPolicyPage() {
                         >
                             <p>
                                 We collect and use only the information needed
-                                to operate TomoSudoku.
+                                to operate KachiDoku.
                             </p>
                             <BulletList>
                                 <li>your chosen username;</li>
@@ -84,7 +84,7 @@ export function PrivacyPolicyPage() {
                                 <li>provide multiplayer games;</li>
                                 <li>maintain scores, statistics and leaderboards;</li>
                                 <li>support account recovery; and</li>
-                                <li>keep TomoSudoku secure and functioning.</li>
+                                <li>keep KachiDoku secure and functioning.</li>
                             </BulletList>
                             <p>
                                 We do not use your personal data for
@@ -131,7 +131,7 @@ export function PrivacyPolicyPage() {
                             </p>
                             <p>
                                 We may also use hosting, database and other
-                                service providers to operate TomoSudoku.
+                                service providers to operate KachiDoku.
                                 These providers may process personal data on
                                 our behalf.
                             </p>
@@ -148,7 +148,7 @@ export function PrivacyPolicyPage() {
                             isMobile={isMobile}
                         >
                             <p>
-                                TomoSudoku uses cookies necessary for
+                                KachiDoku uses cookies necessary for
                                 authentication, security and operation of
                                 the service.
                             </p>
@@ -167,7 +167,7 @@ export function PrivacyPolicyPage() {
                         >
                             <p>
                                 We keep personal data for as long as reasonably
-                                necessary to provide and secure TomoSudoku.
+                                necessary to provide and secure KachiDoku.
                             </p>
                             <p>
                                 Account and gameplay information is generally
@@ -226,7 +226,7 @@ export function PrivacyPolicyPage() {
                             isMobile={isMobile}
                         >
                             <p>
-                                TomoSudoku may be used by children and young
+                                KachiDoku may be used by children and young
                                 people. We aim to minimise the personal data
                                 we collect and do not require users to provide
                                 information such as their real name, date of

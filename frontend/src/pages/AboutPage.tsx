@@ -10,12 +10,12 @@ export function AboutPage() {
 
                 <section className="flex flex-col gap-3">
                     <h1 className="tracking-wide font-semibold text-2xl text-foreground">
-                        About TomoSudoku
+                        About KachiDoku
                     </h1>
 
                     <div className="flex flex-col gap-3 text-muted-foreground leading-relaxed">
                         <p>
-                            TomoSudoku is an online multiplayer Sudoku site that started 
+                            KachiDoku is an online multiplayer Sudoku site that started 
                             as a passion project to create a place people could play 
                             Sudoku together online without adverts, tracking, subscriptions 
                             or paywalls. The site is completely free to use, and I intend 
@@ -23,7 +23,7 @@ export function AboutPage() {
                         </p>
 
                         <p>
-                            Privacy is central to TomoSudoku. Data used by the site is 
+                            Privacy is central to KachiDoku. Data used by the site is 
                             intentionally kept to an absolute minimum.
                             You can find more information in the{" "}
                             <Link
@@ -98,19 +98,19 @@ export function AboutPage() {
                     <div className="flex flex-col gap-3 text-muted-foreground leading-relaxed">
                         <p>
                             I'm always interested in feedback, suggestions and ideas
-                            for TomoSudoku. If you have something you'd like to suggest,
+                            for KachiDoku. If you have something you'd like to suggest,
                             find a problem, or just want to get in touch, you can email
                             me at{" "}
                             <a
-                                href="mailto:tomosudoku@gmail.com"
+                                href="mailto:kachidoku@gmail.com"
                                 className="text-primary hover:underline"
                             >
-                                tomosudoku@gmail.com
+                                kachidoku@gmail.com
                             </a>.
                         </p>
 
                         <p>
-                            Thanks for checking out TomoSudoku!
+                            Thanks for checking out KachiDoku!
                         </p>
                     </div>
                 </section>
