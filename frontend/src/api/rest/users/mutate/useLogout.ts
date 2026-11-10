@@ -10,18 +10,21 @@ export function useLogout() {
   return useMutation({
     mutationFn: logout,
     onSuccess: async () => {
-      await queryClient.cancelQueries({
-        queryKey: queryKeys.user,
-        exact: true,
-      });
+        // Full page load of the home page, clearing everything held in memory
+        window.location.replace("/");
 
-      queryClient.removeQueries({
-        queryKey: queryKeys.user,
-        exact: true,
-      });
+      // await queryClient.cancelQueries({
+      //   queryKey: queryKeys.user,
+      //   exact: true,
+      // });
 
-      // redirect to home or login page
-      navigate("/", { replace: true });
+      // queryClient.removeQueries({
+      //   queryKey: queryKeys.user,
+      //   exact: true,
+      // });
+
+      // // redirect to home or login page
+      // navigate("/", { replace: true });
     },
     onError: (err: any) => {
       // Handle any error for display in UI
