@@ -102,10 +102,10 @@ export function AboutPage() {
                             find a problem, or just want to get in touch, you can email
                             me at{" "}
                             <a
-                                href="mailto:kachidoku@gmail.com"
+                                href="mailto:support@kachidoku.com"
                                 className="text-primary hover:underline"
                             >
-                                kachidoku@gmail.com
+                                support@kachidoku.com
                             </a>.
                         </p>
 

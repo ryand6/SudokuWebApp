@@ -5,8 +5,8 @@ import { useIsMobile } from "@/hooks/global/useIsMobile";
 import { BulletList } from "@/components/global/BulletList";
 
 const CONTROLLER_NAME = "Ryan Downey";
-const CONTACT_EMAIL = "kachidoku@gmail.com";
-const LAST_UPDATED = "27 September 2026";
+const CONTACT_EMAIL = "support@kachidoku.com";
+const LAST_UPDATED = "10 November 2026";
 
 export function PrivacyPolicyPage() {
     const isMobile = useIsMobile();
