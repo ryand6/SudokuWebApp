@@ -17,20 +17,23 @@ export function UserForm({
     const [isLoading, setIsLoading] = useState(false);
 
     // Validates username form field
-    function validate(): boolean {
-        if (!username.trim()) {
-            setError("Username is required");
-            return false;
-        } else if (username.length < 3 || username.length > 10) {
-            setError("Username must be between 3 and 10 characters long");
-            return false;
-        }
-        if (!recoveryEmail.trim()) {
+    function validate(name: string, email: string): boolean {
+        if (!name) {
+			setError("Username is required");
+			return false;
+		} else if (name.length < 3 || name.length > 10) {
+			setError("Username must be between 3 and 10 characters long");
+			return false;
+		} else if (/\s/.test(name)) {
+			setError("Username must not contain whitespace");
+			return false;
+		}
+        if (!email.trim()) {
             setError("Recovery email is required");
             return false;
         }
         const emailRegex: RegExp = /^.+@.+$/;
-        if (!emailRegex.test(recoveryEmail)) {
+        if (!emailRegex.test(email)) {
             setError("Must be a valid email address");
             return false;
         }
@@ -39,12 +42,16 @@ export function UserForm({
 
     async function handleSubmit(e: React.FormEvent): Promise<void> {
         e.preventDefault();
+        const trimmedUsername = username.trim();
+        const trimmedEmail = recoveryEmail.trim();
+		setUsername(trimmedUsername);
+        setRecoveryEmail(trimmedEmail);
         // If there are form validation errors, don't submit and display the errors
-        if (!validate()) return;
+        if (!validate(trimmedUsername, trimmedEmail)) return;
         setError("");
         setIsLoading(true);
         try {
-            await onSubmit(username, recoveryEmail);
+            await onSubmit(trimmedUsername, trimmedEmail);
         } catch (err: any) {
             // Handle backend form validation errors
             if (err.status === 400) setError(err.message);
@@ -73,7 +80,7 @@ export function UserForm({
                         placeholder="Username"
                         value={username}
                         required
-                        maxLength={20}
+                        maxLength={10}
                         minLength={3}
                         onChange={(e) => setUsername(e.target.value)}
                         className="border border-border text-foreground font-semibold 
@@ -106,6 +113,7 @@ export function UserForm({
                 <button 
                     type="submit"
                     className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors cursor-pointer"
+                    disabled={isLoading}
                 >
                     {submitLabel}
                 </button>

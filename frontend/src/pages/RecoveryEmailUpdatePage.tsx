@@ -9,13 +9,13 @@ export function RecoveryEmailUpdatePage() {
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	function validate(): boolean {
-        if (!recoveryEmail.trim()) {
+	function validate(email: string): boolean {
+        if (!email.trim()) {
             setError("Recovery email is required");
             return false;
         }
         const emailRegex: RegExp = /^.+@.+$/;
-        if (!emailRegex.test(recoveryEmail)) {
+        if (!emailRegex.test(email)) {
             setError("Must be a valid email address");
             return false;
         }
@@ -29,12 +29,14 @@ export function RecoveryEmailUpdatePage() {
 
 	async function handleSubmit(e: React.FormEvent): Promise<void> {
         e.preventDefault();
+        const trimmedEmail = recoveryEmail.trim();
+        setRecoveryEmail(trimmedEmail);
         // If there are form validation errors, don't submit and display the errors
-        if (!validate()) return;
+        if (!validate(trimmedEmail)) return;
         setError("");
         setIsLoading(true);
         try {
-            await handleAmend(recoveryEmail);
+            await handleAmend(trimmedEmail);
         } catch (err: any) {
             // Handle backend form validation errors
             if (err.status === 400) setError(err.message);

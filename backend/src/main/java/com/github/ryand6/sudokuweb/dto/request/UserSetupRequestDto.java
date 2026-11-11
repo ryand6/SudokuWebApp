@@ -20,6 +20,7 @@ public class UserSetupRequestDto {
     @NoProfanity(message="Username contains inappropriate language")
     private String username;
 
+    @NotBlank(message = "Recovery email is required")
     @Email(message = "Must be a valid email address")
     private String recoveryEmail;
 

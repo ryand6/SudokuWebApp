@@ -11,12 +11,15 @@ export function UsernameUpdatePage() {
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	function validate(): boolean {
-		if (!username.trim()) {
+	function validate(name: string): boolean {
+		if (!name) {
 			setError("Username is required");
 			return false;
-		} else if (username.length < 3 || username.length > 10) {
+		} else if (name.length < 3 || name.length > 10) {
 			setError("Username must be between 3 and 10 characters long");
+			return false;
+		} else if (/\s/.test(name)) {
+			setError("Username must not contain whitespace");
 			return false;
 		}
 		return true;
@@ -29,12 +32,14 @@ export function UsernameUpdatePage() {
 
 	async function handleSubmit(e: React.FormEvent): Promise<void> {
         e.preventDefault();
+		const trimmedUsername = username.trim();
+		setUsername(trimmedUsername);
         // If there are form validation errors, don't submit and display the errors
-        if (!validate()) return;
+        if (!validate(trimmedUsername)) return;
         setError("");
         setIsLoading(true);
         try {
-            await handleAmend(username);
+            await handleAmend(trimmedUsername);
         } catch (err: any) {
             // Handle backend form validation errors
             if (err.status === 400) setError(err.message);
@@ -67,7 +72,7 @@ export function UsernameUpdatePage() {
 							placeholder="Username"
 							value={username}
 							required
-							maxLength={20}
+							maxLength={10}
 							minLength={3}
 							onChange={(e) => setUsername(e.target.value)}
 							className="border border-border text-foreground font-semibold 
@@ -79,6 +84,7 @@ export function UsernameUpdatePage() {
 					<button 
 						type="submit"
 						className="bg-primary text-primary-foreground font-semibold py-2 px-4 rounded-lg hover:bg-primary/80 transition-colors cursor-pointer"
+						disabled={isLoading}
 					>
 						Update Username
 					</button>
