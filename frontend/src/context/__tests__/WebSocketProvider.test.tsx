@@ -286,4 +286,21 @@ describe("WebSocketProvider", () => {
 
         randomSpy.mockRestore();
     });
+
+    test("connecting resets the reconnect delay", () => {
+       vi.useFakeTimers({ toFake: ["Date"] });
+       vi.setSystemTime(0);
+       const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0);
+
+       renderProvider();
+       attachClient(makeFakeClient());
+
+       act(() => getHandlers().handleDisconnect()); // 500
+       act(() => getHandlers().handleDisconnect()); // 1000
+       act(() => getHandlers().handleConnect());    // reset
+       act(() => getHandlers().handleDisconnect());
+
+       expect(latest.nextReconnectAt).toBe(500);
+       randomSpy.mockRestore();
+    });
 });

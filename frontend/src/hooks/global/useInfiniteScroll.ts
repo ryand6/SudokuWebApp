@@ -49,7 +49,7 @@ export function useInfiniteScroll<T>({
         } else {
             scrollToBottom();
         }
-    }, [messages, isAtBottom, scrollToBottom]);
+    }, [messages]);
 
     const handleScroll = () => {
         const chatElement = chatRef.current;

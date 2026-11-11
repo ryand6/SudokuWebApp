@@ -7,7 +7,6 @@ import com.github.ryand6.sudokuweb.enums.GameMode;
 import com.github.ryand6.sudokuweb.enums.GameStatus;
 import com.github.ryand6.sudokuweb.events.types.game.FinishGameEvent;
 import com.github.ryand6.sudokuweb.helpers.IntegrationTestDataFactory;
-import com.github.ryand6.sudokuweb.helpers.TestDataUtil;
 import com.github.ryand6.sudokuweb.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

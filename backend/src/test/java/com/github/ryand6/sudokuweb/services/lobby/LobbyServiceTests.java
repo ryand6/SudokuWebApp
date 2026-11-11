@@ -7,7 +7,6 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerEntity;
 import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerId;
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
-import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyChatMessageDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyDto;
 import com.github.ryand6.sudokuweb.dto.entity.lobby.LobbyPlayerDto;
 import com.github.ryand6.sudokuweb.enums.GameMode;
@@ -15,8 +14,10 @@ import com.github.ryand6.sudokuweb.enums.GameType;
 import com.github.ryand6.sudokuweb.exceptions.lobby.LobbyNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.player.LobbyPlayerNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.UserExistsInActiveLobbyException;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyCountdownEntityDtoMapper;
 import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyEntityDtoMapper;
-import com.github.ryand6.sudokuweb.domain.lobby.player.LobbyPlayerRepository;
+import com.github.ryand6.sudokuweb.mappers.Impl.lobby.LobbyPlayerEntityDtoMapper;
+import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,6 +45,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class LobbyServiceTests {
 
+    // One @Mock for every constructor parameter of LobbyService.
+    // Any parameter without a matching @Mock is passed in as null, which causes NullPointerExceptions.
     @Mock
     private LobbyRepository lobbyRepository;
 
@@ -50,19 +54,28 @@ public class LobbyServiceTests {
     private UserService userService;
 
     @Mock
+    private LobbyChatService lobbyChatService;
+
+    @Mock
     private LobbyEntityDtoMapper lobbyEntityDtoMapper;
+
+    @Mock
+    private LobbyPlayerEntityDtoMapper lobbyPlayerEntityDtoMapper;
+
+    @Mock
+    private LobbyCountdownEntityDtoMapper lobbyCountdownEntityDtoMapper;
+
+    @Mock
+    private UserEntityDtoMapper userEntityDtoMapper;
 
     @Mock
     private PrivateLobbyTokenService privateLobbyTokenService;
 
     @Mock
-    private LobbyChatService lobbyChatService;
+    private LobbyCountdownMutationService lobbyCountdownMutationService;
 
     @Mock
-    private LobbyWebSocketsService lobbyWebSocketsService;
-
-    @Mock
-    private LobbyPlayerRepository lobbyPlayerRepository;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Spy
     @InjectMocks
@@ -78,16 +91,8 @@ public class LobbyServiceTests {
         user.setUsername("Test User");
         when(userService.findUserById(anyLong())).thenReturn(user);
 
-        LobbyEntity lobby = new LobbyEntity();
-        lobby.setId(1L);
-        lobby.setLobbyName("Test Lobby");
-
-        LobbyPlayerEntity lobbyPlayerEntity = new LobbyPlayerEntity();
-        lobbyPlayerEntity.setLobby(lobby);
-        lobbyPlayerEntity.setUser(user);
-
         LobbyPlayerDto lobbyPlayerDto = new LobbyPlayerDto();
-        lobbyPlayerDto.setId(new LobbyPlayerId(lobby.getId(), user.getId()));
+        lobbyPlayerDto.setId(new LobbyPlayerId(1L, user.getId()));
 
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
@@ -151,13 +156,14 @@ public class LobbyServiceTests {
 
         LobbyEntity lobby = new LobbyEntity();
         lobby.setId(1L);
+        lobby.setLobbyName("Test Lobby");
 
         when(lobbyRepository.findByLobbyPlayers_User_IdAndIsActiveTrue(anyLong())).thenReturn(Set.of(lobby));
 
         UserExistsInActiveLobbyException ex = assertThrows(UserExistsInActiveLobbyException.class, () -> {
             lobbyService.joinLobby(userId, lobbyId);
         });
-        Assertions.assertEquals("You are currently a player in an active lobby with ID 1. Players can only be in one active lobby at a time.", ex.getMessage());
+        Assertions.assertEquals("You are currently a player in an active lobby called Test Lobby. Players can only be in one active lobby at a time.", ex.getMessage());
     }
 
     @Test
@@ -166,7 +172,6 @@ public class LobbyServiceTests {
         Long userId = 1L;
 
         LobbyEntity lobby = mock(LobbyEntity.class);
-        when(lobby.isActive()).thenReturn(true);
 
         Set<LobbyPlayerEntity> players = new HashSet<>();
         for (int i = 0; i < 3; i++) {
@@ -180,12 +185,12 @@ public class LobbyServiceTests {
         when(userService.findUserById(any())).thenReturn(requester);
 
         LobbyPlayerEntity lobbyPlayer = mock(LobbyPlayerEntity.class);
+        when(lobbyPlayerEntityDtoMapper.mapToDto(any())).thenReturn(new LobbyPlayerDto());
+
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(1L);
-
         when(lobbyEntityDtoMapper.mapToDto(any())).thenReturn(lobbyDto);
 
-        // Used for mocking static methods - using try-with-resources
         try (MockedStatic<LobbyPlayerFactory> factoryMock = Mockito.mockStatic(LobbyPlayerFactory.class)) {
             factoryMock.when(() -> LobbyPlayerFactory.createLobbyPlayer(any(), any()))
                     .thenReturn(lobbyPlayer);
@@ -205,7 +210,6 @@ public class LobbyServiceTests {
 
         LobbyEntity lobby = mock(LobbyEntity.class);
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
-        when(lobby.isActive()).thenReturn(true);
 
         Set<LobbyPlayerEntity> players = new HashSet<>();
         for (int i = 0; i < 2; i++) players.add(mock(LobbyPlayerEntity.class));
@@ -215,6 +219,8 @@ public class LobbyServiceTests {
         when(userService.findUserById(userId)).thenReturn(requester);
 
         LobbyPlayerEntity lobbyPlayer = mock(LobbyPlayerEntity.class);
+        when(lobbyPlayerEntityDtoMapper.mapToDto(any())).thenReturn(new LobbyPlayerDto());
+
         LobbyDto lobbyDto = new LobbyDto();
         lobbyDto.setId(lobbyId);
         when(lobbyEntityDtoMapper.mapToDto(any())).thenReturn(lobbyDto);
@@ -293,7 +299,6 @@ public class LobbyServiceTests {
         when(lobby.getHost()).thenReturn(playerLeaving);
 
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
-        when(userService.findUserById(userId)).thenReturn(playerLeaving);
         when(lobby.determineNextHost()).thenReturn(Optional.empty());
 
         doAnswer(invocation -> {
@@ -334,28 +339,18 @@ public class LobbyServiceTests {
         currentPlayers.add(hostPlayer);
 
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
-
         when(lobby.getLobbyPlayers()).thenReturn(currentPlayers);
-
-        when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
-
-        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(new CountdownEvaluationResult());
-
-        when(userService.findUserById(playerLeavingId)).thenReturn(userLeaving);
-
         when(lobby.getHost()).thenReturn(host);
-
-        // UPDATE
-        //when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(new LobbyChatMessageDto());
-
-        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessageSend(any(LobbyChatMessageDto.class));
-
+        when(lobby.isActive()).thenReturn(true);
+        when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
+        when(lobbyCountdownMutationService.safeEvaluateCountdown(lobbyCountdown)).thenReturn(new CountdownEvaluationResult());
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(new LobbyDto());
 
         lobbyService.removeFromLobby(lobbyId, playerLeavingId);
 
         Assertions.assertFalse(lobby.getLobbyPlayers().contains(playerLeaving));
         Assertions.assertTrue(lobby.getLobbyPlayers().contains(hostPlayer));
+        verify(lobbyChatService).createInfoMessage(lobbyId, playerLeavingId, "left the lobby.", true);
     }
 
     @Test
@@ -385,22 +380,11 @@ public class LobbyServiceTests {
         currentPlayers.add(hostPlayer);
 
         when(lobbyRepository.findById(lobbyId)).thenReturn(Optional.of(lobby));
-
         when(lobby.getLobbyPlayers()).thenReturn(currentPlayers);
-
-        when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
-
-        when(lobby.getLobbyCountdownEntity().evaluateCountdownState()).thenReturn(new CountdownEvaluationResult());
-
-        when(userService.findUserById(playerLeavingId)).thenReturn(userLeaving);
-
         when(lobby.getHost()).thenReturn(host);
-
-        // UPDATE
-        //when(lobbyChatService.createInfoMessage(any(Long.class), any(Long.class), any(String.class))).thenReturn(null));
-
-        doNothing().when(lobbyWebSocketsService).handleLobbyChatMessageSend(any(LobbyChatMessageDto.class));
-
+        when(lobby.isActive()).thenReturn(true);
+        when(lobby.getLobbyCountdownEntity()).thenReturn(lobbyCountdown);
+        when(lobbyCountdownMutationService.safeEvaluateCountdown(lobbyCountdown)).thenReturn(new CountdownEvaluationResult());
         when(lobbyEntityDtoMapper.mapToDto(any(LobbyEntity.class))).thenReturn(new LobbyDto());
 
         LobbyDto lobbyDto = lobbyService.removeFromLobby(lobbyId, playerLeavingId);
@@ -410,21 +394,17 @@ public class LobbyServiceTests {
 
     @Test
     void closeLobby_verifyMethodCalls() {
-        doNothing().when(lobbyRepository).deleteById(any(Long.class));
-
         LobbyEntity lobby = mock(LobbyEntity.class);
         when(lobby.getId()).thenReturn(1L);
 
         lobbyService.closeLobby(lobby);
 
         verify(lobby).setActive(false);
-        verify(lobbyRepository).deleteById(1L);
+        verify(applicationEventPublisher).publishEvent(any(Object.class));
     }
 
     @Test
     void closeLobby_setsIsActiveToFalse() {
-        doNothing().when(lobbyRepository).deleteById(any(Long.class));
-
         LobbyEntity lobby = new LobbyEntity();
         lobby.setId(1L);
         lobby.setActive(true);
@@ -463,8 +443,6 @@ public class LobbyServiceTests {
 
     @Test
     void getLobbyId_throwsLobbyNotFoundException_whenLobbyNotFound() {
-        LobbyEntity lobby = mock(LobbyEntity.class);
-
         when(lobbyRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         LobbyNotFoundException ex = assertThrows(LobbyNotFoundException.class, () -> {
@@ -473,155 +451,5 @@ public class LobbyServiceTests {
 
         Assertions.assertEquals("Lobby with ID 1 does not exist", ex.getMessage());
     }
-
-//
-//    @Test
-//    void removePlayerFromLobby_reassignsHost_whenHostLeavesAndNewHostExists() {
-//        Long userId = 1L;
-//        Long lobbyId = 100L;
-//
-//        LobbyEntity lobby = mock(LobbyEntity.class);
-//        UserEntity host = mock(UserEntity.class);
-//        UserEntity newHost = mock(UserEntity.class);
-//        LobbyPlayerEntity lobbyPlayer = mock(LobbyPlayerEntity.class);
-//
-//        LobbyDto expectedDto = new LobbyDto();
-//        expectedDto.setId(lobbyId);
-//
-//        // Setup basic behavior
-//        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobby));
-//        when(lobbyPlayerRepository.findByCompositeId(lobbyId, userId)).thenReturn(Optional.of(lobbyPlayer));
-//        when(userService.findUserById(userId)).thenReturn(host);
-//        when(userService.findUserById(userId)).thenReturn(host);
-//        when(lobby.getHost()).thenReturn(host);
-//
-//        // Assume players exist, new host will be found
-//        Set<LobbyPlayerEntity> players = new HashSet<>();
-//        players.add(lobbyPlayer);
-//        when(lobby.getLobbyPlayers()).thenReturn(players);
-//
-//        // partial mock to override getNewHost
-//        LobbyService spyService = Mockito.spy(lobbyService);
-//        doReturn(Optional.of(newHost)).when(spyService).getNewHost(lobby);
-//
-//        when(lobbyEntityDtoMapper.mapToDto(lobby)).thenReturn(expectedDto);
-//
-//        LobbyDto result = spyService.removeFromLobby(userId, lobbyId);
-//
-//        assertThat(result).isEqualTo(expectedDto);
-//
-//        verify(lobby).setHost(newHost);
-//        verify(lobbyPlayerRepository).deleteByCompositeId(lobbyId, userId);
-//        verify(lobbyEntityDtoMapper).mapToDto(lobby);
-//    }
-//
-//    @Test
-//    void removePlayerFromLobby_closesLobby_whenHostLeavesAndNoNewHost() {
-//        Long userId = 1L;
-//        Long lobbyId = 100L;
-//
-//        LobbyEntity lobbyBeforeClosing = mock(LobbyEntity.class);
-//        LobbyEntity closedLobby = mock(LobbyEntity.class); // Result of closeLobby
-//        UserEntity host = mock(UserEntity.class);
-//        LobbyPlayerEntity lobbyPlayer = mock(LobbyPlayerEntity.class);
-//
-//        LobbyDto expectedDto = new LobbyDto();
-//        expectedDto.setId(lobbyId);
-//
-//        // Setup repository and entity mocks
-//        when(lobbyRepository.findByIdForUpdate(lobbyId)).thenReturn(Optional.of(lobbyBeforeClosing));
-//        when(lobbyPlayerRepository.findByCompositeId(lobbyId, userId)).thenReturn(Optional.of(lobbyPlayer));
-//        when(userService.findUserById(userId)).thenReturn(host);
-//        when(userService.findUserById(userId)).thenReturn(host);
-//        when(lobbyBeforeClosing.getHost()).thenReturn(host);
-//
-//        Set<LobbyPlayerEntity> players = new HashSet<>();
-//        players.add(lobbyPlayer);
-//        when(lobbyBeforeClosing.getLobbyPlayers()).thenReturn(players);
-//
-//        // partial mock of service to override getNewHost and closeLobby
-//        LobbyService spyService = Mockito.spy(lobbyService);
-//        doReturn(Optional.empty()).when(spyService).getNewHost(lobbyBeforeClosing); // No replacement host
-//        doReturn(closedLobby).when(spyService).closeLobby(lobbyBeforeClosing);     // Return closed lobby
-//
-//        when(lobbyEntityDtoMapper.mapToDto(closedLobby)).thenReturn(expectedDto);
-//
-//        LobbyDto result = spyService.removeFromLobby(userId, lobbyId);
-//
-//        assertThat(result).isEqualTo(expectedDto);
-//        verify(spyService).closeLobby(lobbyBeforeClosing);
-//        verify(lobbyPlayerRepository).deleteByCompositeId(lobbyId, userId);
-//        verify(lobbyEntityDtoMapper).mapToDto(closedLobby);
-//    }
-//
-//    @Test
-//    void getNewHost_returnsEmpty_whenOnlyHostPresent() {
-//        LobbyEntity lobby = mock(LobbyEntity.class);
-//        UserEntity host = mock(UserEntity.class);
-//        LobbyPlayerEntity hostPlayer = mock(LobbyPlayerEntity.class);
-//
-//        when(lobby.getHost()).thenReturn(host);
-//        when(lobby.getLobbyPlayers()).thenReturn(Set.of(hostPlayer));
-//        when(hostPlayer.getUser()).thenReturn(host);
-//
-//        Optional<UserEntity> result = lobbyService.getNewHost(lobby);
-//
-//        assertThat(result).isEmpty();
-//    }
-//
-//    @Test
-//    void getNewHost_returnsOtherPlayer_whenHostAndOneOtherPlayerPresent() {
-//        LobbyEntity lobby = mock(LobbyEntity.class);
-//        UserEntity host = mock(UserEntity.class);
-//        UserEntity newHost = mock(UserEntity.class);
-//
-//        LobbyPlayerEntity hostPlayer = mock(LobbyPlayerEntity.class);
-//        LobbyPlayerEntity otherPlayer = mock(LobbyPlayerEntity.class);
-//
-//        when(lobby.getHost()).thenReturn(host);
-//        when(lobby.getLobbyPlayers()).thenReturn(Set.of(hostPlayer, otherPlayer));
-//        when(hostPlayer.getUser()).thenReturn(host);
-//        when(otherPlayer.getUser()).thenReturn(newHost);
-//        when(otherPlayer.getJoinedAt()).thenReturn(Instant.now());
-//
-//        Optional<UserEntity> result = lobbyService.getNewHost(lobby);
-//
-//        assertThat(result).contains(newHost);
-//    }
-//
-//    @Test
-//    void getNewHost_returnsEarliestJoinedPlayer_whenMultiplePlayersPresent() {
-//        LobbyEntity lobby = mock(LobbyEntity.class);
-//        UserEntity host = mock(UserEntity.class);
-//        UserEntity p1 = mock(UserEntity.class);
-//        UserEntity p2 = mock(UserEntity.class);
-//        UserEntity p3 = mock(UserEntity.class);
-//
-//        Instant t1 = Instant.parse("2024-01-01T10:00:00Z");
-//        Instant t2 = Instant.parse("2024-01-01T10:01:00Z");
-//        Instant t3 = Instant.parse("2024-01-01T10:02:00Z");
-//
-//        LobbyPlayerEntity hostPlayer = mock(LobbyPlayerEntity.class);
-//        LobbyPlayerEntity lp1 = mock(LobbyPlayerEntity.class);
-//        LobbyPlayerEntity lp2 = mock(LobbyPlayerEntity.class);
-//        LobbyPlayerEntity lp3 = mock(LobbyPlayerEntity.class);
-//
-//        when(lobby.getHost()).thenReturn(host);
-//        when(lobby.getLobbyPlayers()).thenReturn(Set.of(hostPlayer, lp1, lp2, lp3));
-//
-//        when(hostPlayer.getUser()).thenReturn(host);
-//        when(lp1.getUser()).thenReturn(p1);
-//        when(lp1.getJoinedAt()).thenReturn(t2);
-//
-//        when(lp2.getUser()).thenReturn(p2);
-//        when(lp2.getJoinedAt()).thenReturn(t1); // earliest
-//
-//        when(lp3.getUser()).thenReturn(p3);
-//        when(lp3.getJoinedAt()).thenReturn(t3);
-//
-//        Optional<UserEntity> result = lobbyService.getNewHost(lobby);
-//
-//        assertThat(result).contains(p2);
-//    }
 
 }

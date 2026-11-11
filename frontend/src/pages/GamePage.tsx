@@ -53,7 +53,7 @@ export function GamePage() {
 
     useConfirmPlayerGameLoaded(publicGameState, privateGameState, currentUser, send);
 
-    const playerFinishedGame: boolean | undefined = currentUser && publicGameState ? publicGameState.players[currentUser.id].finishedGame : undefined;
+    const playerFinishedGame: boolean | undefined = currentUser && publicGameState ? publicGameState.players[currentUser.id]?.finishedGame : undefined;
 
     useShowGameResults(playerFinishedGame, publicGameState?.endedPrematurely, setShowGameResultsModal);
 

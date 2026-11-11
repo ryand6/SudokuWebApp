@@ -86,7 +86,7 @@ export function GameResults({
                     type: "LEADERBOARD_SCORE_CALCULATED",
                     leaderboardResult: fetchedLeaderboard
                 });
-            } catch (err) {
+            } catch {
                 setError("Error fetching leaderboard result. Please try again later.");
             }
         }

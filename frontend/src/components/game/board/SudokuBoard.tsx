@@ -46,9 +46,6 @@ export function SudokuBoard(
 
     const playerHighlightedCell: CellCoordinates | undefined = gameHighlightedCells ? gameHighlightedCells.get(userId) : undefined;
 
-    const opponentHighlightedCells: Map<number, CellCoordinates> | undefined = gameHighlightedCells ? new Map(gameHighlightedCells) : undefined;
-    opponentHighlightedCells && opponentHighlightedCells.delete(userId);
-
     const handleCellSelect = useCallback((r: number, c: number) => {
         setGameHighlightedCells(prev => updateGameHighlightedCellsAndSendWsUpdate(send, gameId, userId, prev, { row: r, col: c }))
     }, [send, gameId, userId, setGameHighlightedCells]);

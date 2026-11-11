@@ -51,6 +51,7 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     // System subscriptions are recreated on every connect
     // subscriptionsRef contains only dynamic subscriptions that must survive reconnects
     const handleConnect = useCallback(() => {
+        currentDelayRef.current = initialDelayRef.current;
         setIsConnected(true);
         setNextReconnectAt(null);
         // System level subscriptions resubscribed every reconnect
@@ -91,8 +92,8 @@ export function WebSocketProvider({ children }: { children : React.ReactNode }) 
     useInitClient(currentUser, clientRef, initialDelayRef.current, subscriptionsRef, pendingQueueRef, handleConnect, handleDisconnect, handleWebSocketClose, handleWebSocketError);
 
     const subscribe = useCallback((topic: string, onMessage: (body: any) => void) => {
-        // If the user is already subscribed, return that subscription 
-        if (subscriptionsRef.current.has(topic)) return subscriptionsRef.current.get(topic)?.subscription!;
+        const existing = subscriptionsRef.current.get(topic);
+        if (existing) return existing.subscription;
         const client = clientRef.current;
         // No socket client connection established to fulfill subscribe
         if (!client || !client.connected) {

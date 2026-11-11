@@ -5,8 +5,6 @@ import com.github.ryand6.sudokuweb.dto.response.UserActiveTokensDto;
 import com.github.ryand6.sudokuweb.exceptions.lobby.token.InvalidTokenException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.token.MaxActiveTokenException;
 import com.github.ryand6.sudokuweb.exceptions.lobby.token.TokenNotFoundException;
-import com.github.ryand6.sudokuweb.services.lobby.PrivateLobbyTokenService;
-import com.github.ryand6.sudokuweb.services.lobby.SecureInvitationsService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

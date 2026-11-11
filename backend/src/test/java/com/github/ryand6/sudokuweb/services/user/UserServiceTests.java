@@ -2,7 +2,7 @@ package com.github.ryand6.sudokuweb.services.user;
 
 import com.github.ryand6.sudokuweb.domain.user.UserEntity;
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
-import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -72,22 +71,13 @@ public class UserServiceTests {
         when(authToken.getAuthorizedClientRegistrationId()).thenReturn("google");
         when(principal.getName()).thenReturn("google-123");
 
-        // Persist the user entity to DB
-        UserEntity user = new UserEntity();
-        user.setUsername("username");
-        user.setOnline(true);
-
         when(userRepository.findByProviderAndProviderId(any(String.class), any(String.class))).thenReturn(Optional.empty());
 
-        UserDto mockDto = new UserDto();
-        mockDto.setUsername("username");
-        mockDto.setOnline(true);
-
-        UserNotFoundException ex = assertThrows(
-                UserNotFoundException.class,
+        OAuthProviderNotLinkedException ex = assertThrows(
+                OAuthProviderNotLinkedException.class,
                 () -> userService.getCurrentUserByOAuth(principal, authToken)
         );
-        assertThat(ex.getMessage()).isEqualTo("User not found");
+        assertThat(ex.getMessage()).isEqualTo("No account linked to this OAuth provider");
     }
 
     @Test

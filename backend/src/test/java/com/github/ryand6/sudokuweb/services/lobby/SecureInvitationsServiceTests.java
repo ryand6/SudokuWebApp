@@ -1,7 +1,6 @@
 package com.github.ryand6.sudokuweb.services.lobby;
 
 import com.github.ryand6.sudokuweb.domain.lobby.token.TokenIdentifiers;
-import com.github.ryand6.sudokuweb.services.lobby.SecureInvitationsService;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;

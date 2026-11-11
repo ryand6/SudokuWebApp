@@ -17,5 +17,5 @@ export function useHandleNewChatMessages(
             // If near bottom, always scroll to bottom when a new message is received to keep updates real time
             scrollToBottom();
         }
-    }, [messages, chatElement, isAtBottom, scrollToBottom, setHasNewMessages]);
+    }, [messages]);
 }

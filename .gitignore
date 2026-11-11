@@ -3,7 +3,6 @@
 # ===========================
 /backend/src/main/resources/application-local.properties
 /backend/src/main/resources/data/profanity/
-/backend/src/test/resources/application.properties
 /backend/HELP.md
 /backend/target/
 !.mvn/wrapper/

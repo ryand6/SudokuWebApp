@@ -8,8 +8,6 @@ import com.github.ryand6.sudokuweb.domain.lobby.LobbyRepository;
 import com.github.ryand6.sudokuweb.domain.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 public class LobbyPlayerEntityDtoMapperTests extends AbstractIntegrationTest {
