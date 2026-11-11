@@ -21,7 +21,7 @@ export function LeaderboardsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredMessages, setFilteredMessages] = useState<LeaderboardRowDto[]>([]);
     const { data: userLeaderboardRecord, isLoading: isLoadingUserRecord } = useGetUserLeaderboardRow(user?.id ?? 0, selectedMode);
-    const {data, isLoading: isLoadingRows, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetLeaderboardRows(selectedMode);
+    const {data, isLoading: isLoadingRows, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetLeaderboardRows(selectedMode);
     const reverseData = false;
     const iconSize = isMobile ? 12 : 24;
     
@@ -202,7 +202,7 @@ export function LeaderboardsPage() {
                 onScrollToBottom={scrollToBottom}
                 renderMessage={(msg, index) => {
                     if (isMobile) return <MobileLeaderboardRow key={index} data={msg} userId={user?.id} gameMode={selectedMode} />;
-                    return <LeaderboardRow key={index} data={msg} userId={user?.id} isMobile={isMobile} />;
+                    return <LeaderboardRow key={index} data={msg} userId={user?.id} />;
                 }}
                 reverseData={false}
             />

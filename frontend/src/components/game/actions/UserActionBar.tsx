@@ -14,7 +14,6 @@ export function UserActionBar(
     {
         gameId,
         userId,
-        initialBoardState,
         playerHighlightedCell,
         highlightedCellState,
         isMobile,
@@ -24,7 +23,6 @@ export function UserActionBar(
     }: {
         gameId: number,
         userId: number,
-        initialBoardState: string,
         playerHighlightedCell: CellCoordinates | undefined,
         highlightedCellState: PrivateCellState | undefined,
         isMobile: boolean,
@@ -79,7 +77,7 @@ export function UserActionBar(
             submitNoteUpdate(send, gameId, userId, playerHighlightedCell.row, playerHighlightedCell.col, num);
             return;
         }
-    }, [gameId, userId, initialBoardState, queryClient, send]);
+    }, [gameId, userId, queryClient, send]);
 
     const handleNumberKeydown = useCallback((event: KeyboardEvent) => {
         if (/^[1-9]$/.test(event.key)) {

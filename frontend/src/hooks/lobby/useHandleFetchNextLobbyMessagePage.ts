@@ -18,5 +18,5 @@ export function useHandleFetchNextLobbyMessagePage(
             fetchNextPage();
             setIsLoadingNextPage(true);
         }
-    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage]);
+    }, [inView, hasNextPage, fetchNextPage, isFetchingNextPage, isAtBottom, isLoadingNextPage, setIsLoadingNextPage]);
 }

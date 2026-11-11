@@ -33,7 +33,7 @@ export function HUDGameChat({
     const { send } = useWebSocketContext();
     const [inputMessage, setInputMessage] = useState("");
     const [isQuickMessage, setIsQuickMessage] = useState(true);
-    const { data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameChatMessages(gameId);
+    const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameChatMessages(gameId);
     const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, reverseData });
 
     const handleTypeClick = () => {

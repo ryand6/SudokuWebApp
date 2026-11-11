@@ -85,17 +85,8 @@ public class UserService {
     // Try retrieve User's OAuth provider name and ID
     public UserDto getCurrentUserByOAuth(OAuth2User principal, OAuth2AuthenticationToken authToken) {
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
-
         log.info("Cache MISS - fetching user from DB for provider: {}", provider);
-
-        log.info("Cache key: {}_{}", authToken.getAuthorizedClientRegistrationId(), principal.getName());
-
-        Cache cache = cacheManager.getCache("userCache");
-        CaffeineCache caffeineCache = (CaffeineCache) cache;
-        log.info("Cache stats: {}", caffeineCache.getNativeCache().stats());
-
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
-
         UserEntity user = userRepository.findByProviderAndProviderId(provider, providerId)
                 .orElseThrow(() -> new OAuthProviderNotLinkedException("No account linked to this OAuth provider"));
         return userEntityDtoMapper.mapToDto(user);

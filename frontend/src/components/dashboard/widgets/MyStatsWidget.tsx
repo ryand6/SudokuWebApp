@@ -7,10 +7,8 @@ import { IconChartBar } from "@tabler/icons-react";
 import { useState } from "react";
 
 export function MyStatsWidget({
-    userId,
     isMobile
 }: {
-    userId: number,
     isMobile: boolean
 }) {
 

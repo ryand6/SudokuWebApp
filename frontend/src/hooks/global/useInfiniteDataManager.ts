@@ -31,11 +31,11 @@ export function useInfiniteDataManager<T>({
         if (!data) return [];
         if (!reverseData) return data.pages.flat();
         return data.pages.flat().reverse();
-    }, [data]);
+    }, [data, reverseData]);
 
     useEffect(() => { 
         refetch(); 
-    }, []);
+    }, [refetch]);
 
     useEffect(() => {
         // isAtBottom check only required for messaging interfaces where newest messages are shown at bottom. Other displays load new pages whenever the bottom of the scroll is reached.
@@ -43,7 +43,7 @@ export function useInfiniteDataManager<T>({
             fetchNextPage();
             setIsLoadingNextPage(true);
         }
-    }, [reverseData, isAtBottom, inView, hasNextPage, isFetchingNextPage, isLoadingNextPage]);
+    }, [reverseData, isAtBottom, inView, hasNextPage, isFetchingNextPage, isLoadingNextPage, fetchNextPage, setIsLoadingNextPage]);
 
     return { sentinelRef, messages };
 }

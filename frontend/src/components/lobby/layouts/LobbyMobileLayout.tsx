@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { getEpochTimeFromTimestamp } from "@/utils/time/getEpochTimeFromTimestamp";
 import { LobbyPlayersPanel } from "../LobbyPlayersPanel";
 import { LobbySettingsPanel } from "../LobbySettingsPanel";
@@ -49,7 +49,6 @@ export function LobbyMobileLayout({
     setIsAlertOpen: Dispatch<SetStateAction<boolean>>
 }) {
     const iconSize: number = isMobile ? 16 : 24;
-    const iconStroke: number = isMobile ? 2 : 3;
 
     return (
         <div id="lobby-container" className="flex flex-col flex-1">

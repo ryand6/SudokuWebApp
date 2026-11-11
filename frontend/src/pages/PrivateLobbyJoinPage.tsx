@@ -13,7 +13,7 @@ export function PrivateLobbyJoinPage() {
 
     useEffect(() => {
         if (token) joinPrivateLobby.mutate(token);
-    }, [token])
+    }, [token, joinPrivateLobby]);
 
     return <SpinnerButton />
 }

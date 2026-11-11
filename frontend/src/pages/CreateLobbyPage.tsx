@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import type { GameMode } from "@/types/enum/GameMode";
 import type { GameType } from "@/types/enum/GameType";
 import { IconCheck } from "@tabler/icons-react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -23,20 +23,20 @@ export function CreateLobbyPage() {
 
     const navigate = useNavigate();
 
+    const getStepState = useCallback((step: number, currentStep: number): StepState => {
+        if (step < currentStep) return "completed";
+        if (step === currentStep) return "active";
+        return "upcoming";
+    }, []);
+
     const stepStates = useMemo(() => ({
         1: getStepState(1, currentStep),
         2: getStepState(2, currentStep),
         3: getStepState(3, currentStep),
         4: getStepState(4, currentStep),
-    }), [currentStep]);
+    }), [currentStep, getStepState]);
 
     type StepState = "completed" | "active" | "upcoming";
-
-    function getStepState(step: number, currentStep: number): StepState {
-        if (step < currentStep) return "completed";
-        if (step === currentStep) return "active";
-        return "upcoming";
-    }
 
     // Validates form fields
     function validate(): boolean {

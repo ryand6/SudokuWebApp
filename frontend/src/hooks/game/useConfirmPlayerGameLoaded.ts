@@ -13,5 +13,5 @@ export function useConfirmPlayerGameLoaded(
         if ((publicGameState && privateGameState && currentUser) && !publicGameState.players[currentUser.id].gameLoaded) {
             confirmPlayerGameLoaded(send, publicGameState.gameId);
         }
-    },[publicGameState, privateGameState, currentUser]);
+    },[publicGameState, privateGameState, currentUser, send]);
 }

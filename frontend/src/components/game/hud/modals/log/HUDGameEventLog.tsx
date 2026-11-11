@@ -12,7 +12,7 @@ export function HUDGameEventLog({
 }) {
     const reverseData = true;
 
-    const {data, isLoading, isError, error, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameEvents(gameId);
+    const {data, hasNextPage, fetchNextPage, isFetchingNextPage, refetch } = useGetGameEvents(gameId);
 
     const { chatRef, sentinelRef, messages, isAtBottom, hasNewMessages, scrollToBottom, handleScroll } = useInfiniteMessageList({ data, hasNextPage, isFetchingNextPage, fetchNextPage, refetch, reverseData });
 

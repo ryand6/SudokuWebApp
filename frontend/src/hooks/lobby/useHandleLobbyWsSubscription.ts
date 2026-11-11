@@ -22,5 +22,5 @@ export function useHandleLobbyWsSubscription(
         return () => {
             if (subscription) unsubscribe(topic);
         };
-    }, [lobbyId]);
+    }, [lobbyId, navigate, queryClient, subscribe, unsubscribe]);
 }

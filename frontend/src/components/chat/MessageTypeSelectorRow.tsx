@@ -11,9 +11,7 @@ export function MessageTypeSelectorRow({
     setIsQuickMessage: Dispatch<SetStateAction<boolean>>,
     isMobile: boolean
 }) {
-
     const iconSize: number = isMobile ? 16 : 24;
-    const iconStroke: number = isMobile ? 2 : 3;
 
     return (
         <div className="flex justify-between py-3">

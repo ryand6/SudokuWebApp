@@ -92,11 +92,6 @@ export function DashboardMobileLayout({
                     <span>Info</span>
                 </div>
             </div>
-            {/* <div className="flex items-center px-5 py-5 border-b-border border-b-2">
-                <div className="tracking-wide font-semibold text-foreground text-lg">
-                    Hello, {user.username}!
-                </div>
-            </div> */}
             <div className="flex flex-col items-center w-full h-full gap-4 p-5">
                 {
                     tab === "play" ? (
@@ -139,9 +134,9 @@ export function DashboardMobileLayout({
                                             <LeaveGameAlertDialog open={isLeaveGameAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({ gameId: activeLobby.currentGameId!, userId: user.id, lobbyId: activeLobby.id })} setOpen={setIsLeaveGameAlertOpen} />
                                             <button
                                                 className="flex items-center gap-1 px-3 py-2 rounded-lg bg-destructive/20 cursor-pointer hover:bg-destructive/10 text-semibold text-secondary-foreground text-md border-1 border-sidebar"
-                                                onClick={() => {
+                                                onClick={() => 
                                                     activeGameId ? setIsLeaveGameAlertOpen(true) : setIsLeaveLobbyAlertOpen(true)
-                                                }}
+                                                }
                                             >   
                                                 <span>Leave</span>
                                                 <span>
@@ -165,7 +160,6 @@ export function DashboardMobileLayout({
                     ) : tab === "stats" ? (
                         <>
                             <MyStatsWidget
-                                userId={user.id}
                                 isMobile={true}
                             />
                             <TopFiveLeaderboardsWidget

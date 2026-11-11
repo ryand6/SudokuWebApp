@@ -51,7 +51,7 @@ export function SudokuBoard(
 
     const handleCellSelect = useCallback((r: number, c: number) => {
         setGameHighlightedCells(prev => updateGameHighlightedCellsAndSendWsUpdate(send, gameId, userId, prev, { row: r, col: c }))
-    }, [send, gameId, userId]);
+    }, [send, gameId, userId, setGameHighlightedCells]);
 
     const getHighlightedOpponents = useCallback((r: number, c: number) => {
         const opponentsHighlighted: number[] = [];
@@ -61,7 +61,7 @@ export function SudokuBoard(
             }
         });
         return opponentsHighlighted;
-    }, [gameId, userId, gameHighlightedCells]);
+    }, [userId, gameHighlightedCells]);
 
     return (
         <div ref={containerRef} className="w-full h-full flex items-center justify-center">

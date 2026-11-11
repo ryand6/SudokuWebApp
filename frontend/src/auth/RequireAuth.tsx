@@ -18,7 +18,7 @@ export function RequireAuth({ children }: { children : React.ReactNode }) {
     useEffect(() => {
         if (!error) return;
         handleUserFetchError(error, navigate, location.pathname + location.search + location.hash, false, onLinkAccountRoute);
-    }, [error, navigate, location.pathname, location.search, location.hash]);
+    }, [error, navigate, location.pathname, location.search, location.hash, onLinkAccountRoute]);
 
     if (isLoading) return <div className="py-4"><SpinnerButton /></div>;
 

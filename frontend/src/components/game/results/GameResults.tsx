@@ -75,7 +75,7 @@ export function GameResults({
             refetchUserRank();
             setUserRankText(userRank ? userRank.toLocaleString() : "-");
         }
-    }, [players[userId].gameResult, leaderboardResult, userRank]);
+    }, [players[userId].gameResult, leaderboardResult, userRank, userId, refetch]);
 
     useEffect(() => {
         if (leaderboardResult !== undefined) return; 
@@ -91,7 +91,7 @@ export function GameResults({
             }
         }
         fetchLeaderboard();
-    }, [gameId, userId, leaderboardResult]);
+    }, [gameId, userId, leaderboardResult, queryClient]);
 
     const timeTaken: string = players[userId].finishedGameTimestamp && gameStartsAt ? convertMillisecondsToMinuteClock(computeMsDifferenceBetweenTimestamps(players[userId].finishedGameTimestamp, gameStartsAt)) : "-";
 

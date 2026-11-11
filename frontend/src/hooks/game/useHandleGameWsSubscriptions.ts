@@ -31,5 +31,5 @@ export function useHandleGameWsSubscriptions(
             if (gameSubscription) unsubscribe(gameTopic);
             if (gamePlayerStateSubscription) unsubscribe(gamePlayerStateTopic);
         }
-    }, [gameId, userId, playerColours, gameNotificationsEnabled]);
+    }, [gameId, userId, playerColours, gameNotificationsEnabled, navigate, queryClient, setGameHighlightedCells, subscribe, unsubscribe]);
 }

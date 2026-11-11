@@ -46,7 +46,7 @@ export function GamePage() {
 
     const {data: publicGameState, isLoading: isGameLoading, isError: isGameError, error: gameError} = useGetGame(gameIdNum);
 
-    const {data: privateGameState, isLoading: isGameStateLoading, isError: isGameStateError, error: gameStateError} = useGetGamePlayerState(gameIdNum, currentUser?.id);
+    const {data: privateGameState, isLoading: isGameStateLoading} = useGetGamePlayerState(gameIdNum, currentUser?.id);
 
     // Redirect to lobby if game is in a closed state (closed, aborted)
     useHandleClosedGame(publicGameState?.gameStatus, publicGameState?.lobbyId, navigate);

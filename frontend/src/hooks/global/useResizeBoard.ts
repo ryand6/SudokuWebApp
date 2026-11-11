@@ -18,5 +18,5 @@ export function useResizeBoard(
             observer.observe(containerRef.current);
         } 
         return () => observer.disconnect();
-    }, []);
+    }, [containerRef, gridMaxPadding, gridRef]);
 }

@@ -10,5 +10,5 @@ export function useHandleUnmount(clientRef: RefObject<Client | null>) {
             clientRef.current?.deactivate();
             clientRef.current = null;
         }
-    }, []);
+    }, [clientRef]);
 }

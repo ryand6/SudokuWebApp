@@ -15,7 +15,7 @@ export function useTimeRemaining(endTime: number, intervalMs: number) {
         }, intervalMs);
 
         return () => clearInterval(intervalId);
-    }, [endTime]);
+    }, [endTime, intervalMs]);
 
     return timeRemaining;
 }

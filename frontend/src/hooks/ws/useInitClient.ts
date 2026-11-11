@@ -28,5 +28,5 @@ export function useInitClient(
         }
         if (clientRef.current) return;
         initStompClient(clientRef, initialReconnectDelay, handleConnect, handleDisconnect, handleWebSocketClose, handleWebSocketError);
-    }, [currentUser]);
+    }, [currentUser, clientRef, handleConnect, handleDisconnect, handleWebSocketClose, handleWebSocketError, initialReconnectDelay, pendingQueueRef, subscriptionsRef]);
 }

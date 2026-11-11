@@ -2,12 +2,10 @@ import type { LeaderboardRowDto } from "@/types/dto/entity/leaderboards/Leaderbo
 
 export function LeaderboardRow({
     data,
-    userId,
-    isMobile
+    userId
 }: {
     data: LeaderboardRowDto,
-    userId: number,
-    isMobile: boolean
+    userId: number
 }) {
     return (
         <div className="flex w-full justify-between py-2 px-4 border-b-1 border-muted bg-background font-display">

@@ -26,7 +26,7 @@ export function mapBoardToBlocks(boardState: PrivateCellState[][]): PrivateCellS
  * @returns {PrivateCellState[]} - the block array containing all corresponding cell states
  */
 function fillBlock(i: number, j: number, boardState: PrivateCellState[][]): PrivateCellState[] {
-    let block: PrivateCellState[] = [];
+    const block: PrivateCellState[] = [];
     for (let x = i; x < i + 3; x++) {
         for (let y = j; y < j + 3; y++) {
             block.push(boardState[x][y]);

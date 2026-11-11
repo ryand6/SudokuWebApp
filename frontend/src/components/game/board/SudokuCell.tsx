@@ -65,10 +65,7 @@ const SudokuCell = React.memo(function SudokuCell(
         <div className="relative h-full w-full overflow-hidden">
             <NotesLayer 
                 key={`notes${row}-${col}`}
-                row={row} 
-                col={col} 
                 value={value}
-                userId={userId}
                 notes={notes}
                 isRejected={isRejected}
                 notesModeOn={notesModeOn}

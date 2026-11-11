@@ -18,5 +18,5 @@ export function useHandleScrollOnMessagePageLoad(
             // Remove flag so that next page of messages can be loaded once the window is scrolled to the top again
             setIsLoadingNextPage(false);
         }
-    }, [isFetchingNextPage])
+    }, [isFetchingNextPage, chatElement, scrollHeightRef, setIsLoadingNextPage])
 }

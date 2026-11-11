@@ -9,5 +9,5 @@ export function useShowGameResults(
         if (finishedGame === undefined || endedPrematurely === undefined) return;
         const showModal = finishedGame || endedPrematurely;
         setShowGameResultsModal(showModal);
-    }, [finishedGame, setShowGameResultsModal]);
+    }, [finishedGame, setShowGameResultsModal, endedPrematurely]);
 }

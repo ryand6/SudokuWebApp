@@ -22,16 +22,7 @@ export function JoinLobbyModal({
         setPane("private");
     }
 
-    const toggleStatus = (event: React.MouseEvent<HTMLButtonElement>) => {
-        if (!event.currentTarget.textContent) return;
-        const buttonText = event.currentTarget.textContent.toLowerCase();
-        if (buttonText === "public" || buttonText === "private") {
-            setPane(buttonText);
-        }
-    }
-
     const iconSize: number = isMobile ? 16 : 24;
-    const iconStroke: number = isMobile ? 2 : 3;
 
     return (
         <div id="modal-content" className="flex flex-col w-full h-full bg-background">

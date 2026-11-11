@@ -5,21 +5,15 @@ import React from "react";
 
 const NotesLayer = React.memo(function NotesLayer(
     {
-        row, 
-        col, 
         value, 
         notes,
-        userId,
         isRejected,
         notesModeOn,
         highlightedCellNumber,
         playerColour
     }: {
-        row: number, 
-        col: number, 
         value: string | undefined, 
         notes: number,
-        userId: number,
         isRejected: boolean,
         notesModeOn: boolean,
         highlightedCellNumber: string | undefined,

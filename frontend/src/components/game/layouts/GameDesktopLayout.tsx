@@ -75,7 +75,6 @@ export function GameDesktopLayout({
                     <UserActionBar 
                         gameId={publicGameState.gameId}
                         userId={currentUser.id}
-                        initialBoardState={publicGameState.initialBoardState}
                         playerHighlightedCell={userHighlightedCell}
                         highlightedCellState={userHighlightedCell ? getCellState(privateGameState.boardState, userHighlightedCell.row, userHighlightedCell.col) : undefined}
                         isMobile={isMobile}

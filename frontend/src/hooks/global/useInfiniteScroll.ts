@@ -1,5 +1,5 @@
 // hooks/shared/useInfiniteScroll.ts
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 
 export function useInfiniteScroll<T>({ 
@@ -20,9 +20,16 @@ export function useInfiniteScroll<T>({
     const scrollHeightRef = useRef(0);
     const [hasNewMessages, setHasNewMessages] = useState(false);
 
+    const scrollToBottom = useCallback(() => {
+        const chatElement = chatRef.current;
+        if (!chatElement) return;
+        chatElement.scrollTo({ top: chatElement.scrollHeight, behavior: "smooth" });
+        setIsAtBottom(true);
+    }, [chatRef, setIsAtBottom]);
+
     useEffect(() => { 
         scrollToBottom(); 
-    }, []);
+    }, [scrollToBottom]);
 
     useEffect(() => {
         const chatElement = chatRef.current;
@@ -33,7 +40,7 @@ export function useInfiniteScroll<T>({
             chatElement.scrollTop = chatElement.scrollHeight - scrollHeightRef.current;
             setIsLoadingNextPage(false);
         }
-    }, [isFetchingNextPage]);
+    }, [isFetchingNextPage, setIsLoadingNextPage]);
 
     useEffect(() => {
         if (!chatRef.current) return;
@@ -42,14 +49,7 @@ export function useInfiniteScroll<T>({
         } else {
             scrollToBottom();
         }
-    }, [messages]);
-
-    const scrollToBottom = () => {
-        const chatElement = chatRef.current;
-        if (!chatElement) return;
-        chatElement.scrollTo({ top: chatElement.scrollHeight, behavior: "smooth" });
-        setIsAtBottom(true);
-    };
+    }, [messages, isAtBottom, scrollToBottom]);
 
     const handleScroll = () => {
         const chatElement = chatRef.current;

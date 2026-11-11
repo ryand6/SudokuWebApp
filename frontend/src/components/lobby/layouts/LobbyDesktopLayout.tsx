@@ -51,7 +51,6 @@ export function LobbyDesktopLayout({
     setIsAlertOpen: Dispatch<SetStateAction<boolean>>
 }) {    
     const iconSize: number = isMobile ? 16 : 24;
-    const iconStroke: number = isMobile ? 2 : 3;
 
     return (
         <div id="lobby-container" className="flex flex-col h-full w-full">

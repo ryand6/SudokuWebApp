@@ -85,7 +85,7 @@ export function normalisePrivateGameStateData(
 function fillPrivateBoardState(gameDtoState: PrivateGamePlayerStateDto): PrivateCellState[][] {
     const boardState = [];
     for (let y = 0; y < GRID_SIZE; y++) {
-        let boardRow: PrivateCellState[] = [];
+        const boardRow: PrivateCellState[] = [];
         for (let x = 0; x < GRID_SIZE; x++) {
             const value = getCellValue(gameDtoState.currentBoardState, y, x);
             const notes = gameDtoState.notes[(y * 9) + x];
@@ -99,7 +99,7 @@ function fillPrivateBoardState(gameDtoState: PrivateGamePlayerStateDto): Private
 function fillPublicBoardState(currentSharedBoardState: string) {
     const boardState = [];
     for (let y = 0; y < GRID_SIZE; y++) {
-        let boardRow: SharedCellState[] = [];
+        const boardRow: SharedCellState[] = [];
         for (let x = 0; x < GRID_SIZE; x++) {
             const value = getCellValue(currentSharedBoardState, y, x);
             boardRow[x] = {value: value};

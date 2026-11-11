@@ -31,7 +31,7 @@ export function HomePage() {
     // When homepage is accessed, check if it was via a redirect following a login/account set up - if so, redirect to original URL
     useEffect(() => {
         redirectPostLogin(navigate)
-    }, [user]);
+    }, [user, navigate]);
 
     return (
         isMobile ? (

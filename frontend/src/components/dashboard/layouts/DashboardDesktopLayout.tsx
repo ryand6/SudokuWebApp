@@ -103,9 +103,9 @@ export function DashboardDesktopLayout({
                                 <LeaveGameAlertDialog open={isLeaveGameAlertOpen} handleContinueClick={() => leaveGameHandler.mutate({ gameId: activeLobby.currentGameId!, userId: user.id, lobbyId: activeLobby.id })} setOpen={setIsLeaveGameAlertOpen} />
                                 <button
                                     className="flex items-center gap-1 px-4 py-3 rounded-lg bg-destructive/20 cursor-pointer hover:bg-destructive/10 text-semibold text-primary-foreground text-lg border-1 border-sidebar"
-                                    onClick={() => {
+                                    onClick={() => 
                                         activeGameId ? setIsLeaveGameAlertOpen(true) : setIsLeaveLobbyAlertOpen(true)
-                                    }}
+                                    }
                                 >   
                                     <span>Leave</span>
                                     <span>
@@ -125,7 +125,6 @@ export function DashboardDesktopLayout({
                             navigate={navigate}
                         />
                         <MyStatsWidget
-                            userId={user.id}
                             isMobile={false}
                         />
                         

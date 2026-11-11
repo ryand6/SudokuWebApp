@@ -14,5 +14,5 @@ export function useHandleUnload(clientRef: RefObject<Client | null>) {
         return () => {
             window.removeEventListener("beforeunload", handleUnload);
         }
-    }, []);
+    }, [clientRef]);
 }
