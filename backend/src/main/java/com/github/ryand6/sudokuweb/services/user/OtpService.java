@@ -46,16 +46,14 @@ public class OtpService {
             throw new InvalidOtpException("Invalid or expired OTP");
         }
         redisTemplate.delete(OTP_PREFIX + userId);
+        redisTemplate.delete(OTP_ATTEMPTS_PREFIX + userId);
     }
 
     private void invalidateOtpOnExceededAttempts(Long userId) {
         String attemptsKey = OTP_ATTEMPTS_PREFIX + userId;
         Long attempts = redisTemplate.opsForValue().increment(attemptsKey);
-        if (attempts != null && attempts == 1) {
-            redisTemplate.expire(
-                    attemptsKey,
-                    Duration.ofMinutes(otpExpiryMinutes)
-            );
+        if (Long.valueOf(1).equals(attempts)) {
+            redisTemplate.expire(attemptsKey, Duration.ofMinutes(otpExpiryMinutes));
         }
         if (attempts != null && attempts >= MAX_OTP_ATTEMPTS) {
             redisTemplate.delete(OTP_PREFIX + userId);
@@ -72,8 +70,10 @@ public class OtpService {
             );
         }
         Long requests = redisTemplate.opsForValue().increment(hourlyKey);
-        if (requests != null) {
+        if (Long.valueOf(1).equals(requests)) {
             redisTemplate.expire(hourlyKey, Duration.ofHours(1));
+        }
+        if (requests != null) {
             if (requests > MAX_OTP_REQUESTS_PER_HOUR) {
                 throw new TooManyOtpRequestsException(
                         "Too many verification code requests. Please try again later."
