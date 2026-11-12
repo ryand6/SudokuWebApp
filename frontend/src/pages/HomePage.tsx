@@ -22,7 +22,7 @@ export function HomePage() {
             setIsImageLoading(false);
         };
 
-        img.onerror = (_e) => {
+        img.onerror = () => {
             setIsImageLoading(false);
             setIsImageError(true);
         };
