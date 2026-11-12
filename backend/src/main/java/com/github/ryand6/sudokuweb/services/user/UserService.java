@@ -15,7 +15,6 @@ import com.github.ryand6.sudokuweb.enums.GameStatus;
 import com.github.ryand6.sudokuweb.events.types.user.ws.UsernameUpdatedWsEvent;
 import com.github.ryand6.sudokuweb.exceptions.auth.InvalidOtpException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
-import com.github.ryand6.sudokuweb.exceptions.auth.RecoveryEmailNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UserNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.user.UsernameTakenException;
 import com.github.ryand6.sudokuweb.mappers.Impl.user.UserEntityDtoMapper;
@@ -27,10 +26,8 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.caffeine.CaffeineCache;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -53,7 +50,6 @@ public class UserService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final OtpService otpService;
     private final EmailService emailService;
-    private final CacheManager cacheManager;
 
 
     public UserService(UserRepository userRepository,
@@ -63,8 +59,7 @@ public class UserService {
                        UserEntityDtoMapper userEntityDtoMapper,
                        ApplicationEventPublisher applicationEventPublisher,
                        OtpService otpService,
-                       EmailService emailService,
-                       CacheManager cacheManager) {
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.userOAuthProviderRepository = userOAuthProviderRepository;
         this.lobbyRepository = lobbyRepository;
@@ -73,7 +68,6 @@ public class UserService {
         this.applicationEventPublisher = applicationEventPublisher;
         this.otpService = otpService;
         this.emailService = emailService;
-        this.cacheManager = cacheManager;
     }
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
@@ -116,8 +110,12 @@ public class UserService {
     @Transactional
     public void requestAccountLink(String emailAddress, OAuth2User principal, OAuth2AuthenticationToken authToken, HttpSession session) {
         String emailHash = HashUtils.generateHmacHash(emailAddress.toLowerCase().trim(), hmacSecretKey);
+        otpService.checkOtpRequestLimit(emailHash);
         UserEntity user = userRepository.findByRecoveryEmailHash(emailHash)
-                .orElseThrow(() -> new RecoveryEmailNotFoundException("No account found with that recovery email"));
+                .orElse(null);
+        if (user == null) {
+            return;
+        }
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
         String providerId = OAuthUtil.retrieveOAuthProviderId(provider, principal);
         // Store pending OAuth provider linking details in session in order to link provider if OTP is verified

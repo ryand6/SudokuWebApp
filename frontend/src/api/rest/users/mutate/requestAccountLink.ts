@@ -18,4 +18,6 @@ export async function requestAccountLink(email: string): Promise<void> {
         error.status = response.status;
         throw error;
     }
+    const data = await response.json();
+    alert(data.message);
 }

@@ -3,7 +3,7 @@ package com.github.ryand6.sudokuweb.controllers.handlers;
 import com.github.ryand6.sudokuweb.exceptions.auth.InvalidOtpException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuthProviderNotLinkedException;
-import com.github.ryand6.sudokuweb.exceptions.auth.RecoveryEmailNotFoundException;
+import com.github.ryand6.sudokuweb.exceptions.auth.TooManyOtpRequestsException;
 import com.github.ryand6.sudokuweb.exceptions.game.*;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GameLoadedTimestampNotFoundException;
 import com.github.ryand6.sudokuweb.exceptions.game.player.GamePlayerNotFoundException;
@@ -38,7 +38,6 @@ public class ErrorMapping {
             Map.entry(LobbyPlayerNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(TokenNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyHostNotFoundException.class, HttpStatus.NOT_FOUND),
-            Map.entry(RecoveryEmailNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(GameLoadedTimestampNotFoundException.class, HttpStatus.NOT_FOUND),
             Map.entry(LobbyFullException.class, HttpStatus.CONFLICT),
             Map.entry(LobbySettingsLockedException.class, HttpStatus.CONFLICT),
@@ -60,7 +59,8 @@ public class ErrorMapping {
             Map.entry(IllegalBoardStateException.class, HttpStatus.BAD_REQUEST),
             Map.entry(IllegalGameStatusChangeException.class, HttpStatus.BAD_REQUEST),
             Map.entry(PlayerNotFinishedGameException.class, HttpStatus.BAD_REQUEST),
-            Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS)
+            Map.entry(MessageTooSoonException.class, HttpStatus.TOO_MANY_REQUESTS),
+            Map.entry(TooManyOtpRequestsException.class, HttpStatus.TOO_MANY_REQUESTS)
     );
 
     public static final Map<Class<? extends Throwable>, String> EXCEPTION_WS_ERROR_TYPE_MAP = Map.ofEntries(

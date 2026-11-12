@@ -53,8 +53,6 @@ public class WebSocketSecurityConfig {
                 .simpTypeMatchers(
                         SimpMessageType.CONNECT,
                         SimpMessageType.DISCONNECT,
-                        SimpMessageType.SUBSCRIBE,
-                        SimpMessageType.MESSAGE,
                         SimpMessageType.UNSUBSCRIBE
                 )
                     .authenticated()
@@ -71,6 +69,9 @@ public class WebSocketSecurityConfig {
     // Uses Authentication context to find user in DB and confirm if they're an active member in the lobby
     private AuthorizationDecision checkLobbyMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
         UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
+        if (user == null) {
+            return new AuthorizationDecision(false);
+        }
         Long lobbyId = Long.valueOf(context.getVariables().get("lobbyId"));
         return new AuthorizationDecision(membershipService.isUserInLobby(user.getId(), lobbyId));
     }
@@ -78,6 +79,9 @@ public class WebSocketSecurityConfig {
     // Uses Authentication context to find user in DB and confirm if they're a member of the game
     private AuthorizationDecision checkGameMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
         UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
+        if (user == null) {
+            return new AuthorizationDecision(false);
+        }
         Long gameId = Long.valueOf(context.getVariables().get("gameId"));
         return new AuthorizationDecision(membershipService.isUserInGame(user.getId(), gameId));
     }
@@ -85,6 +89,9 @@ public class WebSocketSecurityConfig {
     // Get UserDto using Authentication object
     private UserDto resolveUserDtoFromAuthenticationSupplier(Supplier<Authentication> authenticationSupplier) {
         Authentication authentication = authenticationSupplier.get();
+        if (authentication == null || !authentication.isAuthenticated() || !(authentication instanceof OAuth2AuthenticationToken)) {
+            return null;
+        }
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
         OAuth2User principal = token.getPrincipal();
         return userService.getCurrentUserByOAuth(principal, token);

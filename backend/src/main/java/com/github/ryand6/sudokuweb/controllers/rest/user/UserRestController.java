@@ -2,6 +2,7 @@ package com.github.ryand6.sudokuweb.controllers.rest.user;
 
 import com.github.ryand6.sudokuweb.dto.entity.user.UserDto;
 import com.github.ryand6.sudokuweb.dto.request.*;
+import com.github.ryand6.sudokuweb.dto.response.ApiMessageDto;
 import com.github.ryand6.sudokuweb.dto.response.LobbyDetailsDto;
 import com.github.ryand6.sudokuweb.exceptions.auth.OAuth2LoginRequiredException;
 import com.github.ryand6.sudokuweb.services.user.UserService;
@@ -83,7 +84,10 @@ public class UserRestController {
             return ResponseEntity.badRequest().body(errors);
         }
         userService.requestAccountLink(request.getEmail(), principal, authToken, session);
-        return ResponseEntity.ok().build();
+        return ResponseEntity
+                .ok(new ApiMessageDto(
+                        "If an account is associated with that recovery email, a verification code will be sent."
+                ));
     }
 
     @PostMapping("/verify-account-link")
