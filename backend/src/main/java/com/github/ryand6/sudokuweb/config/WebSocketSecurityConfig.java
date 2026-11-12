@@ -34,6 +34,21 @@ public class WebSocketSecurityConfig {
     @Bean
     public AuthorizationManager<Message<?>> messageAuthorizationManager(MessageMatcherDelegatingAuthorizationManager.Builder messages) {
         messages
+                // Ensure that users can only send messages to lobbies that they are a member of
+                .simpMessageDestMatchers("/app/lobby/{lobbyId}/**")
+                    .access(this::checkLobbyMembership)
+                // Ensure that users can only send spring messages to games that they are a member of
+                .simpMessageDestMatchers("/app/game/{gameId}/**")
+                    .access(this::checkGameMembership)
+                // Spring automatically maps messages to the correct user using the Principal - additional validation to ensure user is authenticated
+                .simpSubscribeDestMatchers("/user/queue/updates", "/user/queue/errors")
+                    .authenticated()
+                // Ensure that users can only subscribe to lobbies that they are a member of
+                .simpSubscribeDestMatchers("/topic/lobby/{lobbyId}")
+                    .access(this::checkLobbyMembership)
+                // Ensure that users can only subscribe to games that they are a member of
+                .simpSubscribeDestMatchers("/topic/game/{gameId}")
+                    .access(this::checkGameMembership)
                 // Ensures the WS connection session is authenticated using the principal when handling this message types
                 .simpTypeMatchers(
                         SimpMessageType.CONNECT,
@@ -48,24 +63,7 @@ public class WebSocketSecurityConfig {
                         SimpMessageType.HEARTBEAT
                 )
                     .permitAll()
-                // Ensure that users can only send messages to lobbies that they are a member of
-                .simpMessageDestMatchers("/app/lobby/{lobbyId}/**")
-                    .access(this::checkLobbyMembership)
-                // Ensure that users can only send spring messages to games that they are a member of
-                .simpMessageDestMatchers("/app/game/{gameId}/**")
-                    .access(this::checkGameMembership)
-                // Spring automatically maps messages to the correct user using the Principal - additional validation to ensure user is authenticated
-                .simpSubscribeDestMatchers("/user/queue/updates", "/user/queue/errors")
-                    .access((authSupplier, context) -> {
-                        Authentication auth = authSupplier.get();
-                        return new AuthorizationDecision(auth.isAuthenticated());
-                    })
-                // Ensure that users can only subscribe to lobbies that they are a member of
-                .simpSubscribeDestMatchers("/topic/lobby/{lobbyId}")
-                    .access(this::checkLobbyMembership)
-                // Ensure that users can only subscribe to games that they are a member of
-                .simpSubscribeDestMatchers("/topic/game/{gameId}")
-                    .access(this::checkGameMembership)
+
                 .anyMessage().denyAll();
         return messages.build();
     }

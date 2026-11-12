@@ -7,6 +7,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -43,7 +45,7 @@ public class GameEntityTests {
         when(p2.isFinishedGame()).thenReturn(false);
 
         GameEntity game = GameEntity.builder()
-                .gamePlayerEntities(Set.of(p1, p2))
+                .gamePlayerEntities(new LinkedHashSet<>(List.of(p1, p2)))
                 .build();
 
         assertThat(game.isGameFinished()).isFalse();

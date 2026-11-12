@@ -107,7 +107,7 @@ public class UserService {
         if (userRepository.existsByUsername(username)) {
             throw new UsernameTakenException("Username provided is taken, please choose another");
         }
-        String recoveryEmailHash = HashUtils.generateHmacHash(recoveryEmail, hmacSecretKey);
+        String recoveryEmailHash = HashUtils.generateHmacHash(recoveryEmail.toLowerCase().trim(), hmacSecretKey);
         UserEntity newUser = UserFactory.createUser(username, provider, providerId, recoveryEmailHash);
         userRepository.save(newUser);
     }
@@ -115,7 +115,7 @@ public class UserService {
     // Link a new OAuth provider to existing account - user must provide valid recovery email and verify the OTP sent
     @Transactional
     public void requestAccountLink(String emailAddress, OAuth2User principal, OAuth2AuthenticationToken authToken, HttpSession session) {
-        String emailHash = HashUtils.generateHmacHash(emailAddress, hmacSecretKey);
+        String emailHash = HashUtils.generateHmacHash(emailAddress.toLowerCase().trim(), hmacSecretKey);
         UserEntity user = userRepository.findByRecoveryEmailHash(emailHash)
                 .orElseThrow(() -> new RecoveryEmailNotFoundException("No account found with that recovery email"));
         String provider = OAuthUtil.retrieveOAuthProviderName(authToken);
@@ -184,7 +184,7 @@ public class UserService {
     @CacheEvict(value = "userCache", key = "#authToken.authorizedClientRegistrationId + '_' + #principal.name")
     public void updateRecoveryEmail(String recoveryEmail, OAuth2User principal, OAuth2AuthenticationToken authToken) {
         UserEntity user = getCurrentUserEntityByOAuth(principal, authToken);
-        String recoveryEmailHash = HashUtils.generateHmacHash(recoveryEmail, hmacSecretKey);
+        String recoveryEmailHash = HashUtils.generateHmacHash(recoveryEmail.toLowerCase().trim(), hmacSecretKey);
         user.setRecoveryEmailHash(recoveryEmailHash);
         UserEntity updatedUser = userRepository.save(user);
     }

@@ -12,9 +12,9 @@ public final class HashUtils {
     public static String generateHmacHash(String input, String secret) {
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
-            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), HMAC_ALGORITHM);
+            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), HMAC_ALGORITHM);
             mac.init(secretKey);
-            byte[] hash = mac.doFinal(input.toLowerCase().trim().getBytes(StandardCharsets.UTF_8));
+            byte[] hash = mac.doFinal(input.getBytes(StandardCharsets.UTF_8));
             return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
         } catch (Exception e) {
             throw new RuntimeException("Failed to hash input", e);

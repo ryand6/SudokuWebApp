@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.time.Clock;
 import java.time.Instant;
@@ -74,7 +75,7 @@ public class SecureInvitationsService {
                 String payload = lobbyId + ":" + userId + ":" + expiryTime + ":" + nonce;
                 String expectedSignature = HashUtils.generateHmacHash(payload, SECRET_KEY);
                 // Signature of received token must match the signature generated for the token to be authenticated as the same secret key is used
-                if (!signature.equals(expectedSignature)) {
+                if (!MessageDigest.isEqual(signature.getBytes(StandardCharsets.UTF_8), expectedSignature.getBytes())) {
                     return null;
                 }
 
