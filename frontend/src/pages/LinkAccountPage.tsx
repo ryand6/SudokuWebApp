@@ -27,7 +27,7 @@ export function LinkAccountPage(): JSX.Element {
         try {
             const infoMsg = await requestAccountLink(email);
             if (infoMsg) {
-                toast.info(infoMsg);
+                toast.info(infoMsg, { containerId: "foreground" });
             }
             setStep("otp");
         } catch (err: any) {
