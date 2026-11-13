@@ -40,6 +40,8 @@ public class WebSocketSecurityConfig {
                 // Ensure that users can only send spring messages to games that they are a member of
                 .simpMessageDestMatchers("/app/game/{gameId}/**")
                     .access(this::checkGameMembership)
+                .simpMessageDestMatchers("/app/user/update-settings")
+                    .authenticated()
                 // Spring automatically maps messages to the correct user using the Principal - additional validation to ensure user is authenticated
                 .simpSubscribeDestMatchers("/user/queue/updates", "/user/queue/errors")
                     .authenticated()
