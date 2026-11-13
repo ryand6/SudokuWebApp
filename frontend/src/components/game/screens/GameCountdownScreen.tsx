@@ -24,6 +24,17 @@ export function GameCountdownScreen({
         };
     }, [countdown]);
 
+    // Temp
+    useEffect(() => {
+        console.log("Countdown mounted:", {
+            gameStartsAt,
+            browserNow: new Date().toISOString(),
+            remainingMs: gameStartsAt
+                ? new Date(gameStartsAt).getTime() - Date.now()
+                : null
+        });
+    }, []);
+
     return (
         <div className="flex flex-col items-center justify-center h-full w-full bg-background">
             {
