@@ -107,6 +107,16 @@ export function handleGameWebSocketMessages(
             break;
         }
         case "GAME_CLOCKS_INITIALISED": {
+
+            const startsAtMs = new Date(message.payload.gameStartsAt).getTime();
+
+            console.log("Countdown timing:", {
+                gameStartsAt: message.payload.gameStartsAt,
+                browserNow: new Date().toISOString(),
+                remainingMs: startsAtMs - Date.now(),
+                remainingSeconds: (startsAtMs - Date.now()) / 1000
+            });
+
             gameCacheDispatcher(queryClient, gameId, {
                 type: "GAME_CLOCKS_INITIALISED",
                 gameStartsAt: message.payload.gameStartsAt,
