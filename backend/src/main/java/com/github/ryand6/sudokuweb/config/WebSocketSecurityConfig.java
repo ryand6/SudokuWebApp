@@ -51,6 +51,8 @@ public class WebSocketSecurityConfig {
                 // Ensure that users can only subscribe to games that they are a member of
                 .simpSubscribeDestMatchers("/topic/game/{gameId}")
                     .access(this::checkGameMembership)
+                .simpSubscribeDestMatchers("/topic/game/{gameId}/user/{userId}")
+                    .access(this::checkGamePlayerMembership)
                 // Ensures the WS connection session is authenticated using the principal when handling this message types
                 .simpTypeMatchers(
                         SimpMessageType.CONNECT,
@@ -86,6 +88,18 @@ public class WebSocketSecurityConfig {
         }
         Long gameId = Long.valueOf(context.getVariables().get("gameId"));
         return new AuthorizationDecision(membershipService.isUserInGame(user.getId(), gameId));
+    }
+
+    private AuthorizationDecision checkGamePlayerMembership(Supplier<Authentication> authenticationSupplier, MessageAuthorizationContext<?> context) {
+        UserDto user = resolveUserDtoFromAuthenticationSupplier(authenticationSupplier);
+        if (user == null) {
+            return new AuthorizationDecision(false);
+        }
+        Long gameId = Long.valueOf(context.getVariables().get("gameId"));
+        Long targetUserId = Long.valueOf(context.getVariables().get("userId"));
+        boolean isGameMember = membershipService.isUserInGame(user.getId(), gameId);
+        boolean isOwnSubscription = user.getId().equals(targetUserId);
+        return new AuthorizationDecision(isGameMember && isOwnSubscription);
     }
 
     // Get UserDto using Authentication object
