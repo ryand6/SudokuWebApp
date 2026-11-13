@@ -22,7 +22,7 @@ import { RecoveryEmailUpdatePage } from "./pages/RecoveryEmailUpdatePage";
 import { PrivacyPolicyPage } from "./pages/PrivacyPolicyPage";
 import { AboutPage } from "./pages/AboutPage";
 import BetaAccess from "./components/testing/BetaAccess";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 // Manages cache, retries, queries etc.
 const queryClient = new QueryClient();
@@ -31,8 +31,12 @@ function App() {
 
   const [unlocked, setUnlocked] = useState(false);
 
+  const handleUnlocked = useCallback(() => {
+    setUnlocked(true);
+  }, []);
+
   if (!unlocked) {
-      return <BetaAccess onUnlocked={() => setUnlocked(true)} />;
+      return <BetaAccess onUnlocked={handleUnlocked} />;
   }
 
   return (
