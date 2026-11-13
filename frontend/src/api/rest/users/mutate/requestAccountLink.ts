@@ -1,9 +1,8 @@
 import { apiFetch } from "@/api/apiFetch";
 import { getCsrfTokenFromCookie } from "../../../../utils/auth/csrf";
 import type { ErrorWithStatus } from "@/interfaces/ErrorWithStatus";
-import { toast } from "react-toastify";
 
-export async function requestAccountLink(email: string): Promise<void> {
+export async function requestAccountLink(email: string): Promise<string> {
     const response = await apiFetch("/api/users/request-account-link", {
         method: "POST",
         credentials: "include",
@@ -20,5 +19,5 @@ export async function requestAccountLink(email: string): Promise<void> {
         throw error;
     }
     const data = await response.json();
-    toast.info(data.message);
+    return data.message;
 }

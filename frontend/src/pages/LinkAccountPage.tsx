@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { requestAccountLink } from "../api/rest/users/mutate/requestAccountLink";
 import { verifyAccountLink } from "../api/rest/users/mutate/verifyAccountLink";
 import { backendUrl } from "@/api/apiFetch";
+import { toast } from "react-toastify";
 
 
 export function LinkAccountPage(): JSX.Element {
@@ -24,7 +25,10 @@ export function LinkAccountPage(): JSX.Element {
         }
         setLoading(true);
         try {
-            await requestAccountLink(email);
+            const infoMsg = await requestAccountLink(email);
+            if (infoMsg) {
+                toast.info(infoMsg);
+            }
             setStep("otp");
         } catch (err: any) {
             if (err.status === 404) {
