@@ -29,6 +29,8 @@ export function LinkAccountPage(): JSX.Element {
         } catch (err: any) {
             if (err.status === 404) {
                 setError("No account found with that recovery email. If you're new here, create an account instead.");
+            } else if (err.status === 429) {
+                setError("Too many verification code requests. Please try again later.");
             } else {
                 setError("Something went wrong. Please try again.");
             }
