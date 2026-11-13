@@ -1,4 +1,5 @@
 
+import { getCsrfTokenFromCookie } from "@/utils/auth/csrf";
 import { useState } from "react";
 
 export default function BetaAccess(
@@ -22,8 +23,9 @@ export default function BetaAccess(
                 {
                     method: "POST",
                     credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json"
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "X-XSRF-TOKEN": getCsrfTokenFromCookie() ?? "",
                     },
                     body: JSON.stringify({ password })
                 }
