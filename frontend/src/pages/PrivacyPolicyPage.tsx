@@ -262,7 +262,7 @@ export function PrivacyPolicyPage() {
                                 <p className="font-semibold">
                                     {CONTROLLER_NAME}
                                 </p>
-                                <p>Tomo Sudoku</p>
+                                <p>KachiDoku</p>
                                 <p>
                                     <a
                                         href={`mailto:${CONTACT_EMAIL}`}
