@@ -1,5 +1,6 @@
 package com.github.ryand6.sudokuweb.config;
 
+import com.github.ryand6.sudokuweb.controllers.testing.BetaAccessFilter;
 import com.github.ryand6.sudokuweb.security.OAuth2SuccessHandler;
 import com.github.ryand6.sudokuweb.services.user.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +11,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -25,11 +27,14 @@ public class SecurityConfig {
     private final String spaBaseUrl;
     // optional shared cookie domain used for sharing cookies across common domains
     private final String csrfCookieDomain;
+    private final boolean betaAccessEnabled;
 
     public SecurityConfig(@Value("${spa.base-url}") String spaBaseUrl,
-                          @Value("${csrf.cookie.domain:}") String csrfCookieDomain) {
+                          @Value("${csrf.cookie.domain:}") String csrfCookieDomain,
+                          @Value("${BETA_ACCESS_ENABLED:false}") boolean betaAccessEnabled) {
         this.spaBaseUrl = spaBaseUrl;
         this.csrfCookieDomain = csrfCookieDomain;
+        this.betaAccessEnabled = betaAccessEnabled;
     }
 
     // Register bean so that this can be injected into OAuth2SuccessHandler
@@ -64,12 +69,18 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Require that any URL requires authentication except for homepage, css files, and user set-up
                         .requestMatchers("/error/**").permitAll()
+                        .requestMatchers("/beta-access").permitAll()
                         .anyRequest().authenticated()
                 )
 
                 // Enable OAuth2 login
                 .oauth2Login(oauth -> oauth
                         .successHandler(new OAuth2SuccessHandler(spaBaseUrl, csrfTokenRepository, userService))
+                )
+
+                .addFilterAfter(
+                        new BetaAccessFilter(betaAccessEnabled),
+                        AnonymousAuthenticationFilter.class
                 )
 
                 // Add logout config
